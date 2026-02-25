@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal-primary: #008080;
+            --teal-light: #e6f2f2;
+            --soapstone-white: #fcfcfc;
+            --soapstone-shadow: #d1d9e6;
+            --soapstone-highlight: #ffffff;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --clay-shadow-outer: 12px 12px 24px #d1d9e6, -12px -12px 24px #ffffff;
+            --clay-shadow-inner: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff;
+            --clay-shadow-deep: inset 10px 10px 20px #d1d9e6, inset -10px -10px 20px #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--soapstone-white);
+            overflow-x: hidden;
+        }
+
+        /* --- Header --- */
+        header {
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            background: rgba(252, 252, 252, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--soapstone-shadow);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--teal-primary);
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            padding: 4px 8px;
+            background: var(--soapstone-white);
+            box-shadow: var(--clay-shadow-inner);
+            border-radius: 4px;
+        }
+
+        nav {
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            nav {
+                display: flex;
+                gap: 40px;
+            }
+            nav a {
+                text-decoration: none;
+                color: var(--text-muted);
+                font-weight: 500;
+                transition: color 0.3s ease;
+            }
+            nav a:hover {
+                color: var(--teal-primary);
+            }
+        }
+
+        .call-now-btn {
+            background: var(--teal-primary);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 4px 4px 10px rgba(0, 128, 128, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+        }
+
+        .call-now-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 6px 6px 15px rgba(0, 128, 128, 0.4);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            position: relative;
+            min-height: calc(100vh - 80px);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: url('https://images.unsplash.com/photo-1581578731548-c64695cc6954?auto=format&fit=crop&q=80&w=2070') no-repeat center center/cover;
+            padding: 40px 5%;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%);
+            z-index: 1;
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1.2fr 0.8fr;
+            }
+        }
+
+        /* Content Blocks */
+        .sculpted-card {
+            background: var(--soapstone-white);
+            padding: 60px;
+            box-shadow: var(--clay-shadow-outer);
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: transform 0.4s ease;
+        }
+
+        .status-badge {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--teal-light);
+            color: var(--teal-primary);
+            padding: 8px 16px;
+            display: inline-block;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            box-shadow: var(--clay-shadow-inner);
+            font-weight: 500;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        /* Review Block */
+        .review-sculpture {
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--soapstone-white);
+            box-shadow: var(--clay-shadow-inner);
+            width: fit-content;
+        }
+
+        .review-data {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .stars {
+            color: #f1c40f;
+            font-size: 1.2rem;
+        }
+
+        /* Service Grid */
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 640px) {
+            .service-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .service-block {
+            background: var(--soapstone-white);
+            padding: 40px;
+            box-shadow: var(--clay-shadow-outer);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-block:hover {
+            transform: scale(1.02);
+        }
+
+        .service-block h3 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .cta-button {
+            display: inline-block;
+            text-align: center;
+            padding: 15px 20px;
+            background: var(--soapstone-white);
+            color: var(--teal-primary);
+            text-decoration: none;
+            font-weight: 800;
+            box-shadow: var(--clay-shadow-outer);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            box-shadow: var(--clay-shadow-inner);
+            color: var(--text-main);
+        }
+
+        /* Offer Badge */
+        .offer-badge {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: var(--teal-primary);
+            color: white;
+            border-radius: 50%; /* Only exception for the "badge" feel, or we can make it a diamond */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.1);
+            transform: rotate(15deg);
+            z-index: 5;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .offer-badge span {
+            font-size: 1.5rem;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(15deg) translateY(0px); }
+            50% { transform: rotate(15deg) translateY(-10px); }
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: revealAnim 0.8s forwards ease-out;
+        }
+
+        @keyframes revealAnim {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><span>T</span> TOP CLEANING</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Services</a>
+            <a href="#">Reviews</a>
+            <a href="#">About</a>
+        </nav>
+        <a href="tel:555" class="call-now-btn">Call Now!</a>
+    </header>
+
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-container">
+            <!-- Left Sculpted Content -->
+            <div class="sculpted-card reveal">
+                <div class="status-badge">Cleaning Service Now servicing YOUR area!</div>
+                <h1>Top Cleaning is your trusted cleaning service provider.</h1>
+                <p class="hero-desc">
+                    We have a team of experienced and qualified cleaners who are dedicated to providing the best possible service to our customers.
+                </p>
+
+                <div class="review-sculpture">
+                    <div class="stars">★★★★★</div>
+                    <div class="review-data">See our 275+ 4.7-Star Reviews</div>
+                </div>
+            </div>
+
+            <!-- Right Service Actions -->
+            <div class="service-grid">
+                <!-- Residential Block -->
+                <div class="service-block reveal delay-1">
+                    <h3>Residential Cleaning</h3>
+                    <a href="#" class="cta-button">Book in 60 Seconds</a>
+                </div>
+
+                <!-- Commercial Block -->
+                <div class="service-block reveal delay-2">
+                    <div class="offer-badge">
+                        <span>15%</span>OFFER
+                    </div>
+                    <h3>Commercial Cleaning</h3>
+                    <a href="#" class="cta-button">Get a Quote</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Simple Interaction logic
+        document.querySelectorAll('.service-block').forEach(block => {
+            block.addEventListener('mousemove', (e) => {
+                const rect = block.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                block.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+
+            block.addEventListener('mouseleave', () => {
+                block.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+

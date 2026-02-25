@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #008080;
+            --light-aquamarine: #f4fdfd;
+            --accent-aqua: #40e0d0;
+            --glass-white: rgba(255, 255, 255, 0.8);
+            --text-dark: #1a2e2e;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            --linen-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--sans-font);
+            background: var(--light-aquamarine);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- TOP BAR --- */
+        .utility-bar {
+            background: var(--primary-teal);
+            color: white;
+            padding: 8px 5%;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            letter-spacing: 1px;
+            z-index: 100;
+            position: relative;
+        }
+
+        .utility-bar span { opacity: 0.9; }
+
+        /* --- HERO WRAPPER --- */
+        .hero-wrapper {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* AQUEOUS LINEN DIFFUSION BACKGROUND */
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.05) brightness(0.95);
+        }
+
+        /* Linen Grain Overlay */
+        .hero-bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: var(--linen-texture);
+            opacity: 0.04;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        /* Gradient Diffusion */
+        .hero-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                105deg,
+                rgba(244, 253, 253, 0.9) 0%,
+                rgba(244, 253, 253, 0.7) 40%,
+                rgba(244, 253, 253, 0) 100%
+            );
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 128, 128, 0.1);
+        }
+
+        .logo {
+            font-weight: 900;
+            letter-spacing: -1px;
+            font-size: 1.5rem;
+            color: var(--primary-teal);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box {
+            width: 28px;
+            height: 28px;
+            background: var(--primary-teal);
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            margin-left: 2.5rem;
+            text-transform: uppercase;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-aqua);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after { width: 100%; }
+
+        /* --- MAIN CONTENT --- */
+        main {
+            position: relative;
+            z-index: 5;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            padding: 0 5%;
+            align-items: center;
+        }
+
+        .hero-content {
+            padding: 4rem 2rem 4rem 0;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideReveal 1.2s forwards ease-out;
+        }
+
+        .location-tag {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .location-tag::before {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--primary-teal);
+        }
+
+        h1 {
+            font-size: clamp(3.5rem, 7vw, 5.5rem);
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 2rem;
+            letter-spacing: -3px;
+            color: var(--text-dark);
+        }
+
+        h1 span {
+            display: block;
+            color: var(--primary-teal);
+            font-style: italic;
+            position: relative;
+        }
+
+        .service-description {
+            max-width: 480px;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 3rem;
+            color: #4a5a5a;
+        }
+
+        /* --- CTA GRID PANELS --- */
+        .cta-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: slideReveal 1.2s forwards 0.4s ease-out;
+        }
+
+        .panel {
+            background: var(--glass-white);
+            padding: 3.5rem;
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: var(--transition);
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 60, 60, 0.05);
+        }
+
+        .panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: var(--linen-texture);
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .panel:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 40px 80px rgba(0, 60, 60, 0.12);
+        }
+
+        .panel-label {
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--primary-teal);
+            margin-bottom: 1rem;
+            display: block;
+            font-weight: 700;
+        }
+
+        .panel h3 {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 1.2rem 2.5rem;
+            background: var(--primary-teal);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn:hover {
+            background: #004d4d;
+            box-shadow: 0 15px 30px rgba(0, 128, 128, 0.3);
+        }
+
+        .btn.outline {
+            background: transparent;
+            border: 2px solid var(--primary-teal);
+            color: var(--primary-teal);
+        }
+
+        .btn.outline:hover {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        /* --- REVIEW STRIP --- */
+        .review-strip {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            background: white;
+            padding: 1.2rem 2.5rem;
+            width: fit-content;
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            box-shadow: 15px 15px 0px var(--primary-teal);
+            margin-top: 2rem;
+        }
+
+        .stars { color: #f7b500; font-size: 1.2rem; }
+
+        /* --- OFFER BADGE --- */
+        .offer-badge {
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 130px;
+            height: 130px;
+            background: var(--accent-aqua);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-teal);
+            font-family: var(--mono-font);
+            font-weight: 900;
+            line-height: 1;
+            transform: rotate(12deg);
+            box-shadow: 0 15px 35px rgba(64, 224, 208, 0.4);
+            animation: aqueousFloat 6s infinite ease-in-out;
+            z-index: 15;
+            border: 2px dashed rgba(0, 128, 128, 0.3);
+        }
+
+        .offer-badge span { font-size: 2rem; }
+        .offer-badge small { font-size: 0.65rem; text-transform: uppercase; margin-top: 4px; }
+
+        /* --- CALL NOW FAB --- */
+        .call-now {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            background: var(--text-dark);
+            color: white;
+            padding: 1.4rem 2.8rem;
+            font-family: var(--mono-font);
+            text-decoration: none;
+            z-index: 100;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .call-now:hover {
+            background: var(--primary-teal);
+            transform: translateY(-5px);
+        }
+
+        .call-now::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--accent-aqua);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes slideReveal {
+            to { opacity: 1; transform: translate(0); }
+        }
+
+        @keyframes aqueousFloat {
+            0%, 100% { transform: rotate(12deg) translateY(0) scale(1); }
+            50% { transform: rotate(8deg) translateY(-15px) scale(1.05); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(64, 224, 208, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(64, 224, 208, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(64, 224, 208, 0); }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1100px) {
+            main { grid-template-columns: 1fr; padding-top: 4rem; }
+            .hero-bg-overlay {
+                background: linear-gradient(
+                    to bottom,
+                    rgba(244, 253, 253, 0.85) 0%,
+                    rgba(244, 253, 253, 0.95) 100%
+                );
+            }
+            .hero-content { padding-right: 0; text-align: center; display: flex; flex-direction: column; align-items: center; }
+            .service-description { margin-inline: auto; }
+            .cta-grid { margin-top: 4rem; margin-bottom: 8rem; }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 3.2rem; }
+            header { flex-direction: column; gap: 1.5rem; }
+            nav a { margin: 0 0.8rem; font-size: 0.7rem; }
+            .review-strip { flex-direction: column; gap: 1rem; width: 100%; text-align: center; }
+            .panel { padding: 2rem; }
+            .utility-bar { font-size: 0.6rem; text-align: center; justify-content: center; gap: 15px; }
+            .utility-bar .socials { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="utility-bar">
+        <span><span style="color: var(--accent-aqua)">✦</span> 20% OFF FOR SENIORS & MILITARY</span>
+        <div class="socials">MON - SAT: 8:00AM - 7:00PM</div>
+    </div>
+
+    <div class="hero-wrapper">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000" alt="Pristine Interior">
+            <div class="hero-bg-overlay"></div>
+        </div>
+
+        <header>
+            <div class="logo">
+                <div class="logo-box"></div> 
+                TOP CLEANING 
+            </div>
+            <nav>
+                <a href="#">Services</a>
+                <a href="#">About</a>
+                <a href="#">Reviews</a>
+                <a href="#">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="hero-content">
+                <span class="location-tag">NOW SERVICING YOUR AREA</span>
+                <h1>Pristine Spaces <span>Redefined.</span></h1>
+                <p class="service-description">
+                    Top Cleaning is your trusted cleaning service provider. We have a team of experienced and qualified cleaners dedicated to providing the best possible service to our customers.
+                </p>
+                <div class="review-strip">
+                    <div>
+                        <span class="stars">★★★★★</span>
+                        <span style="margin-left: 10px">4.7 STARS</span>
+                    </div>
+                    <div style="color: var(--primary-teal); font-weight: 700;">
+                        275+ VERIFIED REVIEWS
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-grid">
+                <div class="panel">
+                    <div class="offer-badge">
+                        <small>Save</small>
+                        <span>15%</span>
+                        <small>First Booking</small>
+                    </div>
+                    <span class="panel-label">Residential</span>
+                    <h3>Homes that breathe.</h3>
+                    <a href="#" class="btn">BOOK IN 60 SECONDS</a>
+                </div>
+
+                <div class="panel" style="background: rgba(0, 128, 128, 0.03); border-color: rgba(0, 128, 128, 0.1);">
+                    <span class="panel-label">Commercial</span>
+                    <h3>Elevate your workspace.</h3>
+                    <a href="#" class="btn outline">GET A CUSTOM QUOTE</a>
+                </div>
+            </div>
+        </main>
+
+        <a href="tel:1234567890" class="call-now">
+            CALL NOW
+        </a>
+    </div>
+
+    <script>
+        // Subtle Aqueous parallax for the background image
+        document.addEventListener('mousemove', (e) => {
+            const img = document.querySelector('.hero-bg img');
+            const x = (window.innerWidth - e.pageX * 2) / 100;
+            const y = (window.innerHeight - e.pageY * 2) / 100;
+            
+            img.style.transform = `scale(1.1) translate(${x}px, ${y}px)`;
+        });
+
+        // Entry animation stagger
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.panel').forEach((p, i) => {
+                p.style.transitionDelay = `${i * 0.15}s`;
+            });
+        });
+    </script>
+</body>
+</html>

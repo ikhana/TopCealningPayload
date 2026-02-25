@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #008080;
+            --light-aquamarine: #e0f7f7;
+            --accent-aqua: #40e0d0;
+            --glass-white: rgba(255, 255, 255, 0.85);
+            --grid-line: rgba(0, 128, 128, 0.15);
+            --text-dark: #1a2e2e;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--sans-font);
+            background: #f0fafa;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- BACKGROUND LAYER --- */
+        .viewport-wrapper {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            background-image: linear-gradient(rgba(224, 247, 247, 0.8), rgba(224, 247, 247, 0.6)), url('https://images.unsplash.com/photo-1581578731548-c64695cc6958?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- POLISHED GRIDWORK MATERIAL --- */
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 5%;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .logo {
+            font-weight: 900;
+            letter-spacing: -1px;
+            font-size: 1.5rem;
+            color: var(--primary-teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-box {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-teal);
+            display: inline-block;
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            margin-left: 2rem;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--primary-teal);
+        }
+
+        /* --- HERO SECTION --- */
+        main {
+            position: relative;
+            z-index: 5;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 0;
+            padding: 0 5%;
+            align-items: center;
+        }
+
+        .hero-content {
+            padding: 4rem 2rem 4rem 0;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: reveal 1s forwards ease-out;
+        }
+
+        .location-tag {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            border-bottom: 2px solid var(--accent-aqua);
+        }
+
+        h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 0.95;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+        }
+
+        h1 span {
+            display: block;
+            color: var(--primary-teal);
+            font-style: italic;
+        }
+
+        .service-description {
+            max-width: 500px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            color: #4a5a5a;
+        }
+
+        /* --- THE GRID PANELS --- */
+        .cta-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1px;
+            background: var(--grid-line);
+            border: 1px solid var(--grid-line);
+            box-shadow: 0 30px 60px rgba(0, 128, 128, 0.1);
+            opacity: 0;
+            transform: translateX(50px);
+            animation: reveal 1s forwards 0.3s ease-out;
+        }
+
+        .panel {
+            background: var(--glass-white);
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel:hover {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .panel-label {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .panel h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--primary-teal);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 0;
+            transition: var(--transition);
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 128, 128, 0.2);
+            background: #006666;
+        }
+
+        .btn.outline {
+            background: transparent;
+            border: 2px solid var(--primary-teal);
+            color: var(--primary-teal);
+        }
+
+        /* --- REVIEW STRIP --- */
+        .review-strip {
+            position: absolute;
+            bottom: 3rem;
+            left: 5%;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: white;
+            padding: 1rem 2rem;
+            border-left: 5px solid var(--accent-aqua);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            box-shadow: 10px 10px 0px var(--primary-teal);
+            z-index: 10;
+        }
+
+        .stars {
+            color: #f7b500;
+            font-size: 1.2rem;
+        }
+
+        /* --- OFFER BADGE --- */
+        .offer-badge {
+            position: absolute;
+            top: -25px;
+            right: -25px;
+            width: 120px;
+            height: 120px;
+            background: var(--accent-aqua);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-teal);
+            font-family: var(--mono-font);
+            font-weight: 900;
+            line-height: 1;
+            transform: rotate(15deg);
+            box-shadow: 0 10px 30px rgba(64, 224, 208, 0.4);
+            animation: float 4s infinite ease-in-out;
+            z-index: 15;
+            border: 2px dashed var(--primary-teal);
+        }
+
+        .offer-badge span {
+            font-size: 1.8rem;
+        }
+
+        .offer-badge small {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        /* --- CALL NOW FAB --- */
+        .call-now {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--text-dark);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            font-family: var(--mono-font);
+            text-decoration: none;
+            z-index: 100;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .call-now:hover {
+            background: var(--primary-teal);
+            transform: scale(1.05);
+        }
+
+        .call-now::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #40e0d0;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes reveal {
+            to { opacity: 1; transform: translate(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(15deg) translateY(0); }
+            50% { transform: rotate(12deg) translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            main { grid-template-columns: 1fr; }
+            .hero-content { padding-right: 0; }
+            .cta-grid { margin-bottom: 10rem; }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 3rem; }
+            .review-strip { 
+                position: static; 
+                margin-top: 2rem; 
+                width: 100%; 
+                margin-bottom: 2rem;
+            }
+            header { flex-direction: column; gap: 1rem; }
+            nav a { margin: 0 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="viewport-wrapper">
+    <div class="grid-overlay"></div>
+
+    <header>
+        <div class="logo">
+            <div class="logo-box"></div>
+            TOP CLEANING
+        </div>
+        <nav>
+            <a href="#">Services</a>
+            <a href="#">About</a>
+            <a href="#">Reviews</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="hero-content">
+            <span class="location-tag">// NOW SERVICING YOUR AREA</span>
+            <h1>Pristine Spaces <span>Redefined.</span></h1>
+            <p class="service-description">
+                Top Cleaning is your trusted cleaning service provider. We have a team of experienced and qualified cleaners dedicated to providing the best possible service to our customers.
+            </p>
+            
+            <div class="review-strip">
+                <div>
+                    <span class="stars">★★★★★</span>
+                    <span style="margin-left: 10px">4.7 STARS</span>
+                </div>
+                <div style="color: var(--primary-teal)">
+                    275+ VERIFIED REVIEWS
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-grid">
+            <div class="panel">
+                <div class="offer-badge">
+                    <small>Save</small>
+                    <span>15%</span>
+                    <small>First Booking</small>
+                </div>
+                <span class="panel-label">Residential</span>
+                <h3>Homes that breathe.</h3>
+                <a href="#" class="btn">BOOK IN 60 SECONDS</a>
+            </div>
+            <div class="panel" style="background: rgba(0, 128, 128, 0.05);">
+                <span class="panel-label">Commercial</span>
+                <h3>Elevate your workspace.</h3>
+                <a href="#" class="btn outline">GET A CUSTOM QUOTE</a>
+            </div>
+        </div>
+    </main>
+
+    <a href="tel:1234567890" class="call-now">
+        CALL NOW
+    </a>
+</div>
+
+<script>
+    // Subtle parallax effect on grid
+    document.addEventListener('mousemove', (e) => {
+        const grid = document.querySelector('.grid-overlay');
+        const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+        const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+        grid.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+</script>
+
+</body>
+</html>

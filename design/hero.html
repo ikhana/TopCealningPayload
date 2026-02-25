@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal-primary: #0d9488;
+            --teal-dark: #0f766e;
+            --vellum-bg: rgba(255, 255, 255, 0.88);
+            --blueprint-grid: rgba(13, 148, 136, 0.05);
+        }
+
+        body {
+            font-family: 'Lexend Deca', sans-serif;
+            margin: 0;
+            background-color: #f8fafc;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Architectural Vellum Texture */
+        .vellum-surface {
+            background: var(--vellum-bg);
+            backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vellum-surface::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--blueprint-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--blueprint-grid) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Structural Lines */
+        .ruling-line {
+            position: absolute;
+            background: var(--teal-primary);
+            opacity: 0.2;
+        }
+
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .structural-tag {
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--teal-primary);
+            border: 1px solid var(--teal-primary);
+            padding: 2px 6px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .btn-structural {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            overflow: hidden;
+        }
+
+        .btn-structural::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: var(--teal-primary);
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+
+        .btn-structural:hover::after {
+            height: 100%;
+        }
+
+        .btn-structural:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .offer-badge {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            background: var(--teal-primary);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .reveal {
+            animation: revealUp 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes revealUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .line-draw {
+            width: 0;
+            height: 1px;
+            background: var(--teal-primary);
+            animation: draw 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes draw {
+            to { width: 100px; }
+        }
+    </style>
+</head>
+<body class="text-slate-900 overflow-x-hidden">
+
+    <!-- Header Section -->
+    <header class="fixed top-0 w-full z-50 px-6 py-4">
+        <nav class="max-w-7xl mx-auto flex justify-between items-center vellum-surface px-8 py-3 rounded-sm border border-slate-200">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-teal-600 flex items-center justify-center">
+                    <span class="text-white mono text-xs">TC</span>
+                </div>
+                <span class="font-bold tracking-tighter text-teal-900 uppercase">Top Cleaning</span>
+            </div>
+            
+            <div class="hidden md:flex gap-8 mono text-xs font-medium uppercase tracking-widest text-slate-500">
+                <a href="#" class="hover:text-teal-600 transition-colors">Residential</a>
+                <a href="#" class="hover:text-teal-600 transition-colors">Commercial</a>
+                <a href="#" class="hover:text-teal-600 transition-colors">Reviews</a>
+            </div>
+
+            <a href="tel:#" class="mono text-xs font-bold border-b-2 border-teal-600 pb-1 hover:border-teal-400 transition-all">
+                Call Now!
+            </a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="relative min-h-screen flex items-center hero-bg pt-20">
+        <!-- Structural Background Overlay -->
+        <div class="absolute inset-0 bg-slate-900/10 backdrop-grayscale-[0.2]"></div>
+
+        <div class="max-w-7xl mx-auto w-full px-6 grid grid-cols-12 relative z-10 gap-8">
+            
+            <!-- Main Content Area -->
+            <div class="col-span-12 lg:col-span-8 vellum-surface p-12 lg:p-20 shadow-2xl reveal">
+                <!-- Drafting Corner Marks -->
+                <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-teal-600"></div>
+                <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-teal-600"></div>
+
+               
+                <h1 class="text-5xl lg:text-7xl font-bold text-slate-900 mb-8 leading-[0.9] tracking-tighter">
+                    Cleaning Service <br/>
+                    <span class="text-teal-600">Now servicing <br/> YOUR area!</span>
+                </h1>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <div>
+                        <p class="text-slate-600 leading-relaxed mb-8 text-lg">
+                            See our 275+ 4.7-Star Reviews on Top Cleaning is your trusted cleaning service provider. We have a team of experienced and qualified cleaners who are dedicated to providing the best possible service to our customers.
+                        </p>
+                        
+                        <div class="flex gap-4">
+                            <div class="w-12 h-1 bg-teal-600/20"></div>
+                            <div class="w-4 h-1 bg-teal-600/40"></div>
+                            <div class="w-2 h-1 bg-teal-600"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- CTAs as architectural modules -->
+                        <div class="group cursor-pointer">
+                            <span class="structural-tag mono">Residential</span>
+                            <div class="border-l-4 border-teal-600 pl-4 py-2 bg-teal-50/50 hover:bg-teal-50 transition-colors">
+                                <h3 class="font-bold text-xl uppercase tracking-tight">Residential Cleaning</h3>
+                                <p class="text-teal-700 font-medium">Book in 60 Seconds</p>
+                            </div>
+                        </div>
+
+                        <div class="group cursor-pointer">
+                            <span class="structural-tag mono">Commercial</span>
+                            <div class="border-l-4 border-slate-300 group-hover:border-teal-600 pl-4 py-2 transition-all">
+                                <h3 class="font-bold text-xl uppercase tracking-tight text-slate-400 group-hover:text-slate-900">Commercial Cleaning</h3>
+                                <p class="text-slate-400 group-hover:text-teal-700 font-medium">Get a Quote</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Module: Offer Badge -->
+            <div class="col-span-12 lg:col-span-4 flex flex-col justify-end lg:pb-20">
+                <div class="relative w-full aspect-square max-w-[280px] mx-auto lg:mx-0">
+                    <div class="offer-badge w-full h-full flex flex-col items-center justify-center text-white text-center p-8">
+                        <span class="mono text-xs uppercase tracking-[0.4em] mb-2 opacity-80">Special</span>
+                        <div class="text-6xl font-bold leading-none mb-1">15%</div>
+                        <div class="text-sm uppercase font-bold tracking-widest border-t border-white/30 pt-2">offer badge</div>
+                        <div class="absolute -bottom-4 -right-4 w-20 h-20 border border-teal-600/20 rounded-full animate-pulse"></div>
+                    </div>
+                    
+                  
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section Metadata Footer -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-12 mono text-[10px] text-slate-400 tracking-widest hidden lg:flex">
+            <span>REF: TC-HERO-2024</span>
+            <span class="w-32 h-px bg-slate-300"></span>
+            <span>SCALE: 1:1 QUALITY ASSURED</span>
+            <span class="w-32 h-px bg-slate-300"></span>
+            <span>SHEET: A-01</span>
+        </div>
+    </main>
+
+    <script>
+        // Subtle Mouse parallax for the Vellum effect
+        document.addEventListener('mousemove', (e) => {
+            const amount = 5;
+            const x = (e.clientX / window.innerWidth - 0.5) * amount;
+            const y = (e.clientY / window.innerHeight - 0.5) * amount;
+            const surface = document.querySelector('.vellum-surface');
+            surface.style.transform = `perspective(1000px) rotateX(${-y}deg) rotateY(${x}deg)`;
+        });
+    </script>
+</body>
+</html>
+
+

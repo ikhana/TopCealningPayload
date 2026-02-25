@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* ── TopCleaning Brand Colors ────────────────────────── */
+            --primary-teal:   #17b0ab;          /* brand primary    */
+            --teal-dark:      #0f8a86;          /* teal hover/dark  */
+            --teal-glow:      #3dcfca;          /* lighter tint for glows & accents */
+            --deep-navy:      #0d1b2e;          /* replaces obsidian – dark navy bg */
+            --navy:           #2a4365;          /* brand secondary  */
+            --coral:          #fc8181;          /* brand accent     */
+            --sand:           #f5efe0;          /* brand tertiary   */
+
+            /* ── Derived / Utility ──────────────────────────────── */
+            --glass-white:    rgba(255, 255, 255, 0.92);
+            --navy-glass:     rgba(13, 27, 46, 0.82);   /* dark glass tinted navy */
+            --border-line:    rgba(23, 176, 171, 0.22); /* teal-tinted border     */
+            --text-dark:      #1a2840;                  /* navy-tinted dark text  */
+
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans-font);
+            background: #f0fafa;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── TOP BAR ──────────────────────────────────────────────── */
+        .top-bar {
+            background: var(--deep-navy);
+            color: white;
+            padding: 0.6rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--primary-teal);
+            z-index: 100;
+            position: relative;
+        }
+
+        .top-bar span { color: var(--teal-glow); }
+
+        .top-bar-links a {
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .top-bar-links a:hover { color: var(--primary-teal); }
+
+        /* ── HERO VIEWPORT ───────────────────────────────────────── */
+        .hero-viewport {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            background: var(--deep-navy);
+            overflow: hidden;
+        }
+
+        .hero-bg-image {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(90deg,
+                    rgba(13, 27, 46, 0.97) 0%,
+                    rgba(13, 27, 46, 0.75) 42%,
+                    rgba(13, 27, 46, 0.15) 100%),
+                url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            transform: scale(1.05);
+            animation: zoomOut 10s ease-out forwards;
+        }
+
+        @keyframes zoomOut {
+            to { transform: scale(1); }
+        }
+
+        /* ── HEADER ──────────────────────────────────────────────── */
+        header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .logo {
+            font-weight: 900;
+            letter-spacing: -1px;
+            font-size: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-teal);
+            display: inline-block;
+            clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
+            box-shadow: 0 0 22px rgba(23, 176, 171, 0.55);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.75);
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            margin-left: 2.5rem;
+            text-transform: uppercase;
+            transition: var(--transition);
+            letter-spacing: 1px;
+        }
+
+        nav a:hover { color: var(--primary-teal); }
+
+        /* ── MAIN CONTENT ────────────────────────────────────────── */
+        main {
+            position: relative;
+            z-index: 5;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 4rem;
+            padding: 0 5%;
+            align-items: center;
+        }
+
+        .hero-content {
+            padding: 4rem 0;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideIn 1s forwards cubic-bezier(0.16, 1, 0.3, 1);
+            color: white;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+            font-weight: 900;
+            line-height: 0.95;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+            color: white;
+        }
+
+        h1 span {
+            display: block;
+            color: var(--teal-glow);
+            font-style: italic;
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+
+        .service-description {
+            max-width: 520px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            color: rgba(245, 239, 224, 0.72); /* sand-tinted white */
+            border-left: 2px solid var(--primary-teal);
+            padding-left: 1.5rem;
+        }
+
+        /* ── CTA PANELS ──────────────────────────────────────────── */
+        .cta-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            opacity: 0;
+            transform: translateX(50px);
+            animation: slideIn 1s forwards 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .panel {
+            background: var(--glass-white);
+            padding: 3.5rem;
+            backdrop-filter: blur(20px);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        .panel-label {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--primary-teal);
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .panel h3 {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: var(--deep-navy);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 1.2rem 2.5rem;
+            background: var(--deep-navy);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn:hover {
+            background: var(--primary-teal);
+            box-shadow: 0 15px 30px rgba(23, 176, 171, 0.35);
+        }
+
+        .btn.outline {
+            background: transparent;
+            border: 2px solid var(--deep-navy);
+            color: var(--deep-navy);
+        }
+
+        .btn.outline:hover {
+            background: var(--deep-navy);
+            color: white;
+        }
+
+        /* ── REVIEW STRIP ────────────────────────────────────────── */
+        .review-strip {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: var(--navy-glass);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
+            border-left: 4px solid var(--primary-teal);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: white;
+            width: fit-content;
+            margin-top: 2rem;
+            box-shadow: 20px 20px 0px var(--teal-dark);
+        }
+
+        .stars { color: #f7b500; font-size: 1.2rem; }
+
+        /* ── OFFER BADGE ─────────────────────────────────────────── */
+        .offer-badge {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 130px;
+            height: 130px;
+            background: var(--coral);               /* brand accent coral */
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--mono-font);
+            font-weight: 900;
+            line-height: 1;
+            transform: rotate(12deg);
+            box-shadow: 0 15px 35px rgba(252, 129, 129, 0.45);
+            animation: float 5s infinite ease-in-out;
+            z-index: 15;
+            border: 2px solid rgba(255,255,255,0.35);
+        }
+
+        .offer-badge span { font-size: 2rem; }
+        .offer-badge small { font-size: 0.65rem; text-transform: uppercase; }
+
+        /* ── CALL NOW FAB ────────────────────────────────────────── */
+        .call-now {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary-teal);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            font-family: var(--mono-font);
+            text-decoration: none;
+            z-index: 100;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            box-shadow: 0 20px 40px rgba(23, 176, 171, 0.3);
+        }
+
+        .call-now:hover {
+            background: var(--teal-dark);
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(23, 176, 171, 0.45);
+        }
+
+        .call-now::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1.8s infinite;
+        }
+
+        /* ── ANIMATIONS ──────────────────────────────────────────── */
+        @keyframes slideIn {
+            to { opacity: 1; transform: translate(0); }
+        }
+
+        @keyframes zoomOut {
+            to { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(12deg) translateY(0); }
+            50%       { transform: rotate(8deg)  translateY(-15px); }
+        }
+
+        @keyframes pulse {
+            0%   { transform: scale(1);   opacity: 1; }
+            100% { transform: scale(3);   opacity: 0; }
+        }
+
+        /* ── RESPONSIVE ──────────────────────────────────────────── */
+        @media (max-width: 1100px) {
+            main { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 5rem; }
+            .hero-bg-image { filter: brightness(0.4); }
+            .hero-content { padding-top: 2rem; }
+            .cta-grid { max-width: 600px; }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 3rem; }
+            header { flex-direction: column; gap: 1.5rem; }
+            nav a { margin: 0 0.75rem; font-size: 0.7rem; }
+            .top-bar { font-size: 0.65rem; text-align: center; justify-content: center; }
+            .top-bar-links { display: none; }
+            .panel { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div>📍 LICENSED & INSURED &nbsp;•&nbsp; <span>EST. 2012</span></div>
+        <div class="top-bar-links">
+            <a href="tel:1234567890">CALL: (555) 010-8899</a>
+            <a href="#">BOOK ONLINE</a>
+        </div>
+    </div>
+
+    <div class="hero-viewport">
+        <div class="hero-bg-image"></div>
+
+        <header>
+            <div class="logo">
+                <div class="logo-box"></div>
+                TOP CLEANING
+            </div>
+            <nav>
+                <a href="#">Services</a>
+                <a href="#">About</a>
+                <a href="#">Reviews</a>
+                <a href="#">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="hero-content">
+                <h1>Cleaning Service<span>Now servicing YOUR area!</span></h1>
+
+                <p class="service-description">
+                    Top Cleaning is your trusted cleaning service provider. We have a team of experienced and qualified cleaners who are dedicated to providing the best possible service to our customers.
+                </p>
+
+                <div class="review-strip">
+                    <div>
+                        <span class="stars">★★★★★</span>
+                    </div>
+                    <div>
+                        See our 275+ 4.7-Star Reviews on
+                        <span style="color: var(--teal-glow); margin-left: 6px; display: inline-flex; align-items: center; gap: 4px;">
+                            <!-- Google G SVG -->
+                            <svg width="14" height="14" viewBox="0 0 48 48" style="vertical-align: middle;">
+                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                            </svg>
+                            Google
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-grid">
+                <!-- Residential Panel -->
+                <div class="panel">
+                    <div class="offer-badge">
+                        <small>Save</small>
+                        <span>15%</span>
+                        <small>First Book</small>
+                    </div>
+                    <span class="panel-label">Residential</span>
+                    <h3>Homes that breathe.</h3>
+                    <a href="#" class="btn">BOOK IN 60 SECONDS</a>
+                </div>
+
+                <!-- Commercial Panel -->
+                <div class="panel" style="background: rgba(23, 176, 171, 0.07); border-color: rgba(23,176,171,0.18);">
+                    <span class="panel-label" style="color: var(--primary-teal)">Commercial</span>
+                    <h3 style="color: var(--deep-navy);">Elevate your workspace.</h3>
+                    <a href="#" class="btn" style="background: var(--coral); color: white;">GET A CUSTOM QUOTE</a>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- CALL NOW FAB -->
+    <a href="tel:1234567890" class="call-now">
+        CALL NOW!
+    </a>
+
+    <script>
+        // High-fidelity background parallax
+        document.addEventListener('mousemove', (e) => {
+            const bg = document.querySelector('.hero-bg-image');
+            const x = (window.innerWidth  - e.pageX * 2) / 100;
+            const y = (window.innerHeight - e.pageY * 2) / 100;
+            bg.style.transform = `translateX(${x}px) translateY(${y}px) scale(1.05)`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&display=swap');
+
+        :root {
+            --teal: #004d4d;
+            --accent: #20c997;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            margin: 0;
+            background: var(--light-bg);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(8, 12vh);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .image-cell {
+            grid-column: 7 / 13;
+            grid-row: 1 / 9;
+            background: url('https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1500') center/cover;
+            filter: grayscale(20%);
+        }
+
+        .content-cell {
+            grid-column: 1 / 7;
+            grid-row: 1 / 9;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid #ddd;
+        }
+
+        .header-box {
+            border-left: 8px solid var(--accent);
+            padding-left: 30px;
+        }
+
+        .tag {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .title {
+            font-size: 4.5vw;
+            line-height: 1;
+            margin: 20px 0;
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        .description {
+            max-width: 450px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .rating-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+            padding: 15px;
+            background: white;
+            width: fit-content;
+            border: 1px solid #eee;
+        }
+
+        .offer-tag {
+            grid-column: 6 / 8;
+            grid-row: 2 / 3;
+            background: var(--accent);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+            padding: 20px;
+        }
+
+        .service-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50%;
+            height: 15vh;
+        }
+
+        .s-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 700;
+            color: white;
+            transition: 0.4s;
+        }
+
+        .res {
+            background: var(--teal);
+        }
+
+        .com {
+            background: var(--accent);
+        }
+
+        .s-btn:hover {
+            filter: brightness(1.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class='grid-layout'>
+        <div class='image-cell'></div>
+        <div class='content-cell'>
+            <div class='header-box'>
+                <div class='tag'>Top Cleaning Service</div>
+                <h1 class='title'>TRUSTED<br>CLEANING<br>IN YOUR AREA</h1>
+            </div>
+            <div class='rating-bar'><strong>4.7 Stars</strong><span>|</span><span>275+ Reviews</span></div>
+            <p class='description'>Experienced and qualified cleaners dedicated to the highest standards of sanitation
+                and customer satisfaction.</p>
+            <h2 style='color:var(--teal)'>CALL NOW!</h2>
+        </div>
+        <div class='offer-tag'>15% OFF OFFER</div>
+        <div class='service-footer'><a href='#' class='s-btn res'>RESIDENTIAL<br>(60 Sec Book)</a><a href='#'
+                class='s-btn com'>COMMERCIAL<br>(Get Quote)</a></div>
+    </div>
+</body>
+
+</html>
