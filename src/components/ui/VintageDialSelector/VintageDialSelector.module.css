@@ -1,0 +1,209 @@
+/* src/components/ui/VintageDialSelector/VintageDialSelector.module.css */
+/* VINTAGE DIAL SELECTOR - HERITAGE CRAFTSMAN STYLES */
+
+/* Enhanced wood grain texture effect */
+.woodGrain {
+  position: relative;
+}
+
+.woodGrain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(45deg, 
+      transparent 48%,
+      hsl(var(--color-weathered-oak) / 0.08) 49%,
+      hsl(var(--color-weathered-oak) / 0.08) 51%,
+      transparent 52%
+    ),
+    linear-gradient(-45deg, 
+      transparent 48%,
+      hsl(var(--color-amber-resin) / 0.05) 49%,
+      hsl(var(--color-amber-resin) / 0.05) 51%,
+      transparent 52%
+    );
+  background-size: 12px 12px, 8px 8px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Heritage barrel ring animation */
+.barrelRing {
+  position: relative;
+  animation: subtle-pulse 4s ease-in-out infinite;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 0 0 hsl(var(--color-khaos-red) / 0.4),
+      inset 0 0 20px hsl(var(--color-amber-resin) / 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 0 8px hsl(var(--color-khaos-red) / 0.1),
+      inset 0 0 30px hsl(var(--color-amber-resin) / 0.2);
+  }
+}
+
+/* Vintage selector dot with heritage glow */
+.selectorDot {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.selectorDot:hover {
+  filter: brightness(1.2);
+}
+
+.selectorDot.active {
+  animation: heritage-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes heritage-glow {
+  0% {
+    box-shadow: 
+      0 0 8px hsl(var(--color-khaos-red) / 0.6),
+      0 0 16px hsl(var(--color-amber-resin) / 0.4),
+      inset 0 0 8px hsl(var(--color-sawdust-cream) / 0.3);
+  }
+  100% {
+    box-shadow: 
+      0 0 12px hsl(var(--color-khaos-red) / 0.8),
+      0 0 24px hsl(var(--color-amber-resin) / 0.6),
+      inset 0 0 12px hsl(var(--color-sawdust-cream) / 0.5);
+  }
+}
+
+/* Heritage maker's mark animation */
+.makersMark {
+  animation: makers-twinkle 3s ease-in-out infinite;
+}
+
+@keyframes makers-twinkle {
+  0%, 80%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Content center fade in effect */
+.contentCenter {
+  animation: center-reveal 0.8s ease-out forwards;
+}
+
+@keyframes center-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotateY(-15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+  }
+}
+
+/* Icon rotation on selection change */
+.dialIcon {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.dialIcon.changing {
+  transform: scale(0.7) rotateY(180deg);
+}
+
+/* Explore button heritage style */
+.exploreButton {
+  position: relative;
+  overflow: hidden;
+}
+
+.exploreButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--color-sawdust-cream) / 0.2),
+    transparent
+  );
+  transition: left 0.5s ease-in-out;
+}
+
+.exploreButton:hover::before {
+  left: 100%;
+}
+
+/* Heritage border decorative effect */
+.heritageBorder {
+  position: relative;
+}
+
+.heritageBorder::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: conic-gradient(
+    from 0deg,
+    hsl(var(--color-khaos-red) / 0.3),
+    hsl(var(--color-amber-resin) / 0.3),
+    hsl(var(--color-weathered-oak) / 0.3),
+    hsl(var(--color-khaos-red) / 0.3)
+  );
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.6;
+  animation: border-rotate 8s linear infinite;
+}
+
+@keyframes border-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .barrelRing {
+    animation-duration: 6s; /* Slower on mobile for better performance */
+  }
+  
+  .selectorDot.active {
+    animation-duration: 3s; /* Reduced intensity on mobile */
+  }
+  
+  .heritageBorder::after {
+    animation-duration: 12s; /* Slower rotation on mobile */
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .barrelRing,
+  .selectorDot.active,
+  .makersMark,
+  .heritageBorder::after {
+    animation: none;
+  }
+  
+  .dialIcon {
+    transition-duration: 0.2s;
+  }
+  
+  .exploreButton::before {
+    transition-duration: 0.2s;
+  }
+}

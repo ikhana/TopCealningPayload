@@ -1,0 +1,160 @@
+/* src/components/ui/CircularText/CircularText.css */
+
+.circular-text-container {
+  position: relative;
+  pointer-events: none;
+}
+
+.circular-letter {
+  display: inline-block;
+  font-family: 'Inter', 'Arial', sans-serif;
+  text-shadow: 
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 30px currentColor;
+  opacity: 0;
+  transform-origin: center;
+  transition: all 0.3s ease-out;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Trail effect for each letter */
+.letter-with-trail {
+  position: relative;
+}
+
+.letter-with-trail::before,
+.letter-with-trail::after {
+  content: attr(data-letter);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: inherit;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.letter-with-trail::before {
+  transform: translate(-2px, -2px);
+  opacity: 0.2;
+  filter: blur(1px);
+  animation: trail-1 3s ease-in-out infinite;
+}
+
+.letter-with-trail::after {
+  transform: translate(-4px, -4px);
+  opacity: 0.1;
+  filter: blur(2px);
+  animation: trail-2 3s ease-in-out infinite reverse;
+}
+
+/* Visibility animation */
+.letter-visible {
+  opacity: 1;
+  animation: letterAppear 0.6s ease-out forwards;
+}
+
+@keyframes letterAppear {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(var(--rotation, 0deg));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(var(--rotation, 0deg));
+  }
+}
+
+/* Trail animations */
+@keyframes trail-1 {
+  0%, 100% {
+    transform: translate(-2px, -2px);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-6px, -6px);
+    opacity: 0.1;
+  }
+}
+
+@keyframes trail-2 {
+  0%, 100% {
+    transform: translate(-4px, -4px);
+    opacity: 0.1;
+  }
+  50% {
+    transform: translate(-8px, -8px);
+    opacity: 0.05;
+  }
+}
+
+/* Hover effects for interactivity */
+.circular-text-container:hover .circular-letter {
+  animation: letterPulse 2s ease-in-out infinite;
+}
+
+@keyframes letterPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1) rotate(var(--rotation, 0deg));
+    text-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 30px currentColor;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(var(--rotation, 0deg));
+    text-shadow: 
+      0 0 15px currentColor,
+      0 0 30px currentColor,
+      0 0 45px currentColor;
+  }
+}
+
+/* Enhanced trail for medical theme */
+.circular-letter.medical-theme {
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .circular-letter {
+    font-size: 0.9em;
+  }
+  
+  .letter-with-trail::before {
+    transform: translate(-1px, -1px);
+  }
+  
+  .letter-with-trail::after {
+    transform: translate(-2px, -2px);
+  }
+}
+
+/* Performance optimizations */
+.circular-letter {
+  transform: translate3d(0, 0, 0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessibility - respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .letter-with-trail::before,
+  .letter-with-trail::after {
+    animation: none;
+  }
+  
+  .circular-text-container:hover .circular-letter {
+    animation: none;
+  }
+  
+  .letter-visible {
+    animation: none;
+    opacity: 1;
+  }
+}

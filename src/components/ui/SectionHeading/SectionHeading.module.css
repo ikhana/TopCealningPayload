@@ -1,0 +1,25 @@
+/* src/components/ui/SectionHeading/SectionHeading.module.css */
+
+.medicalAuto {
+  text-shadow: 0 2px 4px hsl(var(--color-dark-navy) / 0.1);
+}
+
+[data-theme='dark'] .medicalAuto {
+  text-shadow: 0 2px 8px hsl(var(--color-clinical-white) / 0.2);
+}
+
+.medicalCoral {
+  text-shadow: 0 2px 6px hsl(var(--color-coral) / 0.3);
+}
+
+.medicalClinical {
+  text-shadow: 0 2px 8px hsl(var(--color-brand-blue) / 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .medicalAuto,
+  .medicalCoral,
+  .medicalClinical {
+    text-shadow: none;
+  }
+}

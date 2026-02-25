@@ -1,0 +1,40 @@
+/* src/components/Header/index.css */
+
+.header-manage {
+  max-width: 95%;
+}
+
+@media (min-width: 1024px) {
+  .header-manage {
+    max-width: 1400px;
+  }
+}
+
+@media (min-width: 1536px) and (max-width: 1560px) {
+  .header-manage {
+    width: 95%;
+  }
+}
+
+@media (max-width: 1023px) {
+  body.menu-open {
+    overflow: hidden;
+  }
+}
+
+@supports (padding: max(0px)) {
+  header .container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  header *,
+  header *::before,
+  header *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

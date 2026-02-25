@@ -1,0 +1,2 @@
+
+export { WholesaleInquiry } from "./WholesaleInquiry";

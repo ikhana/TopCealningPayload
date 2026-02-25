@@ -1,0 +1,34 @@
+/* Cart Modal Bourbon Theme Overrides */
+.cartModal {
+  /* Override default sheet styles with bourbon theme */
+}
+
+.cartModal [data-slot="sheet-content"] {
+  background-color: var(--color-parchment);
+  border-left-color: var(--color-barrel);
+}
+
+.cartModal [data-slot="sheet-title"] {
+  font-family: var(--font-playfair);
+  color: var(--color-charcoal);
+  font-size: 1.75rem;
+}
+
+.cartModal [data-slot="sheet-description"] {
+  color: var(--color-smoke);
+  font-family: var(--font-sourcesans);
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .cartModal [data-slot="sheet-content"] {
+  background-color: var(--color-charcoal);
+  border-left-color: var(--color-bourbon);
+}
+
+[data-theme='dark'] .cartModal [data-slot="sheet-title"] {
+  color: var(--color-parchment);
+}
+
+[data-theme='dark'] .cartModal [data-slot="sheet-description"] {
+  color: var(--color-smoke);
+}

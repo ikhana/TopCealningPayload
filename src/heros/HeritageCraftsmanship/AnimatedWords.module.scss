@@ -1,0 +1,449 @@
+/* src/heros/HeritageCraftsmanship/AnimatedWords.module.scss */
+/* CHARCOAL & BOURBON Industrial Workshop Theme - WORKING WORD CYCLING */
+
+/* Static Word Styling - Updated Theme with Wood Background Optimization */
+.staticWord {
+  font-size: clamp(1.5rem, 8vw, 2.5rem);
+  font-weight: 700;
+  color: hsl(var(--color-antique-white)); /* Light text over dark wood background */
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-family: var(--font-playfair);
+  /* Enhanced text shadow for wood background readability */
+  text-shadow: 
+    0 2px 8px rgba(15, 17, 21, 0.8),
+    0 1px 4px rgba(15, 17, 21, 0.6),
+    0 0 20px rgba(244, 242, 239, 0.3);
+  margin: 0;
+  
+  /* Dark mode - excellent contrast on charcoal black */
+  @media (prefers-color-scheme: dark) {
+    color: hsl(var(--color-antique-white));
+    text-shadow: 
+      0 2px 8px rgba(15, 17, 21, 0.8),
+      0 1px 4px rgba(15, 17, 21, 0.6),
+      0 0 20px rgba(244, 242, 239, 0.3);
+  }
+  
+  /* Mobile optimizations */
+  @media (max-width: 480px) {
+    font-size: clamp(1.25rem, 7vw, 2rem);
+    letter-spacing: -0.01em;
+    text-shadow: 
+      0 1px 6px rgba(15, 17, 21, 0.7),
+      0 1px 3px rgba(15, 17, 21, 0.5),
+      0 0 15px rgba(244, 242, 239, 0.2);
+  }
+  
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: clamp(1.75rem, 6vw, 2.75rem);
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+  }
+  
+  @media (min-width: 1025px) {
+    font-size: clamp(3rem, 4.5vw, 4.5rem);
+  }
+}
+
+/* FIXED: Animated Words Container - Proper Positioning */
+.animatedWordsContainer {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 4rem; /* Ensure consistent height */
+}
+
+/* FIXED: Word Container - Proper Cycling Logic */
+.wordContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-playfair);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  
+  /* CRITICAL: Default to hidden, only show when active */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* Mobile spacing optimizations */
+  @media (max-width: 640px) {
+    letter-spacing: -0.01em;
+  }
+}
+
+/* CRITICAL FIX: Handle active state properly - using global class */
+.wordContainer:global(.active) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+  z-index: 2;
+}
+
+/* Alternative approach - if the above doesn't work, use this */
+.wordContainer.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+  z-index: 2;
+}
+
+/* Letter Base Styles */
+.letter {
+  display: inline-block;
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* FIXED: Letter States with Proper Visibility */
+.hidden {
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  visibility: hidden;
+}
+
+.inactive {
+  opacity: 0;
+  transform: translateY(10px) scale(0.9);
+  visibility: hidden;
+}
+
+.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  visibility: visible;
+}
+
+/* Simple Letter (Reduced Motion) */
+.simpleLetter {
+  transition: opacity 0.3s ease;
+}
+
+/* Liquid Letter Animation */
+.liquidLetter {
+  animation: liquidDrop 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Typewriter Letter Animation */
+.typewriterLetter {
+  animation: typewriterPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* Shatter Letter Animation */
+.shatterLetter {
+  animation: shatterFall 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Color Styles - Updated Theme */
+.colorKhaosRed {
+  color: hsl(var(--color-copper-bourbon)); /* Updated to copper-bourbon */
+  /* Bold bourbon color with enhanced readability on dark backgrounds */
+  text-shadow: 
+    0 2px 8px rgba(15, 17, 21, 0.8),
+    0 1px 4px rgba(15, 17, 21, 0.6),
+    0 0 20px rgba(184, 115, 51, 0.4);
+  
+  @media (max-width: 480px) {
+    filter: contrast(1.1) brightness(1.1);
+    text-shadow: 
+      0 1px 6px rgba(184, 115, 51, 0.6),
+      0 1px 3px rgba(15, 17, 21, 0.6);
+  }
+}
+
+.colorAmberResin {
+  color: hsl(var(--color-charcoal-gold)); /* Updated to charcoal-gold */
+  /* Premium gold with enhanced contrast */
+  text-shadow: 
+    0 2px 8px rgba(15, 17, 21, 0.8),
+    0 1px 4px rgba(15, 17, 21, 0.6),
+    0 0 20px rgba(184, 134, 11, 0.4);
+  
+  @media (max-width: 480px) {
+    filter: contrast(1.08) brightness(1.2);
+    text-shadow: 
+      0 1px 6px rgba(184, 134, 11, 0.5),
+      0 1px 3px rgba(15, 17, 21, 0.6);
+  }
+}
+
+.colorWeatheredOak {
+  color: hsl(var(--color-antique-brass)); /* Updated to antique-brass */
+  /* Warm brass tone with enhanced contrast */
+  text-shadow: 
+    0 2px 8px rgba(15, 17, 21, 0.8),
+    0 1px 4px rgba(15, 17, 21, 0.6),
+    0 0 20px rgba(205, 127, 50, 0.3);
+  
+  @media (max-width: 480px) {
+    filter: contrast(1.1) brightness(1.1);
+    text-shadow: 
+      0 1px 6px rgba(205, 127, 50, 0.5),
+      0 1px 3px rgba(15, 17, 21, 0.5);
+  }
+}
+
+.colorWorkshopSteel {
+  color: hsl(var(--color-smoky-gray)); /* Updated to smoky-gray */
+  /* Sophisticated steel with enhanced readability */
+  text-shadow: 
+    0 2px 8px rgba(15, 17, 21, 0.8),
+    0 1px 4px rgba(15, 17, 21, 0.6),
+    0 0 20px rgba(112, 128, 144, 0.3);
+  
+  @media (max-width: 480px) {
+    filter: contrast(1.1);
+    text-shadow: 
+      0 1px 6px rgba(112, 128, 144, 0.5),
+      0 1px 3px rgba(15, 17, 21, 0.5);
+  }
+}
+
+/* Font Weight Variations */
+.fontMedium {
+  font-weight: 500;
+  
+  @media (max-width: 480px) {
+    font-weight: 450;
+  }
+}
+
+.fontNormal {
+  font-weight: 400;
+}
+
+.fontSemibold {
+  font-weight: 600;
+  
+  @media (max-width: 480px) {
+    font-weight: 550;
+  }
+}
+
+/* Font Size Variations - Updated Scale */
+.sizeMobile {
+  font-size: clamp(1.25rem, 7vw, 2rem);
+  
+  @media (min-width: 481px) and (max-width: 640px) {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+  }
+  
+  @media (min-width: 641px) and (max-width: 768px) {
+    font-size: clamp(1.75rem, 5.5vw, 3rem);
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+  }
+  
+  @media (min-width: 1025px) {
+    font-size: clamp(2.75rem, 4.5vw, 4rem);
+  }
+}
+
+.sizeLarge {
+  font-size: clamp(1.5rem, 8vw, 2.5rem);
+  
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: clamp(2rem, 6vw, 3rem);
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  
+  @media (min-width: 1025px) {
+    font-size: clamp(2.75rem, 4vw, 4rem);
+  }
+}
+
+.sizeXLarge {
+  font-size: clamp(1.75rem, 9vw, 3rem);
+  
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: clamp(2.25rem, 7vw, 3.5rem);
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: clamp(2.75rem, 6vw, 4rem);
+  }
+  
+  @media (min-width: 1025px) {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+  }
+}
+
+.sizeXXLarge {
+  font-size: clamp(2rem, 10vw, 3.5rem);
+  
+  @media (min-width: 481px) and (max-width: 768px) {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: clamp(3rem, 7vw, 4.5rem);
+  }
+  
+  @media (min-width: 1025px) {
+    font-size: clamp(3.5rem, 6vw, 5rem);
+  }
+}
+
+/* Animation Keyframes */
+@keyframes liquidDrop {
+  0% { 
+    transform: translateY(-15px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(5px) scale(1.05);
+    opacity: 0.8;
+  }
+  100% { 
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes typewriterPop {
+  0% { 
+    transform: scale(0.3) rotate(-5deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) rotate(2deg);
+    opacity: 0.8;
+  }
+  100% { 
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes shatterFall {
+  0% { 
+    transform: translateY(-20px) rotate(-10deg) scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(3px) rotate(5deg) scale(1.05);
+    opacity: 0.9;
+  }
+  100% { 
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  .letter,
+  .liquidLetter,
+  .typewriterLetter,
+  .shatterLetter {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+}
+
+/* Typewriter Cursor */
+.typewriterCursor {
+  display: inline-block;
+  animation: blink 1.2s infinite;
+  margin-left: 2px;
+  
+  @media (max-width: 480px) {
+    margin-left: 1px;
+  }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Liquid Underline Effect */
+.liquidUnderline {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent,
+    hsl(var(--color-copper-bourbon)) 20%,
+    hsl(var(--color-charcoal-gold)) 50%,
+    hsl(var(--color-copper-bourbon)) 80%,
+    transparent
+  );
+  opacity: 0.7;
+  animation: liquidFlow 2s ease-in-out infinite;
+}
+
+@keyframes liquidFlow {
+  0%, 100% { transform: scaleX(0.8); opacity: 0.6; }
+  50% { transform: scaleX(1.1); opacity: 0.9; }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .letter,
+  .liquidLetter,
+  .typewriterLetter,
+  .shatterLetter,
+  .simpleLetter {
+    animation: none !important;
+    transition: opacity 0.3s ease !important;
+  }
+  
+  .typewriterCursor {
+    animation: none !important;
+    opacity: 0.6 !important;
+  }
+  
+  .liquidUnderline {
+    animation: none !important;
+    opacity: 0.8;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .colorKhaosRed,
+  .colorAmberResin,
+  .colorWeatheredOak,
+  .colorWorkshopSteel {
+    filter: contrast(1.3) brightness(1.1);
+    text-shadow: 
+      0 2px 10px rgba(15, 17, 21, 0.5),
+      0 1px 5px rgba(15, 17, 21, 0.4);
+  }
+  
+  .staticWord {
+    text-shadow: 
+      0 2px 10px rgba(15, 17, 21, 0.4),
+      0 1px 5px rgba(15, 17, 21, 0.3);
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .letter {
+    transition: opacity 0.2s ease;
+  }
+  
+  .typewriterCursor {
+    animation-duration: 1.5s;
+  }
+}
