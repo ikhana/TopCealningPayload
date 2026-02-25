@@ -41,6 +41,16 @@ export default {
     'bg-gradient-to-l',
     'bg-gradient-to-r',
     'bg-gradient-to-t',
+    'bg-teal',
+    'text-teal',
+    'bg-teal/10',
+    'text-navy',
+    'bg-navy',
+    'text-coral',
+    'bg-coral',
+    'bg-coral/10',
+    'text-sand',
+    'bg-sand',
   ],
   theme: {
     container: {
@@ -70,53 +80,61 @@ export default {
         '2xl': 'calc(var(--radius) + 8px)',
       },
       colors: {
-        golden: {
-          DEFAULT: 'oklch(var(--color-golden))',
-          hover: 'oklch(var(--color-golden-hover))',
+        /* ── TopCleaning brand palette ─────────────────────── */
+        teal: {
+          DEFAULT: 'oklch(var(--color-teal))',
+          dark:    'oklch(var(--color-teal-dark))',
         },
-        slate: {
-          DEFAULT: 'oklch(var(--color-slate))',
+        navy: {
+          DEFAULT: 'oklch(var(--color-navy))',
         },
+        coral: {
+          DEFAULT: 'oklch(var(--color-coral))',
+        },
+        sand: {
+          DEFAULT: 'oklch(var(--color-sand))',
+        },
+        /* ── Semantic / UI tokens ──────────────────────────── */
         'border-gradient': {
           light: 'oklch(var(--border-gradient-light))',
-          mid: 'oklch(var(--border-gradient-mid))',
-          dark: 'oklch(var(--border-gradient-dark))',
+          mid:   'oklch(var(--border-gradient-mid))',
+          dark:  'oklch(var(--border-gradient-dark))',
         },
         accent: {
-          DEFAULT: 'oklch(var(--accent))',
+          DEFAULT:    'oklch(var(--accent))',
           foreground: 'oklch(var(--accent-foreground))',
         },
         background: 'oklch(var(--background))',
-        border: 'oklch(var(--border) / 0.15)',
+        border:     'oklch(var(--border))',
         card: {
-          DEFAULT: 'oklch(var(--card))',
+          DEFAULT:    'oklch(var(--card))',
           foreground: 'oklch(var(--card-foreground))',
         },
         destructive: {
-          DEFAULT: 'oklch(var(--destructive))',
+          DEFAULT:    'oklch(var(--destructive))',
           foreground: 'oklch(var(--destructive-foreground))',
         },
         foreground: 'oklch(var(--foreground))',
-        input: 'oklch(var(--input) / 0.1)',
+        input:      'oklch(var(--input))',
         muted: {
-          DEFAULT: 'oklch(var(--muted))',
+          DEFAULT:    'oklch(var(--muted))',
           foreground: 'oklch(var(--muted-foreground))',
         },
         popover: {
-          DEFAULT: 'oklch(var(--popover))',
+          DEFAULT:    'oklch(var(--popover))',
           foreground: 'oklch(var(--popover-foreground))',
         },
         primary: {
-          DEFAULT: 'oklch(var(--primary))',
+          DEFAULT:    'oklch(var(--primary))',
           foreground: 'oklch(var(--primary-foreground))',
         },
         ring: 'oklch(var(--ring))',
         secondary: {
-          DEFAULT: 'oklch(var(--secondary))',
+          DEFAULT:    'oklch(var(--secondary))',
           foreground: 'oklch(var(--secondary-foreground))',
         },
         success: 'oklch(var(--success))',
-        error: 'oklch(var(--error))',
+        error:   'oklch(var(--error))',
         warning: 'oklch(var(--warning))',
       },
       typography: ({ theme }) => ({
