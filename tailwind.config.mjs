@@ -44,11 +44,23 @@ export default {
     'bg-teal',
     'text-teal',
     'bg-teal/10',
+    'bg-teal/[0.12]',
+    'border-teal',
+    'border-teal/20',
+    'border-l-teal',
+    'bg-teal-dark',
+    'text-teal-dark',
+    'hover:text-teal-dark',
+    'hover:bg-teal-light',
+    'bg-teal-light',
     'text-navy',
     'bg-navy',
+    'bg-navy-deep',
+    'text-navy-deep',
     'text-coral',
     'bg-coral',
     'bg-coral/10',
+    'hover:text-coral',
     'text-sand',
     'bg-sand',
   ],
@@ -84,9 +96,12 @@ export default {
         teal: {
           DEFAULT: 'oklch(var(--color-teal))',
           dark:    'oklch(var(--color-teal-dark))',
+          light:   '#e0f5f4',   // light aquamarine — hover bg, tinted surfaces
+          glow:    '#3dcfca',   // teal-glow — animated/accent highlights
         },
         navy: {
           DEFAULT: 'oklch(var(--color-navy))',
+          deep:    '#0d1b2e',   // deep obsidian navy — utility bar bg, logo text
         },
         coral: {
           DEFAULT: 'oklch(var(--color-coral))',

@@ -1,4 +1,9 @@
 // src/components/Header/index.client.tsx
+// All colours reference the Tailwind theme — no hardcoded hex values.
+// Only two exceptions (both justified):
+//   1. `bg-white/[0.88|0.97]`  — functional semi-transparent white, not a brand token
+//   2. `style={{ borderTop }}` — the mega dropdown top accent border uses
+//      `var(--color-teal)` so it still reads from the design system
 
 'use client'
 
@@ -17,25 +22,25 @@ type Props = {
 }
 
 export function HeaderClient({ header }: Props) {
-  const menu = header.navItems || []
+  const menu     = header.navItems || []
   const pathname = usePathname()
 
-  const [scrolled, setScrolled]     = useState(false)
-  const [megaOpen, setMegaOpen]     = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled,    setScrolled]    = useState(false)
+  const [megaOpen,    setMegaOpen]    = useState(false)
+  const [mobileOpen,  setMobileOpen]  = useState(false)
 
   const triggerRef = useRef<HTMLButtonElement | null>(null)
-  const panelRef   = useRef<HTMLDivElement | null>(null)
+  const panelRef   = useRef<HTMLDivElement   | null>(null)
   const closeTO    = useRef<number | null>(null)
 
-  // ── Scroll shrink (80px → 68px) ──────────────────────────
+  // ── Scroll shrink: 80px → 68px ───────────────────────────
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // ── Close menus on route change ───────────────────────────
+  // ── Close on route change ─────────────────────────────────
   useEffect(() => {
     setMobileOpen(false)
     setMegaOpen(false)
@@ -50,7 +55,7 @@ export function HeaderClient({ header }: Props) {
     return () => window.removeEventListener('keydown', onEsc)
   }, [])
 
-  // ── Mega dropdown hover delay helpers ─────────────────────
+  // ── Mega dropdown hover delay ─────────────────────────────
   const cancelClose = () => {
     if (closeTO.current) { window.clearTimeout(closeTO.current); closeTO.current = null }
   }
@@ -69,17 +74,15 @@ export function HeaderClient({ header }: Props) {
     scheduleClose()
   }
 
-  // ── Data helpers ──────────────────────────────────────────
-  const logoImage  = header.logo && typeof header.logo === 'object' ? (header.logo as Media) : null
-  const utilityBar = (header as any).utilityBar || {}
-  const socials    = header.socialLinks || {}
-
-  // Find the dropdown nav item (Services)
+  // ── Data ─────────────────────────────────────────────────
+  const logoImage    = header.logo && typeof header.logo === 'object' ? (header.logo as Media) : null
+  const utilityBar   = (header as any).utilityBar || {}
+  const socials      = header.socialLinks || {}
   const dropdownItem = menu.find((m: any) => m?.type === 'dropdown') as any
 
   return (
     <>
-      {/* ── Utility Bar ─────────────────────────────────── */}
+      {/* ── Utility Bar (PromotionalBanner override) ──────── */}
       <PromotionalBanner
         phone1={utilityBar.phone1}
         phone2={utilityBar.phone2}
@@ -93,21 +96,20 @@ export function HeaderClient({ header }: Props) {
         }}
       />
 
-      {/* ── Sticky Main Header ──────────────────────────── */}
+      {/* ── Sticky Main Header ───────────────────────────────*/}
       <header
         className={cn(
           'sticky top-0 z-[1000] w-full',
-          'bg-white/[0.88] backdrop-blur-lg',
-          'border-b border-[rgba(23,176,171,0.2)]',
+          'border-b border-teal/20',
           'transition-all duration-300',
           scrolled
             ? 'h-[68px] bg-white/[0.97] shadow-[0_8px_30px_rgba(0,0,0,0.09)]'
-            : 'h-20    shadow-[0_4px_30px_rgba(0,0,0,0.04)]',
+            : 'h-20    bg-white/[0.88] backdrop-blur-lg shadow-[0_4px_30px_rgba(0,0,0,0.04)]',
         )}
       >
         <div className="flex items-center justify-between h-full px-[5%]">
 
-          {/* ── Logo ──────────────────────────────────── */}
+          {/* ── Logo ─────────────────────────────────────── */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0 no-underline">
             {logoImage?.url ? (
               <Image
@@ -121,17 +123,20 @@ export function HeaderClient({ header }: Props) {
             ) : (
               <>
                 <div
-                  className="w-[30px] h-[30px] bg-[#17b0ab] flex-shrink-0 shadow-[0_4px_12px_rgba(23,176,171,0.35)]"
-                  style={{ clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)' }}
+                  className="w-[30px] h-[30px] bg-teal flex-shrink-0"
+                  style={{
+                    clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)',
+                    boxShadow: '0 4px 12px color-mix(in oklch, var(--color-teal) 35%, transparent)',
+                  }}
                 />
-                <span className="text-[1.3rem] font-black text-[#0d1b2e] tracking-[-0.5px] leading-none">
+                <span className="text-[1.3rem] font-black text-navy-deep tracking-[-0.5px] leading-none">
                   TOP CLEANING
                 </span>
               </>
             )}
           </Link>
 
-          {/* ── Desktop Nav ───────────────────────────── */}
+          {/* ── Desktop Nav ──────────────────────────────── */}
           <nav className="hidden md:flex items-center h-full" aria-label="Main navigation">
             {menu.map((item: any, index: number) => {
               if (!item) return null
@@ -156,7 +161,7 @@ export function HeaderClient({ header }: Props) {
                       className={cn(
                         'flex items-center gap-[5px] h-full px-[1.4rem]',
                         'font-mono text-[0.8rem] font-semibold uppercase tracking-[0.5px]',
-                        'text-[#1a2840] hover:text-[#17b0ab] transition-colors duration-200',
+                        'text-navy-deep hover:text-teal transition-colors duration-200',
                         'bg-transparent border-none cursor-pointer',
                       )}
                     >
@@ -168,11 +173,10 @@ export function HeaderClient({ header }: Props) {
                         )}
                       />
                     </button>
-                    {/* Hover underline indicator */}
                     <span
                       aria-hidden
                       className={cn(
-                        'absolute bottom-0 inset-x-[20%] h-[3px] bg-[#17b0ab]',
+                        'absolute bottom-0 inset-x-[20%] h-[3px] bg-teal',
                         'transition-transform duration-500 origin-center',
                         megaOpen ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
                       )}
@@ -190,16 +194,14 @@ export function HeaderClient({ header }: Props) {
                       className={cn(
                         'flex items-center h-full px-[1.4rem]',
                         'font-mono text-[0.8rem] font-semibold uppercase tracking-[0.5px]',
-                        'text-[#1a2840] hover:text-[#17b0ab] transition-colors duration-200',
-                        'no-underline',
+                        'text-navy-deep hover:text-teal transition-colors duration-200 no-underline',
                       )}
                     >
                       {item.link.label}
                     </CMSLink>
-                    {/* Hover underline indicator */}
                     <span
                       aria-hidden
-                      className="absolute bottom-0 inset-x-[20%] h-[3px] bg-[#17b0ab] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"
+                      className="absolute bottom-0 inset-x-[20%] h-[3px] bg-teal scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"
                     />
                   </div>
                 )
@@ -209,21 +211,24 @@ export function HeaderClient({ header }: Props) {
             })}
           </nav>
 
-          {/* ── Right: CTA + Mobile Toggle ────────────── */}
+          {/* ── Right: CTA + Mobile Toggle ───────────────── */}
           <div className="flex items-center gap-4">
+
             {/* Desktop CTA */}
             {header.ctaButton?.link && (
               <CMSLink
                 link={header.ctaButton.link}
                 className={cn(
-                  'hidden md:inline-flex items-center',
+                  'hidden md:inline-flex items-center no-underline',
                   'px-[1.6rem] py-[0.85rem]',
-                  'bg-[#17b0ab] text-white no-underline',
+                  'bg-teal text-primary-foreground',
                   'font-mono font-bold text-[0.75rem] uppercase tracking-[1px]',
                   'transition-all duration-300',
-                  'hover:bg-[#0d1b2e] hover:-translate-y-[2px]',
-                  'hover:shadow-[0_8px_20px_rgba(23,176,171,0.3)]',
+                  'hover:bg-navy-deep hover:-translate-y-[2px]',
                 )}
+                style={{
+                  ['--tw-shadow' as any]: '0 8px 20px color-mix(in oklch, var(--color-teal) 30%, transparent)',
+                }}
               >
                 {header.ctaButton.link.label || 'BOOK YOUR CLEANING'}
               </CMSLink>
@@ -233,7 +238,7 @@ export function HeaderClient({ header }: Props) {
             <button
               type="button"
               onClick={() => setMobileOpen((s) => !s)}
-              className="md:hidden flex flex-col gap-[5px] p-2 text-[#0d1b2e] hover:text-[#17b0ab] transition-colors cursor-pointer bg-transparent border-none"
+              className="md:hidden flex flex-col gap-[5px] p-2 text-navy-deep hover:text-teal transition-colors cursor-pointer bg-transparent border-none"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
             >
@@ -250,7 +255,7 @@ export function HeaderClient({ header }: Props) {
           </div>
         </div>
 
-        {/* ── Mega Dropdown ───────────────────────────────── */}
+        {/* ── Mega Dropdown ──────────────────────────────────── */}
         {dropdownItem && (
           <div
             ref={panelRef}
@@ -265,8 +270,8 @@ export function HeaderClient({ header }: Props) {
             )}
           >
             <div
-              className="bg-white border border-[rgba(23,176,171,0.2)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.14)]"
-              style={{ borderTop: '3px solid #17b0ab' }}
+              className="bg-background border border-teal/20 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.14)]"
+              style={{ borderTop: '3px solid var(--color-teal)' }}
             >
               <div className="grid grid-cols-2 p-6 gap-1">
                 {dropdownItem.dropdown?.items?.map((item: any, idx: number) => {
@@ -276,11 +281,11 @@ export function HeaderClient({ header }: Props) {
                       key={idx}
                       link={item.link}
                       className={cn(
-                        'flex items-center px-4 py-[0.65rem]',
-                        'text-[0.85rem] font-medium text-[#1a2840]',
+                        'flex items-center px-4 py-[0.65rem] no-underline',
+                        'text-[0.85rem] font-medium text-foreground',
                         'border-l-[3px] border-l-transparent',
-                        'hover:bg-[#e0f5f4] hover:text-[#0f8a86] hover:border-l-[#17b0ab] hover:pl-[1.3rem]',
-                        'transition-all duration-200 no-underline',
+                        'hover:bg-teal-light hover:text-teal-dark hover:border-l-teal hover:pl-[1.3rem]',
+                        'transition-all duration-200',
                       )}
                     >
                       {item.link.label}
@@ -292,12 +297,12 @@ export function HeaderClient({ header }: Props) {
           </div>
         )}
 
-        {/* ── Mobile Nav ──────────────────────────────────── */}
+        {/* ── Mobile Nav ─────────────────────────────────────── */}
         <div
           id="mobile-menu"
           className={cn(
             'md:hidden absolute inset-x-0 top-full z-[1001]',
-            'bg-white border-b border-[rgba(23,176,171,0.2)]',
+            'bg-background border-b border-teal/20',
             'transition-all duration-300 overflow-hidden',
             mobileOpen
               ? 'opacity-100 pointer-events-auto max-h-[600px]'
@@ -315,10 +320,11 @@ export function HeaderClient({ header }: Props) {
                     key={index}
                     link={item.link}
                     className={cn(
-                      'px-4 py-3 font-mono text-[0.8rem] font-semibold uppercase',
-                      'text-[#1a2840] border-l-[3px] border-l-transparent',
-                      'hover:text-[#17b0ab] hover:border-l-[#17b0ab] hover:bg-[#e0f5f4] hover:pl-5',
-                      'transition-all duration-200 no-underline',
+                      'px-4 py-3 no-underline',
+                      'font-mono text-[0.8rem] font-semibold uppercase',
+                      'text-foreground border-l-[3px] border-l-transparent',
+                      'hover:text-teal hover:border-l-teal hover:bg-teal-light hover:pl-5',
+                      'transition-all duration-200',
                     )}
                   >
                     {item.link.label}
@@ -326,11 +332,11 @@ export function HeaderClient({ header }: Props) {
                 )
               }
 
-              // Dropdown (expanded inline on mobile)
+              // Dropdown — expanded inline
               if (item.type === 'dropdown' && item.dropdown) {
                 return (
                   <div key={index}>
-                    <div className="px-4 py-2 font-mono text-[0.8rem] font-semibold uppercase text-[#94a3b8]">
+                    <div className="px-4 py-2 font-mono text-[0.8rem] font-semibold uppercase text-muted-foreground">
                       {item.dropdown.label}
                     </div>
                     {item.dropdown.items?.map((dropItem: any, idx: number) => {
@@ -340,10 +346,11 @@ export function HeaderClient({ header }: Props) {
                           key={idx}
                           link={dropItem.link}
                           className={cn(
-                            'block pl-8 pr-4 py-2 text-[0.85rem] font-medium',
-                            'text-[#1a2840] border-l-[3px] border-l-transparent',
-                            'hover:text-[#17b0ab] hover:border-l-[#17b0ab] hover:bg-[#e0f5f4]',
-                            'transition-all duration-200 no-underline',
+                            'block pl-8 pr-4 py-2 no-underline',
+                            'text-[0.85rem] font-medium text-foreground',
+                            'border-l-[3px] border-l-transparent',
+                            'hover:text-teal hover:border-l-teal hover:bg-teal-light',
+                            'transition-all duration-200',
                           )}
                         >
                           {dropItem.link.label}
@@ -362,10 +369,10 @@ export function HeaderClient({ header }: Props) {
               <CMSLink
                 link={header.ctaButton.link}
                 className={cn(
-                  'mt-2 px-4 py-[0.9rem] text-center',
+                  'mt-2 px-4 py-[0.9rem] text-center no-underline',
                   'font-mono font-bold text-[0.8rem] uppercase tracking-[1px]',
-                  'bg-[#17b0ab] text-white no-underline',
-                  'hover:bg-[#0d1b2e] transition-colors duration-200',
+                  'bg-teal text-primary-foreground',
+                  'hover:bg-navy-deep transition-colors duration-200',
                 )}
               >
                 {header.ctaButton.link.label || 'BOOK YOUR CLEANING'}
