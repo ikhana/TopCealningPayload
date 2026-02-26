@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --obsidian: #050a12;
+            --coral: #fc8181;
+            --glass-border: rgba(23, 176, 171, 0.2);
+            --text-light: #f8fafc;
+            --text-dim: #94a3b8;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --prism-gradient: linear-gradient(90deg, transparent, var(--primary-teal), var(--coral), var(--primary-teal), transparent);
+            --transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0fafa;
+            font-family: var(--sans-font);
+        }
+
+        /* Placeholder for Hero/Header Space */
+        .hero-placeholder {
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #f0fafa, #d9eaea);
+            font-family: var(--mono-font);
+            color: var(--teal-dark);
+            font-weight: 700;
+            letter-spacing: 2px;
+            opacity: 0.5;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           PRISMATIC OBSIDIAN FOOTER 
+           ═══════════════════════════════════════════════════ */
+        
+        .obsidian-footer {
+            background: var(--obsidian);
+            color: var(--text-light);
+            position: relative;
+            padding-top: 80px;
+            overflow: hidden;
+        }
+
+        /* Prismatic Edge */
+        .obsidian-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--prism-gradient);
+            background-size: 200% auto;
+            animation: prismShift 8s linear infinite;
+        }
+
+        /* Floating Light Effects */
+        .footer-glow {
+            position: absolute;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(23, 176, 171, 0.08) 0%, transparent 70%);
+            top: -20vw;
+            right: -10vw;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5% 60px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Brand Column */
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .footer-logo-mark {
+            width: 34px;
+            height: 34px;
+            background: var(--primary-teal);
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+            box-shadow: 0 0 20px rgba(23, 176, 171, 0.4);
+        }
+
+        .footer-mission {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+            max-width: 320px;
+        }
+
+        /* Column Styles */
+        .footer-column h4 {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--primary-teal);
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h4::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 20px;
+            height: 1px;
+            background: var(--coral);
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 8px;
+        }
+
+        .footer-links a::before {
+            content: '→';
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            opacity: 0;
+            margin-right: -15px;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover::before {
+            opacity: 1;
+            margin-right: 10px;
+        }
+
+        /* Contact Section */
+        .contact-info-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .contact-label {
+            font-family: var(--mono-font);
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .contact-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-value:hover {
+            color: var(--primary-teal);
+        }
+
+        /* Variations: The Floating CTA Panel */
+        .footer-cta-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            margin-top: -120px;
+            margin-bottom: 80px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .cta-text h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .cta-text p {
+            color: var(--text-dim);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+        }
+
+        .cta-button {
+            padding: 1.2rem 2.5rem;
+            background: var(--primary-teal);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-family: var(--mono-font);
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(23, 176, 171, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            background: white;
+            color: var(--obsidian);
+        }
+
+        /* Bottom Bar */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 30px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: #4a5a6a;
+            letter-spacing: 1px;
+        }
+
+        .social-grid {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-link {
+            color: var(--text-dim);
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            color: var(--primary-teal);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes prismShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+            .footer-brand {
+                grid-column: span 2;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-cta-box {
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+            .footer-brand, .footer-column {
+                grid-column: span 1;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="hero-placeholder">
+        [ HERO CONTENT AS REFERENCE ]
+    </div>
+
+    <footer class="obsidian-footer">
+        <div class="footer-glow"></div>
+        
+        <div class="footer-container">
+            <!-- Variation: Floating CTA built into layout -->
+            <div class="footer-cta-box" style="grid-column: 1 / -1;">
+                <div class="cta-text">
+                    <h3>Ready for a spotless space?</h3>
+                    <p>// EXPERIENCE THE TOP CLEANING STANDARD</p>
+                </div>
+                <a href="#" class="cta-button">BOOK ONLINE NOW</a>
+            </div>
+
+            <!-- Brand Section -->
+            <div class="footer-brand">
+                <a href="#" class="footer-logo">
+                    <div class="footer-logo-mark"></div>
+                    TOP CLEANING
+                </a>
+                <p class="footer-mission">
+                    Professional cleaning services dedicated to excellence. Making your space spotless, one cleaning at a time.
+                </p>
+                <div class="social-grid">
+                    <a href="#" class="social-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Links Column -->
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Our Services</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Book Online</a></li>
+                    <li><a href="#">Join Our Team</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+
+            <!-- Services Column (Variation) -->
+            <div class="footer-column">
+                <h4>Specialties</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Deep Cleaning</a></li>
+                    <li><a href="#">Airbnb Turnover</a></li>
+                    <li><a href="#">Post-Construction</a></li>
+                    <li><a href="#">Office Cleaning</a></li>
+                    <li><a href="#">Moving Services</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Column -->
+            <div class="footer-column">
+                <h4>Contact Info</h4>
+                <div class="contact-info-list">
+                    <div class="contact-item">
+                        <span class="contact-label">Call Us</span>
+                        <a href="tel:7543074034" class="contact-value">(754) 307-4034</a>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-label">Email</span>
+                        <a href="mailto:Topcleaningfl@gmail.com" class="contact-value">Topcleaningfl@gmail.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-label">Hours</span>
+                        <span class="contact-value" style="font-size: 0.9rem;">Mon - Sun: 8am to 6pm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="copyright">
+                © 2026 TOP CLEANING. ALL RIGHTS RESERVED.
+            </div>
+            <div class="footer-meta">
+                <span style="color: var(--primary-teal);">//</span> 
+                MADE IN FLORIDA 
+                <span style="color: var(--coral); margin-left: 15px;">●</span> 
+                PRIVACY POLICY
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Subtle parallax movement for the prism border based on scroll
+        window.addEventListener('scroll', () => {
+            const footer = document.querySelector('.obsidian-footer');
+            const scrollPos = window.scrollY;
+            const footerTop = footer.offsetTop - window.innerHeight;
+            
+            if (scrollPos > footerTop) {
+                const shift = (scrollPos - footerTop) * 0.1;
+                footer.style.backgroundPosition = `center ${shift}px`;
+            }
+        });
+
+        // Hover effect for CTA box
+        const ctaBox = document.querySelector('.footer-cta-box');
+        ctaBox.addEventListener('mousemove', (e) => {
+            const rect = ctaBox.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctaBox.style.boxShadow = `${(x - rect.width/2) / 20}px ${(y - rect.height/2) / 20}px 50px rgba(23, 176, 171, 0.2)`;
+        });
+    </script>
+</body>
+</html>
+
+
