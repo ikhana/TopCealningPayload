@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Cleaning | Machined Utility Header</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --off-white: #f8fafc;
+            --glass-border: rgba(23, 176, 171, 0.15);
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition-fast: 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            --transition-smooth: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            --header-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--sans-font);
+            background: #050a0a;
+            color: var(--deep-navy);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- MACHINED UTILITY TOP BAR --- */
+        .utility-bar {
+            background: var(--deep-navy);
+            color: white;
+            padding: 0 5%;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--mono-font);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            position: relative;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.4s ease, height 0.4s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .utility-bar.hidden {
+            transform: translateY(-100%);
+            height: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .utility-left, .utility-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .utility-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        .utility-item:hover {
+            color: var(--primary-teal);
+        }
+
+        .utility-item svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.6;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            background: rgba(23, 176, 171, 0.15);
+            border: 1px solid var(--primary-teal);
+            color: var(--primary-teal);
+            border-radius: 2px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary-teal);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary-teal);
+            animation: pulse 2s infinite;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            margin-right: 15px;
+            padding-right: 15px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .close-bar {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            opacity: 0.5;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            transition: var(--transition-fast);
+        }
+
+        .close-bar:hover {
+            opacity: 1;
+            color: var(--coral);
+        }
+
+        /* --- MAIN HEADER --- */
+        .main-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.03);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--deep-navy);
+            font-weight: 900;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0% 20%, 100% 0%, 100% 80%, 0% 100%);
+        }
+
+        /* --- NAVIGATION --- */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-item {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            text-decoration: none;
+            color: var(--deep-navy);
+            font-family: var(--mono-font);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: var(--transition-fast);
+        }
+
+        .nav-item:hover {
+            color: var(--primary-teal);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            right: 20%;
+            height: 3px;
+            background: var(--primary-teal);
+            transform: scaleX(0);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* --- MEGA DROPDOWN --- */
+        .dropdown-trigger:hover .services-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .services-dropdown {
+            position: absolute;
+            top: var(--header-height);
+            left: 50%;
+            transform: translateX(-50%) translateY(15px);
+            width: 800px;
+            background: white;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            padding: 30px;
+            gap: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+            z-index: 1001;
+        }
+
+        .dropdown-column {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .service-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: var(--deep-navy);
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: var(--transition-fast);
+            border-left: 0px solid var(--primary-teal);
+        }
+
+        .service-link:hover {
+            background: var(--off-white);
+            color: var(--primary-teal);
+            padding-left: 20px;
+            border-left: 4px solid var(--primary-teal);
+        }
+
+        .service-icon {
+            width: 18px;
+            height: 18px;
+            stroke: var(--primary-teal);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* --- CTA BUTTON --- */
+        .header-cta {
+            background: var(--primary-teal);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 2px;
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 1px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header-cta:hover {
+            background: var(--deep-navy);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(23, 176, 171, 0.3);
+        }
+
+        /* --- BREADCRUMBS / SUB NAV --- */
+        .breadcrumb-strip {
+            background: #fff;
+            padding: 12px 5%;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--mono-font);
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #94a3b8;
+        }
+
+        .breadcrumb-item {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--primary-teal);
+        }
+
+        .breadcrumb-sep {
+            color: var(--glass-border);
+        }
+
+        .breadcrumb-active {
+            color: var(--primary-teal);
+            font-weight: 700;
+        }
+
+        .system-specs {
+            display: flex;
+            gap: 20px;
+            font-family: var(--mono-font);
+            font-size: 9px;
+            color: #94a3b8;
+        }
+
+        .spec-unit {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .spec-value {
+            color: var(--deep-navy);
+            font-weight: 700;
+        }
+
+        /* --- HERO REFERENCE (SIMPLIFIED) --- */
+        .hero-placeholder {
+            height: 60vh;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-placeholder::before {
+            content: 'HERO AREA';
+            font-family: var(--mono-font);
+            font-weight: 900;
+            font-size: 10vw;
+            color: white;
+            opacity: 0.4;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .services-dropdown {
+                width: 90vw;
+                grid-template-columns: 1fr;
+            }
+            .utility-item:not(.phone-main) {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .breadcrumb-strip {
+                display: none;
+            }
+            .main-header {
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- UTILITY TOP BAR -->
+    <div class="utility-bar" id="topBar">
+        <div class="utility-left">
+            <a href="mailto:Topcleaningfl@gmail.com" class="utility-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                Topcleaningfl@gmail.com
+            </a>
+            <a href="tel:7543074034" class="utility-item phone-main">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                (754) 307-4034
+            </a>
+            <a href="tel:7012383301" class="utility-item">
+                (701) 238-3301
+            </a>
+        </div>
+
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            NOW SERVICING YOUR AREA
+        </div>
+
+        <div class="utility-right">
+            <div class="social-links">
+                <a href="#" class="utility-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                <a href="#" class="utility-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+                <a href="#" class="utility-item"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+            </div>
+            <button class="close-bar" onclick="document.getElementById('topBar').classList.add('hidden')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="main-header">
+        <a href="/" class="logo-section">
+            <div class="logo-mark">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            </div>
+            TOP CLEANING
+        </a>
+
+        <nav class="nav-links">
+            <a href="#" class="nav-item">Home</a>
+            <div class="dropdown-trigger" style="height: 100%; display: flex; align-items: center;">
+                <a href="#" class="nav-item">Services <svg style="margin-left: 6px;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+                
+                <!-- MEGA DROPDOWN CONTENT -->
+                <div class="services-dropdown">
+                    <div class="dropdown-column">
+                        <a href="#" class="service-link">
+                            <svg class="service-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                            Regular Cleaning
+                        </a>
+                        <a href="#" class="service-link">
+                            <svg class="service-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            Professional Deep Cleaning
+                        </a>
+                        <a href="#" class="service-link">
+                            <svg class="service-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                            After Party Cleaning
+                        </a>
+                        <a href="#" class="service-link">
+                            <svg class="service-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                            Moving In / Moving Out
+                        </a>
+                    </div>
+                    <div class="dropdown-column">
+                        <a href="#" class="service-link">
+                            <svg class="service-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Air Bnb Cleaning
+                        </a>
+                        <a href="#" class="service-link">
+                            <svg class="service-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            Organize Closet & Cabinates
+                        </a>
+                        <a href="#" class="service-link">
+                            <svg class="service-icon" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                            Laundry & Ironing Services
+                        </a>
+                        <a href="#" class="service-link">
+                            <svg class="service-icon" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                            HandyMan Services
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="nav-item">Join our team</a>
+        </nav>
+
+        <a href="#" class="header-cta">
+            BOOK YOUR CLEANING
+        </a>
+    </header>
+
+    <!-- BREADCRUMB STRIP -->
+    <div class="breadcrumb-strip">
+        <nav class="breadcrumbs">
+            <a href="#" class="breadcrumb-item">System</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="#" class="breadcrumb-item">Services</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-active">Deep_Cleaning_Module</span>
+        </nav>
+
+        <div class="system-specs">
+            <div class="spec-unit">
+                <span>EST:</span>
+                <span class="spec-value">2012</span>
+            </div>
+            <div class="spec-unit">
+                <span>STAFF_READY:</span>
+                <span class="spec-value">TRUE</span>
+            </div>
+            <div class="spec-unit">
+                <span>LOC:</span>
+                <span class="spec-value">FL_USA</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO SECTION REFERENCE -->
+    <section class="hero-placeholder">
+        <!-- Content from previous prompt would go here -->
+    </section>
+
+    <script>
+        // Optional: Scroll handling for header depth
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.main-header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                header.style.height = '70px';
+            } else {
+                header.style.boxShadow = '0 4px 30px rgba(0,0,0,0.03)';
+                header.style.height = '80px';
+            }
+        });
+    </script>
+</body>
+</html>
+

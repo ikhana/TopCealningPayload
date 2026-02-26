@@ -9,19 +9,20 @@
     <style>
         :root {
             /* ── TopCleaning Brand Colors ────────────────────────── */
-            --primary-teal:   #17b0ab;          /* brand primary    */
-            --teal-dark:      #0f8a86;          /* teal hover/dark  */
-            --teal-glow:      #3dcfca;          /* lighter tint for glows & accents */
-            --deep-navy:      #0d1b2e;          /* replaces obsidian – dark navy bg */
-            --navy:           #2a4365;          /* brand secondary  */
-            --coral:          #fc8181;          /* brand accent     */
-            --sand:           #f5efe0;          /* brand tertiary   */
+            --primary-teal:   #17b0ab;
+            --teal-dark:      #0f8a86;
+            --teal-glow:      #3dcfca;
+            --deep-navy:      #0d1b2e;
+            --navy:           #2a4365;
+            --coral:          #fc8181;
+            --sand:           #f5efe0;
 
-            /* ── Derived / Utility ──────────────────────────────── */
-            --glass-white:    rgba(255, 255, 255, 0.92);
-            --navy-glass:     rgba(13, 27, 46, 0.82);   /* dark glass tinted navy */
-            --border-line:    rgba(23, 176, 171, 0.22); /* teal-tinted border     */
-            --text-dark:      #1a2840;                  /* navy-tinted dark text  */
+            /* ── Light-mode Utility ──────────────────────────────── */
+            --light-bg:       #f0fafa;
+            --glass-white:    rgba(255, 255, 255, 0.88);
+            --border-line:    rgba(23, 176, 171, 0.18);
+            --text-dark:      #1a2840;
+            --text-muted:     #4a5a6a;
 
             --mono-font: 'JetBrains Mono', monospace;
             --sans-font: 'Inter', sans-serif;
@@ -32,13 +33,14 @@
 
         body {
             font-family: var(--sans-font);
-            background: #f0fafa;
+            background: var(--light-bg);
             color: var(--text-dark);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
         /* ── TOP BAR ──────────────────────────────────────────────── */
+        /* Kept dark — acts as a strong anchor strip at the top */
         .top-bar {
             background: var(--deep-navy);
             color: white;
@@ -63,7 +65,7 @@
             transition: var(--transition);
         }
 
-        .top-bar-links a:hover { color: var(--primary-teal); }
+        .top-bar-links a:hover { color: var(--teal-glow); }
 
         /* ── HERO VIEWPORT ───────────────────────────────────────── */
         .hero-viewport {
@@ -72,18 +74,19 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            background: var(--deep-navy);
+            background: var(--light-bg);
             overflow: hidden;
         }
 
+        /* Light gradient fades from left, reveals photo on right */
         .hero-bg-image {
             position: absolute;
             inset: 0;
             background-image:
                 linear-gradient(90deg,
-                    rgba(13, 27, 46, 0.97) 0%,
-                    rgba(13, 27, 46, 0.75) 42%,
-                    rgba(13, 27, 46, 0.15) 100%),
+                    rgba(240, 250, 250, 0.98) 0%,
+                    rgba(240, 250, 250, 0.85) 40%,
+                    rgba(240, 250, 250, 0.20) 100%),
                 url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000');
             background-size: cover;
             background-position: center;
@@ -104,16 +107,16 @@
             justify-content: space-between;
             align-items: center;
             padding: 1.5rem 5%;
-            backdrop-filter: blur(15px);
-            background: rgba(255, 255, 255, 0.04);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.75);
+            border-bottom: 1px solid var(--border-line);
         }
 
         .logo {
             font-weight: 900;
             letter-spacing: -1px;
             font-size: 1.5rem;
-            color: white;
+            color: var(--primary-teal);   /* teal on light bg */
             display: flex;
             align-items: center;
             gap: 12px;
@@ -125,21 +128,32 @@
             background: var(--primary-teal);
             display: inline-block;
             clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
-            box-shadow: 0 0 22px rgba(23, 176, 171, 0.55);
+            box-shadow: 0 4px 14px rgba(23, 176, 171, 0.35);
         }
 
         nav a {
             text-decoration: none;
-            color: rgba(255, 255, 255, 0.75);
+            color: var(--text-dark);      /* dark text on light bg */
             font-family: var(--mono-font);
             font-size: 0.85rem;
             margin-left: 2.5rem;
             text-transform: uppercase;
             transition: var(--transition);
             letter-spacing: 1px;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--primary-teal);
+            transition: var(--transition);
         }
 
         nav a:hover { color: var(--primary-teal); }
+        nav a:hover::after { width: 100%; }
 
         /* ── MAIN CONTENT ────────────────────────────────────────── */
         main {
@@ -158,7 +172,7 @@
             opacity: 0;
             transform: translateX(-30px);
             animation: slideIn 1s forwards cubic-bezier(0.16, 1, 0.3, 1);
-            color: white;
+            color: var(--text-dark);      /* dark text on light bg */
         }
 
         h1 {
@@ -167,12 +181,12 @@
             line-height: 0.95;
             margin-bottom: 2rem;
             letter-spacing: -2px;
-            color: white;
+            color: var(--deep-navy);      /* dark navy heading */
         }
 
         h1 span {
             display: block;
-            color: var(--teal-glow);
+            color: var(--primary-teal);   /* primary teal on light bg (not glow) */
             font-style: italic;
             font-weight: 300;
             letter-spacing: -1px;
@@ -183,7 +197,7 @@
             font-size: 1.1rem;
             line-height: 1.7;
             margin-bottom: 2rem;
-            color: rgba(245, 239, 224, 0.72); /* sand-tinted white */
+            color: var(--text-muted);
             border-left: 2px solid var(--primary-teal);
             padding-left: 1.5rem;
         }
@@ -199,19 +213,21 @@
         }
 
         .panel {
-            background: rgba(23, 176, 171, 0.08);
+            background: var(--glass-white);
             padding: 3.5rem;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(12px);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(23, 176, 171, 0.22);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-line);
+            box-shadow: 0 10px 35px -8px rgba(23, 176, 171, 0.12),
+                        0 4px 12px -2px rgba(0, 0, 0, 0.06);
         }
 
         .panel:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 55px -10px rgba(23, 176, 171, 0.2),
+                        0 8px 20px -4px rgba(0, 0, 0, 0.08);
         }
 
         .panel-label {
@@ -229,7 +245,7 @@
             margin-bottom: 2rem;
             font-weight: 900;
             letter-spacing: -1px;
-            color: white;
+            color: var(--deep-navy);
         }
 
         .btn {
@@ -268,16 +284,15 @@
             display: flex;
             align-items: center;
             gap: 2rem;
-            background: var(--navy-glass);
-            backdrop-filter: blur(10px);
+            background: white;
             padding: 1.2rem 2rem;
             border-left: 4px solid var(--primary-teal);
             font-family: var(--mono-font);
             font-size: 0.8rem;
-            color: white;
+            color: var(--text-dark);      /* dark text on white bg */
             width: fit-content;
             margin-top: 2rem;
-            box-shadow: 20px 20px 0px var(--teal-dark);
+            box-shadow: 20px 20px 0px rgba(23, 176, 171, 0.2);
         }
 
         .stars { color: #f7b500; font-size: 1.2rem; }
@@ -289,7 +304,7 @@
             right: -20px;
             width: 130px;
             height: 130px;
-            background: var(--coral);               /* brand accent coral */
+            background: var(--coral);
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -300,10 +315,10 @@
             font-weight: 900;
             line-height: 1;
             transform: rotate(12deg);
-            box-shadow: 0 15px 35px rgba(252, 129, 129, 0.45);
+            box-shadow: 0 15px 35px rgba(252, 129, 129, 0.4);
             animation: float 5s infinite ease-in-out;
             z-index: 15;
-            border: 2px solid rgba(255,255,255,0.35);
+            border: 2px solid rgba(255,255,255,0.5);
         }
 
         .offer-badge span { font-size: 2rem; }
@@ -325,13 +340,13 @@
             align-items: center;
             gap: 15px;
             transition: var(--transition);
-            box-shadow: 0 20px 40px rgba(23, 176, 171, 0.3);
+            box-shadow: 0 20px 40px rgba(23, 176, 171, 0.35);
         }
 
         .call-now:hover {
             background: var(--teal-dark);
             transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(23, 176, 171, 0.45);
+            box-shadow: 0 25px 50px rgba(23, 176, 171, 0.5);
         }
 
         .call-now::before {
@@ -365,13 +380,16 @@
         /* ── RESPONSIVE ──────────────────────────────────────────── */
         @media (max-width: 1100px) {
             main { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 5rem; }
-            .hero-bg-image { filter: brightness(0.4); }
+            .hero-bg-image {
+                /* on mobile keep bg but boost brightness since content overlaps */
+                filter: brightness(1.05) saturate(0.8);
+            }
             .hero-content { padding-top: 2rem; }
             .cta-grid { max-width: 600px; }
         }
 
         @media (max-width: 600px) {
-            h1 { font-size: 3rem; }
+            h1 { font-size: 2.4rem; letter-spacing: -1.5px; }
             header { flex-direction: column; gap: 1.5rem; }
             nav a { margin: 0 0.75rem; font-size: 0.7rem; }
             .top-bar { font-size: 0.65rem; text-align: center; justify-content: center; }
@@ -420,8 +438,7 @@
                     </div>
                     <div>
                         See our 275+ 4.7-Star Reviews on
-                        <span style="color: var(--teal-glow); margin-left: 6px; display: inline-flex; align-items: center; gap: 4px;">
-                            <!-- Google G SVG -->
+                        <span style="margin-left: 6px; display: inline-flex; align-items: center; gap: 4px; color: var(--text-dark);">
                             <svg width="14" height="14" viewBox="0 0 48 48" style="vertical-align: middle;">
                                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                                 <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -448,9 +465,9 @@
                 </div>
 
                 <!-- Commercial Panel -->
-                <div class="panel">
-                    <span class="panel-label">Commercial</span>
-                    <h3>Elevate your workspace.</h3>
+                <div class="panel" style="background: rgba(23, 176, 171, 0.05); border-color: rgba(23,176,171,0.22);">
+                    <span class="panel-label" style="color: var(--primary-teal)">Commercial</span>
+                    <h3 style="color: var(--deep-navy);">Elevate your workspace.</h3>
                     <a href="#" class="btn" style="background: var(--coral); color: white;">GET A CUSTOM QUOTE</a>
                 </div>
             </div>
