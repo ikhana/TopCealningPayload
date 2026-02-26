@@ -7506,6 +7506,16 @@ export interface Header {
     twitter?: string | null;
     pinterest?: string | null;
   };
+  /**
+   * Dark top strip with contact info and service area status indicator
+   */
+  utilityBar?: {
+    phone1?: string | null;
+    phone2?: string | null;
+    email?: string | null;
+    statusText?: string | null;
+    showStatus?: boolean | null;
+  };
   topBarActions?:
     | {
         icon: 'user' | 'search' | 'heart' | 'cart' | 'phone' | 'email';
@@ -7711,6 +7721,15 @@ export interface HeaderSelect<T extends boolean = true> {
         instagram?: T;
         twitter?: T;
         pinterest?: T;
+      };
+  utilityBar?:
+    | T
+    | {
+        phone1?: T;
+        phone2?: T;
+        email?: T;
+        statusText?: T;
+        showStatus?: T;
       };
   topBarActions?:
     | T

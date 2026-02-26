@@ -1,465 +1,379 @@
-// src/components/Header/index.client.tsx - FINAL CLEAN VERSION
+// src/components/Header/index.client.tsx
 
 'use client'
 
-import { useTheme } from '@/providers/Theme'
 import { cn } from '@/utilities/cn'
-import { ChevronDown, Moon, Sun, Menu, X } from 'lucide-react'
+import { CMSLink } from '@/components/CMSLink'
+import { ChevronDown, Menu, X } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import type { Header, Media } from 'src/payload-types'
-import { BorderButton } from '@/components/ui/BorderButton/BorderButton'
 import { PromotionalBanner } from './PromotionalBanner'
-import { CMSLink } from '@/components/CMSLink'
 
 type Props = {
   header: Header
 }
 
-const cx = (...s: (string | false | undefined)[]) => s.filter(Boolean).join(' ')
-const norm = (s: string) => (s ?? '').replace(/\/+$/, '')
-
-function ActiveLink({
-  link,
-  children,
-  className,
-}: {
-  link: any
-  children: React.ReactNode
-  className?: string
-}) {
-  const pathname = usePathname()
-  
-  // Get href for comparison
-  const getHref = () => {
-    if (!link) return '/'
-    if (link.type === 'reference' && link.reference?.value) {
-      const refValue = link.reference.value
-      if (typeof refValue === 'string') return refValue
-      if (typeof refValue === 'object' && 'slug' in refValue) return `/${refValue.slug}`
-    }
-    if (link.type === 'custom') return link.url || '/'
-    if (link.type === 'anchor') {
-      if (link.anchorPage?.value) {
-        const pageValue = link.anchorPage.value
-        let pageSlug = ''
-        if (typeof pageValue === 'string') pageSlug = pageValue
-        else if (typeof pageValue === 'object' && 'slug' in pageValue) pageSlug = pageValue.slug || ''
-        return pageSlug ? `/${pageSlug}#${link.anchor}` : `#${link.anchor}`
-      }
-      return `#${link.anchor}`
-    }
-    return '/'
-  }
-  
-  const href = getHref()
-  const isActive = norm(pathname ?? '/') === norm(href.split('#')[0])
-  
-  return (
-    <CMSLink
-      link={link}
-      className={cn(
-        'text-xs md:text-md lg:text-lg font-semibold uppercase transition-colors',
-        isActive
-          ? 'text-primary'
-          : 'text-muted-foreground hover:text-primary',
-        className
-      )}
-    >
-      {children}
-    </CMSLink>
-  )
-}
-
 export function HeaderClient({ header }: Props) {
   const menu = header.navItems || []
   const pathname = usePathname()
-  const { setTheme } = useTheme()
 
-  const [megaOpen, setMegaOpen] = useState(false)
+  const [scrolled, setScrolled]     = useState(false)
+  const [megaOpen, setMegaOpen]     = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const triggerRef = useRef<HTMLButtonElement | null>(null)
-  const panelRef = useRef<HTMLDivElement | null>(null)
+  const panelRef   = useRef<HTMLDivElement | null>(null)
+  const closeTO    = useRef<number | null>(null)
 
-  const CLOSE_DELAY = 300
-  const closeTO = useRef<number | null>(null)
-
-  const hasBanner = header.promotionalBanner?.enabled && header.promotionalBanner?.content
-
-  const toggleTheme = () => {
-    document.documentElement.classList.toggle('dark')
-    setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
-  }
-
-  const cancelClose = () => {
-    if (closeTO.current) {
-      window.clearTimeout(closeTO.current)
-      closeTO.current = null
-    }
-  }
-
-  const scheduleClose = () => {
-    cancelClose()
-    closeTO.current = window.setTimeout(() => {
-      setMegaOpen(false)
-      closeTO.current = null
-    }, CLOSE_DELAY)
-  }
-
-  const openMega = () => {
-    cancelClose()
-    setMegaOpen(true)
-  }
-
+  // ── Scroll shrink (80px → 68px) ──────────────────────────
   useEffect(() => {
-    const onEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setMegaOpen(false)
-        setMobileOpen(false)
-      }
-    }
-    window.addEventListener('keydown', onEsc)
-    return () => window.removeEventListener('keydown', onEsc)
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    if (mobileOpen) setMegaOpen(false)
-  }, [mobileOpen])
-
-  // Close menus on route change
+  // ── Close menus on route change ───────────────────────────
   useEffect(() => {
     setMobileOpen(false)
     setMegaOpen(false)
   }, [pathname])
 
+  // ── ESC key ───────────────────────────────────────────────
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setMegaOpen(false); setMobileOpen(false) }
+    }
+    window.addEventListener('keydown', onEsc)
+    return () => window.removeEventListener('keydown', onEsc)
+  }, [])
+
+  // ── Mega dropdown hover delay helpers ─────────────────────
+  const cancelClose = () => {
+    if (closeTO.current) { window.clearTimeout(closeTO.current); closeTO.current = null }
+  }
+  const scheduleClose = () => {
+    cancelClose()
+    closeTO.current = window.setTimeout(() => { setMegaOpen(false); closeTO.current = null }, 300)
+  }
+  const openMega = () => { cancelClose(); setMegaOpen(true) }
+
   const onTriggerLeave: React.MouseEventHandler = (e) => {
-    const to = e.relatedTarget as Node | null
-    if (to && panelRef.current?.contains(to)) {
-      cancelClose()
-      return
-    }
+    if (panelRef.current?.contains(e.relatedTarget as Node)) { cancelClose(); return }
     scheduleClose()
   }
-
   const onPanelLeave: React.MouseEventHandler = (e) => {
-    const to = e.relatedTarget as Node | null
-    if (to && triggerRef.current?.contains(to)) {
-      cancelClose()
-      return
-    }
+    if (triggerRef.current?.contains(e.relatedTarget as Node)) { cancelClose(); return }
     scheduleClose()
   }
 
-  const logoImage = header.logo && typeof header.logo === 'object' ? (header.logo as Media) : null
+  // ── Data helpers ──────────────────────────────────────────
+  const logoImage  = header.logo && typeof header.logo === 'object' ? (header.logo as Media) : null
+  const utilityBar = (header as any).utilityBar || {}
+  const socials    = header.socialLinks || {}
+
+  // Find the dropdown nav item (Services)
+  const dropdownItem = menu.find((m: any) => m?.type === 'dropdown') as any
 
   return (
     <>
-      {hasBanner && header.promotionalBanner && (
-        <PromotionalBanner
-          enabled={!!header.promotionalBanner.enabled}
-          content={header.promotionalBanner.content}
-          cta={header.promotionalBanner.cta}
-          socialLinks={{
-            facebook: header.socialLinks?.facebook || undefined,
-            instagram: header.socialLinks?.instagram || undefined,
-            twitter: header.socialLinks?.twitter || undefined,
-            pinterest: header.socialLinks?.pinterest || undefined,
-          }}
-          topBarActions={(header.topBarActions || [])
-            .filter((action): action is NonNullable<typeof action> => 
-              action !== null && 
-              action !== undefined &&
-              !!action.icon && 
-              !!action.link && 
-              !!action.label
-            )
-            .map(action => ({
-              icon: action.icon as 'user' | 'search' | 'heart' | 'cart' | 'phone' | 'email',
-              link: action.link,
-              label: action.label,
-            }))}
-        />
-      )}
+      {/* ── Utility Bar ─────────────────────────────────── */}
+      <PromotionalBanner
+        phone1={utilityBar.phone1}
+        phone2={utilityBar.phone2}
+        email={utilityBar.email}
+        statusText={utilityBar.statusText}
+        showStatus={utilityBar.showStatus !== false}
+        socialLinks={{
+          facebook:  socials.facebook  || undefined,
+          instagram: socials.instagram || undefined,
+          twitter:   socials.twitter   || undefined,
+        }}
+      />
 
-      <div className={cn(
-        'relative',
-        hasBanner ? 'mt-11' : ''
-      )}>
-        <header
-          className={cx(
-            'fixed container header-manage width-full left-1/2 -translate-x-1/2 z-50 w-full',
-            'px-3 sm:px-4 py-3 bg-background dark:bg-card',
-            megaOpen || mobileOpen ? 'rounded-b-none' : 'rounded-b-2xl',
-            'shadow-sm',
-            hasBanner ? 'top-11' : 'top-0'
-          )}
-        >
-          <div className="flex items-center justify-between md:block md:items-start md:justify-start">
-            <div className="flex items-center justify-between gap-2 md:gap-3 lg:gap-6">
-              <CMSLink 
-                link={{ 
-                  type: 'reference', 
-                  reference: { value: 'home' },
-                  label: 'Home'
-                }}
-                className="inline-flex items-center"
-              >
-                {logoImage?.url ? (
-                  <Image
-                    src={logoImage.url}
-                    alt={logoImage.alt || 'Mazco LLC'}
-                    width={160}
-                    height={44}
-                    className="h-11 w-auto"
-                    priority
-                  />
-                ) : (
-                  <div className="flex items-center">
-                    <span className="text-2xl font-bold text-primary tracking-tight">
-                      MAZCO LLC
-                    </span>
-                  </div>
-                )}
-              </CMSLink>
+      {/* ── Sticky Main Header ──────────────────────────── */}
+      <header
+        className={cn(
+          'sticky top-0 z-[1000] w-full',
+          'bg-white/[0.88] backdrop-blur-lg',
+          'border-b border-[rgba(23,176,171,0.2)]',
+          'transition-all duration-300',
+          scrolled
+            ? 'h-[68px] bg-white/[0.97] shadow-[0_8px_30px_rgba(0,0,0,0.09)]'
+            : 'h-20    shadow-[0_4px_30px_rgba(0,0,0,0.04)]',
+        )}
+      >
+        <div className="flex items-center justify-between h-full px-[5%]">
 
-              <nav className="hidden md:flex items-center gap-3 md:gap-3 lg:gap-4">
-                {menu.map((item, index) => {
-                  if (!item) return null
+          {/* ── Logo ──────────────────────────────────── */}
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0 no-underline">
+            {logoImage?.url ? (
+              <Image
+                src={logoImage.url}
+                alt={logoImage.alt || 'Top Cleaning'}
+                width={160}
+                height={44}
+                className="h-11 w-auto"
+                priority
+              />
+            ) : (
+              <>
+                <div
+                  className="w-[30px] h-[30px] bg-[#17b0ab] flex-shrink-0 shadow-[0_4px_12px_rgba(23,176,171,0.35)]"
+                  style={{ clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)' }}
+                />
+                <span className="text-[1.3rem] font-black text-[#0d1b2e] tracking-[-0.5px] leading-none">
+                  TOP CLEANING
+                </span>
+              </>
+            )}
+          </Link>
 
-                  const itemAny = item as any
-                  const itemId = item.id || `nav-${index}`
+          {/* ── Desktop Nav ───────────────────────────── */}
+          <nav className="hidden md:flex items-center h-full" aria-label="Main navigation">
+            {menu.map((item: any, index: number) => {
+              if (!item) return null
+              const itemId = item.id || `nav-${index}`
 
-                  if (itemAny.type === 'dropdown' && itemAny.dropdown) {
-                    const dropdown = itemAny.dropdown
-                    return (
-                      <button
-                        key={itemId}
-                        ref={triggerRef}
-                        type="button"
-                        onMouseEnter={openMega}
-                        onMouseLeave={onTriggerLeave}
-                        onFocus={openMega}
-                        onBlur={(e) => {
-                          const to = e.relatedTarget as Node | null
-                          if (to && panelRef.current?.contains(to)) return
-                          scheduleClose()
-                        }}
-                        aria-haspopup="true"
-                        aria-expanded={megaOpen}
-                        className="flex items-center gap-1 font-semibold text-xs md:text-md lg:text-lg uppercase text-muted-foreground hover:text-primary transition"
-                      >
-                        {dropdown.label}
-                        <ChevronDown
-                          className={cn(
-                            'h-4 w-4 transition-transform duration-300',
-                            megaOpen && 'rotate-180'
-                          )}
-                        />
-                      </button>
-                    )
-                  }
-
-                  // Simple link - access itemAny.link directly
-                  if (itemAny.type === 'simple' && itemAny.link) {
-                    return (
-                      <ActiveLink key={itemId} link={itemAny.link}>
-                        {itemAny.link.label}
-                      </ActiveLink>
-                    )
-                  }
-
-                  return null
-                })}
-              </nav>
-
-              <div className="hidden md:flex items-center gap-4">
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 text-muted-foreground hover:text-primary transition-colors"
-                  aria-label="Toggle theme"
-                >
-                  <Moon className="w-5 h-5 dark:hidden" />
-                  <Sun className="w-5 h-5 hidden dark:inline-block" />
-                </button>
-
-                {header.ctaButton?.link && (
-                  <CMSLink link={header.ctaButton.link}>
-                    <BorderButton
-                      text={header.ctaButton.link.label || 'Get Started'}
-                      variant="filled"
+              // Dropdown trigger
+              if (item.type === 'dropdown' && item.dropdown) {
+                return (
+                  <div key={itemId} className="relative h-full flex items-center group">
+                    <button
+                      ref={triggerRef}
+                      type="button"
+                      onMouseEnter={openMega}
+                      onMouseLeave={onTriggerLeave}
+                      onFocus={openMega}
+                      onBlur={(e) => {
+                        if (panelRef.current?.contains(e.relatedTarget as Node)) return
+                        scheduleClose()
+                      }}
+                      aria-haspopup="true"
+                      aria-expanded={megaOpen}
+                      className={cn(
+                        'flex items-center gap-[5px] h-full px-[1.4rem]',
+                        'font-mono text-[0.8rem] font-semibold uppercase tracking-[0.5px]',
+                        'text-[#1a2840] hover:text-[#17b0ab] transition-colors duration-200',
+                        'bg-transparent border-none cursor-pointer',
+                      )}
+                    >
+                      {item.dropdown.label}
+                      <ChevronDown
+                        className={cn(
+                          'w-[11px] h-[11px] transition-transform duration-300',
+                          megaOpen && 'rotate-180',
+                        )}
+                      />
+                    </button>
+                    {/* Hover underline indicator */}
+                    <span
+                      aria-hidden
+                      className={cn(
+                        'absolute bottom-0 inset-x-[20%] h-[3px] bg-[#17b0ab]',
+                        'transition-transform duration-500 origin-center',
+                        megaOpen ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
+                      )}
                     />
-                  </CMSLink>
+                  </div>
+                )
+              }
+
+              // Simple link
+              if (item.type === 'simple' && item.link) {
+                return (
+                  <div key={itemId} className="relative h-full flex items-center group">
+                    <CMSLink
+                      link={item.link}
+                      className={cn(
+                        'flex items-center h-full px-[1.4rem]',
+                        'font-mono text-[0.8rem] font-semibold uppercase tracking-[0.5px]',
+                        'text-[#1a2840] hover:text-[#17b0ab] transition-colors duration-200',
+                        'no-underline',
+                      )}
+                    >
+                      {item.link.label}
+                    </CMSLink>
+                    {/* Hover underline indicator */}
+                    <span
+                      aria-hidden
+                      className="absolute bottom-0 inset-x-[20%] h-[3px] bg-[#17b0ab] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"
+                    />
+                  </div>
+                )
+              }
+
+              return null
+            })}
+          </nav>
+
+          {/* ── Right: CTA + Mobile Toggle ────────────── */}
+          <div className="flex items-center gap-4">
+            {/* Desktop CTA */}
+            {header.ctaButton?.link && (
+              <CMSLink
+                link={header.ctaButton.link}
+                className={cn(
+                  'hidden md:inline-flex items-center',
+                  'px-[1.6rem] py-[0.85rem]',
+                  'bg-[#17b0ab] text-white no-underline',
+                  'font-mono font-bold text-[0.75rem] uppercase tracking-[1px]',
+                  'transition-all duration-300',
+                  'hover:bg-[#0d1b2e] hover:-translate-y-[2px]',
+                  'hover:shadow-[0_8px_20px_rgba(23,176,171,0.3)]',
                 )}
-              </div>
-            </div>
+              >
+                {header.ctaButton.link.label || 'BOOK YOUR CLEANING'}
+              </CMSLink>
+            )}
 
-            <div className="md:hidden flex items-center gap-3">
-              <button
-                onClick={toggleTheme}
-                className="p-2 text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Toggle theme"
-              >
-                <Moon className="w-5 h-5 dark:hidden" />
-                <Sun className="w-5 h-5 hidden dark:inline-block" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setMobileOpen((s) => !s)}
-                className="text-muted-foreground hover:text-primary"
-                aria-label="Toggle menu"
-                aria-expanded={mobileOpen}
-              >
-                {mobileOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
-              </button>
-            </div>
+            {/* Mobile hamburger */}
+            <button
+              type="button"
+              onClick={() => setMobileOpen((s) => !s)}
+              className="md:hidden flex flex-col gap-[5px] p-2 text-[#0d1b2e] hover:text-[#17b0ab] transition-colors cursor-pointer bg-transparent border-none"
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <>
+                  <span className="w-6 h-[2px] bg-current block" />
+                  <span className="w-6 h-[2px] bg-current block" />
+                  <span className="w-6 h-[2px] bg-current block" />
+                </>
+              )}
+            </button>
           </div>
+        </div>
 
+        {/* ── Mega Dropdown ───────────────────────────────── */}
+        {dropdownItem && (
           <div
             ref={panelRef}
             onMouseEnter={openMega}
             onMouseLeave={onPanelLeave}
             className={cn(
-              'absolute inset-x-0 top-full z-[60] transition-all duration-200',
+              'absolute left-1/2 -translate-x-1/2 top-full z-[1002] w-[560px]',
+              'transition-all duration-200',
               megaOpen
                 ? 'opacity-100 translate-y-0 pointer-events-auto'
-                : 'opacity-0 -translate-y-2 pointer-events-none'
+                : 'opacity-0 -translate-y-2 pointer-events-none',
             )}
           >
-            <div className="rounded-t-none rounded-b-3xl border border-t-0 border-border bg-background dark:bg-card shadow-xl overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-6 md:p-8">
-                <div className="md:col-span-5">
-                  <div className="rounded-xl bg-primary text-primary-foreground p-6 md:p-7">
-                    <h3 className="text-2xl font-semibold mb-2">
-                      Strategic Financial Planning
-                    </h3>
-                    <p className="opacity-90 mb-6">
-                      Comprehensive wealth management solutions tailored to your goals.
-                    </p>
-                    <div className="mt-6 space-y-3">
-                      <CMSLink
-                        link={{
-                          type: 'reference',
-                          reference: { value: { slug: 'services' } },
-                          label: 'Explore Services'
-                        }}
-                        className="group inline-flex items-center gap-2 font-semibold"
-                      >
-                        Explore Services{' '}
-                        <span className="transition group-hover:translate-x-0.5">→</span>
-                      </CMSLink>
-                    </div>
-                  </div>
-                </div>
+            <div
+              className="bg-white border border-[rgba(23,176,171,0.2)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.14)]"
+              style={{ borderTop: '3px solid #17b0ab' }}
+            >
+              <div className="grid grid-cols-2 p-6 gap-1">
+                {dropdownItem.dropdown?.items?.map((item: any, idx: number) => {
+                  if (!item?.link) return null
+                  return (
+                    <CMSLink
+                      key={idx}
+                      link={item.link}
+                      className={cn(
+                        'flex items-center px-4 py-[0.65rem]',
+                        'text-[0.85rem] font-medium text-[#1a2840]',
+                        'border-l-[3px] border-l-transparent',
+                        'hover:bg-[#e0f5f4] hover:text-[#0f8a86] hover:border-l-[#17b0ab] hover:pl-[1.3rem]',
+                        'transition-all duration-200 no-underline',
+                      )}
+                    >
+                      {item.link.label}
+                    </CMSLink>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )}
 
-                <div className="md:col-span-7">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                    {menu.find(m => m?.type === 'dropdown')?.dropdown?.items?.map((item: any, idx: number) => {
-                      if (!item.link) return null
-                      
+        {/* ── Mobile Nav ──────────────────────────────────── */}
+        <div
+          id="mobile-menu"
+          className={cn(
+            'md:hidden absolute inset-x-0 top-full z-[1001]',
+            'bg-white border-b border-[rgba(23,176,171,0.2)]',
+            'transition-all duration-300 overflow-hidden',
+            mobileOpen
+              ? 'opacity-100 pointer-events-auto max-h-[600px]'
+              : 'opacity-0 pointer-events-none max-h-0',
+          )}
+        >
+          <nav className="flex flex-col px-[5%] py-4 gap-[2px]" aria-label="Mobile navigation">
+            {menu.map((item: any, index: number) => {
+              if (!item) return null
+
+              // Simple link
+              if (item.type === 'simple' && item.link) {
+                return (
+                  <CMSLink
+                    key={index}
+                    link={item.link}
+                    className={cn(
+                      'px-4 py-3 font-mono text-[0.8rem] font-semibold uppercase',
+                      'text-[#1a2840] border-l-[3px] border-l-transparent',
+                      'hover:text-[#17b0ab] hover:border-l-[#17b0ab] hover:bg-[#e0f5f4] hover:pl-5',
+                      'transition-all duration-200 no-underline',
+                    )}
+                  >
+                    {item.link.label}
+                  </CMSLink>
+                )
+              }
+
+              // Dropdown (expanded inline on mobile)
+              if (item.type === 'dropdown' && item.dropdown) {
+                return (
+                  <div key={index}>
+                    <div className="px-4 py-2 font-mono text-[0.8rem] font-semibold uppercase text-[#94a3b8]">
+                      {item.dropdown.label}
+                    </div>
+                    {item.dropdown.items?.map((dropItem: any, idx: number) => {
+                      if (!dropItem?.link) return null
                       return (
                         <CMSLink
                           key={idx}
-                          link={item.link}
-                          className="group flex items-start gap-3 rounded-lg p-2 -m-2 hover:bg-muted transition"
+                          link={dropItem.link}
+                          className={cn(
+                            'block pl-8 pr-4 py-2 text-[0.85rem] font-medium',
+                            'text-[#1a2840] border-l-[3px] border-l-transparent',
+                            'hover:text-[#17b0ab] hover:border-l-[#17b0ab] hover:bg-[#e0f5f4]',
+                            'transition-all duration-200 no-underline',
+                          )}
                         >
-                          <div>
-                            <h4 className="font-semibold text-primary">
-                              {item.link.label}
-                            </h4>
-                            {item.description && (
-                              <p className="text-sm text-muted-foreground mt-1">
-                                {item.description}
-                              </p>
-                            )}
-                          </div>
+                          {dropItem.link.label}
                         </CMSLink>
                       )
                     })}
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                )
+              }
 
-          <div
-            id="mobile-menu"
-            className={cn(
-              'md:hidden absolute left-0 right-0 top-full z-[70] transition-all duration-300',
-              mobileOpen
-                ? 'opacity-100 translate-y-0 pointer-events-auto'
-                : 'opacity-0 -translate-y-3 pointer-events-none'
+              return null
+            })}
+
+            {/* Mobile CTA */}
+            {header.ctaButton?.link && (
+              <CMSLink
+                link={header.ctaButton.link}
+                className={cn(
+                  'mt-2 px-4 py-[0.9rem] text-center',
+                  'font-mono font-bold text-[0.8rem] uppercase tracking-[1px]',
+                  'bg-[#17b0ab] text-white no-underline',
+                  'hover:bg-[#0d1b2e] transition-colors duration-200',
+                )}
+              >
+                {header.ctaButton.link.label || 'BOOK YOUR CLEANING'}
+              </CMSLink>
             )}
-          >
-            <div className="rounded-b-2xl bg-background dark:bg-card shadow-lg overflow-hidden">
-              <nav className="flex flex-col px-4 py-3">
-                {menu.map((item, index) => {
-                  if (!item) return null
-
-                  const itemAny = item as any
-                  
-                  // Simple link
-                  if (itemAny.type === 'simple' && itemAny.link) {
-                    return (
-                      <CMSLink
-                        key={index}
-                        link={itemAny.link}
-                        className="block w-full py-3 font-semibold uppercase text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {itemAny.link.label}
-                      </CMSLink>
-                    )
-                  }
-                  
-                  // Dropdown menu
-                  if (itemAny.type === 'dropdown' && itemAny.dropdown) {
-                    const dropdown = itemAny.dropdown
-                    return (
-                      <div key={index} className="py-2">
-                        <div className="py-2 font-semibold uppercase text-sm text-muted-foreground">
-                          {dropdown.label}
-                        </div>
-                        <div className="pl-4 space-y-1">
-                          {dropdown.items?.map((dropdownItem: any, idx: number) => {
-                            if (!dropdownItem.link) return null
-                            return (
-                              <CMSLink
-                                key={idx}
-                                link={dropdownItem.link}
-                                className="block py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                              >
-                                {dropdownItem.link.label}
-                              </CMSLink>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )
-                  }
-                  
-                  return null
-                })}
-                
-                <div className="mt-2 flex items-center justify-between gap-3">
-                  {header.ctaButton?.link && (
-                    <CMSLink 
-                      link={header.ctaButton.link} 
-                      className="w-full"
-                    >
-                      <BorderButton
-                        text={header.ctaButton.link.label || 'Get Started'}
-                        variant="filled"
-                        fullWidth
-                      />
-                    </CMSLink>
-                  )}
-                </div>
-              </nav>
-            </div>
-          </div>
-        </header>
-      </div>
+          </nav>
+        </div>
+      </header>
     </>
   )
 }

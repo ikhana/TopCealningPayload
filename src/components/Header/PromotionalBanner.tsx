@@ -1,21 +1,12 @@
 // src/components/Header/PromotionalBanner.tsx
+// Overridden as the Utility Bar — dark navy top strip with contact info,
+// status indicator, social links, and dismiss button.
+// The original promotionalBanner Payload field is preserved in Header.ts
+// for future use; this component now reads from header.utilityBar instead.
 
 'use client'
 
-import {
-  Facebook,
-  Heart,
-  Instagram,
-  Mail,
-  Phone,
-  Search,
-  ShoppingCart,
-  Twitter,
-  User
-} from 'lucide-react'
-import Link from 'next/link'
-import RichText from '@/components/RichText'
-import { CMSLink } from '@/components/CMSLink'
+import { useState } from 'react'
 
 type SocialLinks = {
   facebook?: string
@@ -24,142 +15,134 @@ type SocialLinks = {
   pinterest?: string
 }
 
-type TopBarAction = {
-  icon: 'user' | 'search' | 'heart' | 'cart' | 'phone' | 'email'
-  link: string
-  label: string
-}
-
-type PromotionalBannerProps = {
-  enabled?: boolean
-  content?: any
-  cta?: {
-    link?: any
-  }
+type UtilityBarProps = {
+  phone1?: string
+  phone2?: string
+  email?: string
+  statusText?: string
+  showStatus?: boolean
   socialLinks?: SocialLinks
-  topBarActions?: TopBarAction[]
-}
-
-const iconMap = {
-  user: User,
-  search: Search,
-  heart: Heart,
-  cart: ShoppingCart,
-  phone: Phone,
-  email: Mail,
 }
 
 export function PromotionalBanner({
-  enabled = false,
-  content,
-  cta,
+  phone1,
+  phone2,
+  email,
+  statusText = 'NOW SERVICING YOUR AREA',
+  showStatus = true,
   socialLinks,
-  topBarActions = []
-}: PromotionalBannerProps) {
-  
-  if (!enabled || !content) {
-    return null
-  }
+}: UtilityBarProps) {
+  const [dismissed, setDismissed] = useState(false)
 
-  const hasButton = cta?.link && (cta.link.url || cta.link.reference)
+  if (dismissed) return null
+
+  const hasSocials =
+    socialLinks?.facebook || socialLinks?.instagram || socialLinks?.twitter
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] w-full py-2 sm:py-3 border-b border-border bg-primary/95 dark:bg-primary/90 backdrop-blur-sm">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
-          
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+    <div
+      className="w-full h-10 flex items-center justify-between overflow-hidden font-mono text-[11px] tracking-[0.05em] relative z-[1001] bg-[#0d1b2e] border-b border-white/[0.08]"
+    >
+      {/* ── Left: contact info ─────────────────────────── */}
+      <div className="flex items-center gap-5 px-[5%]">
+        {email && (
+          <a
+            href={`mailto:${email}`}
+            className="hidden sm:block text-white/65 hover:text-[#17b0ab] transition-colors duration-200 no-underline"
+          >
+            {email}
+          </a>
+        )}
+        {phone1 && (
+          <a
+            href={`tel:${phone1.replace(/\D/g, '')}`}
+            className="text-white/65 hover:text-[#17b0ab] transition-colors duration-200 no-underline"
+          >
+            {phone1}
+          </a>
+        )}
+        {phone2 && (
+          <a
+            href={`tel:${phone2.replace(/\D/g, '')}`}
+            className="hidden md:block text-white/65 hover:text-[#17b0ab] transition-colors duration-200 no-underline"
+          >
+            {phone2}
+          </a>
+        )}
+      </div>
+
+      {/* ── Centre: pulsing status badge ───────────────── */}
+      {showStatus && statusText && (
+        <div
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 px-[10px] py-[3px] font-bold text-[10px] text-[#17b0ab] whitespace-nowrap"
+          style={{ background: 'rgba(23,176,171,0.12)', border: '1px solid #17b0ab' }}
+        >
+          <span
+            className="w-[6px] h-[6px] rounded-full flex-shrink-0 animate-pulse"
+            style={{ background: '#17b0ab', boxShadow: '0 0 8px #17b0ab' }}
+          />
+          {statusText}
+        </div>
+      )}
+
+      {/* ── Right: social icons + close ────────────────── */}
+      <div className="flex items-center gap-3 px-[5%]">
+        {hasSocials && (
+          <div className="flex items-center gap-3 pr-3 mr-1 border-r border-white/10">
             {socialLinks?.facebook && (
-              <Link 
+              <a
                 href={socialLinks.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-foreground/80 hover:text-primary-foreground transition-all duration-300 hover:scale-110"
                 aria-label="Facebook"
+                className="flex items-center text-white/50 hover:text-[#17b0ab] transition-colors duration-200"
               >
-                <Facebook className="w-5 h-5" strokeWidth={2.5} />
-              </Link>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              </a>
             )}
-            
             {socialLinks?.instagram && (
-              <Link 
+              <a
                 href={socialLinks.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-foreground/80 hover:text-primary-foreground transition-all duration-300 hover:scale-110"
                 aria-label="Instagram"
+                className="flex items-center text-white/50 hover:text-[#17b0ab] transition-colors duration-200"
               >
-                <Instagram className="w-5 h-5" strokeWidth={2.5} />
-              </Link>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+              </a>
             )}
-            
             {socialLinks?.twitter && (
-              <Link 
+              <a
                 href={socialLinks.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-foreground/80 hover:text-primary-foreground transition-all duration-300 hover:scale-110"
                 aria-label="Twitter"
+                className="flex items-center text-white/50 hover:text-[#17b0ab] transition-colors duration-200"
               >
-                <Twitter className="w-5 h-5" strokeWidth={2.5} />
-              </Link>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                </svg>
+              </a>
             )}
           </div>
+        )}
 
-          <div className="flex-1 flex items-center justify-center gap-4 min-w-0">
-            <div className="text-sm sm:text-base font-semibold font-body tracking-wide text-center uppercase text-primary-foreground">
-              <RichText 
-                data={content} 
-                enableGutter={false} 
-                enableProse={false}
-                className="inline"
-              />
-            </div>
-            
-            {hasButton && (
-              <>
-                <span className="hidden sm:inline text-base font-semibold text-primary-foreground/70">—</span>
-                
-                <CMSLink 
-                  link={cta.link}
-                  className="text-sm sm:text-base font-bold font-body tracking-wide uppercase transition-all duration-300 underline hover:no-underline hover:scale-105 text-primary-foreground hover:text-primary-foreground/80 whitespace-nowrap"
-                >
-                  {cta.link.label || 'Learn More'}
-                </CMSLink>
-              </>
-            )}
-          </div>
-
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
-            {topBarActions && topBarActions.length > 0 && topBarActions.map((action, index) => {
-              if (!action || !action.icon || !action.link || !action.label) return null
-              const IconComponent = iconMap[action.icon]
-              if (!IconComponent) return null
-              
-              return (
-                <Link 
-                  key={index}
-                  href={action.link}
-                  className="text-primary-foreground/80 hover:text-primary-foreground transition-all duration-300 hover:scale-110"
-                  aria-label={action.label}
-                >
-                  <IconComponent className="w-5 h-5" strokeWidth={2.5} />
-                </Link>
-              )
-            })}
-          </div>
-
-          {hasButton && (
-            <div className="flex sm:hidden">
-              <CMSLink 
-                link={cta.link}
-                className="text-xs font-bold font-body tracking-wide uppercase transition-all duration-300 underline hover:no-underline text-primary-foreground hover:text-primary-foreground/80 whitespace-nowrap"
-              >
-                {cta.link.label || 'Learn More'}
-              </CMSLink>
-            </div>
-          )}
-        </div>
+        <button
+          onClick={() => setDismissed(true)}
+          aria-label="Dismiss utility bar"
+          className="flex items-center p-1 text-white/[0.45] hover:text-[#fc8181] transition-colors duration-200 bg-transparent border-none cursor-pointer"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
       </div>
     </div>
   )

@@ -79,6 +79,48 @@ export const Header: GlobalConfig = {
       ]
     },
 
+    // Utility Bar
+    {
+      name: 'utilityBar',
+      type: 'group',
+      label: 'Utility Bar',
+      admin: {
+        description: 'Dark top strip with contact info and service area status indicator',
+      },
+      fields: [
+        {
+          name: 'phone1',
+          type: 'text',
+          label: 'Primary Phone',
+          admin: { placeholder: '(754) 307-4034' },
+        },
+        {
+          name: 'phone2',
+          type: 'text',
+          label: 'Secondary Phone',
+          admin: { placeholder: '(701) 238-3301' },
+        },
+        {
+          name: 'email',
+          type: 'text',
+          label: 'Email Address',
+          admin: { placeholder: 'Topcleaningfl@gmail.com' },
+        },
+        {
+          name: 'statusText',
+          type: 'text',
+          label: 'Status Badge Text',
+          defaultValue: 'NOW SERVICING YOUR AREA',
+        },
+        {
+          name: 'showStatus',
+          type: 'checkbox',
+          label: 'Show Status Badge',
+          defaultValue: true,
+        },
+      ],
+    },
+
     // Top Bar Actions
     {
       name: 'topBarActions',
