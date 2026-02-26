@@ -46,10 +46,14 @@ import { FaqBlock } from './Faq';
 import { VideoShowcaseBlock } from '@/blocks/VideoShowcase/Component';
 import { TestimonialsCarouselBlock } from './TestimonialsCarousel';
 import { ScheduleCallCTABlock } from './ScheduleCallCTA';
+import { TCHomeHeroBlock } from './TCHomeHero/Component';
 
 
 const blockComponents = {
-  // Existing blocks
+  // ── Active Top Cleaning blocks ──────────────────────────────────
+  tcHomeHero: TCHomeHeroBlock,
+
+  // ── Legacy blocks (commented out until migrated) ────────────────
   /*variantShow: VariantShowBlock,
   archive: ArchiveBlock,
   carousel: CarouselBlock,

@@ -59,8 +59,7 @@ import { Faq } from '@/blocks/Faq/config'
 import { VideoShowcase } from '@/blocks/VideoShowcase/config'
 import { TestimonialsCarousel } from '@/blocks/TestimonialsCarousel/config'
 import { ScheduleCallCTA } from '@/blocks/ScheduleCallCTA/config'
-
-
+import { TCHomeHero } from '@/blocks/TCHomeHero/config'
 
 
 export const Pages: CollectionConfig = {
@@ -139,7 +138,10 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               blocks: [
-                // Core content blocks
+                // ── Active Top Cleaning blocks ────────────────────────────
+                TCHomeHero,
+
+                // ── Legacy blocks (commented out until migrated) ──────────
                 Archive,
                 Banner,
                 /*CallToAction,
