@@ -1064,7 +1064,7 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (ArchiveBlock | BannerBlock)[];
+  layout: (TCHomeHeroBlock | ArchiveBlock | BannerBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -1077,6 +1077,15 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCHomeHeroBlock".
+ */
+export interface TCHomeHeroBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcHomeHero';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2553,6 +2562,7 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        tcHomeHero?: T | TCHomeHeroBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
       };
@@ -2567,6 +2577,14 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCHomeHeroBlock_select".
+ */
+export interface TCHomeHeroBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
