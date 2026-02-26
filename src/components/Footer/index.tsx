@@ -21,16 +21,17 @@ export async function Footer() {
     // Fallback footer
     const fallbackFooter = {
       logo: null,
-      tagline: 'Strategic financial planning and wealth management solutions.',
+      tagline: 'Professional cleaning services dedicated to excellence. Making your space spotless, one cleaning at a time.',
       sections: [],
-      newsletter: {
-        enabled: false,
-        title: '',
-        description: ''
+      contactInfo: {
+        phone1: '',
+        phone2: '',
+        email:  '',
+        hours:  '',
       },
       socialLinks: {},
       legalLinks: [],
-      copyright: '© {year} Mazco LLC. All rights reserved.',
+      copyright: '© {year} TOP CLEANING. ALL RIGHTS RESERVED.',
       id: '',
       updatedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),

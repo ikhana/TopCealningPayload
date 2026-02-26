@@ -50,7 +50,7 @@ import { ScheduleCallCTABlock } from './ScheduleCallCTA';
 
 const blockComponents = {
   // Existing blocks
-  variantShow: VariantShowBlock,
+  /*variantShow: VariantShowBlock,
   archive: ArchiveBlock,
   carousel: CarouselBlock,
   content: ContentBlock,
@@ -98,7 +98,7 @@ contentShowcase: ContentShowcaseBlock,
  faq: FaqBlock,
 videoShowcase: VideoShowcaseBlock,
 testimonialsCarousel: TestimonialsCarouselBlock,
-scheduleCallCTA: ScheduleCallCTABlock
+scheduleCallCTA: ScheduleCallCTABlock*/
 }
 
 export const RenderBlocks: React.FC<{

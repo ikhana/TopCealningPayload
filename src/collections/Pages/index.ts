@@ -142,7 +142,7 @@ export const Pages: CollectionConfig = {
                 // Core content blocks
                 Archive,
                 Banner,
-                CallToAction,
+                /*CallToAction,
                 Carousel,
                 Content,
                 FeaturedPromotion,
@@ -199,7 +199,7 @@ export const Pages: CollectionConfig = {
                  Faq,
                 // VideoShowcase,
                  TestimonialsCarousel,
-                 ScheduleCallCTA
+                 ScheduleCallCTA*/
 
               ],
               required: true,

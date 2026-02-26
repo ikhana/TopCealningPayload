@@ -57,6 +57,7 @@ export default {
     'bg-navy',
     'bg-navy-deep',
     'text-navy-deep',
+    'bg-navy-obsidian',
     'text-coral',
     'bg-coral',
     'bg-coral/10',
@@ -100,8 +101,9 @@ export default {
           glow:    '#3dcfca',   // teal-glow — animated/accent highlights
         },
         navy: {
-          DEFAULT: 'oklch(var(--color-navy))',
-          deep:    '#0d1b2e',   // deep obsidian navy — utility bar bg, logo text
+          DEFAULT:  'oklch(var(--color-navy))',
+          deep:     '#0d1b2e',  // deep obsidian navy — utility bar bg, logo text
+          obsidian: '#050a12',  // footer background — darkest navy
         },
         coral: {
           DEFAULT: 'oklch(var(--color-coral))',

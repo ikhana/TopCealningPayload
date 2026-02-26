@@ -1,4 +1,4 @@
-// src/globals/Footer.ts - CLEAN COMPACT VERSION
+// src/globals/Footer.ts
 
 import type { GlobalConfig } from 'payload'
 import { linkWithAnchor } from '@/fields/linkWithAnchor'
@@ -16,23 +16,23 @@ export const Footer: GlobalConfig = {
       relationTo: 'media',
       required: false,
       admin: {
-        description: 'Footer logo. Recommended size: 160x44px'
-      }
+        description: 'Footer logo. Recommended size: 160x44px',
+      },
     },
 
-    // Tagline
+    // Tagline / Mission Text
     {
       name: 'tagline',
       type: 'textarea',
-      label: 'Company Tagline',
-      defaultValue: 'Strategic financial planning and wealth management solutions tailored to your goals.',
+      label: 'Mission Text',
+      defaultValue: 'Professional cleaning services dedicated to excellence. Making your space spotless, one cleaning at a time.',
       admin: {
-        description: 'Brief company description below the logo',
-        rows: 2
-      }
+        description: 'Short brand statement shown below the logo in the footer',
+        rows: 2,
+      },
     },
 
-    // Footer Sections (Services, Company, Resources)
+    // Footer Navigation Sections (Quick Links, Specialties, etc.)
     {
       name: 'sections',
       type: 'array',
@@ -40,18 +40,8 @@ export const Footer: GlobalConfig = {
       minRows: 2,
       maxRows: 4,
       defaultValue: [
-        {
-          title: 'Services',
-          links: []
-        },
-        {
-          title: 'Company',
-          links: []
-        },
-        {
-          title: 'Resources',
-          links: []
-        }
+        { title: 'Quick Links',  links: [] },
+        { title: 'Specialties',  links: [] },
       ],
       fields: [
         {
@@ -60,59 +50,59 @@ export const Footer: GlobalConfig = {
           label: 'Section Title',
           required: true,
           admin: {
-            placeholder: 'e.g., Services, Company, Resources'
-          }
+            placeholder: 'e.g., Quick Links, Specialties',
+          },
         },
         {
           name: 'links',
           type: 'array',
           label: 'Section Links',
           minRows: 1,
-          maxRows: 6,
+          maxRows: 8,
           fields: [
-            linkWithAnchor({
-              appearances: false,
-            })
-          ]
-        }
+            linkWithAnchor({ appearances: false }),
+          ],
+        },
       ],
       admin: {
-        description: 'Create 2-4 navigation sections. Each can have up to 6 links with anchor scroll support.'
-      }
+        description: 'Create 2-4 navigation columns. Each can have up to 8 links.',
+      },
     },
 
-    // Newsletter
+    // Contact Information (shown in its own footer column)
     {
-      name: 'newsletter',
+      name: 'contactInfo',
       type: 'group',
-      label: 'Newsletter Subscription',
+      label: 'Contact Information',
+      admin: {
+        description: 'Phone numbers, email, and business hours shown in the contact column',
+      },
       fields: [
         {
-          name: 'enabled',
-          type: 'checkbox',
-          label: 'Enable Newsletter',
-          defaultValue: true,
-        },
-        {
-          name: 'title',
+          name: 'phone1',
           type: 'text',
-          label: 'Newsletter Title',
-          defaultValue: 'Financial Insights',
-          admin: {
-            condition: (_, { enabled } = {}) => enabled,
-          }
+          label: 'Primary Phone',
+          admin: { placeholder: '(754) 307-4034' },
         },
         {
-          name: 'description',
-          type: 'textarea',
-          label: 'Newsletter Description',
-          defaultValue: 'Stay informed with the latest market trends and wealth management insights.',
-          admin: {
-            condition: (_, { enabled } = {}) => enabled,
-            rows: 2
-          }
-        }
-      ]
+          name: 'phone2',
+          type: 'text',
+          label: 'Secondary Phone',
+          admin: { placeholder: '(701) 238-3301' },
+        },
+        {
+          name: 'email',
+          type: 'text',
+          label: 'Email Address',
+          admin: { placeholder: 'Topcleaningfl@gmail.com' },
+        },
+        {
+          name: 'hours',
+          type: 'text',
+          label: 'Business Hours',
+          defaultValue: 'Mon – Sun: 8am to 6pm',
+        },
+      ],
     },
 
     // Social Links
@@ -136,15 +126,10 @@ export const Footer: GlobalConfig = {
           type: 'text',
           label: 'Twitter/X URL',
         },
-        {
-          name: 'linkedin',
-          type: 'text',
-          label: 'LinkedIn URL',
-        }
-      ]
+      ],
     },
 
-    // Legal Links
+    // Legal Links (Privacy Policy, etc.)
     {
       name: 'legalLinks',
       type: 'array',
@@ -152,16 +137,13 @@ export const Footer: GlobalConfig = {
       maxRows: 4,
       defaultValue: [
         { link: { type: 'custom', url: '/privacy', label: 'Privacy Policy' } },
-        { link: { type: 'custom', url: '/terms', label: 'Terms of Service' } }
       ],
       fields: [
-        linkWithAnchor({
-          appearances: false,
-        })
+        linkWithAnchor({ appearances: false }),
       ],
       admin: {
-        description: 'Add legal/compliance links (Privacy, Terms, etc.)'
-      }
+        description: 'Links shown in the bottom bar (Privacy Policy, Terms, etc.)',
+      },
     },
 
     // Copyright
@@ -169,10 +151,10 @@ export const Footer: GlobalConfig = {
       name: 'copyright',
       type: 'text',
       label: 'Copyright Text',
-      defaultValue: '© {year} Mazco LLC. All rights reserved.',
+      defaultValue: '© {year} TOP CLEANING. ALL RIGHTS RESERVED.',
       admin: {
-        description: 'Use {year} as placeholder for current year'
-      }
+        description: 'Use {year} as a placeholder — it is replaced with the current year automatically',
+      },
     },
   ],
 }
