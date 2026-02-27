@@ -42,8 +42,28 @@ export function FooterClient({ footer }: Props) {
         }}
       />
 
+      {/* ── CTA Band ──────────────────────────────────────────────────── */}
+      <div className="relative z-[2] max-w-[1400px] mx-auto px-[5%] pt-[60px]">
+        <div className={cn(
+          'flex flex-col md:flex-row items-center justify-between gap-6',
+          'bg-white/[0.04] border border-teal/25',
+          'px-10 py-9',
+        )}>
+          <h3 className="text-[1.8rem] font-extrabold text-white m-0">
+            Ready for a spotless space?
+          </h3>
+          <Link
+            href="/booking"
+            className="flex-shrink-0 inline-flex items-center px-10 py-5 bg-teal text-primary-foreground font-bold font-mono text-[0.8rem] tracking-[1px] no-underline transition-all duration-500 hover:-translate-y-[5px] hover:bg-white hover:text-navy-deep"
+            style={{ boxShadow: '0 10px 30px color-mix(in oklch, var(--color-teal) 30%, transparent)' }}
+          >
+            BOOK ONLINE NOW
+          </Link>
+        </div>
+      </div>
+
       {/* ── Main 4-column grid ──────────────────────────────────────── */}
-      <div className="relative z-[2] max-w-[1400px] mx-auto px-[5%] pt-[110px] pb-[60px]">
+      <div className="relative z-[2] max-w-[1400px] mx-auto px-[5%] pt-[60px] pb-[60px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.5fr] gap-10 lg:gap-[60px]">
 
           {/* ── Column 1: Brand ─────────────────────────────────────── */}

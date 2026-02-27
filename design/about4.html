@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-light: #e0f5f4;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --paper-base: #fdfdfb;
+            --fiber-color: rgba(23, 176, 171, 0.04);
+            --sans-font: 'Inter', sans-serif;
+            --mono-font: 'JetBrains Mono', monospace;
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--paper-base);
+            font-family: var(--sans-font);
+            color: var(--deep-navy);
+            overflow-x: hidden;
+        }
+
+        /* ── MATERIALITY: VELLUM TOWEL TEXTURE ───────────────── */
+        .vellum-wrapper {
+            position: relative;
+            padding: 120px 5%;
+            background-color: var(--paper-base);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* The "Absorbent" SVG Texture Filter */
+        .vellum-wrapper::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(var(--fiber-color) 1px, transparent 1px),
+                radial-gradient(var(--fiber-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            opacity: 0.5;
+        }
+
+        .vellum-wrapper::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.08;
+            contrast: 150%;
+            brightness: 100%;
+            mix-blend-mode: multiply;
+        }
+
+        /* ── BACKGROUND SUBMERGED HEADING ─────────────────────── */
+        .submerged-heading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24vw;
+            font-weight: 900;
+            color: var(--primary-teal);
+            opacity: 0.04;
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+            letter-spacing: -1vw;
+            user-select: none;
+        }
+
+        /* ── SECTION HEADER ──────────────────────────────────── */
+        .about-intro {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 80px;
+            margin-bottom: 100px;
+        }
+
+        .header-main-text h2 {
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            color: var(--primary-teal);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-main-text h2::after {
+            content: "";
+            height: 1px;
+            width: 60px;
+            background: var(--primary-teal);
+        }
+
+        .tagline {
+            font-size: clamp(1.8rem, 4vw, 3.2rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--deep-navy);
+            margin-bottom: 2.5rem;
+        }
+
+        /* ── FEATURES LIST ───────────────────────────────────── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature-item {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(23, 176, 171, 0.15);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--teal-dark);
+            transition: var(--transition);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-teal);
+            background: white;
+            box-shadow: 0 15px 30px rgba(23, 176, 171, 0.1);
+        }
+
+        .feature-icon {
+            width: 8px;
+            height: 8px;
+            background: var(--coral);
+            border-radius: 50%;
+        }
+
+        /* ── STEPPER FEATURE ─────────────────────────────────── */
+        .stepper-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 60px;
+            background: white;
+            border: 1px solid var(--teal-light);
+            box-shadow: 0 40px 80px rgba(13, 27, 46, 0.05);
+        }
+
+        /* Stepper Navigation */
+        .stepper-nav {
+            background: var(--deep-navy);
+            padding: 60px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .step-trigger {
+            padding: 30px 40px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            text-align: left;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .step-trigger .step-num {
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .step-trigger .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .step-trigger.active {
+            background: rgba(23, 176, 171, 0.1);
+        }
+
+        .step-trigger.active .step-num {
+            color: var(--primary-teal);
+        }
+
+        .step-trigger.active .step-title {
+            color: white;
+            padding-left: 15px;
+        }
+
+        .step-trigger.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: var(--primary-teal);
+        }
+
+        /* Stepper Content Area */
+        .stepper-view {
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.8s ease forwards;
+            height: 100%;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .step-content.active {
+            display: grid;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-text {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step-text p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--deep-navy);
+            opacity: 0.9;
+        }
+
+        .values-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .value-block h4 {
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+            color: var(--primary-teal);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .value-block p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .step-image {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 20px 20px 0 var(--teal-light);
+        }
+
+        .step-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(0.8) contrast(1.1);
+            transition: var(--transition);
+        }
+
+        .step-content:hover .step-image img {
+            transform: scale(1.05);
+        }
+
+        /* ── RESPONSIVE ──────────────────────────────────────── */
+        @media (max-width: 1100px) {
+            .about-intro {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .stepper-container {
+                grid-template-columns: 1fr;
+            }
+            .stepper-nav {
+                flex-direction: row;
+                padding: 0;
+                overflow-x: auto;
+            }
+            .step-trigger {
+                padding: 20px;
+                flex: 1;
+                min-width: 150px;
+                text-align: center;
+            }
+            .step-trigger.active::before {
+                height: 4px;
+                width: 100%;
+                top: auto;
+            }
+            .step-trigger.active .step-title {
+                padding-left: 0;
+            }
+            .step-content {
+                grid-template-columns: 1fr;
+            }
+            .step-image {
+                order: -1;
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .vellum-wrapper {
+                padding: 80px 5%;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .stepper-view {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="vellum-wrapper">
+        <!-- Submerged Decorative Heading -->
+        <div class="submerged-heading">About Us</div>
+
+        <!-- Section Intro Content -->
+        <div class="about-intro">
+            <div class="header-main-text">
+                <h2>About Us</h2>
+                <h3 class="tagline">Setting new standards in professional cleaning services with innovation, dedication, and unmatched expertise.</h3>
+            </div>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon"></div>
+                    Eco-Friendly Products
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"></div>
+                    Trained Professionals
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"></div>
+                    Insured Services
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"></div>
+                    Custom Solutions
+                </div>
+            </div>
+        </div>
+
+        <!-- Stepper Component -->
+        <div class="stepper-container">
+            <div class="stepper-nav">
+                <button class="step-trigger active" onclick="switchStep(0)">
+                    <span class="step-num">01</span>
+                    <span class="step-title">Vision</span>
+                </button>
+                <button class="step-trigger" onclick="switchStep(1)">
+                    <span class="step-num">02</span>
+                    <span class="step-title">Mission</span>
+                </button>
+                <button class="step-trigger" onclick="switchStep(2)">
+                    <span class="step-num">03</span>
+                    <span class="step-title">Values</span>
+                </button>
+            </div>
+
+            <div class="stepper-view">
+                <!-- Vision Step -->
+                <div class="step-content active" id="step-0">
+                    <div class="step-text">
+                        <p>To be the leading company in cleaning and disinfection, providing high-quality solutions for both commercial and residential clients. We are committed to delivering an efficient and seamless experience, from booking to service completion. Our priority is customer satisfaction through professional, personalized, and attentive service, ensuring convenience and exceptional results.</p>
+                    </div>
+                    <div class="step-image">
+                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" alt="Vision">
+                    </div>
+                </div>
+
+                <!-- Mission Step -->
+                <div class="step-content" id="step-1">
+                    <div class="step-text">
+                        <p>We offer high-quality cleaning and disinfection services. We strive to provide the best care, with efficiency, competitive prices and an agile process, so that our customers are not only satisfied, but also happy with each service.</p>
+                    </div>
+                    <div class="step-image">
+                        <img src="https://images.unsplash.com/photo-1581578731548-c64695ce6958?auto=format&fit=crop&q=80&w=800" alt="Mission">
+                    </div>
+                </div>
+
+                <!-- Values Step -->
+                <div class="step-content" id="step-2">
+                    <div class="step-text values-list">
+                        <div class="value-block">
+                            <h4>Transparency</h4>
+                            <p>Transparency is the foundation of our service. We are committed to offering fair prices with no hidden costs, maintaining honest and open communication with our clients, ensuring clarity in every process, building trust and security.</p>
+                        </div>
+                        <div class="value-block">
+                            <h4>Teamwork</h4>
+                            <p>Teamwork is fundamental to us. We foster collaboration and mutual support among all members. Together, we share responsibilities to deliver high-quality cleaning and disinfection services, always with the goal of meeting our clients' needs.</p>
+                        </div>
+                        <div class="value-block">
+                            <h4>Commitment</h4>
+                            <p>Commitment is the foundation of our way of working. It reflects our dedication and responsibility, both towards our clients and our team, always ensuring quality in every service we provide.</p>
+                        </div>
+                    </div>
+                    <div class="step-image">
+                        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=800" alt="Values">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function switchStep(index) {
+            // Remove active classes
+            document.querySelectorAll('.step-trigger').forEach(trigger => trigger.classList.remove('active'));
+            document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
+
+            // Add active classes
+            document.querySelectorAll('.step-trigger')[index].classList.add('active');
+            document.getElementById(`step-${index}`).classList.add('active');
+        }
+
+        // Optional: Auto-parallax effect for the background text
+        document.addEventListener('scroll', () => {
+            const heading = document.querySelector('.submerged-heading');
+            const scrollValue = window.scrollY;
+            heading.style.transform = `translate(-50%, calc(-50% + ${scrollValue * 0.15}px))`;
+        });
+    </script>
+</body>
+</html>

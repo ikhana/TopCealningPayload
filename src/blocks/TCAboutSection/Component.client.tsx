@@ -26,10 +26,10 @@ const FEATURE_ITEMS = [
   { label: 'Satisfaction Guarantee' },
 ]
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'vision',  label: 'Vision'  },
-  { id: 'mission', label: 'Mission' },
-  { id: 'values',  label: 'Values'  },
+const TABS: { id: Tab; label: string; number: string }[] = [
+  { id: 'vision',  label: 'Vision',  number: '01' },
+  { id: 'mission', label: 'Mission', number: '02' },
+  { id: 'values',  label: 'Values',  number: '03' },
 ]
 
 const TAB_CONTENT: Record<Tab, {
@@ -68,13 +68,7 @@ export function TCAboutSectionClient(_props: Props) {
 
   return (
     <>
-      {/* Block-scoped keyframe for the image slow-zoom */}
-      <style suppressHydrationWarning>{`
-        @keyframes tc-about-zoom {
-          from { transform: scale(1);    }
-          to   { transform: scale(1.12); }
-        }
-      `}</style>
+      {/* No block-scoped keyframes needed — image hover is CSS-only */}
 
       <section className="relative bg-[#fdfdfd] py-[120px] px-[5%] overflow-hidden">
 
@@ -185,8 +179,8 @@ export function TCAboutSectionClient(_props: Props) {
             </div>
 
             {/* Panes container */}
-            <div className="relative min-h-[500px]" role="tabpanel">
-              {TABS.map(({ id }) => {
+            <div className="relative min-h-[540px]" role="tabpanel">
+              {TABS.map(({ id, number }) => {
                 const pane    = TAB_CONTENT[id]
                 const isActive = activeTab === id
                 return (
@@ -201,8 +195,12 @@ export function TCAboutSectionClient(_props: Props) {
                         : 'opacity-0 invisible translate-y-[10px]',
                     )}
                   >
-                    {/* Left half — text content */}
-                    <div className="p-[50px] flex flex-col justify-center">
+                    {/* Left half — text content (About1 step-item active style) */}
+                    <div className="p-[50px] flex flex-col justify-center border-l-[3px] border-teal bg-gradient-to-r from-teal-light/50 to-transparent">
+                      {/* Step number */}
+                      <span className="block font-mono text-[0.9rem] font-bold tracking-[2px] mb-2 text-teal/50">
+                        {number}
+                      </span>
                       <h4 className="text-[1.8rem] font-extrabold text-navy-deep mb-5 leading-tight tracking-[-0.5px]">
                         {pane.heading}
                       </h4>
@@ -213,9 +211,9 @@ export function TCAboutSectionClient(_props: Props) {
                         </p>
                       )}
 
-                      {/* Values list (only on values pane) */}
+                      {/* Values list — plain, same style as Vision/Mission body text */}
                       {pane.values && (
-                        <div className="flex flex-col gap-[22px]">
+                        <div className="flex flex-col gap-[20px]">
                           {pane.values.map((v) => (
                             <div key={v.title}>
                               <span className="block font-mono text-[0.75rem] uppercase tracking-[2px] text-teal font-bold mb-1">
@@ -230,19 +228,19 @@ export function TCAboutSectionClient(_props: Props) {
                       )}
                     </div>
 
-                    {/* Right half — image */}
-                    <div className="overflow-hidden bg-navy-deep">
-                      <img
-                        src={pane.image}
-                        alt={pane.imageAlt}
-                        className="w-full h-full object-cover"
-                        style={{
-                          filter: 'grayscale(0.15) contrast(1.1)',
-                          ...(isActive
-                            ? { animation: 'tc-about-zoom 8s linear forwards' }
-                            : { transform: 'scale(1)' }),
-                        }}
-                      />
+                    {/* Right half — image (About4 style: padded + offset teal shadow) */}
+                    <div className="bg-[#fdfdfd] flex items-center justify-center p-[30px] h-full">
+                      <div
+                        className="overflow-hidden w-full h-full"
+                        style={{ boxShadow: '20px 20px 0 var(--color-teal-light)' }}
+                      >
+                        <img
+                          src={pane.image}
+                          alt={pane.imageAlt}
+                          className="w-full h-full object-cover block transition-transform duration-500 hover:scale-105"
+                          style={{ filter: 'saturate(0.8) contrast(1.1)' }}
+                        />
+                      </div>
                     </div>
 
                   </div>

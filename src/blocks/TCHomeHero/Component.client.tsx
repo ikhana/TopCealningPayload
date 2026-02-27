@@ -40,7 +40,7 @@ export function TCHomeHeroClient(_props: Props) {
         }
       `}</style>
 
-      <section className="relative z-10 min-h-screen w-full flex flex-col -mt-20 lg:-mt-24">
+      <section className="relative min-h-screen w-full flex flex-col -mt-20 lg:-mt-24">
 
         {/* ── Background image + left-to-right teal-light gradient overlay ── */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
@@ -193,31 +193,6 @@ export function TCHomeHeroClient(_props: Props) {
               </Link>
             </div>
 
-          </div>
-        </div>
-
-        {/* ── Footer-overlap CTA — lives inside hero, extends into footer ── */}
-        {/* The parent section must have z-[10] relative to the footer.       */}
-        {/* The footer (bg-navy-obsidian) should have padding-top: 110px      */}
-        {/* when this block is used directly above it.                        */}
-        <div className="relative z-[10] px-[5%] pt-12 mb-[-75px]">
-          <div
-            className={cn(
-              'flex flex-col md:flex-row items-center justify-between gap-6',
-              'bg-white/[0.04] border border-teal/25',
-              'px-10 py-9 backdrop-blur-[14px]',
-            )}
-          >
-            <h3 className="text-[1.8rem] font-extrabold text-white m-0">
-              Ready for a spotless space?
-            </h3>
-            <Link
-              href="/booking"
-              className="flex-shrink-0 inline-flex items-center px-10 py-5 bg-teal text-primary-foreground font-bold font-mono text-[0.8rem] tracking-[1px] no-underline transition-all duration-500 hover:-translate-y-[5px] hover:bg-white hover:text-navy-deep"
-              style={{ boxShadow: '0 10px 30px color-mix(in oklch, var(--color-teal) 30%, transparent)' }}
-            >
-              BOOK ONLINE NOW
-            </Link>
           </div>
         </div>
 
