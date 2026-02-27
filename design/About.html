@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --glass-border: rgba(23, 176, 171, 0.2);
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --prism-gradient: linear-gradient(135deg, rgba(23, 176, 171, 0.1) 0%, rgba(252, 129, 129, 0.05) 50%, rgba(61, 207, 202, 0.1) 100%);
+            --transition-fluid: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0fafa;
+            color: var(--deep-navy);
+            font-family: var(--sans-font);
+            overflow-x: hidden;
+        }
+
+        /* ── SECTION BRIDGE (Seamless connection to Hero) ── */
+        .section-bridge {
+            height: 120px;
+            background: linear-gradient(to bottom, #f0fafa, #ffffff);
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-section {
+            background: #ffffff;
+            position: relative;
+            padding: 100px 5% 160px;
+            overflow: hidden;
+        }
+
+        /* ── PRISMATIC BACKGROUND ELEMENTS ── */
+        .prism-sphere {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(23, 176, 171, 0.05) 0%, transparent 70%);
+            top: -100px;
+            right: -200px;
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── SECTION HEADER ── */
+        .about-header {
+            position: relative;
+            z-index: 10;
+            margin-bottom: 80px;
+            max-width: 800px;
+        }
+
+        .kicker {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .about-header h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -2px;
+            color: var(--deep-navy);
+        }
+
+        /* ── STEPPER GRID LAYOUT ── */
+        .stepper-container {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 80px;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ── LEFT SIDE: PRISMATIC IMAGE FRAME ── */
+        .image-stage {
+            position: relative;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prismatic-frame {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .image-layer {
+            position: absolute;
+            inset: 20px;
+            opacity: 0;
+            transform: scale(1.1) rotate(2deg);
+            transition: var(--transition-fluid);
+            filter: saturate(0.8) contrast(1.1);
+        }
+
+        .image-layer.active {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .image-layer img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Light Refraction Overlay */
+        .refraction-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, 
+                transparent 30%, 
+                rgba(23, 176, 171, 0.1) 45%, 
+                rgba(252, 129, 129, 0.1) 50%, 
+                rgba(255, 255, 255, 0.2) 55%, 
+                transparent 70%);
+            background-size: 200% 200%;
+            z-index: 5;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            animation: lightSweep 8s infinite linear;
+        }
+
+        @keyframes lightSweep {
+            0% { background-position: -200% -200%; }
+            100% { background-position: 200% 200%; }
+        }
+
+        /* ── RIGHT SIDE: STEP INTERACTION ── */
+        .steps-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .step-item {
+            cursor: pointer;
+            position: relative;
+            padding-left: 60px;
+            transition: var(--transition-fluid);
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--glass-border);
+            transition: var(--transition-fluid);
+        }
+
+        .step-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: rgba(13, 27, 46, 0.3);
+            margin-bottom: 1rem;
+            transition: var(--transition-fluid);
+        }
+
+        .step-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #4a5a6a;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: var(--transition-fluid);
+        }
+
+        /* Active Step Styling */
+        .step-item.active .step-title {
+            color: var(--deep-navy);
+            transform: translateX(10px);
+        }
+
+        .step-item.active .step-number {
+            color: var(--primary-teal);
+            transform: scale(1.2);
+        }
+
+        .step-item.active .step-content {
+            max-height: 300px;
+            opacity: 1;
+            margin-top: 10px;
+        }
+
+        /* Progress Line */
+        .step-item::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 30px;
+            bottom: -30px;
+            width: 1px;
+            background: var(--glass-border);
+        }
+
+        .step-item:last-child::before { display: none; }
+
+        .step-item.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 30px;
+            width: 10px;
+            height: 1px;
+            background: var(--primary-teal);
+        }
+
+        /* ── VALUES GRID (Inside Step 3) ── */
+        .values-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .value-card {
+            background: var(--off-white);
+            border-left: 3px solid var(--primary-teal);
+            padding: 15px 20px;
+            transition: 0.3s;
+        }
+
+        .value-card h4 {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            color: var(--primary-teal);
+        }
+
+        .value-card p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .stepper-container {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+            .image-stage {
+                height: 400px;
+                order: 2;
+            }
+            .steps-nav {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .about-section {
+                padding: 60px 5%;
+            }
+            .step-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Seamless Bridge from Hero -->
+    <div class="section-bridge"></div>
+
+    <section class="about-section">
+        <div class="prism-sphere"></div>
+        
+        <div class="about-header">
+            <span class="kicker">Who we are</span>
+            <h2>Foundations of Excellence</h2>
+        </div>
+
+        <div class="stepper-container">
+            <!-- Left: Prismatic Image Stage -->
+            <div class="image-stage">
+                <div class="prismatic-frame">
+                    <div class="refraction-overlay"></div>
+                    
+                    <div class="image-layer active" id="img-1">
+                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000" alt="Vision">
+                    </div>
+                    <div class="image-layer" id="img-2">
+                        <img src="https://images.unsplash.com/photo-1581578731522-620478bc6403?auto=format&fit=crop&q=80&w=1000" alt="Mission">
+                    </div>
+                    <div class="image-layer" id="img-3">
+                        <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=1000" alt="Values">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Interactive Steps -->
+            <div class="steps-nav">
+                
+                <!-- Vision -->
+                <div class="step-item active" onclick="switchStep(1)">
+                    <span class="step-number">01.</span>
+                    <h3 class="step-title">Vision</h3>
+                    <div class="step-content">
+                        <p>To be the leading company in cleaning and disinfection, providing high-quality solutions for both commercial and residential clients. Our priority is customer satisfaction through professional, personalized, and attentive service, ensuring convenience and exceptional results.</p>
+                    </div>
+                </div>
+
+                <!-- Mission -->
+                <div class="step-item" onclick="switchStep(2)">
+                    <span class="step-number">02.</span>
+                    <h3 class="step-title">Mission</h3>
+                    <div class="step-content">
+                        <p>We offer high-quality cleaning and disinfection services. We strive to provide the best care, with efficiency, competitive prices and an agile process, so that our customers are not only satisfied, but also happy with each service.</p>
+                    </div>
+                </div>
+
+                <!-- Values -->
+                <div class="step-item" onclick="switchStep(3)">
+                    <span class="step-number">03.</span>
+                    <h3 class="step-title">Values</h3>
+                    <div class="step-content">
+                        <div class="values-grid">
+                            <div class="value-card">
+                                <h4>Transparency</h4>
+                                <p>Fair prices with no hidden costs, maintaining honest and open communication.</p>
+                            </div>
+                            <div class="value-card">
+                                <h4>Teamwork</h4>
+                                <p>Fostering collaboration and mutual support to deliver excellence.</p>
+                            </div>
+                            <div class="value-card">
+                                <h4>Commitment</h4>
+                                <p>Dedication and responsibility ensuring quality in every service we provide.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function switchStep(index) {
+            // Update Text Content
+            const steps = document.querySelectorAll('.step-item');
+            steps.forEach((step, i) => {
+                if (i === index - 1) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            // Update Image Layers
+            const images = document.querySelectorAll('.image-layer');
+            images.forEach((img, i) => {
+                if (i === index - 1) {
+                    img.classList.add('active');
+                } else {
+                    img.classList.remove('active');
+                }
+            });
+        }
+
+        // Optional: Auto-rotation for visual flair on entry
+        let currentStep = 1;
+        const autoPlay = setInterval(() => {
+            currentStep = currentStep < 3 ? currentStep + 1 : 1;
+            // Uncomment next line to enable autoplay
+            // switchStep(currentStep);
+        }, 5000);
+
+        // Clear interval on user interaction
+        document.querySelector('.steps-nav').addEventListener('click', () => clearInterval(autoPlay));
+
+        // Parallax effect on the image frame
+        document.addEventListener('mousemove', (e) => {
+            const frame = document.querySelector('.prismatic-frame');
+            const rect = frame.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            
+            frame.style.transform = `perspective(1000px) rotateY(${x * 5}deg) rotateX(${y * -5}deg)`;
+        });
+    </script>
+</body>
+</html>
+
+

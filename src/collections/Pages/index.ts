@@ -60,6 +60,7 @@ import { VideoShowcase } from '@/blocks/VideoShowcase/config'
 import { TestimonialsCarousel } from '@/blocks/TestimonialsCarousel/config'
 import { ScheduleCallCTA } from '@/blocks/ScheduleCallCTA/config'
 import { TCHomeHero } from '@/blocks/TCHomeHero/config'
+import { TCAboutSection } from '@/blocks/TCAboutSection/config'
 
 
 
@@ -202,6 +203,7 @@ export const Pages: CollectionConfig = {
                  TestimonialsCarousel,
                  ScheduleCallCTA,
                  TCHomeHero,
+                 TCAboutSection,
 
               ],
               required: true,

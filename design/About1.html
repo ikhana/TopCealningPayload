@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --sand: #f5efe0;
+            --light-aquamarine: #e0f5f4;
+            --glass-white: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(23, 176, 171, 0.15);
+            --text-dark: #1a2840;
+            --text-muted: #4a5a6a;
+            --off-white: #f0fafa;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            --strata-shadow: 0 30px 60px -12px rgba(13, 27, 46, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--sans-font);
+            background: var(--off-white);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── SECTION TRANSITION ────────────────────────── */
+        .strata-connector {
+            height: 120px;
+            background: linear-gradient(to bottom, var(--off-white), #ffffff);
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-padding {
+            padding: 100px 5%;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── CRYSTALLINE STEPPER ───────────────────────── */
+        .stepper-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .stepper-visuals {
+            position: relative;
+            height: 600px;
+            perspective: 2000px;
+        }
+
+        .crystal-frame {
+            position: absolute;
+            inset: 0;
+            border: 1px solid var(--glass-border);
+            background: var(--light-aquamarine);
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+            overflow: hidden;
+            transform: rotateY(-5deg);
+            box-shadow: var(--strata-shadow);
+        }
+
+        .crystal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            opacity: 0;
+            transform: scale(1.1) translateX(20px);
+            transition: var(--transition);
+            filter: saturate(0.8) contrast(1.1);
+        }
+
+        .crystal-image.active {
+            opacity: 1;
+            transform: scale(1) translateX(0);
+        }
+
+        .prism-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(23, 176, 171, 0.1) 0%, transparent 50%, rgba(252, 129, 129, 0.05) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* ── STEPPER CONTROLS ─────────────────────────── */
+        .stepper-content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .section-tag {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            color: var(--primary-teal);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .step-item {
+            cursor: pointer;
+            padding: 30px;
+            border-left: 3px solid #e2e8f0;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .step-item.active {
+            border-left-color: var(--primary-teal);
+            background: linear-gradient(90deg, var(--light-aquamarine) 0%, transparent 100%);
+        }
+
+        .step-item h3 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            color: var(--deep-navy);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .step-number {
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+            color: var(--primary-teal);
+            opacity: 0.5;
+        }
+
+        .step-description {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+            max-width: 500px;
+            display: none;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .step-item.active .step-description {
+            display: block;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .value-card {
+            background: white;
+            padding: 15px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            gap: 15px;
+        }
+
+        .value-card b {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: 0.8rem;
+        }
+
+        /* ── PROGRAMS SECTION ────────────────────────── */
+        .programs-section {
+            background: var(--deep-navy);
+            padding: 120px 5%;
+            color: white;
+            position: relative;
+        }
+
+        .programs-grid {
+            max-width: 1400px;
+            margin: 60px auto 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .program-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 50px 40px;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow: hidden;
+        }
+
+        .program-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary-teal);
+            transform: translateY(-10px);
+        }
+
+        .program-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(225deg, var(--primary-teal) 0%, transparent 50%);
+            opacity: 0.2;
+        }
+
+        .program-card h4 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .program-card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .program-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .program-features li {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .program-features li::before {
+            content: '>';
+            font-weight: 900;
+        }
+
+        .guarantee-badge {
+            background: var(--coral);
+            color: white;
+            padding: 5px 12px;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            font-weight: 700;
+            align-self: flex-start;
+        }
+
+        /* ── BUTTONS ─────────────────────────────────── */
+        .explore-btn {
+            margin-top: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 1.2rem 2.5rem;
+            background: var(--primary-teal);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            transition: var(--transition);
+        }
+
+        .explore-btn:hover {
+            background: white;
+            color: var(--deep-navy);
+            transform: translateX(10px);
+        }
+
+        /* ── ANIMATIONS ──────────────────────────────── */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1100px) {
+            .stepper-container {
+                grid-template-columns: 1fr;
+            }
+            .stepper-visuals {
+                height: 400px;
+                order: -1;
+            }
+            .crystal-frame {
+                clip-path: none;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Connector to Hero -->
+    <div class="strata-connector"></div>
+
+    <!-- ── ABOUT SECTION (FIRST PART) ───────────────────── -->
+    <section class="section-padding">
+        <div class="stepper-container">
+            <div class="stepper-visuals">
+                <div class="crystal-frame">
+                    <div class="prism-overlay"></div>
+                    <img src="https://images.unsplash.com/photo-1581578731522-1d544063897b?auto=format&fit=crop&q=80&w=1200" alt="Vision" class="crystal-image active" id="img-vision">
+                    <img src="https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&q=80&w=1200" alt="Mission" class="crystal-image" id="img-mission">
+                    <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=1200" alt="Values" class="crystal-image" id="img-values">
+                </div>
+            </div>
+
+            <div class="stepper-content">
+                <div>
+                    <span class="section-tag">Legacy of Clean</span>
+                    <h2 style="font-size: 3.5rem; font-weight: 900; letter-spacing: -3px; color: var(--deep-navy);">The Core Strata.</h2>
+                </div>
+
+                <div class="step-controls">
+                    <!-- Vision -->
+                    <div class="step-item active" onclick="switchStep(0)">
+                        <h3><span class="step-number">01</span> VISION</h3>
+                        <div class="step-description">
+                            To be the leading company in cleaning and disinfection, providing high-quality solutions for both commercial and residential clients. We are committed to delivering an efficient and seamless experience, ensuring convenience and exceptional results.
+                        </div>
+                    </div>
+
+                    <!-- Mission -->
+                    <div class="step-item" onclick="switchStep(1)">
+                        <h3><span class="step-number">02</span> MISSION</h3>
+                        <div class="step-description">
+                            We offer high-quality cleaning and disinfection services. We strive to provide the best care, with efficiency, competitive prices and an agile process, so that our customers are not only satisfied, but also happy with each service.
+                        </div>
+                    </div>
+
+                    <!-- Values -->
+                    <div class="step-item" onclick="switchStep(2)">
+                        <h3><span class="step-number">03</span> VALUES</h3>
+                        <div class="step-description">
+                            <div class="values-grid">
+                                <div class="value-card">
+                                    <b>TRANSPARENCY</b>
+                                    <p style="font-size: 0.8rem;">Fair prices, no hidden costs, and honest communication.</p>
+                                </div>
+                                <div class="value-card">
+                                    <b>TEAMWORK</b>
+                                    <p style="font-size: 0.8rem;">Collaboration and mutual support for high-quality results.</p>
+                                </div>
+                                <div class="value-card">
+                                    <b>COMMITMENT</b>
+                                    <p style="font-size: 0.8rem;">Dedication to our team and responsibility to our clients.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── SECOND PART: MAINTENANCE & GUARANTEE ─────────── -->
+    <section class="programs-section">
+        <div style="max-width: 1400px; margin: 0 auto; text-align: center;">
+            <span class="section-tag" style="color: var(--teal-glow);">Tailored Solutions</span>
+            <h2 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; letter-spacing: -2px; margin-top: 10px;">Maintenance & Assurance.</h2>
+        </div>
+
+        <div class="programs-grid">
+            <!-- Programs -->
+            <div class="program-card">
+                <h4>Customized Maintenance</h4>
+                <p>Designed to meet specific needs rather than a standard service. We analyze frequency, type of cleaning, and focus areas to fit your budget perfectly.</p>
+                <ul class="program-features">
+                    <li>Daily / Weekly / Monthly</li>
+                    <li>Deep Disinfection</li>
+                    <li>Focus: Medical / Office / Home</li>
+                </ul>
+            </div>
+
+            <!-- Guarantee -->
+            <div class="program-card">
+                <div class="guarantee-badge">SURETY LAYER</div>
+                <h4>Satisfaction Guarantee</h4>
+                <p>We are committed to excellence. If you are not completely satisfied with the results, we will make it right. Professionalism and peace of mind are non-negotiable.</p>
+                <div style="margin-top: auto; display: flex; align-items: center; gap: 10px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-teal)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span style="font-family: var(--mono-font); font-size: 0.7rem;">Verified Service Standard</span>
+                </div>
+            </div>
+
+            <!-- Discounts -->
+            <div class="program-card">
+                <h4>Long-Term Partnerships</h4>
+                <p>We value loyalty. Our recurring service contracts offer exclusive discounts while ensuring consistent, high-quality maintenance tailored to your specific ecosystem.</p>
+                <div style="background: rgba(23, 176, 171, 0.1); padding: 20px; border-left: 2px solid var(--primary-teal);">
+                    <p style="font-family: var(--mono-font); color: white; font-size: 0.8rem;">Exclusive Recurring Discounts Available</p>
+                </div>
+                <a href="#" class="explore-btn" style="margin-top: auto;">EXPLORE SERVICES</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const images = document.querySelectorAll('.crystal-image');
+        const steps = document.querySelectorAll('.step-item');
+
+        function switchStep(index) {
+            // Update Active Step UI
+            steps.forEach(step => step.classList.remove('active'));
+            steps[index].classList.add('active');
+
+            // Update Active Image
+            images.forEach(img => img.classList.remove('active'));
+            images[index].classList.add('active');
+        }
+
+        // Intersection Observer for reveal animations
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.program-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(40px)';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
+
+
+

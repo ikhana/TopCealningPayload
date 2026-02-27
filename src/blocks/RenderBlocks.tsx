@@ -47,6 +47,7 @@ import { VideoShowcaseBlock } from '@/blocks/VideoShowcase/Component';
 import { TestimonialsCarouselBlock } from './TestimonialsCarousel';
 import { ScheduleCallCTABlock } from './ScheduleCallCTA';
 import { TCHomeHeroBlock } from './TCHomeHero';
+import { TCAboutSectionBlock } from './TCAboutSection';
 
 
 const blockComponents = {
@@ -101,6 +102,7 @@ videoShowcase: VideoShowcaseBlock,
 testimonialsCarousel: TestimonialsCarouselBlock,
 scheduleCallCTA: ScheduleCallCTABlock,
 tcHomeHero: TCHomeHeroBlock,
+tcAboutSection: TCAboutSectionBlock,
 }
 
 export const RenderBlocks: React.FC<{
