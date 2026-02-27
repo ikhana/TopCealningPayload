@@ -40,7 +40,7 @@ export function TCHomeHeroClient(_props: Props) {
         }
       `}</style>
 
-      <section className="relative min-h-screen w-full flex flex-col overflow-hidden">
+      <section className="relative z-10 min-h-screen w-full flex flex-col -mt-20 lg:-mt-24">
 
         {/* ── Background image + left-to-right teal-light gradient overlay ── */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
@@ -69,12 +69,12 @@ export function TCHomeHeroClient(_props: Props) {
             {/* Headline */}
             <h1
               className={cn(
-                'font-black leading-[0.95] mb-8 tracking-[-2px] text-navy-deep',
+                'font-black leading-[0.82] mb-8 tracking-[-2px] text-navy-deep',
                 'text-[clamp(2.2rem,4.5vw,3.8rem)]',
               )}
             >
               Cleaning Service
-              <span className="block text-teal italic font-light tracking-[-1px]">
+              <span className="block text-teal italic font-light tracking-[-1px] leading-[1]">
                 Now servicing YOUR area!
               </span>
             </h1>

@@ -43,7 +43,7 @@ export function FooterClient({ footer }: Props) {
       />
 
       {/* ── Main 4-column grid ──────────────────────────────────────── */}
-      <div className="relative z-[2] max-w-[1400px] mx-auto px-[5%] pt-[60px] pb-[60px]">
+      <div className="relative z-[2] max-w-[1400px] mx-auto px-[5%] pt-[110px] pb-[60px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.5fr] gap-10 lg:gap-[60px]">
 
           {/* ── Column 1: Brand ─────────────────────────────────────── */}
