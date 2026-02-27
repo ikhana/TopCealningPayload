@@ -1109,6 +1109,7 @@ export interface Page {
     | FaqBlock
     | TestimonialsCarouselBlock
     | ScheduleCallCTABlock
+    | TCHomeHeroBlock
   )[];
   meta?: {
     title?: string | null;
@@ -4594,6 +4595,15 @@ export interface ScheduleCallCTABlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCHomeHeroBlock".
+ */
+export interface TCHomeHeroBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcHomeHero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addons".
  */
 export interface Addon {
@@ -5613,6 +5623,7 @@ export interface PagesSelect<T extends boolean = true> {
         faq?: T | FaqBlockSelect<T>;
         testimonialsCarousel?: T | TestimonialsCarouselBlockSelect<T>;
         scheduleCallCTA?: T | ScheduleCallCTABlockSelect<T>;
+        tcHomeHero?: T | TCHomeHeroBlockSelect<T>;
       };
   meta?:
     | T
@@ -6782,6 +6793,14 @@ export interface ScheduleCallCTABlockSelect<T extends boolean = true> {
   calendarUrl?: T;
   displayDuration?: T;
   disclaimer?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCHomeHeroBlock_select".
+ */
+export interface TCHomeHeroBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

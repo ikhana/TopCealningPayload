@@ -189,6 +189,12 @@
   --color-navy: oklch(var(--color-navy));
   --color-sand: oklch(var(--color-sand));
   --color-coral: oklch(var(--color-coral));
+
+  /* Extended palette — navy variants + teal variants */
+  --color-navy-deep: #0d1b2e;
+  --color-navy-obsidian: #050a12;
+  --color-teal-light: #e0f5f4;
+  --color-teal-glow: #3dcfca;
   
   --color-border-gradient-light: oklch(var(--border-gradient-light));
   --color-border-gradient-mid: oklch(var(--border-gradient-mid));

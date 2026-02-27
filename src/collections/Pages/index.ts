@@ -59,6 +59,7 @@ import { Faq } from '@/blocks/Faq/config'
 import { VideoShowcase } from '@/blocks/VideoShowcase/config'
 import { TestimonialsCarousel } from '@/blocks/TestimonialsCarousel/config'
 import { ScheduleCallCTA } from '@/blocks/ScheduleCallCTA/config'
+import { TCHomeHero } from '@/blocks/TCHomeHero/config'
 
 
 
@@ -199,7 +200,8 @@ export const Pages: CollectionConfig = {
                  Faq,
                 // VideoShowcase,
                  TestimonialsCarousel,
-                 ScheduleCallCTA
+                 ScheduleCallCTA,
+                 TCHomeHero,
 
               ],
               required: true,
