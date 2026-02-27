@@ -1064,7 +1064,52 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (TCHomeHeroBlock | ArchiveBlock | BannerBlock)[];
+  layout: (
+    | ArchiveBlock
+    | BannerBlock
+    | CallToActionBlock
+    | CarouselBlock
+    | ContentBlock
+    | FeaturedPromotionBlock
+    | FormBlock
+    | ContactFormBlock
+    | MediaBlock
+    | TextContentBlock
+    | ThreeItemGridBlock
+    | HeritageProductShowcaseBlock
+    | VariantShowBlock
+    | ProductSpotlightBlock
+    | ShopByCategoriesBlock
+    | HeritageStoryBlock
+    | HeritageStorySpotlightBlock
+    | TimelineBlock
+    | CraftsmanshipProcessBlock
+    | ServiceHeroBannerBlock
+    | AvailableTestsBlock
+    | ServiceCoverageBlock
+    | ServicesExplorerBlock
+    | ArtisanLegacyBlock
+    | HeritageTrustBlock
+    | PartnerTrustBlock
+    | CleanTestimonialsBlock
+    | BlogShowcaseBlock
+    | QualityGuaranteeBlock
+    | CalendarBookingBlock
+    | HeroFeaturesBlock
+    | ClientServicesBlock
+    | AboutOwnerBlock
+    | WhyItMattersBlock
+    | AboutSplitBlock
+    | ServicesTabsBlock
+    | ValuesGridBlock
+    | ContentShowcaseBlock
+    | ContactInfoCardsBlock
+    | ContactHeroBlock
+    | GRIPPBlock
+    | FaqBlock
+    | TestimonialsCarouselBlock
+    | ScheduleCallCTABlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -1077,15 +1122,6 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TCHomeHeroBlock".
- */
-export interface TCHomeHeroBlock {
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'tcHomeHero';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1188,6 +1224,38 @@ export interface BannerBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CarouselBlock".
+ */
+export interface CarouselBlock {
+  populateBy?: ('collection' | 'selection') | null;
+  relationTo?: 'products' | null;
+  categories?: (number | Category)[] | null;
+  limit?: number | null;
+  selectedDocs?:
+    | {
+        relationTo: 'products';
+        value: number | Product;
+      }[]
+    | null;
+  /**
+   * This field is auto-populated after-read
+   */
+  populatedDocs?:
+    | {
+        relationTo: 'products';
+        value: number | Product;
+      }[]
+    | null;
+  /**
+   * This field is auto-populated after-read
+   */
+  populatedDocsTotal?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'carousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ContentBlock".
  */
 export interface ContentBlock {
@@ -1233,6 +1301,329 @@ export interface ContentBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedPromotionBlock".
+ */
+export interface FeaturedPromotionBlock {
+  /**
+   * Main headline for the promotion
+   */
+  title: string;
+  /**
+   * Promotional content and details
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Choose media source for the promotion
+   */
+  mediaSource?: ('upload' | 'product') | null;
+  /**
+   * Upload custom promotional image
+   */
+  media?: (number | null) | Media;
+  /**
+   * Select a product to feature in this promotion
+   */
+  featuredProduct?: (number | null) | Product;
+  /**
+   * Include a call-to-action button
+   */
+  enableCTA?: boolean | null;
+  /**
+   * Configure the call-to-action button
+   */
+  link?: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: number | Page;
+    } | null;
+    url?: string | null;
+    label: string;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline') | null;
+  };
+  /**
+   * Optional promotional badge (e.g., "Limited Edition", "New Release")
+   */
+  cornerLabel?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'featuredPromotion';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock".
+ */
+export interface FormBlock {
+  form: number | Form;
+  enableIntro?: boolean | null;
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'formBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  title: string;
+  fields?:
+    | (
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            defaultValue?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'checkbox';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'country';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'email';
+          }
+        | {
+            message?: {
+              root: {
+                type: string;
+                children: {
+                  type: string;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'message';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'number';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            placeholder?: string | null;
+            options?:
+              | {
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'select';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'state';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textarea';
+          }
+      )[]
+    | null;
+  submitButtonLabel?: string | null;
+  /**
+   * Choose whether to display an on-page message or redirect to a different page after they submit the form.
+   */
+  confirmationType?: ('message' | 'redirect') | null;
+  confirmationMessage?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  redirect?: {
+    url: string;
+  };
+  /**
+   * Send custom emails when the form submits. Use comma separated lists to send the same email to multiple recipients. To reference a value from this form, wrap that field's name with double curly brackets, i.e. {{firstName}}. You can use a wildcard {{*}} to output all data and {{*:table}} to format it as an HTML table in the email.
+   */
+  emails?:
+    | {
+        emailTo?: string | null;
+        cc?: string | null;
+        bcc?: string | null;
+        replyTo?: string | null;
+        emailFrom?: string | null;
+        subject: string;
+        /**
+         * Enter the message that should be sent in this email.
+         */
+        message?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactFormBlock".
+ */
+export interface ContactFormBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Background color style
+   */
+  backgroundStyle?: ('default' | 'muted' | 'card') | null;
+  /**
+   * Select the contact form to display
+   */
+  form: number | Form;
+  /**
+   * Contact information, headings, emails, etc.
+   */
+  leftContent: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Add department-specific email addresses
+   */
+  contactEmails?:
+    | {
+        /**
+         * Department name (e.g., "General", "Advisory")
+         */
+        label: string;
+        /**
+         * Email address
+         */
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contactForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
@@ -1240,6 +1631,2966 @@ export interface MediaBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextContentBlock".
+ */
+export interface TextContentBlock {
+  /**
+   * Add your text content here
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textContent';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ThreeItemGridBlock".
+ */
+export interface ThreeItemGridBlock {
+  products?: (number | Product)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'threeItemGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeritageProductShowcaseBlock".
+ */
+export interface HeritageProductShowcaseBlock {
+  /**
+   * Optional main heading for the product showcase
+   */
+  sectionTitle?: string | null;
+  /**
+   * Optional subtitle describing the collection
+   */
+  sectionSubtitle?: string | null;
+  /**
+   * Select exactly 5 products to showcase in your heritage collection
+   */
+  items: {
+    product: number | Product;
+    /**
+     * Short, compelling description (20-40 words)
+     */
+    desc: string;
+    /**
+     * Mark as featured product (gets premium styling)
+     */
+    featured?: boolean | null;
+    /**
+     * How to display the price
+     */
+    priceType?: ('auto' | 'from' | 'starting' | 'unit' | 'custom' | 'hidden') | null;
+    /**
+     * Custom price text (e.g., "Price per 5 Coasters")
+     */
+    customPrice?: string | null;
+    /**
+     * Unit description (e.g., "per set", "each")
+     */
+    unitText?: string | null;
+    /**
+     * Optional: Override price (leave empty to use product price)
+     */
+    overridePrice?: number | null;
+    id?: string | null;
+  }[];
+  /**
+   * Auto-advance through products
+   */
+  autoplay?: boolean | null;
+  /**
+   * Autoplay speed (milliseconds)
+   */
+  speed?: number | null;
+  /**
+   * Show navigation dots
+   */
+  dots?: boolean | null;
+  /**
+   * Show navigation arrows
+   */
+  arrows?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productShowcase';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VariantShowBlock".
+ */
+export interface VariantShowBlock {
+  /**
+   * Optional title for the additional images section (shown below hero)
+   */
+  secTitle?: string | null;
+  /**
+   * Create product showcases. First one will be displayed by default.
+   */
+  items: {
+    /**
+     * Select the product for this showcase
+     */
+    product: number | Product;
+    /**
+     * Main heading for the hero section
+     */
+    title: string;
+    /**
+     * Optional subtitle or tagline for the hero section
+     */
+    subtitle?: string | null;
+    /**
+     * Large hero background image for this product showcase
+     */
+    hero: number | Media;
+    /**
+     * Call-to-action button configuration
+     */
+    cta?: {
+      /**
+       * Show call-to-action button
+       */
+      enabled?: boolean | null;
+      /**
+       * Button text
+       */
+      label?: string | null;
+    };
+    /**
+     * Additional images showing different angles, details, or features of the product
+     */
+    additionalImages: {
+      /**
+       * Additional product image (detail shot, angle, etc.)
+       */
+      img: number | Media;
+      /**
+       * Title for this image (e.g., "Premium Walnut Finish")
+       */
+      title: string;
+      /**
+       * Description of what this image shows
+       */
+      desc: string;
+      /**
+       * Mark as featured for special highlighting
+       */
+      featured?: boolean | null;
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'variantShow';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductSpotlightBlock".
+ */
+export interface ProductSpotlightBlock {
+  ctaButton?: {
+    enabled?: boolean | null;
+    label?: string | null;
+    /**
+     * Link URL (e.g., /products, /shop)
+     */
+    link?: string | null;
+    style?: ('bourbon' | 'charcoal' | 'outline') | null;
+  };
+  /**
+   * What to showcase in the spotlight
+   */
+  spotlightType?: ('products' | 'categories') | null;
+  /**
+   * Choose exactly 3 products to spotlight
+   */
+  selectedProducts?: (number | Product)[] | null;
+  /**
+   * Choose exactly 3 categories to spotlight
+   */
+  selectedCategories?: (number | Category)[] | null;
+  /**
+   * Labels and custom images for your 3 spotlight items (in order)
+   */
+  spotlightLabels: {
+    /**
+     * Label for this spotlight item (e.g., "EXECUTIVE CHOICE")
+     */
+    customLabel: string;
+    /**
+     * Optional: Override with custom image
+     */
+    customImage?: (number | null) | Media;
+    id?: string | null;
+  }[];
+  layout?: ('even' | 'featured') | null;
+  /**
+   * Enable hover animations
+   */
+  enableHoverEffects?: boolean | null;
+  bg?: ('parchment' | 'white' | 'charcoal' | 'bourbon') | null;
+  pad?: ('small' | 'medium' | 'large' | 'xl') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productSpotlight';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ShopByCategoriesBlock".
+ */
+export interface ShopByCategoriesBlock {
+  /**
+   * Main heading for the categories section
+   */
+  title?: string | null;
+  /**
+   * Optional subtitle or description text
+   */
+  description?: string | null;
+  /**
+   * How to populate the categories to display
+   */
+  populateBy?: ('collection' | 'selection') | null;
+  /**
+   * Maximum number of categories to display (works best with multiples of 3)
+   */
+  limit?: number | null;
+  /**
+   * Choose specific categories to display
+   */
+  selectedCategories?: (number | Category)[] | null;
+  /**
+   * Choose between grid or carousel display
+   */
+  displayStyle?: ('grid' | 'carousel') | null;
+  /**
+   * How category images should be displayed within their containers
+   */
+  imageStyle?: ('cover' | 'contain' | 'fill') | null;
+  /**
+   * Background theme for the entire section
+   */
+  backgroundColor?: ('parchment' | 'white' | 'charcoal' | 'bourbon') | null;
+  /**
+   * Vertical spacing around the section
+   */
+  sectionPadding?: ('small' | 'medium' | 'large' | 'xl') | null;
+  /**
+   * Display category descriptions in the cards
+   */
+  showCategoryDescriptions?: boolean | null;
+  /**
+   * Enable heritage hover animations and transitions
+   */
+  enableAnimations?: boolean | null;
+  /**
+   * Show "Explore All Collections" button below categories
+   */
+  showViewAllButton?: boolean | null;
+  /**
+   * Custom text for the view all button
+   */
+  viewAllButtonText?: string | null;
+  /**
+   * Custom link for the view all button
+   */
+  viewAllButtonLink?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'shopByCategories';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeritageStoryBlock".
+ */
+export interface HeritageStoryBlock {
+  /**
+   * Hero background image for your heritage story
+   */
+  heroImage: number | Media;
+  /**
+   * Alt text for the hero image for accessibility
+   */
+  heroImageAlt?: string | null;
+  /**
+   * Heritage story content. Use H1 for main title, paragraphs for body text.
+   */
+  storyContent: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Call-to-action button configuration
+   */
+  ctaButton?: {
+    /**
+     * Show call-to-action button
+     */
+    enabled?: boolean | null;
+    /**
+     * Button text
+     */
+    label?: string | null;
+    /**
+     * Button destination URL
+     */
+    link?: string | null;
+  };
+  /**
+   * Optional title above the image gallery
+   */
+  galleryTitle?: string | null;
+  /**
+   * Left image in the gallery (e.g., craftsperson working)
+   */
+  leftImage?: (number | null) | Media;
+  /**
+   * Alt text for the left image
+   */
+  leftImageAlt?: string | null;
+  /**
+   * Right image in the gallery (e.g., detailed craftsmanship)
+   */
+  rightImage?: (number | null) | Media;
+  /**
+   * Alt text for the right image
+   */
+  rightImageAlt?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heritageStory';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeritageStorySpotlightBlock".
+ */
+export interface HeritageStorySpotlightBlock {
+  /**
+   * Name of the person or subject being featured
+   */
+  subjectName: string;
+  /**
+   * Compelling headline for the story
+   */
+  storyTitle: string;
+  /**
+   * Optional role or title to display below the name
+   */
+  subjectRole?: string | null;
+  /**
+   * Professional portrait or heritage photo (square/portrait orientation works best)
+   */
+  portraitImage: number | Media;
+  /**
+   * Describe the image for accessibility
+   */
+  portraitAlt?: string | null;
+  /**
+   * Personal signature, logo, or mark to display at the bottom
+   */
+  signatureImage?: (number | null) | Media;
+  /**
+   * Describe the signature for accessibility
+   */
+  signatureAlt?: string | null;
+  /**
+   * Tell the heritage story - write in engaging paragraphs that capture the essence and legacy
+   */
+  storyContent: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Where to position the portrait image
+   */
+  imagePosition?: ('left' | 'right') | null;
+  /**
+   * Background style for the story section
+   */
+  backgroundColor?: ('antique' | 'white' | 'charcoal') | null;
+  /**
+   * Optional highlighted quote to emphasize within the story
+   */
+  featuredQuote?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heritageStorySpotlight';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock".
+ */
+export interface TimelineBlock {
+  /**
+   * Main heading for the timeline section
+   */
+  sectionTitle?: string | null;
+  /**
+   * Subtitle text below the main heading
+   */
+  sectionDescription?: string | null;
+  /**
+   * Add milestones in chronological order (newest first works well)
+   */
+  timelineItems?:
+    | {
+        /**
+         * Year or time period for this milestone
+         */
+        year: string;
+        /**
+         * Clear, compelling title for this milestone
+         */
+        title: string;
+        /**
+         * Tell the story of this milestone (keep to 2-3 sentences for best readability)
+         */
+        description: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        /**
+         * Image representing this milestone (workshop photo, product, award, etc.)
+         */
+        milestoneImage?: (number | null) | Media;
+        /**
+         * Describe the image for accessibility
+         */
+        imageAlt?: string | null;
+        /**
+         * Highlight this milestone with special styling (use sparingly - 2-3 max)
+         */
+        featured?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * How to arrange timeline items (alternating works best for most content)
+   */
+  layoutDirection?: ('alternating' | 'left' | 'right') | null;
+  /**
+   * Add a button below the timeline
+   */
+  enableCTA?: boolean | null;
+  ctaText?: string | null;
+  ctaLink?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'timeline';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CraftsmanshipProcessBlock".
+ */
+export interface CraftsmanshipProcessBlock {
+  /**
+   * Main heading for the craftsmanship process section
+   */
+  sectionTitle?: string | null;
+  /**
+   * Brief description shown above the tabbed process interface
+   */
+  sectionDescription?: string | null;
+  /**
+   * What type of process is this showcasing? Affects styling and content suggestions.
+   */
+  processType?: ('general' | 'product' | 'custom') | null;
+  /**
+   * Craftsmanship steps in chronological order (3-8 steps work best for the tabbed interface)
+   */
+  processSteps?:
+    | {
+        /**
+         * Step order (1, 2, 3, etc.) - determines display sequence
+         */
+        stepNumber: number;
+        /**
+         * Clear, concise title for this process step
+         */
+        stepTitle: string;
+        /**
+         * Main description shown in the tabbed interface - can be 2-3 sentences with good detail
+         */
+        stepDescription: string;
+        /**
+         * Main workshop photo for this step - will be prominently displayed in the tabbed interface
+         */
+        stepImage: number | Media;
+        /**
+         * Describe the image for accessibility
+         */
+        imageAlt?: string | null;
+        /**
+         * How long this step takes (optional but adds authenticity)
+         */
+        duration?: string | null;
+        /**
+         * Tools or equipment used in this step (optional)
+         */
+        tools?: string | null;
+        /**
+         * Mark as a signature step - gets crown icon and special highlighting in the interface
+         */
+        highlightStep?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Display step numbers in the tab navigation and content area
+   */
+  showStepNumbers?: boolean | null;
+  /**
+   * Add a button after the process steps
+   */
+  enableCTA?: boolean | null;
+  ctaText?: string | null;
+  ctaLink?: string | null;
+  /**
+   * For product pages: link this process to a specific product
+   */
+  linkedProduct?: (number | null) | Product;
+  /**
+   * Display materials/wood types used in the process (good for product pages)
+   */
+  showMaterials?: boolean | null;
+  /**
+   * Materials used in this specific process
+   */
+  materials?:
+    | {
+        materialName: string;
+        materialDescription?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'craftsmanshipProcess';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceHeroBannerBlock".
+ */
+export interface ServiceHeroBannerBlock {
+  /**
+   * Background image for the banner section (optional - will use default if not provided)
+   */
+  backgroundImage?: (number | null) | Media;
+  /**
+   * Main headline text (first part)
+   */
+  mainHeading: string;
+  /**
+   * Emphasized/italicized text in the middle
+   */
+  emphasizedText: string;
+  /**
+   * Continuation of headline text (second part)
+   */
+  subHeading: string;
+  /**
+   * Call-to-action button configuration
+   */
+  ctaButton: {
+    /**
+     * Button text
+     */
+    text: string;
+    /**
+     * Button link URL
+     */
+    link: string;
+    /**
+     * Open link in new tab
+     */
+    openInNewTab?: boolean | null;
+  };
+  /**
+   * Background overlay darkness for text readability
+   */
+  overlayOpacity?: ('light' | 'medium' | 'dark') | null;
+  /**
+   * Text alignment within the banner
+   */
+  textAlignment?: ('left' | 'center' | 'right') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'serviceHeroBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AvailableTestsBlock".
+ */
+export interface AvailableTestsBlock {
+  /**
+   * Main section heading
+   */
+  sectionTitle: string;
+  featuredTest: {
+    /**
+     * Main test category name
+     */
+    testName: string;
+    /**
+     * Test category subtitle/description
+     */
+    subtitle: string;
+    /**
+     * Detailed description of the test category
+     */
+    description: string;
+    /**
+     * Background image for the featured test card
+     */
+    backgroundImage: number | Media;
+    ctaButton: {
+      /**
+       * Button text
+       */
+      text: string;
+      /**
+       * Button link URL
+       */
+      link: string;
+    };
+  };
+  secondaryTests?:
+    | {
+        /**
+         * Test category name
+         */
+        testName: string;
+        /**
+         * Test category subtitle/description
+         */
+        subtitle: string;
+        /**
+         * Detailed description of the test category
+         */
+        description: string;
+        /**
+         * Background image for the test card
+         */
+        backgroundImage: number | Media;
+        ctaButton: {
+          /**
+           * Button text
+           */
+          text: string;
+          /**
+           * Button link URL
+           */
+          link: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'availableTests';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceCoverageBlock".
+ */
+export interface ServiceCoverageBlock {
+  /**
+   * Main section heading
+   */
+  sectionTitle: string;
+  /**
+   * Subtitle below main heading
+   */
+  sectionSubtitle: string;
+  /**
+   * Arizona coverage map image (SVG recommended)
+   */
+  mapImage: number | Media;
+  coverageStats: {
+    /**
+     * Number of cities served (e.g., "15+")
+     */
+    citiesServed: string;
+    /**
+     * Service radius distance (e.g., "50 miles")
+     */
+    serviceRadius: string;
+    /**
+     * Response time promise (e.g., "Same day availability")
+     */
+    responseTime: string;
+  };
+  cities: {
+    /**
+     * City name
+     */
+    name: string;
+    status: 'available' | 'coming-soon' | 'on-request';
+    id?: string | null;
+  }[];
+  ctaButton: {
+    /**
+     * Button text
+     */
+    text: string;
+    /**
+     * Button link URL
+     */
+    link: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'serviceCoverage';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesExplorerBlock".
+ */
+export interface ServicesExplorerBlock {
+  title: string;
+  subtitle?: string | null;
+  /**
+   * Default "Book Test" button action
+   */
+  bookingType: 'scroll' | 'external';
+  /**
+   * Block ID to scroll to
+   */
+  scrollTarget?: string | null;
+  /**
+   * External booking URL
+   */
+  bookingUrl?: string | null;
+  enableSearch?: boolean | null;
+  enableFilters?: boolean | null;
+  /**
+   * Optional: Define suggested categories for consistency across your lab services. Tests can use any category name, but these provide helpful guidance.
+   */
+  categoryGuidance?:
+    | {
+        /**
+         * Suggested category name for organizing tests
+         */
+        categoryName: string;
+        /**
+         * Optional: Brief description of what tests belong in this category
+         */
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  tests: {
+    /**
+     * Auto-generated if empty (NBL_001, NBL_002...)
+     */
+    testId?: string | null;
+    title: string;
+    description: string;
+    /**
+     * Enter category name - categories are created automatically. See "Category Guidance" above for suggestions.
+     */
+    category: string;
+    /**
+     * Test preview image (optional - fallback design will be used if not provided)
+     */
+    image?: (number | null) | Media;
+    type: 'blood' | 'urine' | 'saliva' | 'hair' | 'panel';
+    turnaround: string;
+    /**
+     * Mobile collection available
+     */
+    mobile?: boolean | null;
+    featured?: boolean | null;
+    /**
+     * Detailed test information with rich formatting. Use H2 for section headers (Preparation, Clinical Relevance, etc.)
+     */
+    details?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Optional: Key features/benefits of this test
+     */
+    features?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Override default booking action
+     */
+    customBook?: boolean | null;
+    customType?: ('scroll' | 'external') | null;
+    customTarget?: string | null;
+    customUrl?: string | null;
+    id?: string | null;
+  }[];
+  sortBy?: ('featured' | 'alpha' | 'category') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'servicesExplorer';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArtisanLegacyBlock".
+ */
+export interface ArtisanLegacyBlock {
+  /**
+   * Showcase of your finest custom work or workshop scene
+   */
+  heroImage: number | Media;
+  /**
+   * Alt text for accessibility
+   */
+  heroImageAlt?: string | null;
+  /**
+   * How much of the bottom should be used for content overlay
+   */
+  overlayHeight?: ('quarter' | 'third' | 'half') | null;
+  /**
+   * Background style for the content overlay
+   */
+  overlayBackground?: ('gradient' | 'bourbon' | 'dark' | 'minimal') | null;
+  /**
+   * Rich content to overlay on the hero (e.g., "Three Generations of Masterful Craftsmanship")
+   */
+  heroContent: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Text alignment within the overlay area
+   */
+  contentAlignment?: ('center' | 'left' | 'right') | null;
+  /**
+   * Title above the testimonial gallery
+   */
+  galleryTitle?: string | null;
+  /**
+   * Gallery of custom work with client testimonials
+   */
+  testimonials: {
+    /**
+     * Image of the custom work or client space
+     */
+    showcaseImage: number | Media;
+    /**
+     * Alt text for the showcase image
+     */
+    showcaseImageAlt?: string | null;
+    /**
+     * Rich testimonial content with client quote and attribution
+     */
+    testimonialContent: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    /**
+     * Type of project (e.g., "Executive Boardroom", "Private Collection")
+     */
+    projectType?: string | null;
+    /**
+     * Mark as featured testimonial (gets premium styling)
+     */
+    featured?: boolean | null;
+    id?: string | null;
+  }[];
+  legacyStats?: {
+    /**
+     * Show heritage statistics section
+     */
+    enabled?: boolean | null;
+    title?: string | null;
+    /**
+     * Heritage statistics
+     */
+    stats?:
+      | {
+          /**
+           * Heritage number (e.g., "3rd", "500+", "1923")
+           */
+          number: string;
+          /**
+           * Heritage label (e.g., "Generation", "Masterpieces", "Established")
+           */
+          label: string;
+          /**
+           * Optional description of this heritage aspect
+           */
+          description?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * How to display the testimonial gallery
+   */
+  layout?: ('gallery' | 'masonry' | 'stories') | null;
+  /**
+   * How images should be displayed
+   */
+  imageStyle?: ('cover' | 'contain') | null;
+  /**
+   * Enable subtle hover animations
+   */
+  enableHoverEffects?: boolean | null;
+  sectionPadding?: ('small' | 'medium' | 'large') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'artisanLegacy';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeritageTrustBlock".
+ */
+export interface HeritageTrustBlock {
+  /**
+   * Main section heading
+   */
+  sectionTitle?: string | null;
+  /**
+   * Optional subtitle below the main heading
+   */
+  sectionSubtitle?: string | null;
+  /**
+   * Testimonials for the interactive carousel - each will rotate with synchronized logo highlighting
+   */
+  testimonials?:
+    | {
+        /**
+         * Testimonial quote - keep impactful and concise
+         */
+        quote: string;
+        /**
+         * Professional headshot of the testimonial author
+         */
+        authorPhoto: number | Media;
+        /**
+         * Full name of the testimonial author
+         */
+        authorName: string;
+        /**
+         * Job title or position (e.g., "CEO", "Founder", "Director")
+         */
+        authorTitle: string;
+        /**
+         * Company name - must match a company in the logos array below
+         */
+        companyName: string;
+        /**
+         * Company logo - will be highlighted when this testimonial is active
+         */
+        companyLogo: number | Media;
+        /**
+         * Industry category (optional, e.g., "Manufacturing", "Tech", "Healthcare")
+         */
+        industry?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Carousel behavior settings
+   */
+  carouselSettings?: {
+    /**
+     * Automatically rotate through testimonials
+     */
+    autoplay?: boolean | null;
+    /**
+     * Time in milliseconds between rotations (default: 6000 = 6 seconds)
+     */
+    autoplaySpeed?: number | null;
+    /**
+     * Pause carousel when user hovers over it
+     */
+    pauseOnHover?: boolean | null;
+    /**
+     * Show progress indicators at the bottom
+     */
+    showProgress?: boolean | null;
+  };
+  /**
+   * Add a call-to-action button below the testimonials
+   */
+  enableCTA?: boolean | null;
+  /**
+   * CTA button text
+   */
+  ctaLabel?: string | null;
+  /**
+   * CTA button destination URL
+   */
+  ctaLink?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heritageTrust';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnerTrustBlock".
+ */
+export interface PartnerTrustBlock {
+  hero: {
+    /**
+     * Showcase image featuring your custom/corporate work
+     */
+    image: number | Media;
+    /**
+     * Small text above main headline (e.g., "HANDCRAFTED", "BESPOKE")
+     */
+    eyebrow?: string | null;
+    /**
+     * Main headline for the section
+     */
+    headline: string;
+    /**
+     * Tagline under the headline
+     */
+    tagline?: string | null;
+    /**
+     * Overlay style for text readability
+     */
+    overlay?: ('none' | 'subtle' | 'strong' | 'gradient') | null;
+  };
+  trust?: {
+    /**
+     * How to display trust indicators
+     */
+    method?: ('stats' | 'logos' | 'quote' | 'mixed') | null;
+    /**
+     * Title for the trust section
+     */
+    title?: string | null;
+    /**
+     * Key statistics to showcase trust
+     */
+    stats?:
+      | {
+          /**
+           * Number or statistic (e.g., "500+", "25 Years")
+           */
+          number: string;
+          /**
+           * Description (e.g., "Custom Projects", "Years Crafting")
+           */
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Partner company logos
+     */
+    logos?:
+      | {
+          /**
+           * Partner/client logo
+           */
+          logo: number | Media;
+          /**
+           * Company name for accessibility
+           */
+          name: string;
+          /**
+           * Industry category (optional)
+           */
+          industry?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Featured testimonial
+     */
+    quote?: {
+      /**
+       * Testimonial quote
+       */
+      text: string;
+      /**
+       * Quote author name
+       */
+      author: string;
+      /**
+       * Author title/position
+       */
+      title?: string | null;
+      /**
+       * Company name
+       */
+      company?: string | null;
+    };
+  };
+  cta?: {
+    enabled?: boolean | null;
+    text?: string | null;
+    link?: string | null;
+    style?: ('bourbon' | 'charcoal' | 'outline') | null;
+  };
+  layout?: ('stacked' | 'split' | 'overlay') | null;
+  bg?: ('parchment' | 'charcoal' | 'white' | 'bourbon') | null;
+  pad?: ('small' | 'medium' | 'large' | 'xl') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'partnerTrust';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CleanTestimonialsBlock".
+ */
+export interface CleanTestimonialsBlock {
+  /**
+   * Main section heading
+   */
+  sectionTitle?: string | null;
+  /**
+   * Optional subtitle below the main heading
+   */
+  sectionSubtitle?: string | null;
+  /**
+   * Patient testimonials - no photos needed, focuses on authentic experiences
+   */
+  testimonials?:
+    | {
+        /**
+         * Patient testimonial quote - keep impactful and authentic
+         */
+        quote: string;
+        /**
+         * Patient name (first name + last initial for privacy: "Sarah K.")
+         */
+        authorName: string;
+        /**
+         * Optional title or context (e.g., "Business Owner", "Healthcare Worker")
+         */
+        authorTitle?: string | null;
+        /**
+         * Type of test taken (e.g., "Genetic Screening", "Cancer Panel", "Employment Physical")
+         */
+        testType?: string | null;
+        /**
+         * Optional location (e.g., "Phoenix, AZ", "Scottsdale")
+         */
+        location?: string | null;
+        /**
+         * Optional date when testimonial was given
+         */
+        testimonialDate?: string | null;
+        /**
+         * Star rating (1-5 stars)
+         */
+        rating?: number | null;
+        /**
+         * Mark as featured testimonial (shows first in lists)
+         */
+        featured?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * How to display the testimonials
+   */
+  layout?: ('grid' | 'masonry' | 'single' | 'carousel') | null;
+  /**
+   * Background style for the section
+   */
+  backgroundColor?: ('clinical' | 'white' | 'subtle' | 'gradient') | null;
+  /**
+   * Vertical spacing for the section
+   */
+  sectionPadding?: ('small' | 'medium' | 'large' | 'xl') | null;
+  /**
+   * Show star ratings above testimonials
+   */
+  enableRatings?: boolean | null;
+  /**
+   * Display the type of test associated with each testimonial
+   */
+  showTestType?: boolean | null;
+  /**
+   * Add a call-to-action button below the testimonials
+   */
+  enableCTA?: boolean | null;
+  /**
+   * CTA button text
+   */
+  ctaText?: string | null;
+  /**
+   * CTA button destination URL
+   */
+  ctaLink?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cleanTestimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlogShowcaseBlock".
+ */
+export interface BlogShowcaseBlock {
+  /**
+   * Main heading for the blog section
+   */
+  title?: string | null;
+  /**
+   * Subtitle text below the main heading
+   */
+  description?: string | null;
+  displayType?: ('featured' | 'latest' | 'manual') | null;
+  selectedPosts?: (number | BlogPost)[] | null;
+  /**
+   * First post will be featured prominently
+   */
+  limit?: number | null;
+  /**
+   * Leave empty to hide the button
+   */
+  ctaText?: string | null;
+  ctaLink?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'blogShowcase';
+}
+/**
+ * Create and manage blog posts for your bourbon craft website
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts".
+ */
+export interface BlogPost {
+  id: number;
+  /**
+   * The main title of your blog post
+   */
+  title: string;
+  /**
+   * When this post should be published
+   */
+  publishedAt: string;
+  /**
+   * The author of this blog post
+   */
+  author: number | User;
+  /**
+   * The main image for this blog post (recommended: 1200x630px)
+   */
+  featuredImage: number | Media;
+  /**
+   * A short summary of your post (max 200 characters)
+   */
+  excerpt: string;
+  /**
+   * Build your blog post with flexible content blocks
+   */
+  flexibleContent?: (TextContentBlock | MediaBlock | ContentBlock | BannerBlock | CallToActionBlock)[] | null;
+  /**
+   * Categorize your blog post
+   */
+  categories: (number | BlogCategory)[];
+  /**
+   * Add tags to help readers find related content
+   */
+  tags?: (number | BlogTag)[] | null;
+  /**
+   * Select related blog posts to display
+   */
+  relatedPosts?: (number | BlogPost)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * Comma-separated keywords (e.g., "bourbon, craftsmanship, heritage")
+   */
+  keywords?: string | null;
+  /**
+   * Show this post prominently on the blog homepage
+   */
+  featured?: boolean | null;
+  /**
+   * Estimated minutes to read (auto-calculated if empty)
+   */
+  readingTime?: number | null;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Organize your blog posts into categories
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-categories".
+ */
+export interface BlogCategory {
+  id: number;
+  /**
+   * The display name for this category
+   */
+  name: string;
+  /**
+   * Color theme for this category
+   */
+  color?: ('bourbon' | 'charcoal' | 'saddle' | 'navy' | 'oak' | 'copper') | null;
+  /**
+   * A brief description of what content belongs in this category
+   */
+  description?: string | null;
+  /**
+   * Optional image to represent this category (recommended: 800x400px)
+   */
+  featuredImage?: (number | null) | Media;
+  /**
+   * Lower numbers appear first
+   */
+  displayOrder?: number | null;
+  /**
+   * Show this category prominently
+   */
+  featured?: boolean | null;
+  meta?: {
+    /**
+     * SEO title for category archive pages
+     */
+    title?: string | null;
+    /**
+     * SEO description for category archive pages (max 160 characters)
+     */
+    description?: string | null;
+  };
+  /**
+   * Optional: Create sub-categories by selecting a parent
+   */
+  parent?: (number | null) | BlogCategory;
+  /**
+   * Number of posts in this category
+   */
+  postCount?: number | null;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Simple tags for blog post topics
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-tags".
+ */
+export interface BlogTag {
+  id: number;
+  /**
+   * Keep it short and descriptive
+   */
+  name: string;
+  /**
+   * Optional: Brief description for internal reference
+   */
+  description?: string | null;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QualityGuaranteeBlock".
+ */
+export interface QualityGuaranteeBlock {
+  /**
+   * Main heading for the guarantee section
+   */
+  title?: string | null;
+  /**
+   * Brief description of your quality commitment
+   */
+  description?: string | null;
+  /**
+   * Choose the type to get relevant default content. Each type includes pre-filled examples you can customize.
+   */
+  type?: ('company' | 'product' | 'service') | null;
+  /**
+   * How to display the guarantees (grid works best for most cases)
+   */
+  layout?: ('grid' | 'horizontal' | 'badges') | null;
+  /**
+   * Your quality guarantees (3-6 items work best). Default content is provided based on the type selected above.
+   */
+  items?:
+    | {
+        /**
+         * Clear, compelling guarantee title
+         */
+        title: string;
+        /**
+         * Icon to represent this guarantee
+         */
+        icon?:
+          | ('shield' | 'trophy' | 'star' | 'hammer' | 'diamond' | 'leaf' | 'target' | 'fire' | 'tree' | 'flag')
+          | null;
+        /**
+         * Brief description of this guarantee (1-2 sentences)
+         */
+        description: string;
+        /**
+         * Add expandable details section for warranty terms, conditions, etc.
+         */
+        hasDetails?: boolean | null;
+        /**
+         * Detailed warranty terms, conditions, or process details
+         */
+        details?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        /**
+         * Feature this guarantee with premium styling (use for your most important guarantee)
+         */
+        highlight?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  defaultContentType?: ('company' | 'product' | 'service') | null;
+  /**
+   * Add decorative heritage elements and texture overlays
+   */
+  showBadge?: boolean | null;
+  /**
+   * Add a button below the guarantees
+   */
+  enableCTA?: boolean | null;
+  ctaText?: string | null;
+  /**
+   * Internal link (start with /) or external URL
+   */
+  ctaLink?: string | null;
+  /**
+   * Optional: associate with specific product (mainly for product-specific warranties)
+   */
+  product?: (number | null) | Product;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'qualityGuarantee';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CalendarBookingBlock".
+ */
+export interface CalendarBookingBlock {
+  /**
+   * Main section heading
+   */
+  sectionTitle: string;
+  /**
+   * Section description below the title
+   */
+  sectionSubtitle?: string | null;
+  /**
+   * GoHighLevel calendar iframe URL (e.g., https://link.brandbloom.org/widget/booking/F06h1x3q4vC0Zz9z9FPC)
+   */
+  calendarIframeUrl: string;
+  /**
+   * Title displayed above the calendar widget
+   */
+  calendarTitle?: string | null;
+  /**
+   * Description displayed below the calendar title
+   */
+  calendarDescription?: string | null;
+  /**
+   * Trust indicators displayed below the calendar (3-4 recommended)
+   */
+  trustIndicators?:
+    | {
+        /**
+         * Trust indicator title (e.g., "Same-Day Availability")
+         */
+        title: string;
+        /**
+         * Trust indicator description
+         */
+        description: string;
+        /**
+         * Icon to display with this trust indicator
+         */
+        icon?: ('calendar' | 'clock' | 'mappin' | 'zap') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Background style for the section
+   */
+  backgroundColor?: ('white' | 'clinical' | 'gradient' | 'coral') | null;
+  /**
+   * Show subtle medical grid pattern in background
+   */
+  enableBackgroundPattern?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'calendarBooking';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroFeaturesBlock".
+ */
+export interface HeroFeaturesBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Hero background image
+   */
+  backgroundImage: number | Media;
+  /**
+   * Dark overlay opacity over background image
+   */
+  overlayOpacity?: ('40' | '50' | '60' | '70' | '80' | '90') | null;
+  /**
+   * First part of the heading (white text)
+   */
+  heading1: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Second part of the heading (golden/primary color)
+   */
+  heading2?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  cta1: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  cta2: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  /**
+   * Feature highlights displayed below the hero
+   */
+  features?:
+    | {
+        /**
+         * Select an icon from the available options
+         */
+        icon:
+          | 'trending-up'
+          | 'bar-chart'
+          | 'pie-chart'
+          | 'line-chart'
+          | 'dollar-sign'
+          | 'credit-card'
+          | 'wallet'
+          | 'briefcase'
+          | 'building'
+          | 'building-2'
+          | 'landmark'
+          | 'shield'
+          | 'shield-check'
+          | 'lock'
+          | 'key'
+          | 'target'
+          | 'award'
+          | 'trophy'
+          | 'medal'
+          | 'lightbulb'
+          | 'rocket'
+          | 'zap'
+          | 'gift'
+          | 'cpu'
+          | 'layers'
+          | 'settings'
+          | 'activity'
+          | 'users'
+          | 'user'
+          | 'user-check'
+          | 'heart'
+          | 'handshake'
+          | 'file-text'
+          | 'clipboard'
+          | 'check-circle'
+          | 'check-square'
+          | 'book-open'
+          | 'scroll-text'
+          | 'bookmark-check'
+          | 'calendar'
+          | 'clock'
+          | 'timer'
+          | 'map-pin'
+          | 'navigation'
+          | 'compass'
+          | 'arrow-right'
+          | 'arrow-up-right'
+          | 'arrow-down-left'
+          | 'chevron-right'
+          | 'graduation-cap'
+          | 'star'
+          | 'globe'
+          | 'home'
+          | 'phone'
+          | 'mail'
+          | 'message-circle'
+          | 'baggage-claim'
+          | 'circle-fading-plus'
+          | 'thermometer'
+          | 'badge-alert';
+        /**
+         * Feature title
+         */
+        title: string;
+        /**
+         * Short feature description
+         */
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heroFeatures';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ClientServicesBlock".
+ */
+export interface ClientServicesBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Optional background image
+   */
+  bgImage?: (number | null) | Media;
+  /**
+   * Icon name for the title (e.g., ArrowDownLeft)
+   */
+  titleIcon?: string | null;
+  title: string;
+  subtitle?: string | null;
+  services?:
+    | {
+        /**
+         * Select an icon from the available options
+         */
+        icon:
+          | 'trending-up'
+          | 'bar-chart'
+          | 'pie-chart'
+          | 'line-chart'
+          | 'dollar-sign'
+          | 'credit-card'
+          | 'wallet'
+          | 'briefcase'
+          | 'building'
+          | 'building-2'
+          | 'landmark'
+          | 'shield'
+          | 'shield-check'
+          | 'lock'
+          | 'key'
+          | 'target'
+          | 'award'
+          | 'trophy'
+          | 'medal'
+          | 'lightbulb'
+          | 'rocket'
+          | 'zap'
+          | 'gift'
+          | 'cpu'
+          | 'layers'
+          | 'settings'
+          | 'activity'
+          | 'users'
+          | 'user'
+          | 'user-check'
+          | 'heart'
+          | 'handshake'
+          | 'file-text'
+          | 'clipboard'
+          | 'check-circle'
+          | 'check-square'
+          | 'book-open'
+          | 'scroll-text'
+          | 'bookmark-check'
+          | 'calendar'
+          | 'clock'
+          | 'timer'
+          | 'map-pin'
+          | 'navigation'
+          | 'compass'
+          | 'arrow-right'
+          | 'arrow-up-right'
+          | 'arrow-down-left'
+          | 'chevron-right'
+          | 'graduation-cap'
+          | 'star'
+          | 'globe'
+          | 'home'
+          | 'phone'
+          | 'mail'
+          | 'message-circle'
+          | 'baggage-claim'
+          | 'circle-fading-plus'
+          | 'thermometer'
+          | 'badge-alert';
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  cta: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'clientServices';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutOwnerBlock".
+ */
+export interface AboutOwnerBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Choose background style for the section
+   */
+  backgroundStyle?: ('default' | 'muted' | 'accent' | 'gradient') | null;
+  title: string;
+  /**
+   * Main testimonial/about text
+   */
+  quote: string;
+  authorName: string;
+  authorTitle: string;
+  /**
+   * Author photo
+   */
+  authorImage: number | Media;
+  cta: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'aboutOwner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WhyItMattersBlock".
+ */
+export interface WhyItMattersBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Choose background style for the section
+   */
+  backgroundStyle?: ('default' | 'muted' | 'accent' | 'gradient') | null;
+  title: string;
+  stats?:
+    | {
+        /**
+         * The number or percentage (e.g., 68%, $182,100)
+         */
+        statValue: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        /**
+         * Description of the statistic
+         */
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Background texture image (right side)
+   */
+  textureImage?: (number | null) | Media;
+  /**
+   * Main image overlaid on texture background
+   */
+  overlayImage: number | Media;
+  /**
+   * Optional disclaimer text below stats
+   */
+  disclaimer?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'whyItMatters';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutSplitBlock".
+ */
+export interface AboutSplitBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Add your content with headings, paragraphs, and formatting. This will be styled according to your theme.
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Image displayed on the right side
+   */
+  image: number | Media;
+  /**
+   * Background color style
+   */
+  backgroundStyle?: ('default' | 'muted' | 'accent') | null;
+  /**
+   * Show decorative dotted pattern on the left
+   */
+  showDottedPattern?: boolean | null;
+  /**
+   * Customize the content card appearance
+   */
+  cardStyle?: {
+    backgroundColor?: ('white' | 'card' | 'muted' | 'transparent') | null;
+    shadow?: ('none' | 'sm' | 'md' | 'lg') | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'aboutSplit';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesTabsBlock".
+ */
+export interface ServicesTabsBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Height of your fixed header in pixels (for sticky positioning)
+   */
+  headerOffset?: number | null;
+  tabs?:
+    | {
+        /**
+         * Tab title (e.g., "Individuals & Families")
+         */
+        title: string;
+        /**
+         * Main heading displayed in the tab content
+         */
+        sectionHeading: string;
+        /**
+         * Description text below the section heading
+         */
+        sectionDescription?: string | null;
+        services?:
+          | {
+              /**
+               * Select an icon from the available options
+               */
+              icon:
+                | 'trending-up'
+                | 'bar-chart'
+                | 'pie-chart'
+                | 'line-chart'
+                | 'dollar-sign'
+                | 'credit-card'
+                | 'wallet'
+                | 'briefcase'
+                | 'building'
+                | 'building-2'
+                | 'landmark'
+                | 'shield'
+                | 'shield-check'
+                | 'lock'
+                | 'key'
+                | 'target'
+                | 'award'
+                | 'trophy'
+                | 'medal'
+                | 'lightbulb'
+                | 'rocket'
+                | 'zap'
+                | 'gift'
+                | 'cpu'
+                | 'layers'
+                | 'settings'
+                | 'activity'
+                | 'users'
+                | 'user'
+                | 'user-check'
+                | 'heart'
+                | 'handshake'
+                | 'file-text'
+                | 'clipboard'
+                | 'check-circle'
+                | 'check-square'
+                | 'book-open'
+                | 'scroll-text'
+                | 'bookmark-check'
+                | 'calendar'
+                | 'clock'
+                | 'timer'
+                | 'map-pin'
+                | 'navigation'
+                | 'compass'
+                | 'arrow-right'
+                | 'arrow-up-right'
+                | 'arrow-down-left'
+                | 'chevron-right'
+                | 'graduation-cap'
+                | 'star'
+                | 'globe'
+                | 'home'
+                | 'phone'
+                | 'mail'
+                | 'message-circle'
+                | 'baggage-claim'
+                | 'circle-fading-plus'
+                | 'thermometer'
+                | 'badge-alert';
+              title: string;
+              description: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'servicesTabs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ValuesGridBlock".
+ */
+export interface ValuesGridBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Background color style
+   */
+  backgroundStyle?: ('default' | 'muted' | 'card') | null;
+  /**
+   * Small text above title (max 50 characters)
+   */
+  eyebrow?: string | null;
+  /**
+   * Main heading and description text
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  values?:
+    | {
+        /**
+         * Select an icon from the available options
+         */
+        icon:
+          | 'trending-up'
+          | 'bar-chart'
+          | 'pie-chart'
+          | 'line-chart'
+          | 'dollar-sign'
+          | 'credit-card'
+          | 'wallet'
+          | 'briefcase'
+          | 'building'
+          | 'building-2'
+          | 'landmark'
+          | 'shield'
+          | 'shield-check'
+          | 'lock'
+          | 'key'
+          | 'target'
+          | 'award'
+          | 'trophy'
+          | 'medal'
+          | 'lightbulb'
+          | 'rocket'
+          | 'zap'
+          | 'gift'
+          | 'cpu'
+          | 'layers'
+          | 'settings'
+          | 'activity'
+          | 'users'
+          | 'user'
+          | 'user-check'
+          | 'heart'
+          | 'handshake'
+          | 'file-text'
+          | 'clipboard'
+          | 'check-circle'
+          | 'check-square'
+          | 'book-open'
+          | 'scroll-text'
+          | 'bookmark-check'
+          | 'calendar'
+          | 'clock'
+          | 'timer'
+          | 'map-pin'
+          | 'navigation'
+          | 'compass'
+          | 'arrow-right'
+          | 'arrow-up-right'
+          | 'arrow-down-left'
+          | 'chevron-right'
+          | 'graduation-cap'
+          | 'star'
+          | 'globe'
+          | 'home'
+          | 'phone'
+          | 'mail'
+          | 'message-circle'
+          | 'baggage-claim'
+          | 'circle-fading-plus'
+          | 'thermometer'
+          | 'badge-alert';
+        /**
+         * Value title (max 30 characters)
+         */
+        title: string;
+        /**
+         * Value description (max 250 characters)
+         */
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  cta: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'valuesGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentShowcaseBlock".
+ */
+export interface ContentShowcaseBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Background color style
+   */
+  backgroundStyle?: ('default' | 'muted' | 'card') | null;
+  /**
+   * Main content for left column (headings, paragraphs, etc.)
+   */
+  leftContent: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Up to 3 images for left column
+   */
+  leftImages?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Content for right column (optional)
+   */
+  rightContent?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Up to 3 images for right column
+   */
+  rightImages?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  cta: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contentShowcase';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactInfoCardsBlock".
+ */
+export interface ContactInfoCardsBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Background color style
+   */
+  backgroundStyle?: ('default' | 'muted' | 'card') | null;
+  cards?:
+    | {
+        /**
+         * Select an icon from the available options
+         */
+        icon:
+          | 'trending-up'
+          | 'bar-chart'
+          | 'pie-chart'
+          | 'line-chart'
+          | 'dollar-sign'
+          | 'credit-card'
+          | 'wallet'
+          | 'briefcase'
+          | 'building'
+          | 'building-2'
+          | 'landmark'
+          | 'shield'
+          | 'shield-check'
+          | 'lock'
+          | 'key'
+          | 'target'
+          | 'award'
+          | 'trophy'
+          | 'medal'
+          | 'lightbulb'
+          | 'rocket'
+          | 'zap'
+          | 'gift'
+          | 'cpu'
+          | 'layers'
+          | 'settings'
+          | 'activity'
+          | 'users'
+          | 'user'
+          | 'user-check'
+          | 'heart'
+          | 'handshake'
+          | 'file-text'
+          | 'clipboard'
+          | 'check-circle'
+          | 'check-square'
+          | 'book-open'
+          | 'scroll-text'
+          | 'bookmark-check'
+          | 'calendar'
+          | 'clock'
+          | 'timer'
+          | 'map-pin'
+          | 'navigation'
+          | 'compass'
+          | 'arrow-right'
+          | 'arrow-up-right'
+          | 'arrow-down-left'
+          | 'chevron-right'
+          | 'graduation-cap'
+          | 'star'
+          | 'globe'
+          | 'home'
+          | 'phone'
+          | 'mail'
+          | 'message-circle'
+          | 'baggage-claim'
+          | 'circle-fading-plus'
+          | 'thermometer'
+          | 'badge-alert';
+        /**
+         * Card title (max 40 characters)
+         */
+        title: string;
+        /**
+         * Card description (max 250 characters)
+         */
+        description: string;
+        link: {
+          link: {
+            type?: ('reference' | 'custom' | 'anchor') | null;
+            newTab?: boolean | null;
+            reference?: {
+              relationTo: 'pages';
+              value: number | Page;
+            } | null;
+            url?: string | null;
+            /**
+             * Section ID to scroll to (e.g., "services", "about-us")
+             */
+            anchor?: string | null;
+            /**
+             * Optional: Link to section on another page. Leave empty to scroll on current page.
+             */
+            anchorPage?: {
+              relationTo: 'pages';
+              value: number | Page;
+            } | null;
+            label: string;
+            /**
+             * Choose how the link should be rendered.
+             */
+            appearance?: ('default' | 'outline') | null;
+          };
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contactInfoCards';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactHeroBlock".
+ */
+export interface ContactHeroBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Background color style
+   */
+  backgroundStyle?: ('default' | 'muted' | 'card') | null;
+  /**
+   * Main heading and description
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Optional hero image
+   */
+  image?: (number | null) | Media;
+  cta: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contactHero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GRIPPBlock".
+ */
+export interface GRIPPBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  title: string;
+  subtitle?: string | null;
+  enabled?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gripp';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock".
+ */
+export interface FaqBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Background style
+   */
+  backgroundStyle?: ('default' | 'muted' | 'card') | null;
+  /**
+   * Small text above title
+   */
+  eyebrow?: string | null;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  contactItems?:
+    | {
+        /**
+         * e.g., "General", "Consultations"
+         */
+        label: string;
+        /**
+         * Email or link text
+         */
+        value: string;
+        /**
+         * Full URL (e.g., mailto:info@example.com or /disclosures)
+         */
+        link: string;
+        id?: string | null;
+      }[]
+    | null;
+  faqs?:
+    | {
+        question: string;
+        answer: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  ctaHeading?: string | null;
+  ctaDescription?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  cta: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  /**
+   * Small disclaimer text below CTA
+   */
+  disclaimer?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsCarouselBlock".
+ */
+export interface TestimonialsCarouselBlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Background color style
+   */
+  backgroundStyle?: ('default' | 'muted' | 'card') | null;
+  /**
+   * Main heading and supporting text
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  cta: {
+    link: {
+      type?: ('reference' | 'custom' | 'anchor') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      /**
+       * Section ID to scroll to (e.g., "services", "about-us")
+       */
+      anchor?: string | null;
+      /**
+       * Optional: Link to section on another page. Leave empty to scroll on current page.
+       */
+      anchorPage?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  testimonials: {
+    /**
+     * Photo of the person giving testimonial (optional - uses placeholder if empty)
+     */
+    image?: (number | null) | Media;
+    /**
+     * Testimonial quote or summary (max 300 characters, optional)
+     */
+    quote?: string | null;
+    /**
+     * Person name (max 50 characters, optional)
+     */
+    name?: string | null;
+    /**
+     * Job title or role (max 60 characters, optional)
+     */
+    role?: string | null;
+    id?: string | null;
+  }[];
+  carouselSettings?: {
+    /**
+     * Enable infinite loop
+     */
+    loop?: boolean | null;
+    /**
+     * Auto-advance slides
+     */
+    autoplay?: boolean | null;
+    /**
+     * Autoplay delay in milliseconds (if enabled)
+     */
+    autoplayDelay?: number | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonialsCarousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ScheduleCallCTABlock".
+ */
+export interface ScheduleCallCTABlock {
+  /**
+   * Unique identifier for this section (used for anchor links). Auto-generated if left empty.
+   */
+  sectionId?: string | null;
+  /**
+   * Enable negative margin to overlap with footer section
+   */
+  negativeOffset?: boolean | null;
+  showLogos?: boolean | null;
+  logos?:
+    | {
+        logo: number | Media;
+        /**
+         * Logo width in pixels
+         */
+        width?: number | null;
+        /**
+         * Logo height in pixels
+         */
+        height?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Main CTA heading
+   */
+  heading: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Description and benefits text
+   */
+  leftContent: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  founderSection?: {
+    /**
+     * Founder/team member photo
+     */
+    image?: (number | null) | Media;
+    /**
+     * Founder name (max 50 characters)
+     */
+    name?: string | null;
+    /**
+     * Founder title (max 50 characters)
+     */
+    title?: string | null;
+  };
+  /**
+   * Phone number for calling (e.g., 2122021810)
+   */
+  phoneNumber?: string | null;
+  /**
+   * Phone number display format (e.g., (212) 202-1810)
+   */
+  phoneDisplay?: string | null;
+  /**
+   * Select the contact form to display
+   */
+  form: number | Form;
+  /**
+   * Alternate between form and calendar embed
+   */
+  enableCalendarToggle?: boolean | null;
+  /**
+   * Calendar embed URL (Calendly, GHL, etc.)
+   */
+  calendarUrl?: string | null;
+  /**
+   * Seconds to display each view before switching
+   */
+  displayDuration?: number | null;
+  /**
+   * Legal disclaimer text (max 200 characters)
+   */
+  disclaimer?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'scheduleCallCTA';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1531,176 +4882,6 @@ export interface ProductComponent {
   createdAt: string;
 }
 /**
- * Create and manage blog posts for your bourbon craft website
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog-posts".
- */
-export interface BlogPost {
-  id: number;
-  /**
-   * The main title of your blog post
-   */
-  title: string;
-  /**
-   * When this post should be published
-   */
-  publishedAt: string;
-  /**
-   * The author of this blog post
-   */
-  author: number | User;
-  /**
-   * The main image for this blog post (recommended: 1200x630px)
-   */
-  featuredImage: number | Media;
-  /**
-   * A short summary of your post (max 200 characters)
-   */
-  excerpt: string;
-  /**
-   * Build your blog post with flexible content blocks
-   */
-  flexibleContent?: (TextContentBlock | MediaBlock | ContentBlock | BannerBlock | CallToActionBlock)[] | null;
-  /**
-   * Categorize your blog post
-   */
-  categories: (number | BlogCategory)[];
-  /**
-   * Add tags to help readers find related content
-   */
-  tags?: (number | BlogTag)[] | null;
-  /**
-   * Select related blog posts to display
-   */
-  relatedPosts?: (number | BlogPost)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * Comma-separated keywords (e.g., "bourbon, craftsmanship, heritage")
-   */
-  keywords?: string | null;
-  /**
-   * Show this post prominently on the blog homepage
-   */
-  featured?: boolean | null;
-  /**
-   * Estimated minutes to read (auto-calculated if empty)
-   */
-  readingTime?: number | null;
-  slug?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TextContentBlock".
- */
-export interface TextContentBlock {
-  /**
-   * Add your text content here
-   */
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'textContent';
-}
-/**
- * Organize your blog posts into categories
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog-categories".
- */
-export interface BlogCategory {
-  id: number;
-  /**
-   * The display name for this category
-   */
-  name: string;
-  /**
-   * Color theme for this category
-   */
-  color?: ('bourbon' | 'charcoal' | 'saddle' | 'navy' | 'oak' | 'copper') | null;
-  /**
-   * A brief description of what content belongs in this category
-   */
-  description?: string | null;
-  /**
-   * Optional image to represent this category (recommended: 800x400px)
-   */
-  featuredImage?: (number | null) | Media;
-  /**
-   * Lower numbers appear first
-   */
-  displayOrder?: number | null;
-  /**
-   * Show this category prominently
-   */
-  featured?: boolean | null;
-  meta?: {
-    /**
-     * SEO title for category archive pages
-     */
-    title?: string | null;
-    /**
-     * SEO description for category archive pages (max 160 characters)
-     */
-    description?: string | null;
-  };
-  /**
-   * Optional: Create sub-categories by selecting a parent
-   */
-  parent?: (number | null) | BlogCategory;
-  /**
-   * Number of posts in this category
-   */
-  postCount?: number | null;
-  slug?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Simple tags for blog post topics
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog-tags".
- */
-export interface BlogTag {
-  id: number;
-  /**
-   * Keep it short and descriptive
-   */
-  name: string;
-  /**
-   * Optional: Brief description for internal reference
-   */
-  description?: string | null;
-  slug?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -1723,180 +4904,6 @@ export interface Redirect {
         } | null);
     url?: string | null;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "forms".
- */
-export interface Form {
-  id: number;
-  title: string;
-  fields?:
-    | (
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            defaultValue?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'checkbox';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'country';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'email';
-          }
-        | {
-            message?: {
-              root: {
-                type: string;
-                children: {
-                  type: string;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-              };
-              [k: string]: unknown;
-            } | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'message';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'number';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            placeholder?: string | null;
-            options?:
-              | {
-                  label: string;
-                  value: string;
-                  id?: string | null;
-                }[]
-              | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'select';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'state';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'text';
-          }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'textarea';
-          }
-      )[]
-    | null;
-  submitButtonLabel?: string | null;
-  /**
-   * Choose whether to display an on-page message or redirect to a different page after they submit the form.
-   */
-  confirmationType?: ('message' | 'redirect') | null;
-  confirmationMessage?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  redirect?: {
-    url: string;
-  };
-  /**
-   * Send custom emails when the form submits. Use comma separated lists to send the same email to multiple recipients. To reference a value from this form, wrap that field's name with double curly brackets, i.e. {{firstName}}. You can use a wildcard {{*}} to output all data and {{*:table}} to format it as an HTML table in the email.
-   */
-  emails?:
-    | {
-        emailTo?: string | null;
-        cc?: string | null;
-        bcc?: string | null;
-        replyTo?: string | null;
-        emailFrom?: string | null;
-        subject: string;
-        /**
-         * Enter the message that should be sent in this email.
-         */
-        message?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2562,9 +5569,50 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
-        tcHomeHero?: T | TCHomeHeroBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        carousel?: T | CarouselBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        featuredPromotion?: T | FeaturedPromotionBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        contactForm?: T | ContactFormBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        textContent?: T | TextContentBlockSelect<T>;
+        threeItemGrid?: T | ThreeItemGridBlockSelect<T>;
+        productShowcase?: T | HeritageProductShowcaseBlockSelect<T>;
+        variantShow?: T | VariantShowBlockSelect<T>;
+        productSpotlight?: T | ProductSpotlightBlockSelect<T>;
+        shopByCategories?: T | ShopByCategoriesBlockSelect<T>;
+        heritageStory?: T | HeritageStoryBlockSelect<T>;
+        heritageStorySpotlight?: T | HeritageStorySpotlightBlockSelect<T>;
+        timeline?: T | TimelineBlockSelect<T>;
+        craftsmanshipProcess?: T | CraftsmanshipProcessBlockSelect<T>;
+        serviceHeroBanner?: T | ServiceHeroBannerBlockSelect<T>;
+        availableTests?: T | AvailableTestsBlockSelect<T>;
+        serviceCoverage?: T | ServiceCoverageBlockSelect<T>;
+        servicesExplorer?: T | ServicesExplorerBlockSelect<T>;
+        artisanLegacy?: T | ArtisanLegacyBlockSelect<T>;
+        heritageTrust?: T | HeritageTrustBlockSelect<T>;
+        partnerTrust?: T | PartnerTrustBlockSelect<T>;
+        cleanTestimonials?: T | CleanTestimonialsBlockSelect<T>;
+        blogShowcase?: T | BlogShowcaseBlockSelect<T>;
+        qualityGuarantee?: T | QualityGuaranteeBlockSelect<T>;
+        calendarBooking?: T | CalendarBookingBlockSelect<T>;
+        heroFeatures?: T | HeroFeaturesBlockSelect<T>;
+        clientServices?: T | ClientServicesBlockSelect<T>;
+        aboutOwner?: T | AboutOwnerBlockSelect<T>;
+        whyItMatters?: T | WhyItMattersBlockSelect<T>;
+        aboutSplit?: T | AboutSplitBlockSelect<T>;
+        servicesTabs?: T | ServicesTabsBlockSelect<T>;
+        valuesGrid?: T | ValuesGridBlockSelect<T>;
+        contentShowcase?: T | ContentShowcaseBlockSelect<T>;
+        contactInfoCards?: T | ContactInfoCardsBlockSelect<T>;
+        contactHero?: T | ContactHeroBlockSelect<T>;
+        gripp?: T | GRIPPBlockSelect<T>;
+        faq?: T | FaqBlockSelect<T>;
+        testimonialsCarousel?: T | TestimonialsCarouselBlockSelect<T>;
+        scheduleCallCTA?: T | ScheduleCallCTABlockSelect<T>;
       };
   meta?:
     | T
@@ -2577,14 +5625,6 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TCHomeHeroBlock_select".
- */
-export interface TCHomeHeroBlockSelect<T extends boolean = true> {
-  id?: T;
-  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2607,6 +5647,1141 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
 export interface BannerBlockSelect<T extends boolean = true> {
   style?: T;
   content?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CarouselBlock_select".
+ */
+export interface CarouselBlockSelect<T extends boolean = true> {
+  populateBy?: T;
+  relationTo?: T;
+  categories?: T;
+  limit?: T;
+  selectedDocs?: T;
+  populatedDocs?: T;
+  populatedDocsTotal?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedPromotionBlock_select".
+ */
+export interface FeaturedPromotionBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  mediaSource?: T;
+  media?: T;
+  featuredProduct?: T;
+  enableCTA?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  cornerLabel?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock_select".
+ */
+export interface FormBlockSelect<T extends boolean = true> {
+  form?: T;
+  enableIntro?: T;
+  introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactFormBlock_select".
+ */
+export interface ContactFormBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  form?: T;
+  leftContent?: T;
+  contactEmails?:
+    | T
+    | {
+        label?: T;
+        email?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextContentBlock_select".
+ */
+export interface TextContentBlockSelect<T extends boolean = true> {
+  content?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ThreeItemGridBlock_select".
+ */
+export interface ThreeItemGridBlockSelect<T extends boolean = true> {
+  products?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeritageProductShowcaseBlock_select".
+ */
+export interface HeritageProductShowcaseBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  sectionSubtitle?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        desc?: T;
+        featured?: T;
+        priceType?: T;
+        customPrice?: T;
+        unitText?: T;
+        overridePrice?: T;
+        id?: T;
+      };
+  autoplay?: T;
+  speed?: T;
+  dots?: T;
+  arrows?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VariantShowBlock_select".
+ */
+export interface VariantShowBlockSelect<T extends boolean = true> {
+  secTitle?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        title?: T;
+        subtitle?: T;
+        hero?: T;
+        cta?:
+          | T
+          | {
+              enabled?: T;
+              label?: T;
+            };
+        additionalImages?:
+          | T
+          | {
+              img?: T;
+              title?: T;
+              desc?: T;
+              featured?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductSpotlightBlock_select".
+ */
+export interface ProductSpotlightBlockSelect<T extends boolean = true> {
+  ctaButton?:
+    | T
+    | {
+        enabled?: T;
+        label?: T;
+        link?: T;
+        style?: T;
+      };
+  spotlightType?: T;
+  selectedProducts?: T;
+  selectedCategories?: T;
+  spotlightLabels?:
+    | T
+    | {
+        customLabel?: T;
+        customImage?: T;
+        id?: T;
+      };
+  layout?: T;
+  enableHoverEffects?: T;
+  bg?: T;
+  pad?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ShopByCategoriesBlock_select".
+ */
+export interface ShopByCategoriesBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  populateBy?: T;
+  limit?: T;
+  selectedCategories?: T;
+  displayStyle?: T;
+  imageStyle?: T;
+  backgroundColor?: T;
+  sectionPadding?: T;
+  showCategoryDescriptions?: T;
+  enableAnimations?: T;
+  showViewAllButton?: T;
+  viewAllButtonText?: T;
+  viewAllButtonLink?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeritageStoryBlock_select".
+ */
+export interface HeritageStoryBlockSelect<T extends boolean = true> {
+  heroImage?: T;
+  heroImageAlt?: T;
+  storyContent?: T;
+  ctaButton?:
+    | T
+    | {
+        enabled?: T;
+        label?: T;
+        link?: T;
+      };
+  galleryTitle?: T;
+  leftImage?: T;
+  leftImageAlt?: T;
+  rightImage?: T;
+  rightImageAlt?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeritageStorySpotlightBlock_select".
+ */
+export interface HeritageStorySpotlightBlockSelect<T extends boolean = true> {
+  subjectName?: T;
+  storyTitle?: T;
+  subjectRole?: T;
+  portraitImage?: T;
+  portraitAlt?: T;
+  signatureImage?: T;
+  signatureAlt?: T;
+  storyContent?: T;
+  imagePosition?: T;
+  backgroundColor?: T;
+  featuredQuote?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock_select".
+ */
+export interface TimelineBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  sectionDescription?: T;
+  timelineItems?:
+    | T
+    | {
+        year?: T;
+        title?: T;
+        description?: T;
+        milestoneImage?: T;
+        imageAlt?: T;
+        featured?: T;
+        id?: T;
+      };
+  layoutDirection?: T;
+  enableCTA?: T;
+  ctaText?: T;
+  ctaLink?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CraftsmanshipProcessBlock_select".
+ */
+export interface CraftsmanshipProcessBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  sectionDescription?: T;
+  processType?: T;
+  processSteps?:
+    | T
+    | {
+        stepNumber?: T;
+        stepTitle?: T;
+        stepDescription?: T;
+        stepImage?: T;
+        imageAlt?: T;
+        duration?: T;
+        tools?: T;
+        highlightStep?: T;
+        id?: T;
+      };
+  showStepNumbers?: T;
+  enableCTA?: T;
+  ctaText?: T;
+  ctaLink?: T;
+  linkedProduct?: T;
+  showMaterials?: T;
+  materials?:
+    | T
+    | {
+        materialName?: T;
+        materialDescription?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceHeroBannerBlock_select".
+ */
+export interface ServiceHeroBannerBlockSelect<T extends boolean = true> {
+  backgroundImage?: T;
+  mainHeading?: T;
+  emphasizedText?: T;
+  subHeading?: T;
+  ctaButton?:
+    | T
+    | {
+        text?: T;
+        link?: T;
+        openInNewTab?: T;
+      };
+  overlayOpacity?: T;
+  textAlignment?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AvailableTestsBlock_select".
+ */
+export interface AvailableTestsBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  featuredTest?:
+    | T
+    | {
+        testName?: T;
+        subtitle?: T;
+        description?: T;
+        backgroundImage?: T;
+        ctaButton?:
+          | T
+          | {
+              text?: T;
+              link?: T;
+            };
+      };
+  secondaryTests?:
+    | T
+    | {
+        testName?: T;
+        subtitle?: T;
+        description?: T;
+        backgroundImage?: T;
+        ctaButton?:
+          | T
+          | {
+              text?: T;
+              link?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceCoverageBlock_select".
+ */
+export interface ServiceCoverageBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  sectionSubtitle?: T;
+  mapImage?: T;
+  coverageStats?:
+    | T
+    | {
+        citiesServed?: T;
+        serviceRadius?: T;
+        responseTime?: T;
+      };
+  cities?:
+    | T
+    | {
+        name?: T;
+        status?: T;
+        id?: T;
+      };
+  ctaButton?:
+    | T
+    | {
+        text?: T;
+        link?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesExplorerBlock_select".
+ */
+export interface ServicesExplorerBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  bookingType?: T;
+  scrollTarget?: T;
+  bookingUrl?: T;
+  enableSearch?: T;
+  enableFilters?: T;
+  categoryGuidance?:
+    | T
+    | {
+        categoryName?: T;
+        description?: T;
+        id?: T;
+      };
+  tests?:
+    | T
+    | {
+        testId?: T;
+        title?: T;
+        description?: T;
+        category?: T;
+        image?: T;
+        type?: T;
+        turnaround?: T;
+        mobile?: T;
+        featured?: T;
+        details?: T;
+        features?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        customBook?: T;
+        customType?: T;
+        customTarget?: T;
+        customUrl?: T;
+        id?: T;
+      };
+  sortBy?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArtisanLegacyBlock_select".
+ */
+export interface ArtisanLegacyBlockSelect<T extends boolean = true> {
+  heroImage?: T;
+  heroImageAlt?: T;
+  overlayHeight?: T;
+  overlayBackground?: T;
+  heroContent?: T;
+  contentAlignment?: T;
+  galleryTitle?: T;
+  testimonials?:
+    | T
+    | {
+        showcaseImage?: T;
+        showcaseImageAlt?: T;
+        testimonialContent?: T;
+        projectType?: T;
+        featured?: T;
+        id?: T;
+      };
+  legacyStats?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        stats?:
+          | T
+          | {
+              number?: T;
+              label?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  layout?: T;
+  imageStyle?: T;
+  enableHoverEffects?: T;
+  sectionPadding?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeritageTrustBlock_select".
+ */
+export interface HeritageTrustBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  sectionSubtitle?: T;
+  testimonials?:
+    | T
+    | {
+        quote?: T;
+        authorPhoto?: T;
+        authorName?: T;
+        authorTitle?: T;
+        companyName?: T;
+        companyLogo?: T;
+        industry?: T;
+        id?: T;
+      };
+  carouselSettings?:
+    | T
+    | {
+        autoplay?: T;
+        autoplaySpeed?: T;
+        pauseOnHover?: T;
+        showProgress?: T;
+      };
+  enableCTA?: T;
+  ctaLabel?: T;
+  ctaLink?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnerTrustBlock_select".
+ */
+export interface PartnerTrustBlockSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        image?: T;
+        eyebrow?: T;
+        headline?: T;
+        tagline?: T;
+        overlay?: T;
+      };
+  trust?:
+    | T
+    | {
+        method?: T;
+        title?: T;
+        stats?:
+          | T
+          | {
+              number?: T;
+              label?: T;
+              id?: T;
+            };
+        logos?:
+          | T
+          | {
+              logo?: T;
+              name?: T;
+              industry?: T;
+              id?: T;
+            };
+        quote?:
+          | T
+          | {
+              text?: T;
+              author?: T;
+              title?: T;
+              company?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        enabled?: T;
+        text?: T;
+        link?: T;
+        style?: T;
+      };
+  layout?: T;
+  bg?: T;
+  pad?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CleanTestimonialsBlock_select".
+ */
+export interface CleanTestimonialsBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  sectionSubtitle?: T;
+  testimonials?:
+    | T
+    | {
+        quote?: T;
+        authorName?: T;
+        authorTitle?: T;
+        testType?: T;
+        location?: T;
+        testimonialDate?: T;
+        rating?: T;
+        featured?: T;
+        id?: T;
+      };
+  layout?: T;
+  backgroundColor?: T;
+  sectionPadding?: T;
+  enableRatings?: T;
+  showTestType?: T;
+  enableCTA?: T;
+  ctaText?: T;
+  ctaLink?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlogShowcaseBlock_select".
+ */
+export interface BlogShowcaseBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  displayType?: T;
+  selectedPosts?: T;
+  limit?: T;
+  ctaText?: T;
+  ctaLink?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QualityGuaranteeBlock_select".
+ */
+export interface QualityGuaranteeBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  type?: T;
+  layout?: T;
+  items?:
+    | T
+    | {
+        title?: T;
+        icon?: T;
+        description?: T;
+        hasDetails?: T;
+        details?: T;
+        highlight?: T;
+        id?: T;
+      };
+  defaultContentType?: T;
+  showBadge?: T;
+  enableCTA?: T;
+  ctaText?: T;
+  ctaLink?: T;
+  product?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CalendarBookingBlock_select".
+ */
+export interface CalendarBookingBlockSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  sectionSubtitle?: T;
+  calendarIframeUrl?: T;
+  calendarTitle?: T;
+  calendarDescription?: T;
+  trustIndicators?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        icon?: T;
+        id?: T;
+      };
+  backgroundColor?: T;
+  enableBackgroundPattern?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroFeaturesBlock_select".
+ */
+export interface HeroFeaturesBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundImage?: T;
+  overlayOpacity?: T;
+  heading1?: T;
+  heading2?: T;
+  description?: T;
+  cta1?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  cta2?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  features?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ClientServicesBlock_select".
+ */
+export interface ClientServicesBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  bgImage?: T;
+  titleIcon?: T;
+  title?: T;
+  subtitle?: T;
+  services?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutOwnerBlock_select".
+ */
+export interface AboutOwnerBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  title?: T;
+  quote?: T;
+  authorName?: T;
+  authorTitle?: T;
+  authorImage?: T;
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WhyItMattersBlock_select".
+ */
+export interface WhyItMattersBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  title?: T;
+  stats?:
+    | T
+    | {
+        statValue?: T;
+        description?: T;
+        id?: T;
+      };
+  textureImage?: T;
+  overlayImage?: T;
+  disclaimer?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutSplitBlock_select".
+ */
+export interface AboutSplitBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  content?: T;
+  image?: T;
+  backgroundStyle?: T;
+  showDottedPattern?: T;
+  cardStyle?:
+    | T
+    | {
+        backgroundColor?: T;
+        shadow?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesTabsBlock_select".
+ */
+export interface ServicesTabsBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  headerOffset?: T;
+  tabs?:
+    | T
+    | {
+        title?: T;
+        sectionHeading?: T;
+        sectionDescription?: T;
+        services?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ValuesGridBlock_select".
+ */
+export interface ValuesGridBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  eyebrow?: T;
+  content?: T;
+  values?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentShowcaseBlock_select".
+ */
+export interface ContentShowcaseBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  leftContent?: T;
+  leftImages?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  rightContent?: T;
+  rightImages?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactInfoCardsBlock_select".
+ */
+export interface ContactInfoCardsBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  cards?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        link?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    anchor?: T;
+                    anchorPage?: T;
+                    label?: T;
+                    appearance?: T;
+                  };
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactHeroBlock_select".
+ */
+export interface ContactHeroBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  content?: T;
+  image?: T;
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GRIPPBlock_select".
+ */
+export interface GRIPPBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  title?: T;
+  subtitle?: T;
+  enabled?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock_select".
+ */
+export interface FaqBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  eyebrow?: T;
+  title?: T;
+  description?: T;
+  contactItems?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        link?: T;
+        id?: T;
+      };
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  ctaHeading?: T;
+  ctaDescription?: T;
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  disclaimer?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsCarouselBlock_select".
+ */
+export interface TestimonialsCarouselBlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  backgroundStyle?: T;
+  content?: T;
+  cta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              anchor?: T;
+              anchorPage?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  testimonials?:
+    | T
+    | {
+        image?: T;
+        quote?: T;
+        name?: T;
+        role?: T;
+        id?: T;
+      };
+  carouselSettings?:
+    | T
+    | {
+        loop?: T;
+        autoplay?: T;
+        autoplayDelay?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ScheduleCallCTABlock_select".
+ */
+export interface ScheduleCallCTABlockSelect<T extends boolean = true> {
+  sectionId?: T;
+  negativeOffset?: T;
+  showLogos?: T;
+  logos?:
+    | T
+    | {
+        logo?: T;
+        width?: T;
+        height?: T;
+        id?: T;
+      };
+  heading?: T;
+  leftContent?: T;
+  founderSection?:
+    | T
+    | {
+        image?: T;
+        name?: T;
+        title?: T;
+      };
+  phoneNumber?: T;
+  phoneDisplay?: T;
+  form?: T;
+  enableCalendarToggle?: T;
+  calendarUrl?: T;
+  displayDuration?: T;
+  disclaimer?: T;
   id?: T;
   blockName?: T;
 }
@@ -2882,15 +7057,6 @@ export interface BlogPostsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TextContentBlock_select".
- */
-export interface TextContentBlockSelect<T extends boolean = true> {
-  content?: T;
-  id?: T;
-  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
