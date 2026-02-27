@@ -9,27 +9,32 @@ import { draftMode } from 'next/headers'
 import { getPayload } from 'payload'
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const pages = await payload.find({
-    collection: 'pages',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
-
-  const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const pages = await payload.find({
+      collection: 'pages',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: {
+        slug: true,
+      },
     })
 
-  return params
+    const params = pages.docs
+      ?.filter((doc) => {
+        return doc.slug !== 'home'
+      })
+      .map(({ slug }) => {
+        return { slug }
+      })
+
+    return params
+  } catch (error) {
+    console.error('generateStaticParams: could not reach database', error)
+    return []
+  }
 }
 
 type Args = {
@@ -56,7 +61,7 @@ export default async function Page({ params }: Args) {
     <article>
       {/* Hero has its own spacing */}
       <RenderHero {...hero} />
-      
+
       {/* Blocks handle their own spacing, first block gets top padding for header */}
       <div className="first:pt-20 lg:first:pt-24">
         <RenderBlocks blocks={layout} />
@@ -76,20 +81,25 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
 }
 
 const queryPageBySlug = async ({ slug }: { slug: string }) => {
-  const { isEnabled: isDraftMode } = await draftMode()
-  const payload = await getPayload({ config: configPromise })
+  try {
+    const { isEnabled: isDraftMode } = await draftMode()
+    const payload = await getPayload({ config: configPromise })
 
-  const result = await payload.find({
-    collection: 'pages',
-    draft: isDraftMode,
-    limit: 1,
-    overrideAccess: isDraftMode,
-    where: {
-      slug: {
-        equals: slug,
+    const result = await payload.find({
+      collection: 'pages',
+      draft: isDraftMode,
+      limit: 1,
+      overrideAccess: isDraftMode,
+      where: {
+        slug: {
+          equals: slug,
+        },
       },
-    },
-  })
+    })
 
-  return result.docs?.[0] || null
+    return result.docs?.[0] || null
+  } catch (error) {
+    console.error(`queryPageBySlug(${slug}): database error`, error)
+    return null
+  }
 }
