@@ -1110,6 +1110,7 @@ export interface Page {
     | TestimonialsCarouselBlock
     | ScheduleCallCTABlock
     | TCHomeHeroBlock
+    | TCAboutSectionBlock
   )[];
   meta?: {
     title?: string | null;
@@ -4604,6 +4605,15 @@ export interface TCHomeHeroBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCAboutSectionBlock".
+ */
+export interface TCAboutSectionBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcAboutSection';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addons".
  */
 export interface Addon {
@@ -5624,6 +5634,7 @@ export interface PagesSelect<T extends boolean = true> {
         testimonialsCarousel?: T | TestimonialsCarouselBlockSelect<T>;
         scheduleCallCTA?: T | ScheduleCallCTABlockSelect<T>;
         tcHomeHero?: T | TCHomeHeroBlockSelect<T>;
+        tcAboutSection?: T | TCAboutSectionBlockSelect<T>;
       };
   meta?:
     | T
@@ -6801,6 +6812,14 @@ export interface ScheduleCallCTABlockSelect<T extends boolean = true> {
  * via the `definition` "TCHomeHeroBlock_select".
  */
 export interface TCHomeHeroBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCAboutSectionBlock_select".
+ */
+export interface TCAboutSectionBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }
