@@ -158,20 +158,20 @@ export function TCServicesSectionClient(_props: Props) {
           margin-bottom: 0;
         }
         .tc-prism-card:hover .tc-expanded-specs {
-          max-height: 200px;
-          padding-top: 20px;
-          margin-bottom: 25px;
+          max-height: 160px;
+          padding-top: 16px;
+          margin-bottom: 20px;
         }
         /* Quote button hover */
         .tc-quote-btn:hover {
-          background: white !important;
-          color: var(--color-navy-deep) !important;
+          background-color: white !important;
+          color: #0d1b2e !important;
         }
         /* Mobile: always show content */
         @media (max-width: 768px) {
           .tc-prism-content { transform: translateY(0) !important; }
           .tc-prism-desc { opacity: 1 !important; }
-          .tc-expanded-specs { max-height: 200px !important; padding-top: 20px !important; margin-bottom: 25px !important; }
+          .tc-expanded-specs { max-height: 160px !important; padding-top: 16px !important; margin-bottom: 20px !important; }
         }
       `}</style>
 
@@ -250,13 +250,9 @@ export function TCServicesSectionClient(_props: Props) {
                 <div
                   className="tc-refraction absolute inset-0 z-[2] flex flex-col justify-end p-10"
                 >
-                  {/* Content block — slides up on hover */}
+                  {/* Content block — always visible, desc + specs reveal on hover */}
                   <div
-                    className="tc-prism-content relative z-[3] text-white transition-transform duration-[600ms]"
-                    style={{
-                      transform: 'translateY(60px)',
-                      transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
-                    }}
+                    className="tc-prism-content relative z-[3] text-white"
                   >
                     {/* Badge */}
                     <span
@@ -332,8 +328,7 @@ export function TCServicesSectionClient(_props: Props) {
 
                       <Link
                         href="/booking"
-                        className="tc-quote-btn font-mono text-[0.7rem] font-bold uppercase tracking-[1px] text-white no-underline px-5 py-3 transition-all duration-200"
-                        style={{ background: 'var(--color-teal)' }}
+                        className="tc-quote-btn bg-teal font-mono text-[0.7rem] font-bold uppercase tracking-[1px] text-white no-underline px-5 py-3 transition-all duration-200"
                       >
                         Get a Quote
                       </Link>
@@ -360,14 +355,11 @@ export function TCServicesSectionClient(_props: Props) {
               href="/booking"
               className={cn(
                 'inline-block font-mono font-bold text-[0.85rem] uppercase tracking-[1px]',
-                'text-white no-underline px-16 py-6',
+                'bg-teal text-white no-underline px-16 py-6',
                 'transition-all duration-500',
-                'hover:-translate-y-[5px] hover:bg-white hover:text-navy-deep',
+                'hover:-translate-y-[5px] hover:bg-navy-deep hover:text-white',
               )}
-              style={{
-                background: 'var(--color-teal)',
-                boxShadow: '0 10px 30px rgba(23,176,171,0.3)',
-              }}
+              style={{ boxShadow: '0 10px 30px rgba(23,176,171,0.3)' }}
             >
               Get Your Instant Estimate
             </Link>
@@ -376,11 +368,8 @@ export function TCServicesSectionClient(_props: Props) {
         </div>
       </section>
 
-      {/* Apply group-hover via CSS since Tailwind group can't drive translateY on a non-child */}
+      {/* Description opacity driven by parent hover — can't use Tailwind group-hover on opacity here */}
       <style>{`
-        .tc-prism-card:hover .tc-prism-content {
-          transform: translateY(0);
-        }
         .tc-prism-card:hover .tc-prism-desc {
           opacity: 1;
         }

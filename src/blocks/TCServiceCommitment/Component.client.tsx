@@ -220,10 +220,9 @@ export function TCServiceCommitmentClient(_props: Props) {
           Teal, diagonal clip-path. Heading + body left, button right.
       ══════════════════════════════════════════════════════════════ */}
       <section
-        className="text-white"
+        className="bg-teal text-white"
         style={{
           margin: '0 5%',
-          background: 'var(--color-teal)',
           clipPath: 'polygon(0 0, 100% 0, 97% 100%, 3% 100%)',
         }}
       >
@@ -248,11 +247,10 @@ export function TCServiceCommitmentClient(_props: Props) {
               href="/services"
               className={cn(
                 'inline-block font-mono font-bold text-[0.85rem] tracking-[1px]',
-                'no-underline text-white px-9 py-[18px]',
+                'bg-navy-deep no-underline text-white px-9 py-[18px]',
                 'transition-all duration-500',
                 'hover:-translate-y-[5px] hover:bg-white hover:text-navy-deep',
               )}
-              style={{ background: 'var(--color-navy-deep)' }}
             >
               Explore our services
             </Link>
