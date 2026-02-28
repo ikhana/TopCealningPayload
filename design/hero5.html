@@ -1142,6 +1142,327 @@
             .stepper-pane.active { display: grid; }
             .about-features { grid-template-columns: 1fr; }
         }
+
+        /* ═══════════════════════════════════════════════════
+           CUSTOMIZED MAINTENANCE SECTION
+        ═══════════════════════════════════════════════════ */
+        .maint-section {
+            background: #f8fafc;
+            padding: 100px 5%;
+        }
+
+        .maint-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Row 1 — header, anchored top-left */
+        .maint-header {
+            max-width: 55%;
+            padding-bottom: 60px;
+        }
+
+        .maint-header h3 {
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 900;
+            color: var(--deep-navy);
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 18px;
+        }
+
+        .maint-header p {
+            font-size: 1.05rem;
+            line-height: 1.75;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        /* Row 2 — infinite horizontal ticker */
+        .maint-ticker {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+        }
+
+        .maint-track {
+            display: flex;
+            gap: 16px;
+            width: max-content;
+            animation: maint-ticker 18s linear infinite;
+        }
+
+        .maint-ticker:hover .maint-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes maint-ticker {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
+        .maint-strip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--deep-navy);
+            background: white;
+            border: 1px solid rgba(23,176,171,0.2);
+            padding: 14px 20px;
+            box-shadow: 4px 4px 0 var(--light-aquamarine);
+            white-space: nowrap;
+            flex-shrink: 0;
+            cursor: default;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+
+        .maint-strip:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 var(--primary-teal);
+        }
+
+        .maint-strip svg { flex-shrink: 0; color: var(--primary-teal); }
+
+        /* Row 3 — closing statement, bottom-right */
+        .maint-closing {
+            margin-top: 50px;
+            margin-left: auto;
+            max-width: 46%;
+            border-left: 3px solid var(--primary-teal);
+            padding-left: 24px;
+        }
+
+        .maint-closing p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: rgba(26,40,64,0.65);
+            font-style: italic;
+        }
+
+        /* Maint responsive */
+        @media (max-width: 1100px) {
+            .maint-header { max-width: 100%; }
+            .maint-closing { max-width: 70%; }
+        }
+
+        @media (max-width: 768px) {
+            .maint-closing { max-width: 100%; margin-left: 0; }
+        }
+
+
+        /* ═══════════════════════════════════════════════════
+           GUARANTEE PLATE
+        ═══════════════════════════════════════════════════ */
+        .guarantee-plate {
+            margin: 0 5%;
+            background: var(--deep-navy);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plate-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            min-height: 500px;
+            position: relative;
+        }
+
+        .plate-content {
+            padding: 100px 40px 100px 6%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .plate-visual {
+            background: url('../public/images/cleaning/about-cleaning.jpg') center/cover;
+            position: relative;
+        }
+
+        .plate-visual::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, var(--deep-navy) 0%, transparent 100%);
+        }
+
+        .guarantee-seal {
+            width: 140px;
+            height: 140px;
+            border: 2px solid var(--primary-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 20px;
+            position: absolute;
+            top: -40px;
+            right: 80px;
+            background: var(--deep-navy);
+            box-shadow: 0 0 30px rgba(23,176,171,0.4);
+            animation: rotateSeal 20s linear infinite;
+            line-height: 1.4;
+        }
+
+        @keyframes rotateSeal {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        .plate-content .kicker-guar {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .plate-content h3 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .plate-content > p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 500px;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .plate-stats {
+            display: flex;
+            gap: 40px;
+        }
+
+        .plate-stat h5 {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+
+        .plate-stat p {
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+
+        /* Guarantee responsive */
+        @media (max-width: 1100px) {
+            .plate-inner { grid-template-columns: 1fr; }
+            .plate-content { padding: 80px 6%; }
+            .plate-visual { height: 300px; }
+            .guarantee-seal { right: 20px; top: -70px; }
+        }
+
+        /* ═══════════════════════════════════════════════════
+           DISCOUNT BAR
+        ═══════════════════════════════════════════════════ */
+        .discount-bar {
+            margin: 0 5%;
+            background: var(--primary-teal);
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 97% 100%, 3% 100%);
+        }
+
+        .discount-inner {
+            padding: 60px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .discount-info h4 {
+            font-family: var(--mono-font);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .discount-info p {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .discount-action {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .discount-amount {
+            text-align: right;
+            font-family: var(--mono-font);
+        }
+
+        .discount-amount span { font-size: 0.7rem; text-transform: uppercase; display: block; opacity: 0.8; }
+        .discount-amount strong { font-size: 1.8rem; font-weight: 900; }
+
+        .alloy-btn {
+            background: var(--deep-navy);
+            color: white;
+            padding: 18px 36px;
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .alloy-btn:hover {
+            background: white;
+            color: var(--deep-navy);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Discount responsive */
+        @media (max-width: 1100px) {
+            .discount-bar { clip-path: none; margin: 0 3%; }
+            .discount-inner { flex-direction: column; text-align: center; gap: 30px; padding: 50px 5%; }
+            .discount-amount { text-align: center; }
+        }
+
+        @media (max-width: 768px) {
+            .guarantee-plate { margin: 0 3%; }
+            .discount-bar { margin: 0 3%; }
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -1411,6 +1732,104 @@
     </div>
 </section>
 
+<!-- ── CUSTOMIZED MAINTENANCE ──────────────────────────────── -->
+<section class="maint-section reveal">
+    <div class="maint-inner">
+
+        <!-- Row 1: Header — top-left -->
+        <div class="maint-header">
+            <h3>Customized Maintenance Programs</h3>
+            <p>Customized Maintenance Programs are cleaning and maintenance plans designed to meet the specific needs of each client. Instead of offering a standard service, these programs are created based on factors such as:</p>
+        </div>
+
+        <!-- Row 2: Infinite horizontal ticker -->
+        <div class="maint-ticker">
+            <div class="maint-track">
+                <!-- Set 1 -->
+                <div class="maint-strip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Service frequency (daily, weekly, monthly, etc.)
+                </div>
+                <div class="maint-strip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Type of cleaning required (deep cleaning, disinfection, etc.)
+                </div>
+                <div class="maint-strip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Focus areas (offices, homes, hospitals, etc.)
+                </div>
+                <div class="maint-strip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Client preferences and budget
+                </div>
+                <!-- Set 2 — duplicate for seamless loop -->
+                <div class="maint-strip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Service frequency (daily, weekly, monthly, etc.)
+                </div>
+                <div class="maint-strip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Type of cleaning required (deep cleaning, disinfection, etc.)
+                </div>
+                <div class="maint-strip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Focus areas (offices, homes, hospitals, etc.)
+                </div>
+                <div class="maint-strip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Client preferences and budget
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Closing — bottom-right -->
+        <div class="maint-closing">
+            <p>These programs ensure that each client receives more efficient and effective cleaning solutions, guaranteeing an optimal service tailored to their needs.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ── GUARANTEE PLATE ───────────────────────────────────── -->
+<section class="guarantee-plate reveal">
+    <div class="plate-inner">
+        <div class="plate-content">
+            <div class="guarantee-seal">Top Quality<br>Guaranteed<br>★ ★ ★</div>
+            <span class="kicker-guar">The Promise</span>
+            <h3>Satisfaction<br>Guaranteed.</h3>
+            <p>We are committed to delivering high-quality cleaning and disinfection services. If results don't meet our standard of excellence, we make it right — no questions asked.</p>
+            <div class="plate-stats">
+                <div class="plate-stat">
+                    <h5>Reliability</h5>
+                    <p>Always on time, every time.</p>
+                </div>
+                <div class="plate-stat">
+                    <h5>Professionalism</h5>
+                    <p>Trained, vetted technicians.</p>
+                </div>
+            </div>
+        </div>
+        <div class="plate-visual"></div>
+    </div>
+</section>
+
+<!-- ── DISCOUNT BAR ──────────────────────────────────────── -->
+<section class="discount-bar reveal">
+    <div class="discount-inner">
+        <div class="discount-info">
+            <h4>Partner Rewards</h4>
+            <p>Exclusive discounts for clients who commit to long-term maintenance contracts. Consistency pays off.</p>
+        </div>
+        <div class="discount-action">
+            <div class="discount-amount">
+                <span>Starting at</span>
+                <strong>15% OFF</strong>
+            </div>
+            <a href="#booking" class="alloy-btn">VIEW CONTRACTS</a>
+        </div>
+    </div>
+</section>
+
 <!-- ── FOOTER ────────────────────────────────────────────── -->
 <footer class="obsidian-footer">
     <div class="footer-glow"></div>
@@ -1542,6 +1961,21 @@
             footerCta.style.boxShadow = '';
         });
     }
+
+    // ── Scroll reveal (maintenance / guarantee / discount sections)
+    (function() {
+        var revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.reveal').forEach(function(el) {
+            revealObserver.observe(el);
+        });
+    })();
 
     // ── About section tab switching
     document.querySelectorAll('.stepper-tab').forEach(function(tab) {
