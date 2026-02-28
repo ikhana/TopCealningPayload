@@ -1,0 +1,518 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --sand: #f5efe0;
+            --light-aquamarine: #e0f5f4;
+            --glass-white: rgba(255, 255, 255, 0.78);
+            --glass-border: rgba(23, 176, 171, 0.2);
+            --text-dark: #1a2840;
+            --text-muted: #4a5a6a;
+            --off-white: #f8fafc;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            --transition-fast: 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            --aperture-shadow: 0 20px 50px rgba(0, 40, 40, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--sans-font);
+            background: #f0fafa;
+            color: var(--text-dark);
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           SERVICES SECTION: LAMINAR AERATED BLOCKWORK
+           ═══════════════════════════════════════════════════ */
+        
+        .services-section {
+            padding: 140px 5%;
+            background-color: #fdfdfd;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .services-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header Layout */
+        .services-intro {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 100px;
+            align-items: end;
+        }
+
+        .services-intro h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            color: var(--deep-navy);
+            line-height: 0.9;
+            letter-spacing: -3px;
+            text-transform: uppercase;
+        }
+
+        .services-intro p {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 520px;
+            border-left: 4px solid var(--primary-teal);
+            padding-left: 30px;
+        }
+
+        /* The Blockwork Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px; /* For the blockwork look */
+            background: var(--glass-border);
+            border: 2px solid var(--glass-border);
+        }
+
+        .service-block {
+            position: relative;
+            background: white;
+            min-height: 550px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .service-block:hover {
+            z-index: 10;
+        }
+
+        /* Image Layer (Laminar) */
+        .block-image {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            transition: var(--transition);
+        }
+
+        .block-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) brightness(0.7);
+            transition: var(--transition);
+        }
+
+        .service-block:hover .block-image img {
+            filter: grayscale(0%) brightness(0.6);
+            transform: scale(1.05);
+        }
+
+        /* Content Layer (Aerated/Breathable) */
+        .block-content {
+            position: relative;
+            z-index: 2;
+            padding: 60px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            background: linear-gradient(180deg, rgba(13, 27, 46, 0.4) 0%, rgba(13, 27, 46, 0.8) 100%);
+            transition: var(--transition);
+        }
+
+        .service-block:hover .block-content {
+            background: linear-gradient(180deg, rgba(23, 176, 171, 0.2) 0%, rgba(13, 27, 46, 0.95) 100%);
+        }
+
+        .block-meta {
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: var(--primary-teal);
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 24px;
+            width: fit-content;
+        }
+
+        .block-content h3 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .block-content p.desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.8;
+            max-width: 80%;
+            margin-bottom: 40px;
+            flex-grow: 1;
+        }
+
+        /* Expanded Details (Revealed on Hover) */
+        .block-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: var(--transition);
+            margin-bottom: 0;
+        }
+
+        .service-block:hover .block-details {
+            max-height: 200px;
+            opacity: 1;
+            margin-bottom: 40px;
+        }
+
+        .detail-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 25px;
+        }
+
+        .detail-item {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--light-aquamarine);
+        }
+
+        .detail-item::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--primary-teal);
+            display: block;
+        }
+
+        /* CTA Row */
+        .block-actions {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .learn-more {
+            text-decoration: none;
+            color: white;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition-fast);
+        }
+
+        .learn-more svg {
+            transition: transform 0.3s ease;
+        }
+
+        .learn-more:hover {
+            color: var(--primary-teal);
+        }
+
+        .learn-more:hover svg {
+            transform: translateX(5px);
+        }
+
+        /* Floating Closing CTA */
+        .services-closing {
+            margin-top: 100px;
+            text-align: center;
+            background: var(--deep-navy);
+            padding: 80px 40px;
+            position: relative;
+            color: white;
+        }
+
+        .services-closing h4 {
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
+            font-weight: 900;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+        }
+
+        .closing-btn {
+            background: var(--primary-teal);
+            color: white;
+            padding: 20px 40px;
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: var(--transition);
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(23, 176, 171, 0.3);
+        }
+
+        .closing-btn:hover {
+            transform: translateY(-5px);
+            background: white;
+            color: var(--deep-navy);
+        }
+
+        /* Background Graphics */
+        .bg-grid-mark {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background-image: radial-gradient(var(--glass-border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            .services-intro {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .services-intro p {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .services-section {
+                padding: 80px 5%;
+            }
+            .block-content {
+                padding: 40px;
+            }
+            .detail-list {
+                grid-template-columns: 1fr;
+            }
+            .services-intro h2 {
+                font-size: 2.8rem;
+            }
+        }
+
+        /* Scroll Animation Utility */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <section class="services-section" id="services">
+        <div class="bg-grid-mark"></div>
+        
+        <div class="services-container">
+            <!-- HEADER -->
+            <header class="services-intro reveal">
+                <div>
+                    <span style="font-family: var(--mono-font); color: var(--primary-teal); letter-spacing: 5px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: block;">Expertise</span>
+                    <h2>Our<br>Services</h2>
+                </div>
+                <p>
+                    Discover our range of professional cleaning services designed to meet your specific needs and exceed your expectations.
+                </p>
+            </header>
+
+            <!-- BLOCKWORK GRID -->
+            <div class="services-grid">
+                
+                <!-- Residential Cleaning -->
+                <article class="service-block reveal">
+                    <div class="block-image">
+                        <img src="https://images.unsplash.com/photo-1581578731548-c64695ce6958?auto=format&fit=crop&q=80&w=800" alt="Residential Cleaning">
+                    </div>
+                    <div class="block-content">
+                        <span class="block-meta">Flexible Custom Quote</span>
+                        <h3>Residential Cleaning</h3>
+                        <p class="desc">Transform your home with our premium residential cleaning services.</p>
+                        
+                        <div class="block-details">
+                            <ul class="detail-list">
+                                <li class="detail-item">Custom cleaning plans</li>
+                                <li class="detail-item">Eco-friendly products</li>
+                                <li class="detail-item">Trained professionals</li>
+                                <li class="detail-item">Satisfaction guarantee</li>
+                            </ul>
+                        </div>
+
+                        <div class="block-actions">
+                            <a href="#" class="learn-more">
+                                Learn More 
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Commercial Cleaning -->
+                <article class="service-block reveal">
+                    <div class="block-image">
+                        <img src="https://images.unsplash.com/photo-1527515545081-5db817172677?auto=format&fit=crop&q=80&w=800" alt="Commercial Cleaning">
+                    </div>
+                    <div class="block-content">
+                        <span class="block-meta">Flexible Custom Quote</span>
+                        <h3>Commercial Cleaning</h3>
+                        <p class="desc">Professional solutions for businesses that demand excellence.</p>
+                        
+                        <div class="block-details">
+                            <ul class="detail-list">
+                                <li class="detail-item">Flexible scheduling</li>
+                                <li class="detail-item">Industry compliance</li>
+                                <li class="detail-item">Commercial grade equipment</li>
+                                <li class="detail-item">Liability coverage</li>
+                            </ul>
+                        </div>
+
+                        <div class="block-actions">
+                            <a href="#" class="learn-more">
+                                Learn More 
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Move In/Out Cleaning -->
+                <article class="service-block reveal">
+                    <div class="block-image">
+                        <img src="https://images.unsplash.com/photo-1563453392212-326f5e854473?auto=format&fit=crop&q=80&w=800" alt="Move In Out Cleaning">
+                    </div>
+                    <div class="block-content">
+                        <span class="block-meta">Flexible Custom Quote</span>
+                        <h3>Move In/Out Cleaning</h3>
+                        <p class="desc">Start fresh with our comprehensive transition cleaning service.</p>
+                        
+                        <div class="block-details">
+                            <ul class="detail-list">
+                                <li class="detail-item">Deep cleaning included</li>
+                                <li class="detail-item">Property inspection</li>
+                                <li class="detail-item">Appliance cleaning</li>
+                                <li class="detail-item">Window treatments</li>
+                            </ul>
+                        </div>
+
+                        <div class="block-actions">
+                            <a href="#" class="learn-more">
+                                Learn More 
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Deep Cleaning -->
+                <article class="service-block reveal">
+                    <div class="block-image">
+                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" alt="Deep Cleaning">
+                    </div>
+                    <div class="block-content">
+                        <span class="block-meta">Flexible Custom Quote</span>
+                        <h3>Deep Cleaning</h3>
+                        <p class="desc">Thorough cleaning that reaches every corner and crevice.</p>
+                        
+                        <div class="block-details">
+                            <ul class="detail-list">
+                                <li class="detail-item">Detailed cleaning checklist</li>
+                                <li class="detail-item">Special equipment used</li>
+                                <li class="detail-item">Stain treatment</li>
+                                <li class="detail-item">Sanitization included</li>
+                            </ul>
+                        </div>
+
+                        <div class="block-actions">
+                            <a href="#" class="learn-more">
+                                Learn More 
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- CLOSING -->
+            <div class="services-closing reveal">
+                <h4>Ready to experience our<br>exceptional cleaning service?</h4>
+                <a href="#" class="closing-btn">Get Your Custom Quote</a>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // Scroll reveal logic
+        (function() {
+            var revealObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(function(el) {
+                revealObserver.observe(el);
+            });
+        })();
+
+        // Laminar parallax effect on hover
+        document.querySelectorAll('.service-block').forEach(block => {
+            block.addEventListener('mousemove', (e) => {
+                const rect = block.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                
+                const img = block.querySelector('.block-image img');
+                img.style.transformOrigin = `${x * 100}% ${y * 100}%`;
+            });
+        });
+    </script>
+</body>
+</html>
+

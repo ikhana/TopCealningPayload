@@ -1,0 +1,206 @@
+<section class="services-monolith">
+    <style>
+        :root {
+            --glass-edge: rgba(23, 176, 171, 0.4);
+            --glass-fill: rgba(255, 255, 255, 0.03);
+        }
+
+        .services-monolith {
+            padding: 120px 5%;
+            background: #0d1b2e;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .monolith-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 0;
+            border: 1px solid var(--glass-edge);
+        }
+
+        .service-card-prism {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            border: 1px solid var(--glass-edge);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .prism-image {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            filter: grayscale(1) brightness(0.5);
+            transition: 0.6s;
+            transform: scale(1.1);
+        }
+
+        .service-card-prism:hover .prism-image {
+            filter: grayscale(0) brightness(0.7);
+            transform: scale(1);
+        }
+
+        .prism-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            backdrop-filter: blur(0px);
+            transition: 0.6s;
+        }
+
+        .service-card-prism:hover .prism-content {
+            backdrop-filter: blur(12px);
+            background: rgba(13, 27, 46, 0.7);
+        }
+
+        .prism-label {
+            font-family: 'JetBrains Mono';
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: #17b0ab;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            transform: translateY(0);
+            transition: 0.4s;
+        }
+
+        .prism-title {
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .prism-details {
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: 0.5s;
+            list-style: none;
+            border-top: 1px solid var(--glass-edge);
+            padding-top: 20px;
+        }
+
+        .service-card-prism:hover .prism-details {
+            height: 160px;
+            opacity: 1;
+            margin-bottom: 20px;
+        }
+
+        .prism-details li {
+            font-family: 'JetBrains Mono';
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            color: #3dcfca;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .prism-details li::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: #3dcfca;
+            rotate: 45deg;
+        }
+
+        .prism-btn {
+            width: fit-content;
+            padding: 12px 24px;
+            border: 1px solid #17b0ab;
+            color: #17b0ab;
+            text-decoration: none;
+            font-family: 'JetBrains Mono';
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .prism-btn:hover {
+            background: #17b0ab;
+            color: #fff;
+        }
+
+        .monolith-header {
+            margin-bottom: 80px;
+            max-width: 800px;
+        }
+
+        .monolith-header h2 {
+            font-size: 4rem;
+            letter-spacing: -3px;
+            line-height: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .monolith-header p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+    </style>
+    <div class="monolith-header">
+        <h2>Our Services</h2>
+        <p>Discover our range of professional cleaning services designed to meet your specific needs and exceed your
+            expectations.</p>
+    </div>
+    <div class="monolith-grid">
+        <div class="service-card-prism"><img
+                src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800"
+                class="prism-image">
+            <div class="prism-content"><span class="prism-label">Flexible Custom Quote</span>
+                <h3 class="prism-title">Residential Cleaning</h3>
+                <ul class="prism-details">
+                    <li>Custom cleaning plans</li>
+                    <li>Eco-friendly products</li>
+                    <li>Trained professionals</li>
+                    <li>Satisfaction guarantee</li>
+                </ul><a href="#" class="prism-btn">LEARN MORE</a>
+            </div>
+        </div>
+        <div class="service-card-prism"><img
+                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800"
+                class="prism-image">
+            <div class="prism-content"><span class="prism-label">Flexible Custom Quote</span>
+                <h3 class="prism-title">Commercial Cleaning</h3>
+                <ul class="prism-details">
+                    <li>Flexible scheduling</li>
+                    <li>Industry compliance</li>
+                    <li>Commercial grade equipment</li>
+                    <li>Liability coverage</li>
+                </ul><a href="#" class="prism-btn">LEARN MORE</a>
+            </div>
+        </div>
+        <div class="service-card-prism"><img
+                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&q=80&w=800"
+                class="prism-image">
+            <div class="prism-content"><span class="prism-label">Flexible Custom Quote</span>
+                <h3 class="prism-title">Move In/Out Cleaning</h3>
+                <ul class="prism-details">
+                    <li>Deep cleaning included</li>
+                    <li>Property inspection</li>
+                    <li>Appliance cleaning</li>
+                    <li>Window treatments</li>
+                </ul><a href="#" class="prism-btn">LEARN MORE</a>
+            </div>
+        </div>
+        <div class="service-card-prism"><img
+                src="https://images.unsplash.com/photo-1581578731522-745505146317?auto=format&fit=crop&q=80&w=800"
+                class="prism-image">
+            <div class="prism-content"><span class="prism-label">Flexible Custom Quote</span>
+                <h3 class="prism-title">Deep Cleaning</h3>
+                <ul class="prism-details">
+                    <li>Detailed cleaning checklist</li>
+                    <li>Special equipment used</li>
+                    <li>Stain treatment</li>
+                    <li>Sanitization included</li>
+                </ul><a href="#" class="prism-btn">LEARN MORE</a>
+            </div>
+        </div>
+    </div>
+</section>

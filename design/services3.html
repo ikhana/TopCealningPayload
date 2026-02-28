@@ -1,0 +1,445 @@
+<style>
+/* ── CRYSTALLINE REFRACTIVE SUSPENSION SYSTEM ──────────────── */
+.services-section {
+    padding: 120px 5%;
+    background: radial-gradient(circle at 0% 0%, #f0fafa 0%, #ffffff 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.crystal-emitter {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(23, 176, 171, 0.05) 0%, transparent 70%);
+    top: -200px;
+    right: -100px;
+    filter: blur(80px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.services-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.services-header {
+    margin-bottom: 80px;
+    max-width: 700px;
+}
+
+.services-header .kicker {
+    font-family: var(--mono-font);
+    color: var(--primary-teal);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.services-header h2 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--deep-navy);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 25px;
+}
+
+.services-header p {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* ── PRISM GRID ───────────────────────────────────────────── */
+.prism-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.prism-card {
+    position: relative;
+    height: 520px;
+    background: white;
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid rgba(23, 176, 171, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.prism-image {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.prism-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.8) brightness(0.9);
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.prism-card:hover .prism-image img {
+    transform: scale(1.1);
+}
+
+/* The Refractive Overlay */
+.refraction-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(180deg, 
+        rgba(13, 27, 46, 0) 0%, 
+        rgba(13, 27, 46, 0.2) 40%, 
+        rgba(13, 27, 46, 0.95) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    transition: var(--transition);
+}
+
+.prism-card:hover .refraction-layer {
+    background: linear-gradient(180deg, 
+        rgba(23, 176, 171, 0.1) 0%, 
+        rgba(13, 27, 46, 0.4) 40%, 
+        rgba(13, 27, 46, 0.98) 100%);
+}
+
+.prism-content {
+    position: relative;
+    z-index: 3;
+    color: white;
+    transform: translateY(60px);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.prism-card:hover .prism-content {
+    transform: translateY(0);
+}
+
+.service-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: var(--mono-font);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: var(--teal-glow);
+}
+
+.prism-content h4 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+}
+
+.prism-content p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 25px;
+    opacity: 0;
+    transition: opacity 0.4s ease 0.1s;
+}
+
+.prism-card:hover .prism-content p {
+    opacity: 1;
+}
+
+/* Expanded List */
+.expanded-specs {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 0;
+}
+
+.prism-card:hover .expanded-specs {
+    max-height: 200px;
+    padding-top: 20px;
+    margin-bottom: 25px;
+}
+
+.spec-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.spec-item {
+    font-family: var(--mono-font);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spec-item svg {
+    color: var(--primary-teal);
+    flex-shrink: 0;
+}
+
+/* Card Actions */
+.prism-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.action-link {
+    font-family: var(--mono-font);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-fast);
+}
+
+.action-link:hover {
+    color: var(--primary-teal);
+}
+
+.quote-trigger {
+    background: var(--primary-teal);
+    color: white;
+    padding: 12px 20px;
+    font-size: 0.7rem;
+}
+
+.quote-trigger:hover {
+    background: white;
+    color: var(--deep-navy);
+}
+
+/* ── FOOTER CTA ────────────────────────────────────────── */
+.services-footer {
+    margin-top: 80px;
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--aperture-shadow);
+}
+
+.services-footer h3 {
+    font-size: 2rem;
+    color: var(--deep-navy);
+    margin-bottom: 30px;
+    font-weight: 800;
+}
+
+/* Responsive Tweak */
+@media (max-width: 768px) {
+    .prism-grid {
+        grid-template-columns: 1fr;
+    }
+    .prism-content {
+        transform: translateY(0);
+    }
+    .prism-content p {
+        opacity: 1;
+    }
+    .expanded-specs {
+        max-height: 200px;
+        padding-top: 20px;
+        margin-bottom: 25px;
+    }
+}
+</style>
+
+<section class="services-section" id="services">
+    <div class="crystal-emitter"></div>
+    
+    <div class="services-container">
+        <header class="services-header reveal">
+            <span class="kicker">Our Services</span>
+            <h2>Discover our range of professional cleaning services designed to meet your specific needs and exceed your expectations.</h2>
+            <p>Discover our range of professional cleaning services designed to meet your specific needs and exceed your expectations.</p>
+        </header>
+
+        <div class="prism-grid">
+            <!-- Service 1: Residential -->
+            <article class="prism-card reveal">
+                <div class="prism-image">
+                    <img src="https://images.unsplash.com/photo-1581578731548-c64695ce6958?auto=format&fit=crop&q=80&w=1000" alt="Residential Cleaning">
+                </div>
+                <div class="refraction-layer">
+                    <div class="prism-content">
+                        <span class="service-badge">Flexible Custom Quote</span>
+                        <h4>Residential Cleaning</h4>
+                        <p>Transform your home with our premium residential cleaning services.</p>
+                        
+                        <div class="expanded-specs">
+                            <ul class="spec-list">
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Custom cleaning plans</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Eco-friendly products</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Trained professionals</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Satisfaction guarantee</li>
+                            </ul>
+                        </div>
+
+                        <div class="prism-actions">
+                            <a href="#" class="action-link quote-trigger">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Service 2: Commercial -->
+            <article class="prism-card reveal" style="transition-delay: 0.1s;">
+                <div class="prism-image">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1000" alt="Commercial Cleaning">
+                </div>
+                <div class="refraction-layer">
+                    <div class="prism-content">
+                        <span class="service-badge">Flexible Custom Quote</span>
+                        <h4>Commercial Cleaning</h4>
+                        <p>Professional solutions for businesses that demand excellence.</p>
+                        
+                        <div class="expanded-specs">
+                            <ul class="spec-list">
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Flexible scheduling</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Industry compliance</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Commercial grade equipment</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Liability coverage</li>
+                            </ul>
+                        </div>
+
+                        <div class="prism-actions">
+                            <a href="#" class="action-link quote-trigger">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Service 3: Move In/Out -->
+            <article class="prism-card reveal" style="transition-delay: 0.2s;">
+                <div class="prism-image">
+                    <img src="https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&q=80&w=1000" alt="Move In Out Cleaning">
+                </div>
+                <div class="refraction-layer">
+                    <div class="prism-content">
+                        <span class="service-badge">Flexible Custom Quote</span>
+                        <h4>Move In/Out Cleaning</h4>
+                        <p>Start fresh with our comprehensive transition cleaning service.</p>
+                        
+                        <div class="expanded-specs">
+                            <ul class="spec-list">
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Deep cleaning included</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Property inspection</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Appliance cleaning</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Window treatments</li>
+                            </ul>
+                        </div>
+
+                        <div class="prism-actions">
+                            <a href="#" class="action-link quote-trigger">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Service 4: Deep Cleaning -->
+            <article class="prism-card reveal" style="transition-delay: 0.3s;">
+                <div class="prism-image">
+                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000" alt="Deep Cleaning">
+                </div>
+                <div class="refraction-layer">
+                    <div class="prism-content">
+                        <span class="service-badge">Flexible Custom Quote</span>
+                        <h4>Deep Cleaning</h4>
+                        <p>Thorough cleaning that reaches every corner and crevice.</p>
+                        
+                        <div class="expanded-specs">
+                            <ul class="spec-list">
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Detailed cleaning checklist</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Special equipment used</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Stain treatment</li>
+                                <li class="spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Sanitization included</li>
+                            </ul>
+                        </div>
+
+                        <div class="prism-actions">
+                            <a href="#" class="action-link quote-trigger">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="services-footer reveal">
+            <h3>Ready to experience our exceptional cleaning service?</h3>
+            <a href="#" class="btn" style="padding: 1.5rem 4rem;">Get Your Instant Estimate</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Initialize reveal animations for the new section
+    (function() {
+        var servicesObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.services-section .reveal').forEach(function(el) {
+            servicesObserver.observe(el);
+        });
+
+        // Refractive Mouse Effect for Cards
+        document.querySelectorAll('.prism-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 25;
+                const rotateY = (centerX - x) / 25;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                
+                const layer = card.querySelector('.refraction-layer');
+                layer.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(23, 176, 171, 0.15) 0%, rgba(13, 27, 46, 0.95) 80%)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0) rotateY(0)`;
+                const layer = card.querySelector('.refraction-layer');
+                layer.style.background = '';
+            });
+        });
+    })();
+</script>
+
+

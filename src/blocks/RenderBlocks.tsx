@@ -49,6 +49,7 @@ import { ScheduleCallCTABlock } from './ScheduleCallCTA';
 import { TCHomeHeroBlock } from './TCHomeHero';
 import { TCAboutSectionBlock } from './TCAboutSection';
 import { TCServiceCommitmentBlock } from './TCServiceCommitment';
+import { TCServicesSectionBlock } from './TCServicesSection';
 
 
 const blockComponents = {
@@ -105,6 +106,7 @@ scheduleCallCTA: ScheduleCallCTABlock,
 tcHomeHero: TCHomeHeroBlock,
 tcAboutSection: TCAboutSectionBlock,
 tcServiceCommitment: TCServiceCommitmentBlock,
+tcServicesSection: TCServicesSectionBlock,
 }
 
 export const RenderBlocks: React.FC<{

@@ -1111,6 +1111,8 @@ export interface Page {
     | ScheduleCallCTABlock
     | TCHomeHeroBlock
     | TCAboutSectionBlock
+    | TCServiceCommitmentBlock
+    | TCServicesSectionBlock
   )[];
   meta?: {
     title?: string | null;
@@ -4614,6 +4616,24 @@ export interface TCAboutSectionBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCServiceCommitmentBlock".
+ */
+export interface TCServiceCommitmentBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcServiceCommitment';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCServicesSectionBlock".
+ */
+export interface TCServicesSectionBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcServicesSection';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addons".
  */
 export interface Addon {
@@ -5635,6 +5655,8 @@ export interface PagesSelect<T extends boolean = true> {
         scheduleCallCTA?: T | ScheduleCallCTABlockSelect<T>;
         tcHomeHero?: T | TCHomeHeroBlockSelect<T>;
         tcAboutSection?: T | TCAboutSectionBlockSelect<T>;
+        tcServiceCommitment?: T | TCServiceCommitmentBlockSelect<T>;
+        tcServicesSection?: T | TCServicesSectionBlockSelect<T>;
       };
   meta?:
     | T
@@ -6820,6 +6842,22 @@ export interface TCHomeHeroBlockSelect<T extends boolean = true> {
  * via the `definition` "TCAboutSectionBlock_select".
  */
 export interface TCAboutSectionBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCServiceCommitmentBlock_select".
+ */
+export interface TCServiceCommitmentBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCServicesSectionBlock_select".
+ */
+export interface TCServicesSectionBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "5500", "design"],
+      "port": 5500
+    },
+    {
+      "name": "nextjs-dev",
+      "runtimeExecutable": "C:/Users/HP/AppData/Local/pnpm/pnpm.CMD",
+      "runtimeArgs": ["dev"],
+      "port": 3000
+    }
+  ]
+}
