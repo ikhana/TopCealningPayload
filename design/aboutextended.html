@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Cleaning | Extended Maintenance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --sand: #f5efe0;
+            --alloy-silver: #e2e8f0;
+            --alloy-border: rgba(23, 176, 171, 0.3);
+            --text-dark: #1a2840;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            --metal-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --alloy-shadow: 20px 20px 60px #d1d9e6, -20px -20px 60px #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: var(--sans-font); 
+            background: #f4f7f9; 
+            color: var(--text-dark); 
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ── INTERLOCKING ALLOY LAYOUT ── */
+        .alloy-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 5%;
+            display: flex;
+            flex-direction: column;
+            gap: 0; /* Elements interlock */
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .kicker {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .headline {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            color: var(--deep-navy);
+        }
+
+        /* ── CUSTOMIZED MAINTENANCE GRID (INTERLOCKING) ── */
+        .maintenance-module {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border: 1px solid var(--alloy-border);
+            position: relative;
+            z-index: 2;
+        }
+
+        .maintenance-info {
+            padding: 80px;
+            border-right: 1px solid var(--alloy-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .maintenance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--alloy-silver);
+            gap: 1px; /* The "alloy" seam */
+        }
+
+        .alloy-block {
+            background: white;
+            padding: 40px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alloy-block:hover {
+            background: var(--primary-teal);
+            color: white;
+            transform: scale(1.02);
+            z-index: 5;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+        }
+
+        .alloy-block:hover .block-icon { color: white; }
+        .alloy-block:hover .block-label { color: rgba(255,255,255,0.7); }
+
+        .block-label {
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-teal);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .block-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .block-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ── SATISFACTION GUARANTEE (THE ALLOY PLATE) ── */
+        .guarantee-plate {
+            margin-top: -1px; /* Interlock */
+            background: var(--deep-navy);
+            color: white;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plate-content {
+            padding: 100px 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .plate-visual {
+            background: url('https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1200') center/cover;
+            position: relative;
+        }
+
+        .plate-visual::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, var(--deep-navy) 0%, transparent 100%);
+        }
+
+        .guarantee-seal {
+            width: 140px;
+            height: 140px;
+            border: 2px solid var(--primary-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 20px;
+            position: absolute;
+            top: -40px;
+            right: 80px;
+            background: var(--deep-navy);
+            box-shadow: 0 0 30px rgba(23, 176, 171, 0.4);
+            animation: rotateSeal 20s linear infinite;
+        }
+
+        @keyframes rotateSeal {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── LONG TERM DISCOUNT (HORIZONTAL CONTINUITY) ── */
+        .discount-bar {
+            margin-top: -1px;
+            background: var(--primary-teal);
+            padding: 60px 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 98% 100%, 2% 100%);
+        }
+
+        .discount-info h4 {
+            font-family: var(--mono-font);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .discount-info p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .discount-action {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .alloy-btn {
+            background: var(--deep-navy);
+            color: white;
+            padding: 20px 40px;
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .alloy-btn:hover {
+            background: white;
+            color: var(--deep-navy);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        /* ── DECORATIVE CONTINUITY LINES ── */
+        .continuity-line {
+            position: absolute;
+            background: var(--primary-teal);
+            opacity: 0.2;
+        }
+
+        .line-v { width: 1px; height: 100%; top: 0; }
+        .line-h { height: 1px; width: 100%; left: 0; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1100px) {
+            .maintenance-module, .guarantee-plate {
+                grid-template-columns: 1fr;
+            }
+            .maintenance-info { border-right: none; border-bottom: 1px solid var(--alloy-border); padding: 50px 5%; }
+            .discount-bar { flex-direction: column; text-align: center; gap: 30px; clip-path: none; padding: 40px 5%; }
+            .plate-content { padding: 60px 5%; }
+            .plate-visual { height: 300px; }
+            .guarantee-seal { right: 20px; top: -70px; }
+        }
+
+        @media (max-width: 768px) {
+            .maintenance-grid { grid-template-columns: 1fr; }
+            .headline { font-size: 2.2rem; }
+        }
+
+        /* Entry Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="alloy-container">
+        
+        <!-- ── SECTION HEADER ── -->
+        <header class="section-header reveal">
+            <span class="kicker">Evolution of Service</span>
+            <h2 class="headline">Precision Care. <br><span style="color: var(--primary-teal)">Total Continuity.</span></h2>
+        </header>
+
+        <!-- ── MAINTENANCE MODULE (Interlocking) ── -->
+        <section class="maintenance-module reveal">
+            <div class="maintenance-info">
+                <span class="block-label">Customized Maintenance</span>
+                <h3 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 25px; line-height: 1.1;">Tailored to your <br>specific lifecycle.</h3>
+                <p style="color: #4a5a6a; font-size: 1.1rem; margin-bottom: 30px;">
+                    Instead of standard service, we engineer cleaning plans based on your environment's unique DNA. Efficiency meets excellence.
+                </p>
+                <div style="height: 2px; width: 60px; background: var(--primary-teal);"></div>
+            </div>
+
+            <div class="maintenance-grid">
+                <div class="alloy-block">
+                    <span class="block-label">01. Frequency</span>
+                    <h4 class="block-title">Adaptive Timing</h4>
+                    <p class="block-desc">Daily, weekly, or strategic monthly deep-cycles based on foot traffic.</p>
+                </div>
+                <div class="alloy-block">
+                    <span class="block-label">02. Method</span>
+                    <h4 class="block-title">Surface Logic</h4>
+                    <p class="block-desc">From medical-grade disinfection to eco-friendly residential detailing.</p>
+                </div>
+                <div class="alloy-block">
+                    <span class="block-label">03. Focus</span>
+                    <h4 class="block-title">Zonal Strategy</h4>
+                    <p class="block-desc">Specialized attention for high-impact areas: hospitals, offices, or homes.</p>
+                </div>
+                <div class="alloy-block">
+                    <span class="block-label">04. Budget</span>
+                    <h4 class="block-title">Fiscal Alignment</h4>
+                    <p class="block-desc">Optimized cleaning solutions that respect your bottom line.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── GUARANTEE MODULE (The Plaque) ── -->
+        <section class="guarantee-plate reveal">
+            <div class="plate-content">
+                <div class="guarantee-seal">
+                    Top Quality <br> Guaranteed <br> ★ ★ ★
+                </div>
+                <span class="kicker" style="color: var(--primary-teal);">The Promise</span>
+                <h3 style="font-size: 3rem; font-weight: 900; margin-bottom: 20px;">Satisfaction <br>Guaranteed.</h3>
+                <p style="font-size: 1.1rem; opacity: 0.8; max-width: 500px; margin-bottom: 40px;">
+                    We are committed to delivering high-quality cleaning and disinfection services. If results don't meet our standard of excellence, we make it right—no questions asked.
+                </p>
+                <div style="display: flex; gap: 40px;">
+                    <div>
+                        <h5 style="font-family: var(--mono-font); color: var(--primary-teal); margin-bottom: 5px;">Reliability</h5>
+                        <p style="font-size: 0.85rem; opacity: 0.6;">Always on time, every time.</p>
+                    </div>
+                    <div>
+                        <h5 style="font-family: var(--mono-font); color: var(--primary-teal); margin-bottom: 5px;">Professionalism</h5>
+                        <p style="font-size: 0.85rem; opacity: 0.6;">Trained, vetted technicians.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="plate-visual"></div>
+        </section>
+
+        <!-- ── DISCOUNT BAR (Horizontal Continuity) ── -->
+        <section class="discount-bar reveal">
+            <div class="discount-info">
+                <h4>Partner Rewards</h4>
+                <p>Exclusive discounts for clients who commit to long-term maintenance contracts. Consistency pays off.</p>
+            </div>
+            <div class="discount-action">
+                <div style="text-align: right; font-family: var(--mono-font);">
+                    <span style="font-size: 0.7rem; text-transform: uppercase; display: block; opacity: 0.8;">Starting at</span>
+                    <span style="font-size: 1.8rem; font-weight: 900;">15% OFF</span>
+                </div>
+                <a href="#" class="alloy-btn">VIEW CONTRACTS</a>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Scroll Reveal logic
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Subtle Mouse parallax on alloy blocks
+        document.addEventListener('mousemove', (e) => {
+            const blocks = document.querySelectorAll('.alloy-block');
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            
+            blocks.forEach(block => {
+                if(block.matches(':hover')) {
+                    block.style.transform = `scale(1.02) translate(${x}px, ${y}px)`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+Interlocking Monolith Gridwork
+
+Caustic Vitreous Diffusion
+
+
+Crystalline Modular Stratification
+
+Frosted Membrane Diffusion
+

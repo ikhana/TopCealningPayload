@@ -883,6 +883,265 @@
             .hero-footer-cta { padding: 2rem 5% 0; }
             .footer-cta-box { padding: 25px; }
         }
+
+        /* ═══════════════════════════════════════════════════
+           ABOUT SECTION
+        ═══════════════════════════════════════════════════ */
+        .about-section {
+            background: #fdfdfd;
+            padding: 120px 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-glow {
+            position: absolute;
+            width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(23,176,171,0.06) 0%, transparent 70%);
+            top: -15vw; right: -15vw;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .about-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 80px;
+            align-items: start;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Left column ──────────────────────────────── */
+        .about-kicker {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--primary-teal);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .about-headline {
+            font-weight: 900;
+            color: var(--deep-navy);
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            margin-bottom: 30px;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .about-subtext {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: rgba(26,40,64,0.7);
+            border-left: 3px solid var(--primary-teal);
+            padding-left: 24px;
+            margin-bottom: 40px;
+            max-width: 480px;
+        }
+
+        .about-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--deep-navy);
+            background: white;
+            border: 1px solid rgba(23,176,171,0.2);
+            padding: 15px;
+            box-shadow: 4px 4px 0 var(--light-aquamarine);
+            transition: var(--transition);
+            cursor: default;
+        }
+
+        .feature-item:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 var(--primary-teal);
+        }
+
+        .feature-item svg { flex-shrink: 0; color: var(--primary-teal); }
+
+        /* ── Right column — sticky stepper ───────────── */
+        .about-stepper {
+            background: white;
+            border: 1px solid rgba(23,176,171,0.2);
+            box-shadow: 0 4px 30px rgba(13,27,46,0.10);
+            position: sticky;
+            top: 100px;
+            overflow: hidden;
+        }
+
+        .stepper-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border-bottom: 1px solid rgba(23,176,171,0.2);
+        }
+
+        .stepper-tab {
+            padding: 25px 16px;
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: rgba(26,40,64,0.4);
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .stepper-tab:hover { color: rgba(26,40,64,0.7); }
+
+        .stepper-tab.active {
+            color: var(--primary-teal);
+            background: var(--light-aquamarine);
+        }
+
+        .stepper-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 3px;
+            background: var(--primary-teal);
+        }
+
+        /* ── Panes ────────────────────────────────────── */
+        .stepper-panes {
+            position: relative;
+            min-height: 540px;
+        }
+
+        .stepper-pane {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.5s;
+        }
+
+        .stepper-pane.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .pane-text {
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 3px solid var(--primary-teal);
+            background: linear-gradient(90deg, rgba(224,245,244,0.5) 0%, transparent 100%);
+        }
+
+        .pane-number {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            color: rgba(23,176,171,0.5);
+        }
+
+        .pane-text h4 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--deep-navy);
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .pane-text p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: rgba(26,40,64,0.7);
+        }
+
+        /* Values list — plain, no boxes */
+        .values-list { display: flex; flex-direction: column; gap: 20px; }
+
+        .value-item-title {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-teal);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .value-item p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: rgba(26,40,64,0.7);
+            margin: 0;
+        }
+
+        /* ── Pane image — About4 style ─────────────────── */
+        .pane-image {
+            background: #fdfdfd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            height: 100%;
+        }
+
+        .pane-img-wrapper {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            box-shadow: 20px 20px 0 var(--light-aquamarine);
+        }
+
+        .pane-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: saturate(0.8) contrast(1.1);
+            transition: transform 0.5s;
+        }
+
+        .pane-img-wrapper:hover img { transform: scale(1.05); }
+
+        /* ── About responsive ─────────────────────────── */
+        @media (max-width: 1100px) {
+            .about-container { grid-template-columns: 1fr; gap: 50px; }
+            .about-stepper { position: static; }
+        }
+
+        @media (max-width: 768px) {
+            .about-section { padding: 80px 5%; }
+            .stepper-pane { grid-template-columns: 1fr; }
+            .pane-image { display: none; }
+            .stepper-panes { min-height: auto; }
+            .stepper-pane { position: static; opacity: 1; visibility: visible; transform: none; display: none; }
+            .stepper-pane.active { display: grid; }
+            .about-features { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -1040,6 +1299,118 @@
 
 </div>
 
+<!-- ── ABOUT SECTION ─────────────────────────────────────── -->
+<section class="about-section">
+    <div class="about-glow" aria-hidden="true"></div>
+
+    <div class="about-container">
+
+        <!-- LEFT COLUMN -->
+        <div class="about-left">
+            <span class="about-kicker">Who We Are</span>
+            <h2 class="about-headline">Foundations of Excellence</h2>
+            <p class="about-subtext">
+                Top Cleaning is built on a commitment to quality, reliability, and care.
+                Every service we deliver reflects our belief that a clean space is a better
+                space — for living, working, and thriving.
+            </p>
+            <div class="about-features">
+                <div class="feature-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Licensed &amp; Insured
+                </div>
+                <div class="feature-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Eco-Friendly Products
+                </div>
+                <div class="feature-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Trained Professionals
+                </div>
+                <div class="feature-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    Satisfaction Guarantee
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN — sticky tabbed stepper -->
+        <div class="about-stepper">
+
+            <!-- Tab nav -->
+            <div class="stepper-tabs" role="tablist">
+                <button class="stepper-tab active" data-tab="vision" role="tab" aria-selected="true">Vision</button>
+                <button class="stepper-tab" data-tab="mission" role="tab" aria-selected="false">Mission</button>
+                <button class="stepper-tab" data-tab="values" role="tab" aria-selected="false">Values</button>
+            </div>
+
+            <!-- Panes -->
+            <div class="stepper-panes" role="tabpanel">
+
+                <!-- Vision -->
+                <div class="stepper-pane active" id="pane-vision">
+                    <div class="pane-text">
+                        <span class="pane-number">01</span>
+                        <h4>Our Vision</h4>
+                        <p>To be the leading cleaning company in the region, providing high-quality solutions for both residential and commercial clients — delivering convenience, consistency, and exceptional results every time.</p>
+                    </div>
+                    <div class="pane-image">
+                        <div class="pane-img-wrapper">
+                            <img src="../public/images/cleaning/aboutsecond.jpg" alt="Vision — spotless residential interior">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission -->
+                <div class="stepper-pane" id="pane-mission">
+                    <div class="pane-text">
+                        <span class="pane-number">02</span>
+                        <h4>Our Mission</h4>
+                        <p>We deliver high-quality cleaning and disinfection services with efficiency, competitive pricing, and an agile process — so our customers aren't just satisfied, they're genuinely happy with every visit.</p>
+                    </div>
+                    <div class="pane-image">
+                        <div class="pane-img-wrapper">
+                            <img src="../public/images/cleaning/about-cleaning.jpg" alt="Mission — professional cleaning in action">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Values -->
+                <div class="stepper-pane" id="pane-values">
+                    <div class="pane-text">
+                        <span class="pane-number">03</span>
+                        <h4>Our Values</h4>
+                        <div class="values-list">
+                            <div class="value-item">
+                                <span class="value-item-title">Transparency</span>
+                                <p>Fair prices, no hidden costs, and honest communication at every step.</p>
+                            </div>
+                            <div class="value-item">
+                                <span class="value-item-title">Teamwork</span>
+                                <p>Collaboration and mutual support to deliver high-quality results consistently.</p>
+                            </div>
+                            <div class="value-item">
+                                <span class="value-item-title">Commitment</span>
+                                <p>Dedication to our team and full responsibility to every client we serve.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pane-image">
+                        <div class="pane-img-wrapper">
+                            <img src="../public/images/cleaning/aboutthird.jpg" alt="Values — team collaboration">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END panes -->
+
+        </div>
+        <!-- END RIGHT COLUMN -->
+
+    </div>
+</section>
+
 <!-- ── FOOTER ────────────────────────────────────────────── -->
 <footer class="obsidian-footer">
     <div class="footer-glow"></div>
@@ -1171,6 +1542,23 @@
             footerCta.style.boxShadow = '';
         });
     }
+
+    // ── About section tab switching
+    document.querySelectorAll('.stepper-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            var target = tab.dataset.tab;
+            document.querySelectorAll('.stepper-tab').forEach(function(t) {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            document.querySelectorAll('.stepper-pane').forEach(function(p) {
+                p.classList.remove('active');
+            });
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+            document.getElementById('pane-' + target).classList.add('active');
+        });
+    });
 </script>
 
 </body>
