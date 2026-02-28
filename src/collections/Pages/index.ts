@@ -61,6 +61,7 @@ import { TestimonialsCarousel } from '@/blocks/TestimonialsCarousel/config'
 import { ScheduleCallCTA } from '@/blocks/ScheduleCallCTA/config'
 import { TCHomeHero } from '@/blocks/TCHomeHero/config'
 import { TCAboutSection } from '@/blocks/TCAboutSection/config'
+import { TCServiceCommitment } from '@/blocks/TCServiceCommitment/config'
 
 
 
@@ -204,6 +205,7 @@ export const Pages: CollectionConfig = {
                  ScheduleCallCTA,
                  TCHomeHero,
                  TCAboutSection,
+                 TCServiceCommitment,
 
               ],
               required: true,

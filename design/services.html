@@ -1,0 +1,467 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal:      #17b0ab;
+            --teal-dark:         #0f8a86;
+            --teal-glow:         #3dcfca;
+            --deep-navy:         #0d1b2e;
+            --coral:             #fc8181;
+            --sand:              #f5efe0;
+            --light-aquamarine:  #e0f5f4;
+            --glass-white:       rgba(255, 255, 255, 0.85);
+            --vellum-border:     rgba(23, 176, 171, 0.15);
+            --text-dark:         #1a2840;
+            --text-muted:        #4a5a6a;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition-vellum: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .services-section {
+            background: #f0fafa;
+            padding: 140px 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .services-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── Header Styling ──────────────────────────────── */
+        .services-intro {
+            text-align: center;
+            margin-bottom: 100px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .services-kicker {
+            display: block;
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .services-headline {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            color: var(--deep-navy);
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 30px;
+        }
+
+        .services-subtext {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+
+        /* ── Card Grid ─────────────────────────────────── */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        /* ── Vellum Card Architecture ──────────────────── */
+        .service-card {
+            position: relative;
+            height: 540px;
+            background: var(--deep-navy);
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            transition: var(--transition-vellum);
+            cursor: pointer;
+        }
+
+        .card-bg-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.2) brightness(0.7);
+            transition: var(--transition-vellum);
+            z-index: 1;
+        }
+
+        /* The Stratified Layers */
+        .vellum-layer {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            padding: 50px;
+            background: var(--glass-white);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid white;
+            transform: translateY(110px);
+            transition: var(--transition-vellum);
+        }
+
+        .service-card:hover .vellum-layer {
+            transform: translateY(0);
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .service-card:hover .card-bg-img {
+            transform: scale(1.1);
+            filter: grayscale(0) brightness(0.4);
+        }
+
+        /* Floating Tags Layer */
+        .card-tags {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+            opacity: 0.8;
+            transition: var(--transition-vellum);
+        }
+
+        .service-card:hover .card-tags {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .tag {
+            font-family: var(--mono-font);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 8px 16px;
+            background: white;
+            color: var(--deep-navy);
+            border: 1px solid var(--vellum-border);
+        }
+
+        .tag-teal {
+            background: var(--primary-teal);
+            color: white;
+            border-color: var(--primary-teal);
+        }
+
+        /* Content Layer */
+        .card-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--deep-navy);
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .card-excerpt {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 90%;
+            transition: var(--transition-vellum);
+        }
+
+        /* Expanded Details - Stratified */
+        .expanded-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: var(--transition-vellum);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 0;
+        }
+
+        .service-card:hover .expanded-details {
+            max-height: 200px;
+            opacity: 1;
+            margin-bottom: 35px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            color: var(--teal-dark);
+            font-weight: 600;
+        }
+
+        .detail-item svg {
+            flex-shrink: 0;
+            color: var(--primary-teal);
+        }
+
+        .card-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--deep-navy);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s ease;
+        }
+
+        .card-action:hover {
+            color: var(--primary-teal);
+            gap: 15px;
+        }
+
+        /* ── Section Footer ────────────────────────────── */
+        .services-outro {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px;
+            border: 1px dashed var(--vellum-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .outro-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--deep-navy);
+            letter-spacing: -0.5px;
+        }
+
+        .outro-btn {
+            background: var(--deep-navy);
+            color: white;
+            padding: 1.2rem 3rem;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: var(--transition-vellum);
+        }
+
+        .outro-btn:hover {
+            background: var(--primary-teal);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(23, 176, 171, 0.3);
+        }
+
+        /* ── Responsive ─────────────────────────────────── */
+        @media (max-width: 1100px) {
+            .services-grid { grid-template-columns: 1fr; }
+            .service-card { height: 480px; }
+        }
+
+        @media (max-width: 600px) {
+            .vellum-layer { padding: 30px; }
+            .expanded-details { grid-template-columns: 1fr; gap: 10px; }
+            .card-title { font-size: 1.8rem; }
+            .services-headline { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<section class="services-section" id="services">
+    <div class="services-container">
+        
+        <header class="services-intro">
+            <span class="services-kicker">Professional Excellence</span>
+            <h2 class="services-headline">Our Services</h2>
+            <p class="services-subtext">
+                Discover our range of professional cleaning services designed to meet your specific needs and exceed your expectations.
+            </p>
+        </header>
+
+        <div class="services-grid">
+            
+            <!-- Residential Cleaning -->
+            <div class="service-card reveal">
+                <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6958?auto=format&fit=crop&q=80&w=1200" alt="Residential Interior" class="card-bg-img">
+                <div class="card-tags">
+                    <span class="tag">Flexible</span>
+                    <span class="tag tag-teal">Custom Quote</span>
+                </div>
+                <div class="vellum-layer">
+                    <h3 class="card-title">Residential Cleaning</h3>
+                    <p class="card-excerpt">Transform your home with our premium residential cleaning services.</p>
+                    <div class="expanded-details">
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Custom cleaning plans
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Eco-friendly products
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Trained professionals
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Satisfaction guarantee
+                        </div>
+                    </div>
+                    <a href="#" class="card-action">LEARN MORE →</a>
+                </div>
+            </div>
+
+            <!-- Commercial Cleaning -->
+            <div class="service-card reveal">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" alt="Modern Office" class="card-bg-img">
+                <div class="card-tags">
+                    <span class="tag">Flexible</span>
+                    <span class="tag tag-teal">Custom Quote</span>
+                </div>
+                <div class="vellum-layer">
+                    <h3 class="card-title">Commercial Cleaning</h3>
+                    <p class="card-excerpt">Professional solutions for businesses that demand excellence.</p>
+                    <div class="expanded-details">
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Flexible scheduling
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Industry compliance
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Commercial grade equipment
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Liability coverage
+                        </div>
+                    </div>
+                    <a href="#" class="card-action">LEARN MORE →</a>
+                </div>
+            </div>
+
+            <!-- Move In/Out Cleaning -->
+            <div class="service-card reveal">
+                <img src="https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&q=80&w=1200" alt="Empty Apartment" class="card-bg-img">
+                <div class="card-tags">
+                    <span class="tag">Flexible</span>
+                    <span class="tag tag-teal">Custom Quote</span>
+                </div>
+                <div class="vellum-layer">
+                    <h3 class="card-title">Move In/Out Cleaning</h3>
+                    <p class="card-excerpt">Start fresh with our comprehensive transition cleaning service.</p>
+                    <div class="expanded-details">
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Deep cleaning included
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Property inspection
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Appliance cleaning
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Window treatments
+                        </div>
+                    </div>
+                    <a href="#" class="card-action">LEARN MORE →</a>
+                </div>
+            </div>
+
+            <!-- Deep Cleaning -->
+            <div class="service-card reveal">
+                <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1200" alt="Clean Bathroom Tile" class="card-bg-img">
+                <div class="card-tags">
+                    <span class="tag">Flexible</span>
+                    <span class="tag tag-teal">Custom Quote</span>
+                </div>
+                <div class="vellum-layer">
+                    <h3 class="card-title">Deep Cleaning</h3>
+                    <p class="card-excerpt">Thorough cleaning that reaches every corner and crevice.</p>
+                    <div class="expanded-details">
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Detailed cleaning checklist
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Special equipment used
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Stain treatment
+                        </div>
+                        <div class="detail-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Sanitization included
+                        </div>
+                    </div>
+                    <a href="#" class="card-action">LEARN MORE →</a>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="services-outro reveal">
+            <h3 class="outro-text">Ready to experience our exceptional cleaning service?</h3>
+            <a href="#" class="outro-btn">SCHEDULE AN APPOINTMENT</a>
+        </footer>
+
+    </div>
+</section>
+
+<script>
+    // ── Simple Intersection Observer for scroll reveals
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.8s cubic-bezier(0.19, 1, 0.22, 1)';
+        revealObserver.observe(el);
+    });
+</script>
+
+</body>
+</html>
+

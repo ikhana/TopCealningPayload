@@ -48,6 +48,7 @@ import { TestimonialsCarouselBlock } from './TestimonialsCarousel';
 import { ScheduleCallCTABlock } from './ScheduleCallCTA';
 import { TCHomeHeroBlock } from './TCHomeHero';
 import { TCAboutSectionBlock } from './TCAboutSection';
+import { TCServiceCommitmentBlock } from './TCServiceCommitment';
 
 
 const blockComponents = {
@@ -103,6 +104,7 @@ testimonialsCarousel: TestimonialsCarouselBlock,
 scheduleCallCTA: ScheduleCallCTABlock,
 tcHomeHero: TCHomeHeroBlock,
 tcAboutSection: TCAboutSectionBlock,
+tcServiceCommitment: TCServiceCommitmentBlock,
 }
 
 export const RenderBlocks: React.FC<{
