@@ -1,0 +1,214 @@
+<section class="scaffold-section">
+    <style>
+        .scaffold-section {
+            background: white;
+            padding: 100px 5%;
+            --wire: rgba(13, 27, 46, 0.1)
+        }
+
+        .scaffold-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 60px;
+            border-top: 1px solid var(--wire);
+            padding-top: 60px
+        }
+
+        .scaffold-sidebar {
+            position: sticky;
+            top: 120px;
+            height: fit-content
+        }
+
+        .scaffold-sidebar h2 {
+            font-family: var(--mono-font);
+            font-size: 3rem;
+            line-height: 1;
+            margin-bottom: 30px;
+            color: var(--deep-navy);
+            letter-spacing: -2px
+        }
+
+        .scaffold-sidebar h2 span {
+            color: var(--primary-teal)
+        }
+
+        .scaffold-summary {
+            font-size: .9rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 40px;
+            border-right: 1px solid var(--primary-teal);
+            padding-right: 30px
+        }
+
+        .scaffold-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--wire);
+            border: 1px solid var(--wire)
+        }
+
+        .scaffold-node {
+            background: white;
+            padding: 50px;
+            position: relative;
+            transition: all .3s ease
+        }
+
+        .scaffold-node:hover {
+            background: var(--light-aquamarine)
+        }
+
+        .scaffold-node::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 8px;
+            height: 8px;
+            border: 1px solid var(--primary-teal)
+        }
+
+        .scaffold-node h5 {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: .7rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px
+        }
+
+        .scaffold-node h4 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--deep-navy);
+            margin-bottom: 0;
+            transition: all .3s ease
+        }
+
+        .scaffold-node .node-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all .5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0
+        }
+
+        .scaffold-node:hover h4 {
+            margin-bottom: 20px
+        }
+
+        .scaffold-node:hover .node-content {
+            max-height: 200px;
+            opacity: 1
+        }
+
+        .node-content p {
+            font-size: .9rem;
+            line-height: 1.6;
+            color: var(--text-dark)
+        }
+
+        .scaffold-footer-stats {
+            grid-column: span 2;
+            background: var(--deep-navy);
+            display: flex;
+            justify-content: space-around;
+            padding: 40px;
+            color: white
+        }
+
+        .stat-box {
+            text-align: center
+        }
+
+        .stat-box span {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-teal)
+        }
+
+        @media (max-width:1100px) {
+            .scaffold-container {
+                grid-template-columns: 1fr
+            }
+
+            .scaffold-sidebar {
+                position: static
+            }
+
+            .scaffold-main-grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+    <div class="scaffold-container">
+        <aside class="scaffold-sidebar">
+            <h2>Our<br><span>Advantages</span></h2>
+            <p class="scaffold-summary">Top Cleaning combines expertise, reliability, and attention to detail to exceed
+                your expectations in every workspace.</p><a href="#" class="header-cta">Book Your Cleaning</a>
+        </aside>
+        <div class="scaffold-main-grid">
+            <div class="scaffold-node">
+                <h5>Reliability</h5>
+                <h4>Satisfied Customers</h4>
+                <div class="node-content">
+                    <p>Join our growing family of satisfied customers who trust us with their homes and offices. We
+                        pride ourselves on maintaining a 98% customer satisfaction rate.</p>
+                </div>
+            </div>
+            <div class="scaffold-node">
+                <h5>Expertise</h5>
+                <h4>Qualified Professionals</h4>
+                <div class="node-content">
+                    <p>Our cleaning professionals undergo rigorous training and background checks. We ensure the highest
+                        standards of service quality and professionalism.</p>
+                </div>
+            </div>
+            <div class="scaffold-node">
+                <h5>Security</h5>
+                <h4>Fully Insured</h4>
+                <div class="node-content">
+                    <p>Rest easy knowing you're fully covered. We carry comprehensive insurance coverage for property
+                        damage and liability protection.</p>
+                </div>
+            </div>
+            <div class="scaffold-node">
+                <h5>Sustainability</h5>
+                <h4>Eco-Friendly</h4>
+                <div class="node-content">
+                    <p>We're committed to protecting the environment by using green cleaning products that are tough on
+                        dirt but gentle on the planet.</p>
+                </div>
+            </div>
+            <div class="scaffold-node">
+                <h5>Agility</h5>
+                <h4>Flexible Scheduling</h4>
+                <div class="node-content">
+                    <p>Book our services at your convenience. We offer flexible scheduling options including evenings
+                        and weekends to accommodate your busy lifestyle.</p>
+                </div>
+            </div>
+            <div class="scaffold-node">
+                <h5>Guarantee</h5>
+                <h4>Satisfaction Guaranteed</h4>
+                <div class="node-content">
+                    <p>If you're not completely satisfied with our service, we'll return and re-clean the areas you're
+                        unhappy with at no additional cost.</p>
+                </div>
+            </div>
+            <div class="scaffold-footer-stats">
+                <div class="stat-box"><span>4.5K+</span>Clients</div>
+                <div class="stat-box"><span>98%</span>Retention</div>
+                <div class="stat-box"><span>5+</span>Years</div>
+                <div class="stat-box"><span>4.9</span>Rating</div>
+            </div>
+        </div>
+    </div>
+</section>
+

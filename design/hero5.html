@@ -1820,6 +1820,808 @@
     </div>
 </section>
 
+<!-- ══════════════════════════════════════════════════════════
+     SERVICES SECTION — Crystalline Refraction (services3.html)
+     No 3D tilt. Content always visible; description + specs reveal on hover.
+══════════════════════════════════════════════════════════ -->
+<style>
+/* ── Section shell ─────────────────────────────────────── */
+.srv-section {
+    padding: 120px 5%;
+    background: radial-gradient(ellipse at top left, rgba(224,245,244,0.6) 0%, #fff 60%);
+    position: relative;
+    overflow: hidden;
+}
+.srv-crystal-emitter {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(23,176,171,0.05) 0%, transparent 70%);
+    top: -200px;
+    right: -100px;
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+}
+.srv-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.srv-header {
+    margin-bottom: 80px;
+    max-width: 700px;
+}
+.srv-header .kicker {
+    font-family: var(--mono-font);
+    color: var(--primary-teal);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    display: block;
+    margin-bottom: 16px;
+}
+.srv-header h2 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--deep-navy);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 20px;
+}
+.srv-header p {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* ── Grid ──────────────────────────────────────────────── */
+.srv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+/* ── Card ──────────────────────────────────────────────── */
+.srv-card {
+    position: relative;
+    height: 520px;
+    overflow: hidden;
+    border: 1px solid rgba(23,176,171,0.1);
+    background: white;
+    cursor: default;
+}
+.srv-card-img {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+.srv-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.8) brightness(0.9);
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.srv-card:hover .srv-card-img img {
+    transform: scale(1.1);
+}
+
+/* Refraction overlay */
+.srv-refraction {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(180deg, transparent 20%, rgba(13,27,46,0.95) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    transition: background 0.6s cubic-bezier(0.22,1,0.36,1);
+}
+.srv-card:hover .srv-refraction {
+    background: linear-gradient(180deg, rgba(23,176,171,0.08) 0%, rgba(13,27,46,0.95) 100%);
+}
+
+/* Content (always visible, no Y shift) */
+.srv-content {
+    position: relative;
+    z-index: 3;
+    color: white;
+}
+.srv-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-family: var(--mono-font);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    color: var(--teal-glow);
+}
+.srv-content h4 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+}
+.srv-content p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 25px;
+    opacity: 0;
+    transition: opacity 0.4s ease 0.1s;
+}
+.srv-card:hover .srv-content p {
+    opacity: 1;
+}
+
+/* Specs (expand on hover) */
+.srv-specs {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.22,1,0.36,1),
+                padding-top 0.4s ease,
+                margin-bottom 0.4s ease;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 0;
+    margin-bottom: 0;
+}
+.srv-card:hover .srv-specs {
+    max-height: 160px;
+    padding-top: 16px;
+    margin-bottom: 20px;
+}
+.srv-spec-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.srv-spec-item {
+    font-family: var(--mono-font);
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.srv-spec-item svg { color: var(--primary-teal); flex-shrink: 0; }
+
+/* Actions */
+.srv-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.srv-learn-link {
+    font-family: var(--mono-font);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color var(--transition-fast);
+}
+.srv-learn-link:hover { color: var(--primary-teal); }
+.srv-quote-btn {
+    background: var(--primary-teal);
+    color: white;
+    font-family: var(--mono-font);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: inline-block;
+}
+.srv-quote-btn:hover {
+    background: white;
+    color: var(--deep-navy);
+}
+
+/* Footer CTA */
+.srv-footer-cta {
+    margin-top: 80px;
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--aperture-shadow);
+}
+.srv-footer-cta h3 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--deep-navy);
+    margin-bottom: 30px;
+    line-height: 1.2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .srv-grid { grid-template-columns: 1fr; }
+    .srv-content p { opacity: 1; }
+    .srv-specs { max-height: 160px !important; padding-top: 16px !important; margin-bottom: 20px !important; }
+}
+</style>
+
+<section class="srv-section" id="services">
+    <div class="srv-crystal-emitter" aria-hidden="true"></div>
+
+    <div class="srv-container">
+
+        <!-- Header -->
+        <header class="srv-header reveal">
+            <span class="kicker">Our Services</span>
+            <h2>Cleaning solutions built around your needs.</h2>
+            <p>From residential homes to commercial spaces, every service is delivered with precision, care, and guaranteed satisfaction.</p>
+        </header>
+
+        <!-- Cards grid -->
+        <div class="srv-grid">
+
+            <!-- 1 · Residential -->
+            <article class="srv-card reveal">
+                <div class="srv-card-img">
+                    <img src="../public/images/services/residential.jpg" alt="Residential Cleaning">
+                </div>
+                <div class="srv-refraction">
+                    <div class="srv-content">
+                        <span class="srv-badge">Custom Quote Available</span>
+                        <h4>Residential Cleaning</h4>
+                        <p>Transform your home with premium residential cleaning services tailored to your schedule and preferences.</p>
+                        <div class="srv-specs">
+                            <ul class="srv-spec-list">
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom cleaning plans</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Eco-friendly products</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Trained professionals</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Satisfaction guarantee</li>
+                            </ul>
+                        </div>
+                        <div class="srv-actions">
+                            <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                            <a href="#" class="srv-quote-btn">Get a Quote</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 2 · Commercial -->
+            <article class="srv-card reveal" style="transition-delay:0.08s;">
+                <div class="srv-card-img">
+                    <img src="../public/images/services/commercial.jpg" alt="Commercial Cleaning">
+                </div>
+                <div class="srv-refraction">
+                    <div class="srv-content">
+                        <span class="srv-badge">Custom Quote Available</span>
+                        <h4>Commercial Cleaning</h4>
+                        <p>Professional solutions for businesses that demand excellence, reliability, and compliance.</p>
+                        <div class="srv-specs">
+                            <ul class="srv-spec-list">
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Flexible scheduling</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Industry compliance</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Commercial grade equipment</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Liability coverage</li>
+                            </ul>
+                        </div>
+                        <div class="srv-actions">
+                            <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                            <a href="#" class="srv-quote-btn">Get a Quote</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 3 · Deep Cleaning -->
+            <article class="srv-card reveal" style="transition-delay:0.16s;">
+                <div class="srv-card-img">
+                    <img src="../public/images/services/deep-cleaning.jpg" alt="Deep Cleaning">
+                </div>
+                <div class="srv-refraction">
+                    <div class="srv-content">
+                        <span class="srv-badge">Recommended First Visit</span>
+                        <h4>Deep Cleaning</h4>
+                        <p>Thorough cleaning that reaches every corner and crevice for a truly fresh, sanitized start.</p>
+                        <div class="srv-specs">
+                            <ul class="srv-spec-list">
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Detailed checklist</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Special equipment</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Stain treatment</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sanitization included</li>
+                            </ul>
+                        </div>
+                        <div class="srv-actions">
+                            <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                            <a href="#" class="srv-quote-btn">Get a Quote</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 4 · Move In/Out -->
+            <article class="srv-card reveal" style="transition-delay:0.24s;">
+                <div class="srv-card-img">
+                    <img src="../public/images/services/move-in-out.jpg" alt="Move In / Out Cleaning">
+                </div>
+                <div class="srv-refraction">
+                    <div class="srv-content">
+                        <span class="srv-badge">Custom Quote Available</span>
+                        <h4>Move In / Out Cleaning</h4>
+                        <p>Start fresh or leave spotless with our comprehensive transition cleaning service.</p>
+                        <div class="srv-specs">
+                            <ul class="srv-spec-list">
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Deep cleaning included</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Inspection ready</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Appliance cleaning</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Window treatments</li>
+                            </ul>
+                        </div>
+                        <div class="srv-actions">
+                            <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                            <a href="#" class="srv-quote-btn">Get a Quote</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 5 · After Party -->
+            <article class="srv-card reveal" style="transition-delay:0.32s;">
+                <div class="srv-card-img">
+                    <img src="../public/images/services/party-cleaning.jpg" alt="After Party Cleaning">
+                </div>
+                <div class="srv-refraction">
+                    <div class="srv-content">
+                        <span class="srv-badge">Same Day Available</span>
+                        <h4>After Party Cleaning</h4>
+                        <p>Fast, thorough cleanup after events so you can enjoy the memories, not the mess.</p>
+                        <div class="srv-specs">
+                            <ul class="srv-spec-list">
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Quick turnaround</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Stain removal</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Trash disposal</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Surface sanitization</li>
+                            </ul>
+                        </div>
+                        <div class="srv-actions">
+                            <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                            <a href="#" class="srv-quote-btn">Get a Quote</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 6 · AirBnB -->
+            <article class="srv-card reveal" style="transition-delay:0.4s;">
+                <div class="srv-card-img">
+                    <img src="../public/images/services/airbnb-cleaning.jpg" alt="AirBnB Cleaning">
+                </div>
+                <div class="srv-refraction">
+                    <div class="srv-content">
+                        <span class="srv-badge">Turnaround Specialist</span>
+                        <h4>AirBnB Cleaning</h4>
+                        <p>Fast, reliable turnovers between guests to keep your listing spotless and 5-star ready.</p>
+                        <div class="srv-specs">
+                            <ul class="srv-spec-list">
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Quick turnaround</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Linen service</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Guest-ready checklist</li>
+                                <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Host coordination</li>
+                            </ul>
+                        </div>
+                        <div class="srv-actions">
+                            <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                            <a href="#" class="srv-quote-btn">Get a Quote</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div><!-- /srv-grid -->
+
+        <!-- Footer CTA -->
+        <div class="srv-footer-cta reveal">
+            <h3>Ready to experience exceptional cleaning?</h3>
+            <a href="#" class="btn" style="padding: 1.5rem 4rem;">Get Your Instant Estimate</a>
+        </div>
+
+    </div><!-- /srv-container -->
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     WHY TOP CLEANING — Scaffold Grid (whytop.html)
+     Sticky sidebar + 2-col hover-expand nodes + navy stats row
+══════════════════════════════════════════════════════════ -->
+<section class="wt-section">
+    <style>
+        .wt-section {
+            background: white;
+            padding: 100px 5%;
+        }
+        .wt-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 60px;
+            border-top: 1px solid rgba(13,27,46,0.1);
+            padding-top: 60px;
+        }
+        .wt-sidebar {
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+        }
+        .wt-sidebar h2 {
+            font-family: var(--mono-font);
+            font-size: 3rem;
+            line-height: 1;
+            margin-bottom: 30px;
+            color: var(--deep-navy);
+            letter-spacing: -2px;
+        }
+        .wt-sidebar h2 span { color: var(--primary-teal); }
+        .wt-summary {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 40px;
+            border-right: 1px solid var(--primary-teal);
+            padding-right: 30px;
+        }
+        .wt-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: rgba(13,27,46,0.1);
+            border: 1px solid rgba(13,27,46,0.1);
+        }
+        .wt-node {
+            background: white;
+            padding: 50px;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+        .wt-node:hover { background: var(--light-aquamarine); }
+        .wt-node::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 8px;
+            height: 8px;
+            border: 1px solid var(--primary-teal);
+        }
+        .wt-node h5 {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: 0.7rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .wt-node h4 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--deep-navy);
+            margin-bottom: 0;
+            transition: margin-bottom 0.3s ease;
+        }
+        .wt-node:hover h4 { margin-bottom: 20px; }
+        .wt-node-content {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1),
+                        opacity 0.4s ease;
+        }
+        .wt-node:hover .wt-node-content { max-height: 200px; opacity: 1; }
+        .wt-node-content p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+        .wt-stats {
+            grid-column: span 2;
+            background: var(--deep-navy);
+            display: flex;
+            justify-content: space-around;
+            padding: 40px;
+            color: white;
+        }
+        .wt-stat { text-align: center; }
+        .wt-stat span {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+        @media (max-width: 1100px) {
+            .wt-container { grid-template-columns: 1fr; }
+            .wt-sidebar { position: static; }
+            .wt-grid { grid-template-columns: 1fr; }
+            .wt-stats { grid-column: span 1; flex-wrap: wrap; gap: 30px; }
+        }
+    </style>
+
+    <div class="wt-container">
+        <aside class="wt-sidebar">
+            <h2>Our<br><span>Advantages</span></h2>
+            <p class="wt-summary">Top Cleaning combines expertise, reliability, and attention to detail to exceed your expectations in every workspace.</p>
+            <a href="#" class="btn">Book Your Cleaning</a>
+        </aside>
+
+        <div class="wt-grid">
+            <div class="wt-node">
+                <h5>Reliability</h5>
+                <h4>Satisfied Customers</h4>
+                <div class="wt-node-content">
+                    <p>Join our growing family of satisfied customers who trust us with their homes and offices. We pride ourselves on maintaining a 98% customer satisfaction rate.</p>
+                </div>
+            </div>
+            <div class="wt-node">
+                <h5>Expertise</h5>
+                <h4>Qualified Professionals</h4>
+                <div class="wt-node-content">
+                    <p>Our cleaning professionals undergo rigorous training and background checks. We ensure the highest standards of service quality and professionalism.</p>
+                </div>
+            </div>
+            <div class="wt-node">
+                <h5>Security</h5>
+                <h4>Fully Insured</h4>
+                <div class="wt-node-content">
+                    <p>Rest easy knowing you're fully covered. We carry comprehensive insurance coverage for property damage and liability protection.</p>
+                </div>
+            </div>
+            <div class="wt-node">
+                <h5>Sustainability</h5>
+                <h4>Eco-Friendly</h4>
+                <div class="wt-node-content">
+                    <p>We're committed to protecting the environment by using green cleaning products that are tough on dirt but gentle on the planet.</p>
+                </div>
+            </div>
+            <div class="wt-node">
+                <h5>Agility</h5>
+                <h4>Flexible Scheduling</h4>
+                <div class="wt-node-content">
+                    <p>Book our services at your convenience. We offer flexible scheduling options including evenings and weekends to accommodate your busy lifestyle.</p>
+                </div>
+            </div>
+            <div class="wt-node">
+                <h5>Guarantee</h5>
+                <h4>Satisfaction Guaranteed</h4>
+                <div class="wt-node-content">
+                    <p>If you're not completely satisfied with our service, we'll return and re-clean the areas you're unhappy with at no additional cost.</p>
+                </div>
+            </div>
+
+            <div class="wt-stats">
+                <div class="wt-stat"><span>4.5K+</span>Clients</div>
+                <div class="wt-stat"><span>98%</span>Retention</div>
+                <div class="wt-stat"><span>5+</span>Years</div>
+                <div class="wt-stat"><span>4.9</span>Rating</div>
+            </div>
+        </div><!-- /wt-grid -->
+    </div><!-- /wt-container -->
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     HOW IT WORKS — Tectonic Monolith Grid
+══════════════════════════════════════════════════════════ -->
+<style>
+.tectonic-section {
+    background: #f5efe0;
+    padding: 100px 5%;
+    font-family: 'Inter', sans-serif;
+}
+.tectonic-container { max-width: 1400px; margin: 0 auto; }
+.tectonic-intro { margin-bottom: 80px; }
+.tectonic-intro h2 {
+    font-family: var(--mono-font);
+    font-size: 0.8rem;
+    color: #fc8181;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+}
+.tectonic-intro h3 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #0d1b2e;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+}
+.tectonic-intro p {
+    font-size: 1.2rem;
+    color: #4a5a6a;
+    max-width: 600px;
+}
+/* Grid */
+.monolith-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    background: #0d1b2e;
+    border: 10px solid #0d1b2e;
+    box-shadow: 40px 40px 0px #17b0ab;
+}
+/* Card */
+.monolith {
+    position: relative;
+    height: 700px;
+    overflow: hidden;
+    background: #fff;
+    border-right: 1px solid #0d1b2e;
+    transition: background 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+}
+.monolith-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.2);
+    transition: 0.6s;
+    opacity: 0.15;
+}
+.monolith:hover .monolith-img {
+    opacity: 0.4;
+    filter: grayscale(0) contrast(1);
+    transform: scale(1.05);
+}
+/* Ghost number */
+.monolith-num {
+    font-family: var(--mono-font);
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 0.8;
+    color: #0d1b2e;
+    opacity: 0.05;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    transition: 0.4s;
+    pointer-events: none;
+}
+.monolith:hover .monolith-num {
+    opacity: 0.2;
+    transform: translateY(-20px);
+}
+/* Content container */
+.monolith-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 50px 50px 70px;   /* extra bottom padding keeps title clear of edge */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+/* Title — always fully visible */
+.monolith h4 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #0d1b2e;
+    margin-bottom: 0;           /* no gap at rest — details are hidden */
+    transition: color 0.4s, margin-bottom 0.4s;
+}
+.monolith:hover h4 {
+    color: #fff;
+    margin-bottom: 20px;        /* opens space above expanding details */
+}
+/* Expandable details */
+.monolith-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.4s ease;
+}
+.monolith:hover .monolith-details {
+    max-height: 400px;
+    opacity: 1;
+}
+.monolith-details ul { list-style: none; padding: 0; }
+.monolith-details li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #fff;
+    margin-bottom: 12px;
+    font-weight: 500;
+    border-left: 3px solid #17b0ab;
+    padding-left: 15px;
+}
+.monolith:hover { background: #17b0ab; }
+/* Responsive */
+@media (max-width: 1024px) {
+    .monolith-grid { grid-template-columns: 1fr; }
+    .monolith { height: auto; min-height: 300px; }
+    .monolith-details { max-height: 1000px; opacity: 1; }
+    .monolith h4 { margin-bottom: 20px; }
+}
+</style>
+
+<section class="tectonic-section">
+    <div class="tectonic-container">
+        <div class="tectonic-intro">
+            <h2>How It Works</h2>
+            <h3>Our Process Is Simple</h3>
+            <p>We've streamlined our cleaning process to make it as easy as possible for you. Just three simple steps to a spotless space.</p>
+        </div>
+        <div class="monolith-grid">
+
+            <div class="monolith">
+                <img src="../public/images/process/booking.jpg" class="monolith-img" alt="Booking">
+                <span class="monolith-num">01</span>
+                <div class="monolith-content">
+                    <h4>Book Online</h4>
+                    <div class="monolith-details">
+                        <ul>
+                            <li>Easy online booking system makes scheduling effortless</li>
+                            <li>Choose your preferred date and time</li>
+                            <li>Specify your cleaning needs</li>
+                            <li>Get instant price quote</li>
+                            <li>Secure online payment</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monolith">
+                <img src="../public/images/process/cleaning.jpg" class="monolith-img" alt="Cleaning">
+                <span class="monolith-num">02</span>
+                <div class="monolith-content">
+                    <h4>We Clean</h4>
+                    <div class="monolith-details">
+                        <ul>
+                            <li>Trained professionals arrive on schedule</li>
+                            <li>Thorough cleaning with eco-friendly products</li>
+                            <li>Attention to every detail</li>
+                            <li>Quality check before finishing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monolith">
+                <img src="../public/images/process/relax.jpg" class="monolith-img" alt="Relax">
+                <span class="monolith-num">03</span>
+                <div class="monolith-content">
+                    <h4>You Relax</h4>
+                    <div class="monolith-details">
+                        <ul>
+                            <li>Enjoy your spotless environment</li>
+                            <li>Satisfaction guaranteed</li>
+                            <li>Book recurring service if desired</li>
+                            <li>Leave us your feedback</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
 <!-- ── FOOTER ────────────────────────────────────────────── -->
 <footer class="obsidian-footer">
     <div class="footer-glow"></div>

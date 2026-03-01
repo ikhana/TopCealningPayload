@@ -63,6 +63,7 @@ import { TCHomeHero } from '@/blocks/TCHomeHero/config'
 import { TCAboutSection } from '@/blocks/TCAboutSection/config'
 import { TCServiceCommitment } from '@/blocks/TCServiceCommitment/config'
 import { TCServicesSection } from '@/blocks/TCServicesSection/config'
+import { TCWhyTopSection } from '@/blocks/TCWhyTop/config'
 
 
 
@@ -208,6 +209,7 @@ export const Pages: CollectionConfig = {
                  TCAboutSection,
                  TCServiceCommitment,
                  TCServicesSection,
+                 TCWhyTopSection,
 
               ],
               required: true,

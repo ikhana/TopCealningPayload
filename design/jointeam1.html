@@ -1,0 +1,466 @@
+created by @ammaar
+Source Code
+×
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --sand: #f5efe0;
+            --light-aquamarine: #e0f5f4;
+            --glass-white: rgba(255, 255, 255, 0.78);
+            --glass-border: rgba(23, 176, 171, 0.2);
+            --text-dark: #1a2840;
+            --text-muted: #4a5a6a;
+            --off-white: #f8fafc;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            --transition-fast: 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            --aperture-shadow: 0 20px 50px rgba(0, 40, 40, 0.12);
+            --header-height: 80px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--sans-font); background: #f0fafa; color: var(--text-dark); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        /* ═══════════════════════════════════════════════════ RECRUITMENT SECTION ═══════════════════════════════════════════════════ */
+        .tectonic-recruitment {
+            padding: 120px 5%;
+            background: var(--off-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tectonic-recruitment::before {
+            content: 'WORK WITH US';
+            position: absolute;
+            top: 40px;
+            right: -50px;
+            font-size: 12rem;
+            font-weight: 900;
+            color: var(--light-aquamarine);
+            opacity: 0.4;
+            letter-spacing: -5px;
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+        }
+
+        .recruitment-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            gap: 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Sidebar Blueprint ─────────────────────────── */
+        .recruitment-sidebar {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .step-indicator {
+            margin-bottom: 60px;
+        }
+
+        .step-node {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            opacity: 0.3;
+            transition: var(--transition);
+        }
+
+        .step-node.active {
+            opacity: 1;
+        }
+
+        .node-number {
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--primary-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-teal);
+            position: relative;
+        }
+
+        .step-node.active .node-number {
+            background: var(--primary-teal);
+            color: white;
+            box-shadow: 0 0 20px rgba(23, 176, 171, 0.4);
+        }
+
+        .node-label {
+            font-family: var(--mono-font);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--deep-navy);
+        }
+
+        .recruitment-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 0.9;
+            color: var(--deep-navy);
+            letter-spacing: -2px;
+            margin-bottom: 30px;
+        }
+
+        .recruitment-title span {
+            display: block;
+            color: var(--primary-teal);
+        }
+
+        .recruitment-copy {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            max-width: 380px;
+        }
+
+        /* ── The Monolith Form ─────────────────────────── */
+        .recruitment-monolith {
+            background: white;
+            border: 1px solid var(--glass-border);
+            box-shadow: 40px 40px 0 var(--deep-navy);
+            padding: 80px;
+            position: relative;
+            min-height: 600px;
+        }
+
+        .form-step {
+            display: none;
+            animation: tectonicShift 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes tectonicShift {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .step-header {
+            margin-bottom: 50px;
+        }
+
+        .step-header h3 {
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--primary-teal);
+            margin-bottom: 10px;
+        }
+
+        .step-header h4 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--deep-navy);
+        }
+
+        /* ── Input Grid ────────────────────────────────── */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group label {
+            font-family: var(--mono-font);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .tectonic-input {
+            background: var(--off-white);
+            border: none;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 15px 0;
+            font-size: 1rem;
+            font-family: var(--sans-font);
+            color: var(--deep-navy);
+            transition: var(--transition-fast);
+            outline: none;
+            background: transparent;
+        }
+
+        .tectonic-input:focus {
+            border-bottom-color: var(--primary-teal);
+        }
+
+        select.tectonic-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2317b0ab' stroke-width='3'%3E%3Cpolyline points='2 4 6 8 10 4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right center;
+        }
+
+        /* ── File Upload Monolith ──────────────────────── */
+        .file-drop-zone {
+            border: 2px dashed var(--glass-border);
+            padding: 40px;
+            text-align: center;
+            background: var(--off-white);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .file-drop-zone:hover {
+            border-color: var(--primary-teal);
+            background: var(--light-aquamarine);
+        }
+
+        .file-drop-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-label {
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--primary-teal);
+            font-weight: 700;
+        }
+
+        /* ── Radio & Textarea ──────────────────────────── */
+        .radio-set {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+
+        .radio-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .radio-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .radio-option input:checked + label {
+            background: var(--deep-navy);
+            color: white;
+            border-color: var(--deep-navy);
+        }
+
+        .tectonic-textarea {
+            width: 100%;
+            min-height: 120px;
+            background: var(--off-white);
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            font-family: var(--sans-font);
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            transition: var(--transition-fast);
+        }
+
+        .tectonic-textarea:focus {
+            border-color: var(--primary-teal);
+            box-shadow: 10px 10px 0 var(--light-aquamarine);
+        }
+
+        /* ── Navigation Buttons ────────────────────────── */
+        .monolith-nav {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .next-btn {
+            background: var(--primary-teal);
+            color: white;
+            border: none;
+            padding: 20px 45px;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 15px 15px 0 var(--light-aquamarine);
+        }
+
+        .next-btn:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: 20px 20px 0 var(--deep-navy);
+            background: var(--teal-dark);
+        }
+
+        /* ── Responsive ────────────────────────────────── */
+        @media (max-width: 1100px) {
+            .recruitment-container { grid-template-columns: 1fr; }
+            .recruitment-sidebar { order: 1; }
+            .recruitment-monolith { order: 2; padding: 40px; }
+            .recruitment-title { font-size: 3rem; }
+            .tectonic-recruitment::before { font-size: 6rem; top: 10px; }
+        }
+
+        @media (max-width: 768px) {
+            .input-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .recruitment-monolith { box-shadow: 15px 15px 0 var(--deep-navy); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- This section should be placed after the "How It Works" and before the Footer -->
+    <section class="tectonic-recruitment reveal" id="apply">
+        <div class="recruitment-container">
+            <!-- LEFT: BLUEPRINT SIDEBAR -->
+            <aside class="recruitment-sidebar">
+                <div class="step-indicator">
+                    <div class="step-node active" id="node-1">
+                        <div class="node-number">01</div>
+                        <div class="node-label">Identity</div>
+                    </div>
+                    <div class="step-node" id="node-2">
+                        <div class="node-number">02</div>
+                        <div class="node-label">Expertise</div>
+                    </div>
+                    <div class="step-node" id="node-3">
+                        <div class="node-number">03</div>
+                        <div class="node-label">Details</div>
+                    </div>
+                </div>
+
+                <h2 class="recruitment-title">Join The <span>Top Cleaning</span> Force</h2>
+                <p class="recruitment-copy">
+                    We're looking for dedicated professionals to help us maintain our 5-star standard. Build your career with the region's premier cleaning service.
+                </p>
+            </aside>
+
+            <!-- RIGHT: THE FORM MONOLITH -->
+            <div class="recruitment-monolith">
+                <form id="applicationForm">
+                    
+                    <!-- STEP 1 -->
+                    <div class="form-step active" id="step-1">
+                        <div class="step-header">
+                            <h3>Phase 01</h3>
+                            <h4>Tell us about you...</h4>
+                        </div>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label>First Name</label>
+                                <input type="text" class="tectonic-input" placeholder="e.g. Alex" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Last Name</label>
+                                <input type="text" class="tectonic-input" placeholder="e.g. Smith" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Email Address</label>
+                                <input type="email" class="tectonic-input" placeholder="alex@example.com" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Phone Number</label>
+                                <input type="tel" class="tectonic-input" placeholder="(000) 000-0000" required>
+                            </div>
+                            <div class="input-group full-width">
+                                <label>English Knowledge</label>
+                                <select class="tectonic-input">
+                                    <option value="" disabled selected>Select level...</option>
+                                    <option>Very Low</option>
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option>High</option>
+                                    <option>Very High</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+                    <div class="form-step" id="step-2">
+                        <div class
+
+
+Anodized Technical Wireframe
+
+Translucent Tectonic Overlap
+
+
+Crystalline Vellum Suspension
+
+Sintered Coral Impress
+
+
+great now we need to to have the last section , ( please have the colors defined in ui so I can get the teste not a stand alone section ) <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"> <style> :root { --primary-teal: #17b0ab; --teal-dark: #0f8a86; --teal-glow: #3dcfca; --deep-navy: #0d1b2e; --coral: #fc8181; --sand: #f5efe0; --light-aquamarine: #e0f5f4; --glass-white: rgba(255, 255, 255, 0.78); --glass-border: rgba(23, 176, 171, 0.2); --text-dark: #1a2840; --text-muted: #4a5a6a; --off-white: #f8fafc; --mono-font: 'JetBrains Mono', monospace; --sans-font: 'Inter', sans-serif; --transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1); --transition-fast: 0.2s cubic-bezier(0.23, 1, 0.32, 1); --aperture-shadow: 0 20px 50px rgba(0, 40, 40, 0.12); --header-height: 80px; } * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family: var(--sans-font); background: #f0fafa; color: var(--text-dark); overflow-x: hidden; -webkit-font-smoothing: antialiased; } /* ═══════════════════════════════════════════════════ UTILITY TOP BAR ═══════════════════════════════════════════════════ */ .utility-bar { background: var(--deep-navy); color: white; padding: 0 5%; height: 40px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono-font); font-size: 11px; letter-spacing: 0.05em; position: relative; z-index: 1001; border-bottom: 1px solid rgba(255,255,255,0.08); transition: transform 0.4s ease, height 0.4s ease, opacity 0.3s ease; overflow: hidden; } .utility-bar.hidden { transform: translateY(-100%); height: 0; opacity: 0; pointer-events: none; } .utility-left, .utility-right { display: flex; align-items: center; gap: 20px; } .utility-item { display: flex; align-items: center; gap: 6px; color: rgba(255, 255, 255, 0.65); text-decoration: none; transition: var(--transition-fast); } .utility-item:hover { color: var(--primary-teal); } .status-indicator { display: flex; align-items: center; gap: 8px; padding: 3px 10px; background: rgba(23, 176, 171, 0.12); border: 1px solid var(--primary-teal); color: var(--primary-teal); font-weight: 700; font-size: 10px; } .status-dot { width: 6px; height: 6px; background: var(--primary-teal); border-radius: 50%; box-shadow: 0 0 8px var(--primary-teal); animation: statusPulse 2s infinite; } .social-links { display: flex; gap: 12px; padding-right: 14px; margin-right: 4px; border-right: 1px solid rgba(255,255,255,0.1); } .social-links a { color: rgba(255,255,255,0.5); transition: var(--transition-fast); display: flex; align-items: center; } .social-links a:hover { color: var(--primary-teal); } .close-bar { cursor: pointer; background: none; border: none; color: rgba(255,255,255,0.45); display: flex; align-items: center; padding: 4px; transition: var(--transition-fast); } .close-bar:hover { color: var(--coral); } /* ═══════════════════════════════════════════════════ MAIN STICKY HEADER ═══════════════════════════════════════════════════ */ .main-header { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); height: var(--header-height); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--glass-border); box-shadow: 0 4px 30px rgba(0,0,0,0.04); transition: background 0.4s ease, box-shadow 0.4s ease, height 0.4s ease; } .main-header.scrolled { background: rgba(255, 255, 255, 0.97); box-shadow: 0 8px 30px rgba(0,0,0,0.09); height: 68px; } /* ── Logo ─────────────────────────────────────────── */ .logo-section { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--deep-navy); font-weight: 900; font-size: 1.3rem; letter-spacing: -0.5px; flex-shrink: 0; } .logo-mark { width: 30px; height: 30px; background: var(--primary-teal); clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%); box-shadow: 0 4px 12px rgba(23, 176, 171, 0.35); flex-shrink: 0; } /* ── Nav ──────────────────────────────────────────── */ .nav-links { display: flex; align-items: center; height: 100%; list-style: none; } .nav-item { position: relative; height: 100%; display: flex; align-items: center; } .nav-item > a, .nav-item-link { text-decoration: none; color: var(--text-dark); font-family: var(--mono-font); font-size: 0.8rem; padding: 0 1.4rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; transition: var(--transition-fast); display: flex; align-items: center; gap: 5px; height: 100%; cursor: pointer; } .nav-item > a:hover, .nav-item-link:hover { color: var(--primary-teal); } .nav-item > a::after, .nav-item-link::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 3px; background: var(--primary-teal); transform: scaleX(0); transition: var(--transition); } .nav-item:hover > a::after, .nav-item:hover .nav-item-link::after { transform: scaleX(1); } /* ── Mega Dropdown ────────────────────────────────── */ .services-dropdown { position: absolute; top: var(--header-height); left: 50%; transform: translateX(-50%) translateY(12px); width: 560px; background: white; border: 1px solid var(--glass-border); border-top: 3px solid var(--primary-teal); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.14); display: grid; grid-template-columns: 1fr 1fr; padding: 1.5rem; gap: 4px; opacity: 0; visibility: hidden; transition: var(--transition); z-index: 1002; } .nav-item:hover .services-dropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); } .dropdown-column { display: flex; flex-direction: column; gap: 2px; } .service-link { display: flex; align-items: center; padding: 0.65rem 1rem; text-decoration: none; color: var(--text-dark); font-size: 0.85rem; font-weight: 500; transition: var(--transition-fast); border-left: 3px solid transparent; } .service-link:hover { background: var(--light-aquamarine); color: var(--teal-dark); border-left-color: var(--primary-teal); padding-left: 1.3rem; } /* ── Header CTA ───────────────────────────────────── */ .header-cta { background: var(--primary-teal); color: white; padding: 0.85rem 1.6rem; text-decoration: none; font-family: var(--mono-font); font-weight: 700; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; transition: var(--transition); white-space: nowrap; flex-shrink: 0; } .header-cta:hover { background: var(--deep-navy); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(23, 176, 171, 0.3); } /* ── Mobile Toggle ────────────────────────────────── */ .mobile-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; } .mobile-toggle span { width: 24px; height: 2px; background: var(--deep-navy); transition: 0.3s; display: block; } /* ── Mobile Nav ───────────────────────────────────── */ .mobile-nav { display: none; flex-direction: column; background: white; border-bottom: 1px solid var(--glass-border); padding: 1rem 5%; gap: 2px; position: sticky; top: var(--header-height); z-index: 999; } .mobile-nav.open { display: flex; } .mobile-nav a { padding: 0.75rem 1rem; text-decoration: none; color: var(--text-dark); font-family: var(--mono-font); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; border-left: 3px solid transparent; transition: var(--transition-fast); } .mobile-nav a:hover { color: var(--primary-teal); border-left-color: var(--primary-teal); background: var(--light-aquamarine); padding-left: 1.3rem; } /* ═══════════════════════════════════════════════════ HERO VIEWPORT ═══════════════════════════════════════════════════ */ .viewport-wrapper { position: relative; min-height: 100vh; width: 100%; display: flex; flex-direction: column; background: #f0fafa; } .hero-bg { position: absolute; inset: 0; z-index: 1; overflow: hidden; } .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: brightness(0.9) contrast(1.1); transform: scale(1.05); animation: subtleZoom 20s infinite alternate linear; } .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(240, 250, 250, 0.96) 0%, rgba(240, 250, 250, 0.60) 48%, transparent 100%); } /* ═══════════════════════════════════════════════════ MAIN HERO CONTENT ═══════════════════════════════════════════════════ */ main { position: relative; z-index: 5; flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 0 5%; align-items: center; } .hero-content { padding: 4rem 0; opacity: 0; transform: translateY(20px); animation: reveal 1.2s forwards 0.2s ease-out; } h1 { font-size: clamp(2.2rem, 4.5vw, 3.8rem); font-weight: 900; line-height: 0.95; margin-bottom: 2rem; letter-spacing: -2px; color: var(--deep-navy); } h1 span { display: block; color: var(--primary-teal); font-style: italic; font-weight: 300; letter-spacing: -1px; } .service-description { max-width: 460px; font-size: 1.1rem; line-height: 1.7; margin-bottom: 3rem; color: #2d4545; font-weight: 400; } /* ── CTA Panels ───────────────────────────────────── */ .cta-grid { display: grid; grid-template-columns: 1fr; gap: 20px; perspective: 1000px; opacity: 0; transform: translateX(40px); animation: reveal 1.2s forwards 0.5s ease-out; } .panel { background: rgba(23, 176, 171, 0.07); padding: 3.5rem; backdrop-filter: blur(15px); border: 1px solid rgba(23, 176, 171, 0.22); transition: var(--transition); position: relative; overflow: hidden; box-shadow: var(--aperture-shadow); } .panel::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-25deg); transition: 0.8s; } .panel:hover::before { left: 150%; } .panel:hover { transform: translateY(-8px) rotateX(2deg); background: rgba(255, 255, 255, 0.85); box-shadow: 0 40px 70px rgba(0, 40, 40, 0.2); } .panel-label { font-family: var(--mono-font); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--teal-dark); margin-bottom: 0.75rem; display: block; } .panel h3 { font-size: 2.2rem; margin-bottom: 2rem; font-weight: 800; letter-spacing: -1px; color: var(--text-dark); } .btn { display: inline-flex; align-items: center; padding: 1.2rem 2.5rem; background: var(--primary-teal); color: white; text-decoration: none; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; transition: var(--transition); border: 1px solid transparent; } .btn:hover { background: var(--text-dark); box-shadow: 0 15px 30px rgba(0,0,0,0.2); } /* ── Review Strip ─────────────────────────────────── */ .review-strip { display: inline-flex; align-items: center; gap: 2rem; background: var(--deep-navy); color: white; padding: 1.2rem 2.5rem; font-family: var(--mono-font); font-size: 0.75rem; box-shadow: 20px 20px 0px var(--primary-teal); } .stars { color: #f7b500; font-size: 1rem; } /* ── Offer Badge ──────────────────────────────────── */ .offer-badge { position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: var(--coral); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: var(--mono-font); font-weight: 900; line-height: 1; transform: rotate(12deg); border: 2px solid rgba(255,255,255,0.4); box-shadow: 0 15px 35px rgba(252, 129, 129, 0.4); animation: float 5s infinite ease-in-out; z-index: 15; } .offer-badge span { font-size: 1.8rem; } .offer-badge small { font-size: 0.55rem; text-transform: uppercase; } /* ── Call Now FAB ─────────────────────────────────── */ .call-now { position: fixed; bottom: 2.5rem; right: 2.5rem; background: var(--primary-teal); color: white; padding: 1.2rem 2rem; font-family: var(--mono-font); text-decoration: none; z-index: 100; font-weight: 700; display: flex; align-items: center; gap: 15px; box-shadow: 0 20px 40px rgba(23, 176, 171, 0.35); transition: var(--transition); } .call-now:hover { transform: translateY(-5px); background: var(--teal-dark); box-shadow: 0 25px 50px rgba(23, 176, 171, 0.5); } .pulse-dot { width: 10px; height: 10px; background: white; border-radius: 50%; position: relative; flex-shrink: 0; } .pulse-dot::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid white; animation: pulse 1.5s infinite; } /* ═══════════════════════════════════════════════════ ANIMATIONS ═══════════════════════════════════════════════════ */ @keyframes reveal { to { opacity: 1; transform: translate(0); } } @keyframes subtleZoom { from { transform: scale(1.0); } to { transform: scale(1.1); } } @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } } @keyframes statusPulse{ 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } } @keyframes float { 0%, 100% { transform: rotate(12deg) translateY(0); } 50% { transform: rotate(8deg) translateY(-12px); } } /* ═══════════════════════════════════════════════════ RESPONSIVE ═══════════════════════════════════════════════════ */ @media (max-width: 1100px) { main { grid-template-columns: 1fr; gap: 2rem; } .hero-bg::after { background: linear-gradient(180deg, rgba(240,250,250,0.85) 0%, rgba(240,250,250,0.97) 100%); } .hero-content { text-align: center; display: flex; flex-direction: column; align-items: center; } .service-description { margin-inline: auto; } .cta-grid { max-width: 600px; margin: 0 auto 5rem; width: 100%; } .services-dropdown { width: 90vw; } } @media (max-width: 860px) { .nav-links, .header-cta { display: none; } .mobile-toggle { display: flex; } .utility-item:not(.phone-main) { display: none; } .status-indicator { font-size: 9px; } } @media (max-width: 600px) { h1 { font-size: 2.4rem; letter-spacing: -1.5px; } .utility-bar { font-size: 10px; justify-content: center; } .utility-left { justify-content: center; } .utility-right { display: none; } .review-strip { transform: scale(0.85); transform-origin: left; } } /* ═══════════════════════════════════════════════════ FOOTER ═══════════════════════════════════════════════════ */ /* Hero → Footer: floating CTA sits at bottom of hero, overlaps footer */ .hero-footer-cta { position: relative; z-index: 10; padding: 3rem 5% 0; margin-bottom: -75px; } .obsidian-footer { background: #050a12; color: #f8fafc; position: relative; padding-top: 110px; overflow: hidden; } .footer-glow { position: absolute; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(23,176,171,0.08) 0%, transparent 70%); top: -20vw; right: -10vw; pointer-events: none; filter: blur(60px); } .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 5% 60px; display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 60px; position: relative; z-index: 2; } .footer-brand { display: flex; flex-direction: column; gap: 25px; } .footer-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 900; font-size: 1.5rem; letter-spacing: -0.5px; } .footer-logo-mark { width: 34px; height: 34px; background: var(--primary-teal); clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%); box-shadow: 0 0 20px rgba(23,176,171,0.4); flex-shrink: 0; } .footer-mission { font-size: 1rem; line-height: 1.8; color: #94a3b8; max-width: 320px; } .footer-column h4 { font-family: var(--mono-font); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: var(--primary-teal); margin-bottom: 30px; position: relative; display: inline-block; } .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; } .footer-links a { text-decoration: none; color: #94a3b8; font-size: 0.95rem; transition: var(--transition); display: inline-flex; align-items: center; gap: 0; } .footer-links a:hover { color: white; padding-left: 8px; } .footer-links a::before { content: '→'; font-family: var(--mono-font); color: var(--primary-teal); opacity: 0; margin-right: -15px; transition: var(--transition); } .footer-links a:hover::before { opacity: 1; margin-right: 10px; } .contact-info-list { display: flex; flex-direction: column; gap: 20px; } .contact-item { display: flex; flex-direction: column; gap: 4px; } .contact-label { font-family: var(--mono-font); font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; } .contact-value { font-size: 1rem; font-weight: 500; color: white; text-decoration: none; transition: var(--transition); } .contact-value:hover { color: var(--primary-teal); } .footer-cta-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(23,176,171,0.25); padding: 35px 40px; backdrop-filter: blur(14px); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 5; transition: box-shadow 0.3s ease; } .cta-text h3 { font-size: 1.8rem; font-weight: 800; color: white; margin-bottom: 6px; } .footer-cta-btn { padding: 1.2rem 2.5rem; background: var(--primary-teal); color: white; text-decoration: none; font-weight: 700; font-family: var(--mono-font); letter-spacing: 1px; font-size: 0.8rem; transition: var(--transition); box-shadow: 0 10px 30px rgba(23,176,171,0.3); white-space: nowrap; flex-shrink: 0; } .footer-cta-btn:hover { transform: translateY(-5px); background: white; color: #050a12; } .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding: 28px 5%; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono-font); font-size: 0.7rem; color: #4a5a6a; letter-spacing: 1px; } .footer-social { display: flex; gap: 20px; } .footer-social a { color: #94a3b8; transition: var(--transition); display: flex; align-items: center; } .footer-social a:hover { color: var(--primary-teal); transform: translateY(-3px); } .footer-bottom-link { color: #4a5a6a; text-decoration: none; transition: color 0.2s; } .footer-bottom-link:hover { color: white; } /* Footer responsive */ @media (max-width: 1100px) { .footer-container { grid-template-columns: 1fr 1fr; gap: 40px; } .footer-brand { grid-column: span 2; } .footer-cta-box { flex-direction: column; text-align: center; gap: 25px; } } @media (max-width: 768px) { .footer-container { grid-template-columns: 1fr; } .footer-brand { grid-column: span 1; } .footer-bottom { flex-direction: column; gap: 20px; text-align: center; } .hero-footer-cta { padding: 2rem 5% 0; } .footer-cta-box { padding: 25px; } } /* ═══════════════════════════════════════════════════ ABOUT SECTION ═══════════════════════════════════════════════════ */ .about-section { background: #fdfdfd; padding: 120px 5%; position: relative; overflow: hidden; } .about-glow { position: absolute; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(23,176,171,0.06) 0%, transparent 70%); top: -15vw; right: -15vw; filter: blur(80px); pointer-events: none; z-index: 0; } .about-container { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; position: relative; z-index: 1; } /* ── Left column ──────────────────────────────── */ .about-kicker { display: block; font-family: var(--mono-font); font-size: 0.8rem; color: var(--primary-teal); text-transform: uppercase; letter-spacing: 6px; font-weight: 700; margin-bottom: 20px; } .about-headline { font-weight: 900; color: var(--deep-navy); line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 30px; font-size: clamp(2rem, 4vw, 3rem); } .about-subtext { font-size: 1.1rem; line-height: 1.7; color: rgba(26,40,64,0.7); border-left: 3px solid var(--primary-teal); padding-left: 24px; margin-bottom: 40px; max-width: 480px; } .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } .feature-item { display: flex; align-items: center; gap: 12px; font-family: var(--mono-font); font-size: 0.85rem; font-weight: 600; color: var(--deep-navy); background: white; border: 1px solid rgba(23,176,171,0.2); padding: 15px; box-shadow: 4px 4px 0 var(--light-aquamarine); transition: var(--transition); cursor: default; } .feature-item:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--primary-teal); } .feature-item svg { flex-shrink: 0; color: var(--primary-teal); } /* ── Right column — sticky stepper ───────────── */ .about-stepper { background: white; border: 1px solid rgba(23,176,171,0.2); box-shadow: 0 4px 30px rgba(13,27,46,0.10); position: sticky; top: 100px; overflow: hidden; } .stepper-tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid rgba(23,176,171,0.2); } .stepper-tab { padding: 25px 16px; font-family: var(--mono-font); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; background: none; border: none; cursor: pointer; color: rgba(26,40,64,0.4); transition: all 0.2s; position: relative; } .stepper-tab:hover { color: rgba(26,40,64,0.7); } .stepper-tab.active { color: var(--primary-teal); background: var(--light-aquamarine); } .stepper-tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--primary-teal); } /* ── Panes ────────────────────────────────────── */ .stepper-panes { position: relative; min-height: 540px; } .stepper-pane { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.5s; } .stepper-pane.active { opacity: 1; visibility: visible; transform: translateY(0); } .pane-text { padding: 50px; display: flex; flex-direction: column; justify-content: center; border-left: 3px solid var(--primary-teal); background: linear-gradient(90deg, rgba(224,245,244,0.5) 0%, transparent 100%); } .pane-number { display: block; font-family: var(--mono-font); font-size: 0.9rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; color: rgba(23,176,171,0.5); } .pane-text h4 { font-size: 1.8rem; font-weight: 800; color: var(--deep-navy); margin-bottom: 20px; line-height: 1.2; letter-spacing: -0.5px; } .pane-text p { font-size: 0.95rem; line-height: 1.8; color: rgba(26,40,64,0.7); } /* Values list — plain, no boxes */ .values-list { display: flex; flex-direction: column; gap: 20px; } .value-item-title { display: block; font-family: var(--mono-font); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--primary-teal); font-weight: 700; margin-bottom: 4px; } .value-item p { font-size: 0.9rem; line-height: 1.6; color: rgba(26,40,64,0.7); margin: 0; } /* ── Pane image — About4 style ─────────────────── */ .pane-image { background: #fdfdfd; display: flex; align-items: center; justify-content: center; padding: 30px; height: 100%; } .pane-img-wrapper { overflow: hidden; width: 100%; height: 100%; box-shadow: 20px 20px 0 var(--light-aquamarine); } .pane-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.8) contrast(1.1); transition: transform 0.5s; } .pane-img-wrapper:hover img { transform: scale(1.05); } /* ── About responsive ─────────────────────────── */ @media (max-width: 1100px) { .about-container { grid-template-columns: 1fr; gap: 50px; } .about-stepper { position: static; } } @media (max-width: 768px) { .about-section { padding: 80px 5%; } .stepper-pane { grid-template-columns: 1fr; } .pane-image { display: none; } .stepper-panes { min-height: auto; } .stepper-pane { position: static; opacity: 1; visibility: visible; transform: none; display: none; } .stepper-pane.active { display: grid; } .about-features { grid-template-columns: 1fr; } } /* ═══════════════════════════════════════════════════ CUSTOMIZED MAINTENANCE SECTION ═══════════════════════════════════════════════════ */ .maint-section { background: #f8fafc; padding: 100px 5%; } .maint-inner { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; } /* Row 1 — header, anchored top-left */ .maint-header { max-width: 55%; padding-bottom: 60px; } .maint-header h3 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; color: var(--deep-navy); letter-spacing: -1px; line-height: 1.1; margin-bottom: 18px; } .maint-header p { font-size: 1.05rem; line-height: 1.75; color: var(--text-muted); margin-bottom: 24px; } /* Row 2 — infinite horizontal ticker */ .maint-ticker { overflow: hidden; position: relative; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%); } .maint-track { display: flex; gap: 16px; width: max-content; animation: maint-ticker 18s linear infinite; } .maint-ticker:hover .maint-track { animation-play-state: paused; } @keyframes maint-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } } .maint-strip { display: flex; align-items: center; gap: 12px; font-family: var(--mono-font); font-size: 0.85rem; font-weight: 600; color: var(--deep-navy); background: white; border: 1px solid rgba(23,176,171,0.2); padding: 14px 20px; box-shadow: 4px 4px 0 var(--light-aquamarine); white-space: nowrap; flex-shrink: 0; cursor: default; transition: box-shadow 0.3s, transform 0.3s; } .maint-strip:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--primary-teal); } .maint-strip svg { flex-shrink: 0; color: var(--primary-teal); } /* Row 3 — closing statement, bottom-right */ .maint-closing { margin-top: 50px; margin-left: auto; max-width: 46%; border-left: 3px solid var(--primary-teal); padding-left: 24px; } .maint-closing p { font-size: 1.05rem; line-height: 1.8; color: rgba(26,40,64,0.65); font-style: italic; } /* Maint responsive */ @media (max-width: 1100px) { .maint-header { max-width: 100%; } .maint-closing { max-width: 70%; } } @media (max-width: 768px) { .maint-closing { max-width: 100%; margin-left: 0; } } /* ═══════════════════════════════════════════════════ GUARANTEE PLATE ═══════════════════════════════════════════════════ */ .guarantee-plate { margin: 0 5%; background: var(--deep-navy); color: white; position: relative; overflow: hidden; } .plate-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; min-height: 500px; position: relative; } .plate-content { padding: 100px 40px 100px 6%; position: relative; z-index: 2; } .plate-visual { background: url('../public/images/cleaning/about-cleaning.jpg') center/cover; position: relative; } .plate-visual::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--deep-navy) 0%, transparent 100%); } .guarantee-seal { width: 140px; height: 140px; border: 2px solid var(--primary-teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 20px; position: absolute; top: -40px; right: 80px; background: var(--deep-navy); box-shadow: 0 0 30px rgba(23,176,171,0.4); animation: rotateSeal 20s linear infinite; line-height: 1.4; } @keyframes rotateSeal { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .plate-content .kicker-guar { font-family: var(--mono-font); color: var(--primary-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3em; font-size: 0.8rem; display: block; margin-bottom: 1rem; } .plate-content h3 { font-size: 3rem; font-weight: 900; margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px; } .plate-content > p { font-size: 1.1rem; opacity: 0.8; max-width: 500px; margin-bottom: 40px; line-height: 1.7; } .plate-stats { display: flex; gap: 40px; } .plate-stat h5 { font-family: var(--mono-font); color: var(--primary-teal); margin-bottom: 5px; font-size: 0.85rem; } .plate-stat p { font-size: 0.85rem; opacity: 0.6; } /* Guarantee responsive */ @media (max-width: 1100px) { .plate-inner { grid-template-columns: 1fr; } .plate-content { padding: 80px 6%; } .plate-visual { height: 300px; } .guarantee-seal { right: 20px; top: -70px; } } /* ═══════════════════════════════════════════════════ DISCOUNT BAR ═══════════════════════════════════════════════════ */ .discount-bar { margin: 0 5%; background: var(--primary-teal); color: white; clip-path: polygon(0 0, 100% 0, 97% 100%, 3% 100%); } .discount-inner { padding: 60px 5%; display: flex; align-items: center; justify-content: space-between; } .discount-info h4 { font-family: var(--mono-font); font-size: 1.5rem; font-weight: 800; margin-bottom: 12px; line-height: 1.2; } .discount-info p { font-size: 1rem; opacity: 0.9; max-width: 620px; line-height: 1.7; } .discount-action { display: flex; gap: 25px; align-items: center; flex-shrink: 0; margin-left: 40px; } .alloy-btn { background: var(--deep-navy); color: white; padding: 18px 36px; text-decoration: none; font-family: var(--mono-font); font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; transition: var(--transition); } .alloy-btn:hover { background: white; color: var(--deep-navy); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); } /* Discount responsive */ @media (max-width: 1100px) { .discount-bar { clip-path: none; margin: 0 3%; } .discount-inner { flex-direction: column; text-align: center; gap: 30px; padding: 50px 5%; } .discount-action { margin-left: 0; } } @media (max-width: 768px) { .guarantee-plate { margin: 0 3%; } .discount-bar { margin: 0 3%; } } /* Scroll reveal */ .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); } .reveal.active { opacity: 1; transform: translateY(0); } </style> </head> <body> <!-- ── UTILITY BAR ──────────────────────────────────────── --> <div class="utility-bar" id="topBar"> <div class="utility-left"> <a href="mailto:Topcleaningfl@gmail.com" class="utility-item">Topcleaningfl@gmail.com</a> <a href="tel:7543074034" class="utility-item phone-main">(754) 307-4034</a> <a href="tel:7012383301" class="utility-item">(701) 238-3301</a> </div> <div class="status-indicator"> <div class="status-dot"></div> NOW SERVICING YOUR AREA </div> <div class="utility-right"> <div class="social-links"> <!-- Facebook --> <a href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a> <!-- Twitter --> <a href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a> <!-- Instagram --> <a href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4" fill="var(--deep-navy)"/><circle cx="17.5" cy="6.5" r="1.5" fill="var(--deep-navy)"/></svg></a> </div> <button class="close-bar" onclick="document.getElementById('topBar').classList.add('hidden')"> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> </button> </div> </div> <!-- ── STICKY MAIN HEADER ─────────────────────────────────── --> <header class="main-header" id="mainHeader"> <a href="/" class="logo-section"> <div class="logo-mark"></div> TOP CLEANING </a> <ul class="nav-links"> <li class="nav-item"><a href="#">Home</a></li> <li class="nav-item"> <span class="nav-item-link"> Services <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg> </span> <div class="services-dropdown"> <div class="dropdown-column"> <a href="#" class="service-link">Regular Cleaning</a> <a href="#" class="service-link">Professional Deep Cleaning</a> <a href="#" class="service-link">After Party Cleaning</a> <a href="#" class="service-link">Moving In / Moving Out</a> </div> <div class="dropdown-column"> <a href="#" class="service-link">Air BnB Cleaning</a> <a href="#" class="service-link">Organize Closet &amp; Cabinets</a> <a href="#" class="service-link">Laundry &amp; Ironing</a> <a href="#" class="service-link">HandyMan Services</a> </div> </div> </li> <li class="nav-item"><a href="#">Join Our Team</a></li> </ul> <a href="#" class="header-cta">BOOK YOUR CLEANING</a> <div class="mobile-toggle" id="mobileToggle"> <span></span> <span></span> <span></span> </div> </header> <!-- Mobile Nav (hidden by default) --> <nav class="mobile-nav" id="mobileNav"> <a href="#">Home</a> <a href="#">Regular Cleaning</a> <a href="#">Professional Deep Cleaning</a> <a href="#">After Party Cleaning</a> <a href="#">Moving In / Moving Out</a> <a href="#">Air BnB Cleaning</a> <a href="#">Organize Closet &amp; Cabinets</a> <a href="#">Laundry &amp; Ironing</a> <a href="#">HandyMan Services</a> <a href="#">Join Our Team</a> <a href="#" style="background: var(--primary-teal); color: white; padding: 0.9rem 1.2rem; margin-top: 0.5rem;">BOOK YOUR CLEANING</a> </nav> <!-- ── HERO SECTION ────────────────────────────────────────── --> <div class="viewport-wrapper"> <div class="hero-bg"> <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000" alt="Pristine Interior"> </div> <main> <div class="hero-content"> <h1>Cleaning Service<span>Now servicing YOUR area!</span></h1> <p class="service-description"> Top Cleaning is your trusted cleaning service provider. We have a team of experienced and qualified cleaners who are dedicated to providing the best possible service to our customers. </p> <div class="review-strip"> <div> <span class="stars">★★★★★</span> </div> <div style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 20px;"> See our 275+ 4.7-Star Reviews on <span style="color: var(--teal-glow); margin-left: 6px; display: inline-flex; align-items: center; gap: 4px;"> <svg width="13" height="13" viewBox="0 0 48 48" style="vertical-align: middle;"> <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/> <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/> <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/> <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/> </svg> Google </span> </div> </div> </div> <div class="cta-grid"> <!-- Residential Panel --> <div class="panel"> <div class="offer-badge"> <small>Save</small> <span>15%</span> <small>First Book</small> </div> <span class="panel-label">Residential</span> <h3>Homes that breathe.</h3> <a href="#" class="btn">BOOK IN 60 SECONDS</a> </div> <!-- Commercial Panel --> <div class="panel"> <span class="panel-label">Commercial</span> <h3>Elevate your workspace.</h3> <a href="#" class="btn" style="background: var(--coral); color: white; border-color: transparent;">GET A CUSTOM QUOTE</a> </div> </div> </main> <!-- Floating CTA — lives in hero, overlaps the footer below --> <div class="hero-footer-cta"> <div class="footer-cta-box" id="footerCta"> <div class="cta-text"> <h3>Ready for a spotless space?</h3> </div> <a href="#" class="footer-cta-btn">BOOK ONLINE NOW</a> </div> </div> </div> <!-- ── ABOUT SECTION ─────────────────────────────────────── --> <section class="about-section"> <div class="about-glow" aria-hidden="true"></div> <div class="about-container"> <!-- LEFT COLUMN --> <div class="about-left"> <span class="about-kicker">Who We Are</span> <h2 class="about-headline">Foundations of Excellence</h2> <p class="about-subtext"> Top Cleaning is built on a commitment to quality, reliability, and care. Every service we deliver reflects our belief that a clean space is a better space — for living, working, and thriving. </p> <div class="about-features"> <div class="feature-item"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Licensed &amp; Insured </div> <div class="feature-item"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Eco-Friendly Products </div> <div class="feature-item"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Trained Professionals </div> <div class="feature-item"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Satisfaction Guarantee </div> </div> </div> <!-- RIGHT COLUMN — sticky tabbed stepper --> <div class="about-stepper"> <!-- Tab nav --> <div class="stepper-tabs" role="tablist"> <button class="stepper-tab active" data-tab="vision" role="tab" aria-selected="true">Vision</button> <button class="stepper-tab" data-tab="mission" role="tab" aria-selected="false">Mission</button> <button class="stepper-tab" data-tab="values" role="tab" aria-selected="false">Values</button> </div> <!-- Panes --> <div class="stepper-panes" role="tabpanel"> <!-- Vision --> <div class="stepper-pane active" id="pane-vision"> <div class="pane-text"> <span class="pane-number">01</span> <h4>Our Vision</h4> <p>To be the leading cleaning company in the region, providing high-quality solutions for both residential and commercial clients — delivering convenience, consistency, and exceptional results every time.</p> </div> <div class="pane-image"> <div class="pane-img-wrapper"> <img src="../public/images/cleaning/aboutsecond.jpg" alt="Vision — spotless residential interior"> </div> </div> </div> <!-- Mission --> <div class="stepper-pane" id="pane-mission"> <div class="pane-text"> <span class="pane-number">02</span> <h4>Our Mission</h4> <p>We deliver high-quality cleaning and disinfection services with efficiency, competitive pricing, and an agile process — so our customers aren't just satisfied, they're genuinely happy with every visit.</p> </div> <div class="pane-image"> <div class="pane-img-wrapper"> <img src="../public/images/cleaning/about-cleaning.jpg" alt="Mission — professional cleaning in action"> </div> </div> </div> <!-- Values --> <div class="stepper-pane" id="pane-values"> <div class="pane-text"> <span class="pane-number">03</span> <h4>Our Values</h4> <div class="values-list"> <div class="value-item"> <span class="value-item-title">Transparency</span> <p>Fair prices, no hidden costs, and honest communication at every step.</p> </div> <div class="value-item"> <span class="value-item-title">Teamwork</span> <p>Collaboration and mutual support to deliver high-quality results consistently.</p> </div> <div class="value-item"> <span class="value-item-title">Commitment</span> <p>Dedication to our team and full responsibility to every client we serve.</p> </div> </div> </div> <div class="pane-image"> <div class="pane-img-wrapper"> <img src="../public/images/cleaning/aboutthird.jpg" alt="Values — team collaboration"> </div> </div> </div> </div> <!-- END panes --> </div> <!-- END RIGHT COLUMN --> </div> </section> <!-- ── CUSTOMIZED MAINTENANCE ──────────────────────────────── --> <section class="maint-section reveal"> <div class="maint-inner"> <!-- Row 1: Header — top-left --> <div class="maint-header"> <h3>Customized Maintenance Programs</h3> <p>Customized Maintenance Programs are cleaning and maintenance plans designed to meet the specific needs of each client. Instead of offering a standard service, these programs are created based on factors such as:</p> </div> <!-- Row 2: Infinite horizontal ticker --> <div class="maint-ticker"> <div class="maint-track"> <!-- Set 1 --> <div class="maint-strip"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Service frequency (daily, weekly, monthly, etc.) </div> <div class="maint-strip"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Type of cleaning required (deep cleaning, disinfection, etc.) </div> <div class="maint-strip"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Focus areas (offices, homes, hospitals, etc.) </div> <div class="maint-strip"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Client preferences and budget </div> <!-- Set 2 — duplicate for seamless loop --> <div class="maint-strip"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Service frequency (daily, weekly, monthly, etc.) </div> <div class="maint-strip"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Type of cleaning required (deep cleaning, disinfection, etc.) </div> <div class="maint-strip"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Focus areas (offices, homes, hospitals, etc.) </div> <div class="maint-strip"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Client preferences and budget </div> </div> </div> <!-- Row 3: Closing — bottom-right --> <div class="maint-closing"> <p>These programs ensure that each client receives more efficient and effective cleaning solutions, guaranteeing an optimal service tailored to their needs.</p> </div> </div> </section> <!-- ── GUARANTEE PLATE ───────────────────────────────────── --> <section class="guarantee-plate reveal"> <div class="plate-inner"> <div class="plate-content"> <div class="guarantee-seal">Top Quality<br>Guaranteed<br>★ ★ ★</div> <span class="kicker-guar">The Promise</span> <h3>Satisfaction<br>Guaranteed.</h3> <p>We are committed to delivering high-quality cleaning and disinfection services. If results don't meet our standard of excellence, we make it right — no questions asked.</p> <div class="plate-stats"> <div class="plate-stat"> <h5>Reliability</h5> <p>Always on time, every time.</p> </div> <div class="plate-stat"> <h5>Professionalism</h5> <p>Trained, vetted technicians.</p> </div> </div> </div> <div class="plate-visual"></div> </div> </section> <!-- ── DISCOUNT BAR ──────────────────────────────────────── --> <section class="discount-bar reveal"> <div class="discount-inner"> <div class="discount-info"> <h4>Discounts for Long-Term Contracts</h4> <p>We value long-term partnerships, which is why we offer exclusive discounts for clients who commit to recurring cleaning services. Our long-term contracts provide cost-effective solutions while ensuring consistent, high-quality maintenance tailored to your needs.</p> </div> <div class="discount-action"> <a href="#services" class="alloy-btn">Explore our services</a> </div> </div> </section> <!-- ══════════════════════════════════════════════════════════ SERVICES SECTION — Crystalline Refraction (services3.html) No 3D tilt. Content always visible; description + specs reveal on hover. ══════════════════════════════════════════════════════════ --> <style> /* ── Section shell ─────────────────────────────────────── */ .srv-section { padding: 120px 5%; background: radial-gradient(ellipse at top left, rgba(224,245,244,0.6) 0%, #fff 60%); position: relative; overflow: hidden; } .srv-crystal-emitter { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(23,176,171,0.05) 0%, transparent 70%); top: -200px; right: -100px; filter: blur(40px); pointer-events: none; z-index: 0; } .srv-container { max-width: 1400px; margin: 0 auto; position: relative; z-index: 2; } /* ── Header ────────────────────────────────────────────── */ .srv-header { margin-bottom: 80px; max-width: 700px; } .srv-header .kicker { font-family: var(--mono-font); color: var(--primary-teal); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4em; display: block; margin-bottom: 16px; } .srv-header h2 { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 900; color: var(--deep-navy); line-height: 1; letter-spacing: -0.04em; margin-bottom: 20px; } .srv-header p { font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; } /* ── Grid ──────────────────────────────────────────────── */ .srv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; } /* ── Card ──────────────────────────────────────────────── */ .srv-card { position: relative; height: 520px; overflow: hidden; border: 1px solid rgba(23,176,171,0.1); background: white; cursor: default; } .srv-card-img { position: absolute; inset: 0; z-index: 1; } .srv-card-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.8) brightness(0.9); transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1); } .srv-card:hover .srv-card-img img { transform: scale(1.1); } /* Refraction overlay */ .srv-refraction { position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, transparent 20%, rgba(13,27,46,0.95) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; transition: background 0.6s cubic-bezier(0.22,1,0.36,1); } .srv-card:hover .srv-refraction { background: linear-gradient(180deg, rgba(23,176,171,0.08) 0%, rgba(13,27,46,0.95) 100%); } /* Content (always visible, no Y shift) */ .srv-content { position: relative; z-index: 3; color: white; } .srv-badge { display: inline-block; padding: 6px 12px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); font-family: var(--mono-font); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; color: var(--teal-glow); } .srv-content h4 { font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; letter-spacing: -0.5px; } .srv-content p { font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.85); margin-bottom: 25px; opacity: 0; transition: opacity 0.4s ease 0.1s; } .srv-card:hover .srv-content p { opacity: 1; } /* Specs (expand on hover) */ .srv-specs { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.22,1,0.36,1), padding-top 0.4s ease, margin-bottom 0.4s ease; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0; margin-bottom: 0; } .srv-card:hover .srv-specs { max-height: 160px; padding-top: 16px; margin-bottom: 20px; } .srv-spec-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .srv-spec-item { font-family: var(--mono-font); font-size: 0.7rem; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px; } .srv-spec-item svg { color: var(--primary-teal); flex-shrink: 0; } /* Actions */ .srv-actions { display: flex; align-items: center; gap: 15px; } .srv-learn-link { font-family: var(--mono-font); font-size: 0.75rem; font-weight: 700; text-decoration: none; color: white; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; transition: color var(--transition-fast); } .srv-learn-link:hover { color: var(--primary-teal); } .srv-quote-btn { background: var(--primary-teal); color: white; font-family: var(--mono-font); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; padding: 12px 20px; border: none; cursor: pointer; transition: var(--transition-fast); display: inline-block; } .srv-quote-btn:hover { background: white; color: var(--deep-navy); } /* Footer CTA */ .srv-footer-cta { margin-top: 80px; text-align: center; padding: 60px; background: white; border: 1px solid var(--glass-border); box-shadow: var(--aperture-shadow); } .srv-footer-cta h3 { font-size: 2rem; font-weight: 800; color: var(--deep-navy); margin-bottom: 30px; line-height: 1.2; } /* Responsive */ @media (max-width: 768px) { .srv-grid { grid-template-columns: 1fr; } .srv-content p { opacity: 1; } .srv-specs { max-height: 160px !important; padding-top: 16px !important; margin-bottom: 20px !important; } } </style> <section class="srv-section" id="services"> <div class="srv-crystal-emitter" aria-hidden="true"></div> <div class="srv-container"> <!-- Header --> <header class="srv-header reveal"> <span class="kicker">Our Services</span> <h2>Cleaning solutions built around your needs.</h2> <p>From residential homes to commercial spaces, every service is delivered with precision, care, and guaranteed satisfaction.</p> </header> <!-- Cards grid --> <div class="srv-grid"> <!-- 1 · Residential --> <article class="srv-card reveal"> <div class="srv-card-img"> <img src="../public/images/services/residential.jpg" alt="Residential Cleaning"> </div> <div class="srv-refraction"> <div class="srv-content"> <span class="srv-badge">Custom Quote Available</span> <h4>Residential Cleaning</h4> <p>Transform your home with premium residential cleaning services tailored to your schedule and preferences.</p> <div class="srv-specs"> <ul class="srv-spec-list"> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Custom cleaning plans</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Eco-friendly products</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Trained professionals</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Satisfaction guarantee</li> </ul> </div> <div class="srv-actions"> <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a> <a href="#" class="srv-quote-btn">Get a Quote</a> </div> </div> </div> </article> <!-- 2 · Commercial --> <article class="srv-card reveal" style="transition-delay:0.08s;"> <div class="srv-card-img"> <img src="../public/images/services/commercial.jpg" alt="Commercial Cleaning"> </div> <div class="srv-refraction"> <div class="srv-content"> <span class="srv-badge">Custom Quote Available</span> <h4>Commercial Cleaning</h4> <p>Professional solutions for businesses that demand excellence, reliability, and compliance.</p> <div class="srv-specs"> <ul class="srv-spec-list"> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Flexible scheduling</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Industry compliance</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Commercial grade equipment</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Liability coverage</li> </ul> </div> <div class="srv-actions"> <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a> <a href="#" class="srv-quote-btn">Get a Quote</a> </div> </div> </div> </article> <!-- 3 · Deep Cleaning --> <article class="srv-card reveal" style="transition-delay:0.16s;"> <div class="srv-card-img"> <img src="../public/images/services/deep-cleaning.jpg" alt="Deep Cleaning"> </div> <div class="srv-refraction"> <div class="srv-content"> <span class="srv-badge">Recommended First Visit</span> <h4>Deep Cleaning</h4> <p>Thorough cleaning that reaches every corner and crevice for a truly fresh, sanitized start.</p> <div class="srv-specs"> <ul class="srv-spec-list"> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Detailed checklist</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Special equipment</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Stain treatment</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sanitization included</li> </ul> </div> <div class="srv-actions"> <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a> <a href="#" class="srv-quote-btn">Get a Quote</a> </div> </div> </div> </article> <!-- 4 · Move In/Out --> <article class="srv-card reveal" style="transition-delay:0.24s;"> <div class="srv-card-img"> <img src="../public/images/services/move-in-out.jpg" alt="Move In / Out Cleaning"> </div> <div class="srv-refraction"> <div class="srv-content"> <span class="srv-badge">Custom Quote Available</span> <h4>Move In / Out Cleaning</h4> <p>Start fresh or leave spotless with our comprehensive transition cleaning service.</p> <div class="srv-specs"> <ul class="srv-spec-list"> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Deep cleaning included</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Inspection ready</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Appliance cleaning</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Window treatments</li> </ul> </div> <div class="srv-actions"> <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a> <a href="#" class="srv-quote-btn">Get a Quote</a> </div> </div> </div> </article> <!-- 5 · After Party --> <article class="srv-card reveal" style="transition-delay:0.32s;"> <div class="srv-card-img"> <img src="../public/images/services/party-cleaning.jpg" alt="After Party Cleaning"> </div> <div class="srv-refraction"> <div class="srv-content"> <span class="srv-badge">Same Day Available</span> <h4>After Party Cleaning</h4> <p>Fast, thorough cleanup after events so you can enjoy the memories, not the mess.</p> <div class="srv-specs"> <ul class="srv-spec-list"> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Quick turnaround</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Stain removal</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Trash disposal</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Surface sanitization</li> </ul> </div> <div class="srv-actions"> <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a> <a href="#" class="srv-quote-btn">Get a Quote</a> </div> </div> </div> </article> <!-- 6 · AirBnB --> <article class="srv-card reveal" style="transition-delay:0.4s;"> <div class="srv-card-img"> <img src="../public/images/services/airbnb-cleaning.jpg" alt="AirBnB Cleaning"> </div> <div class="srv-refraction"> <div class="srv-content"> <span class="srv-badge">Turnaround Specialist</span> <h4>AirBnB Cleaning</h4> <p>Fast, reliable turnovers between guests to keep your listing spotless and 5-star ready.</p> <div class="srv-specs"> <ul class="srv-spec-list"> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Quick turnaround</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Linen service</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Guest-ready checklist</li> <li class="srv-spec-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Host coordination</li> </ul> </div> <div class="srv-actions"> <a href="#" class="srv-learn-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a> <a href="#" class="srv-quote-btn">Get a Quote</a> </div> </div> </div> </article> </div><!-- /srv-grid --> <!-- Footer CTA --> <div class="srv-footer-cta reveal"> <h3>Ready to experience exceptional cleaning?</h3> <a href="#" class="btn" style="padding: 1.5rem 4rem;">Get Your Instant Estimate</a> </div> </div><!-- /srv-container --> </section> <!-- ══════════════════════════════════════════════════════════ WHY TOP CLEANING — Scaffold Grid (whytop.html) Sticky sidebar + 2-col hover-expand nodes + navy stats row ══════════════════════════════════════════════════════════ --> <section class="wt-section"> <style> .wt-section { background: white; padding: 100px 5%; } .wt-container { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 350px 1fr; gap: 60px; border-top: 1px solid rgba(13,27,46,0.1); padding-top: 60px; } .wt-sidebar { position: sticky; top: 120px; height: fit-content; } .wt-sidebar h2 { font-family: var(--mono-font); font-size: 3rem; line-height: 1; margin-bottom: 30px; color: var(--deep-navy); letter-spacing: -2px; } .wt-sidebar h2 span { color: var(--primary-teal); } .wt-summary { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 40px; border-right: 1px solid var(--primary-teal); padding-right: 30px; } .wt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(13,27,46,0.1); border: 1px solid rgba(13,27,46,0.1); } .wt-node { background: white; padding: 50px; position: relative; transition: background 0.3s ease; } .wt-node:hover { background: var(--light-aquamarine); } .wt-node::before { content: ''; position: absolute; top: 20px; left: 20px; width: 8px; height: 8px; border: 1px solid var(--primary-teal); } .wt-node h5 { font-family: var(--mono-font); color: var(--primary-teal); font-size: 0.7rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; } .wt-node h4 { font-size: 1.4rem; font-weight: 800; color: var(--deep-navy); margin-bottom: 0; transition: margin-bottom 0.3s ease; } .wt-node:hover h4 { margin-bottom: 20px; } .wt-node-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease; } .wt-node:hover .wt-node-content { max-height: 200px; opacity: 1; } .wt-node-content p { font-size: 0.9rem; line-height: 1.6; color: var(--text-dark); } .wt-stats { grid-column: span 2; background: var(--deep-navy); display: flex; justify-content: space-around; padding: 40px; color: white; } .wt-stat { text-align: center; } .wt-stat span { display: block; font-family: var(--mono-font); font-size: 1.8rem; font-weight: 700; color: var(--primary-teal); } @media (max-width: 1100px) { .wt-container { grid-template-columns: 1fr; } .wt-sidebar { position: static; } .wt-grid { grid-template-columns: 1fr; } .wt-stats { grid-column: span 1; flex-wrap: wrap; gap: 30px; } } </style> <div class="wt-container"> <aside class="wt-sidebar"> <h2>Our<br><span>Advantages</span></h2> <p class="wt-summary">Top Cleaning combines expertise, reliability, and attention to detail to exceed your expectations in every workspace.</p> <a href="#" class="btn">Book Your Cleaning</a> </aside> <div class="wt-grid"> <div class="wt-node"> <h5>Reliability</h5> <h4>Satisfied Customers</h4> <div class="wt-node-content"> <p>Join our growing family of satisfied customers who trust us with their homes and offices. We pride ourselves on maintaining a 98% customer satisfaction rate.</p> </div> </div> <div class="wt-node"> <h5>Expertise</h5> <h4>Qualified Professionals</h4> <div class="wt-node-content"> <p>Our cleaning professionals undergo rigorous training and background checks. We ensure the highest standards of service quality and professionalism.</p> </div> </div> <div class="wt-node"> <h5>Security</h5> <h4>Fully Insured</h4> <div class="wt-node-content"> <p>Rest easy knowing you're fully covered. We carry comprehensive insurance coverage for property damage and liability protection.</p> </div> </div> <div class="wt-node"> <h5>Sustainability</h5> <h4>Eco-Friendly</h4> <div class="wt-node-content"> <p>We're committed to protecting the environment by using green cleaning products that are tough on dirt but gentle on the planet.</p> </div> </div> <div class="wt-node"> <h5>Agility</h5> <h4>Flexible Scheduling</h4> <div class="wt-node-content"> <p>Book our services at your convenience. We offer flexible scheduling options including evenings and weekends to accommodate your busy lifestyle.</p> </div> </div> <div class="wt-node"> <h5>Guarantee</h5> <h4>Satisfaction Guaranteed</h4> <div class="wt-node-content"> <p>If you're not completely satisfied with our service, we'll return and re-clean the areas you're unhappy with at no additional cost.</p> </div> </div> <div class="wt-stats"> <div class="wt-stat"><span>4.5K+</span>Clients</div> <div class="wt-stat"><span>98%</span>Retention</div> <div class="wt-stat"><span>5+</span>Years</div> <div class="wt-stat"><span>4.9</span>Rating</div> </div> </div><!-- /wt-grid --> </div><!-- /wt-container --> </section> <!-- ══════════════════════════════════════════════════════════ HOW IT WORKS — Tectonic Monolith Grid ══════════════════════════════════════════════════════════ --> <style> .tectonic-section { background: #f5efe0; padding: 100px 5%; font-family: 'Inter', sans-serif; } .tectonic-container { max-width: 1400px; margin: 0 auto; } .tectonic-intro { margin-bottom: 80px; } .tectonic-intro h2 { font-family: var(--mono-font); font-size: 0.8rem; color: #fc8181; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 10px; } .tectonic-intro h3 { font-size: 3.5rem; font-weight: 900; color: #0d1b2e; letter-spacing: -2px; margin-bottom: 20px; } .tectonic-intro p { font-size: 1.2rem; color: #4a5a6a; max-width: 600px; } /* Grid */ .monolith-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: #0d1b2e; border: 10px solid #0d1b2e; box-shadow: 40px 40px 0px #17b0ab; } /* Card */ .monolith { position: relative; height: 700px; overflow: hidden; background: #fff; border-right: 1px solid #0d1b2e; transition: background 0.6s cubic-bezier(0.22, 1, 0.36, 1); cursor: pointer; } .monolith-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2); transition: 0.6s; opacity: 0.15; } .monolith:hover .monolith-img { opacity: 0.4; filter: grayscale(0) contrast(1); transform: scale(1.05); } /* Ghost number */ .monolith-num { font-family: var(--mono-font); font-size: 8rem; font-weight: 900; line-height: 0.8; color: #0d1b2e; opacity: 0.05; position: absolute; top: 20px; right: 20px; transition: 0.4s; pointer-events: none; } .monolith:hover .monolith-num { opacity: 0.2; transform: translateY(-20px); } /* Content container */ .monolith-content { position: relative; z-index: 2; height: 100%; padding: 50px 50px 70px; /* extra bottom padding keeps title clear of edge */ display: flex; flex-direction: column; justify-content: flex-end; } /* Title — always fully visible */ .monolith h4 { font-size: 2.2rem; font-weight: 900; color: #0d1b2e; margin-bottom: 0; /* no gap at rest — details are hidden */ transition: color 0.4s, margin-bottom 0.4s; } .monolith:hover h4 { color: #fff; margin-bottom: 20px; /* opens space above expanding details */ } /* Expandable details */ .monolith-details { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease; } .monolith:hover .monolith-details { max-height: 400px; opacity: 1; } .monolith-details ul { list-style: none; padding: 0; } .monolith-details li { font-size: 0.95rem; line-height: 1.6; color: #fff; margin-bottom: 12px; font-weight: 500; border-left: 3px solid #17b0ab; padding-left: 15px; } .monolith:hover { background: #17b0ab; } /* Responsive */ @media (max-width: 1024px) { .monolith-grid { grid-template-columns: 1fr; } .monolith { height: auto; min-height: 300px; } .monolith-details { max-height: 1000px; opacity: 1; } .monolith h4 { margin-bottom: 20px; } } </style> <section class="tectonic-section"> <div class="tectonic-container"> <div class="tectonic-intro"> <h2>How It Works</h2> <h3>Our Process Is Simple</h3> <p>We've streamlined our cleaning process to make it as easy as possible for you. Just three simple steps to a spotless space.</p> </div> <div class="monolith-grid"> <div class="monolith"> <img src="../public/images/process/booking.jpg" class="monolith-img" alt="Booking"> <span class="monolith-num">01</span> <div class="monolith-content"> <h4>Book Online</h4> <div class="monolith-details"> <ul> <li>Easy online booking system makes scheduling effortless</li> <li>Choose your preferred date and time</li> <li>Specify your cleaning needs</li> <li>Get instant price quote</li> <li>Secure online payment</li> </ul> </div> </div> </div> <div class="monolith"> <img src="../public/images/process/cleaning.jpg" class="monolith-img" alt="Cleaning"> <span class="monolith-num">02</span> <div class="monolith-content"> <h4>We Clean</h4> <div class="monolith-details"> <ul> <li>Trained professionals arrive on schedule</li> <li>Thorough cleaning with eco-friendly products</li> <li>Attention to every detail</li> <li>Quality check before finishing</li> </ul> </div> </div> </div> <div class="monolith"> <img src="../public/images/process/relax.jpg" class="monolith-img" alt="Relax"> <span class="monolith-num">03</span> <div class="monolith-content"> <h4>You Relax</h4> <div class="monolith-details"> <ul> <li>Enjoy your spotless environment</li> <li>Satisfaction guaranteed</li> <li>Book recurring service if desired</li> <li>Leave us your feedback</li> </ul> </div> </div> </div> </div> </div> </section> <!-- ── FOOTER ────────────────────────────────────────────── --> <footer class="obsidian-footer"> <div class="footer-glow"></div> <div class="footer-container"> <!-- Brand Column --> <div class="footer-brand"> <a href="/" class="footer-logo"> <div class="footer-logo-mark"></div> TOP CLEANING </a> <p class="footer-mission"> Professional cleaning services dedicated to excellence. Making your space spotless, one cleaning at a time. </p> <div class="footer-social"> <a href="#" aria-label="Facebook"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg> </a> <a href="#" aria-label="Instagram"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> </a> <a href="#" aria-label="Twitter"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg> </a> </div> </div> <!-- Quick Links --> <div class="footer-column"> <h4>Quick Links</h4> <ul class="footer-links"> <li><a href="#">Our Services</a></li> <li><a href="#">About Us</a></li> <li><a href="#">Book Online</a></li> <li><a href="#">Join Our Team</a></li> <li><a href="#">FAQs</a></li> </ul> </div> <!-- Specialties --> <div class="footer-column"> <h4>Specialties</h4> <ul class="footer-links"> <li><a href="#">Deep Cleaning</a></li> <li><a href="#">Air BnB Cleaning</a></li> <li><a href="#">After Party Cleaning</a></li> <li><a href="#">Moving In / Moving Out</a></li> <li><a href="#">HandyMan Services</a></li> </ul> </div> <!-- Contact --> <div class="footer-column"> <h4>Contact Info</h4> <div class="contact-info-list"> <div class="contact-item"> <span class="contact-label">Call Us</span> <a href="tel:7543074034" class="contact-value">(754) 307-4034</a> <a href="tel:7012383301" class="contact-value" style="font-size:0.9rem; margin-top:4px;">(701) 238-3301</a> </div> <div class="contact-item"> <span class="contact-label">Email</span> <a href="mailto:Topcleaningfl@gmail.com" class="contact-value">Topcleaningfl@gmail.com</a> </div> <div class="contact-item"> <span class="contact-label">Hours</span> <span class="contact-value" style="font-size:0.9rem;">Mon – Sun: 8am to 6pm</span> </div> </div> </div> </div> <!-- Bottom Bar --> <div class="footer-bottom"> <div>© 2026 TOP CLEANING. ALL RIGHTS RESERVED.</div> <a href="#" class="footer-bottom-link">PRIVACY POLICY</a> </div> </footer> <!-- CALL NOW FAB --> <a href="tel:7543074034" class="call-now"> <div class="pulse-dot"></div> CALL FOR A FREE ESTIMATE </a> <script> // ── Parallax on hero image + panels document.addEventListener('mousemove', (e) => { const img = document.querySelector('.hero-bg img'); if (!img) return; const moveX = (e.clientX - window.innerWidth / 2) * 0.01; const moveY = (e.clientY - window.innerHeight / 2) * 0.01; img.style.transform = `scale(1.1) translate(${moveX * -0.5}px, ${moveY * -0.5}px)`; document.querySelectorAll('.panel').forEach((panel, i) => { const d = (i + 1) * 0.5; panel.style.transform = `translate(${moveX * d}px, ${moveY * d}px) rotateX(${moveY * 0.2}deg) rotateY(${moveX * -0.2}deg)`; }); }); // ── Header scroll effect const header = document.getElementById('mainHeader'); window.addEventListener('scroll', () => { if (window.scrollY > 60) { header.classList.add('scrolled'); } else { header.classList.remove('scrolled'); } }); // ── Mobile nav toggle document.getElementById('mobileToggle').addEventListener('click', () => { document.getElementById('mobileNav').classList.toggle('open'); }); // ── Footer CTA box mouse glow effect const footerCta = document.getElementById('footerCta'); if (footerCta) { footerCta.addEventListener('mousemove', (e) => { const rect = footerCta.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; footerCta.style.boxShadow = `${(x - rect.width / 2) / 20}px ${(y - rect.height / 2) / 20}px 60px rgba(23, 176, 171, 0.22)`; }); footerCta.addEventListener('mouseleave', () => { footerCta.style.boxShadow = ''; }); } // ── Scroll reveal (maintenance / guarantee / discount sections) (function() { var revealObserver = new IntersectionObserver(function(entries) { entries.forEach(function(entry) { if (entry.isIntersecting) { entry.target.classList.add('active'); revealObserver.unobserve(entry.target); } }); }, { threshold: 0.08 }); document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); }); })(); // ── About section tab switching document.querySelectorAll('.stepper-tab').forEach(function(tab) { tab.addEventListener('click', function() { var target = tab.dataset.tab; document.querySelectorAll('.stepper-tab').forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); }); document.querySelectorAll('.stepper-pane').forEach(function(p) { p.classList.remove('active'); }); tab.classList.add('active'); tab.setAttribute('aria-selected', 'true'); document.getElementById('pane-' + target).classList.add('active'); }); }); </script> </body> </html>, hre is the contetn Step 1 — "Tell us about you..." First Name (text) Last Name (text) Email (email) Phone (tel) English Knowledge (select: Very Low / Low / Medium / High / Very High) Step 2 — "We would like to have your Resume" Resume (file upload — .pdf, .doc, .docx, up to 10MB) Area where you wish to apply (select: Brickell / Aventura / Fort Myers / Coral Springs / Miami Beach / Doral) Step 3 — "Additional Information" Legally authorized to work in the US? (radio: Yes / No) Own reliable transportation? (radio: Yes / No) Best way to contact you? (select: Phone / Email / Text Message / WhatsApp) Tell us more about yourself (textarea) What experience do you have in this field? (textarea) Allergic to any products or chemicals? (optional) (textarea)
+Grid View
+Variations
+Source
+Paper-cut layered animation sidebar
+Tab

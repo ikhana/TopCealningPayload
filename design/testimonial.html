@@ -1,0 +1,312 @@
+<section class="testimonial-relief-section" id="testimonials">
+    <style>
+        .testimonial-relief-section {
+            background: var(--sand);
+            padding: 140px 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── BACKGROUND GEOMETRY (CHISELED RELIEF) ── */
+        .relief-bg-text {
+            position: absolute;
+            top: 10%;
+            left: -2%;
+            font-size: 22vw;
+            font-weight: 900;
+            color: rgba(13, 27, 46, 0.03);
+            line-height: 0.8;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: -0.05em;
+            z-index: 0;
+        }
+
+        .relief-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── SECTION HEADER ── */
+        .testimonial-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 100px;
+            align-items: flex-end;
+        }
+
+        .testimonial-header .chisel-kicker {
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--teal-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-header h2 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            color: var(--deep-navy);
+            line-height: 0.9;
+            letter-spacing: -0.03em;
+        }
+
+        .testimonial-header .header-description {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 400px;
+            border-left: 2px solid var(--primary-teal);
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* ── THE RELIEF GRID ── */
+        .relief-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 30px;
+        }
+
+        /* ── TESTIMONIAL CARD ── */
+        .sculpted-card {
+            background: white;
+            position: relative;
+            padding: 60px 45px;
+            border: 1px solid var(--deep-navy);
+            box-shadow: 12px 12px 0px var(--deep-navy);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 480px;
+        }
+
+        /* Geometric clipping for the "Chiseled" look */
+        .sculpted-card::before {
+            content: '';
+            position: absolute;
+            top: -1px; right: -1px;
+            width: 40px; height: 40px;
+            background: var(--sand);
+            border-bottom: 1px solid var(--deep-navy);
+            border-left: 1px solid var(--deep-navy);
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
+            z-index: 3;
+        }
+
+        .sculpted-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 20px 20px 0px var(--primary-teal);
+        }
+
+        /* Quote Mark Relief */
+        .quote-icon {
+            position: absolute;
+            top: 40px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            color: var(--light-aquamarine);
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .testimonial-body {
+            position: relative;
+            z-index: 2;
+        }
+
+        .testimonial-body p {
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--deep-navy);
+            margin-bottom: 40px;
+            letter-spacing: -0.01em;
+        }
+
+        /* Author Metadata */
+        .author-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 30px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-teal);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono-font);
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .author-info h5 {
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--deep-navy);
+            margin-bottom: 4px;
+        }
+
+        .author-info span {
+            font-size: 0.75rem;
+            color: var(--primary-teal);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Grid Placement */
+        .card-large { grid-column: span 7; }
+        .card-medium { grid-column: span 5; }
+        .card-offset { grid-column: 2 / span 5; margin-top: -40px; }
+        .card-end { grid-column: 7 / span 6; margin-top: 20px; }
+
+        /* Verified Badge Relief */
+        .verified-stamp {
+            position: absolute;
+            bottom: -15px;
+            right: 40px;
+            background: var(--coral);
+            color: white;
+            padding: 8px 15px;
+            font-family: var(--mono-font);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 4px 4px 0px var(--deep-navy);
+            z-index: 5;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1100px) {
+            .sculpted-card { grid-column: span 12 !important; margin: 0 !important; min-height: auto; }
+            .testimonial-header { grid-template-columns: 1fr; gap: 20px; }
+            .testimonial-header .header-description { max-width: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            .testimonial-relief-section { padding: 80px 5%; }
+            .testimonial-body p { font-size: 1.1rem; }
+            .relief-bg-text { display: none; }
+        }
+    </style>
+
+    <div class="relief-bg-text">Voices</div>
+
+    <div class="relief-container">
+        <header class="testimonial-header reveal">
+            <div>
+                <span class="chisel-kicker">Client Testimonials</span>
+                <h2>What they say about<br>our standard.</h2>
+            </div>
+            <div>
+                <p class="header-description">
+                    We don't just clean spaces; we build trust through impeccable execution and geometric precision.
+                </p>
+            </div>
+        </header>
+
+        <div class="relief-grid">
+            
+            <!-- Testimonial 1 -->
+            <article class="sculpted-card card-large reveal">
+                <svg class="quote-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V12C14.017 12.5523 13.5693 13 13.017 13H11.017C10.4647 13 10.017 12.5523 10.017 12V9C10.017 7.34315 11.3601 6 13.017 6H19.017C20.6739 6 22.017 7.34315 22.017 9V15C22.017 16.6569 20.6739 18 19.017 18H17.017L17.017 21H14.017ZM3.017 21L3.017 18C3.017 16.8954 3.91243 16 5.017 16H8.017C8.56928 16 9.017 15.5523 9.017 15V9C9.017 8.44772 8.56928 8 8.017 8H4.017C3.46472 8 3.017 8.44772 3.017 9V12C3.017 12.5523 2.56928 13 2.017 13H0.017C-0.535282 13 -1.017 12.5523 -1.017 12V9C-1.017 7.34315 0.326142 6 2.017 6H8.017C9.67386 6 11.017 7.34315 11.017 9V15C11.017 16.6569 9.67386 18 8.017 18H6.017L6.017 21H3.017Z"/></svg>
+                <div class="testimonial-body">
+                    <p>"The level of detail Top Cleaning brings is honestly unparalleled. They didn't just clean our office; they restored it. The consistency is what keeps us coming back."</p>
+                </div>
+                <div class="author-meta">
+                    <div class="author-avatar">JD</div>
+                    <div class="author-info">
+                        <h5>Jonathan Davies</h5>
+                        <span>CEO, Nexus Tech Labs</span>
+                    </div>
+                </div>
+                <div class="verified-stamp">Verified Client</div>
+            </article>
+
+            <!-- Testimonial 2 -->
+            <article class="sculpted-card card-medium reveal" style="transition-delay: 0.1s;">
+                <div class="testimonial-body">
+                    <p>"Absolute game changer for our Airbnb property. Five-star reviews on cleanliness every single time since we switched."</p>
+                </div>
+                <div class="author-meta">
+                    <div class="author-avatar">MS</div>
+                    <div class="author-info">
+                        <h5>Maria Sanchez</h5>
+                        <span>Superhost</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Testimonial 3 -->
+            <article class="sculpted-card card-offset reveal" style="transition-delay: 0.2s;">
+                <div class="testimonial-body">
+                    <p>"Reliable, professional, and they actually use products that don't smell like a chemical factory. My home has never breathed better."</p>
+                </div>
+                <div class="author-meta">
+                    <div class="author-avatar">RK</div>
+                    <div class="author-info">
+                        <h5>Robert Kincaid</h5>
+                        <span>Residential Client</span>
+                    </div>
+                </div>
+                <div class="verified-stamp">Residential</div>
+            </article>
+
+            <!-- Testimonial 4 -->
+            <article class="sculpted-card card-end reveal" style="transition-delay: 0.3s;">
+                <div class="testimonial-body">
+                    <p>"After our renovation, the dust was everywhere. They performed a miracle in 6 hours. I wouldn't trust any other team with my post-construction cleaning."</p>
+                </div>
+                <div class="author-meta">
+                    <div class="author-avatar">EL</div>
+                    <div class="author-info">
+                        <h5>Elena Lofton</h5>
+                        <span>Interior Designer</span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    // Intersection Observer for the Testimony Relief sections
+    (function() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const reliefObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.testimonial-relief-section .reveal').forEach(el => {
+            reliefObserver.observe(el);
+        });
+    })();
+</script>
+
+

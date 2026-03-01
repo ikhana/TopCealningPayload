@@ -50,6 +50,7 @@ import { TCHomeHeroBlock } from './TCHomeHero';
 import { TCAboutSectionBlock } from './TCAboutSection';
 import { TCServiceCommitmentBlock } from './TCServiceCommitment';
 import { TCServicesSectionBlock } from './TCServicesSection';
+import { TCWhyTopSectionBlock } from './TCWhyTop';
 
 
 const blockComponents = {
@@ -107,6 +108,7 @@ tcHomeHero: TCHomeHeroBlock,
 tcAboutSection: TCAboutSectionBlock,
 tcServiceCommitment: TCServiceCommitmentBlock,
 tcServicesSection: TCServicesSectionBlock,
+tcWhyTop: TCWhyTopSectionBlock,
 }
 
 export const RenderBlocks: React.FC<{

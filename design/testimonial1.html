@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+/* ═══════════════════════════════════════════════════ TESTIMONIALS: LUMINOUS WIREFRAME INTERLACE ═══════════════════════════════════════════════════ */
+
+.testi-section {
+    background: var(--deep-navy);
+    padding: 140px 5%;
+    position: relative;
+    overflow: hidden;
+    color: white;
+}
+
+/* Background Wireframe Grid */
+.testi-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(23, 176, 171, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 176, 171, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+}
+
+.wire-interlace {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+}
+
+.testi-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 80px;
+    align-items: center;
+}
+
+/* ── Testimonial Header ── */
+.testi-header {
+    position: sticky;
+    top: 150px;
+}
+
+.testi-kicker {
+    font-family: var(--mono-font);
+    font-size: 0.8rem;
+    color: var(--primary-teal);
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    display: block;
+    margin-bottom: 24px;
+}
+
+.testi-header h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -3px;
+    margin-bottom: 30px;
+}
+
+.testi-header h2 span {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+}
+
+.trust-nodes {
+    display: flex;
+    gap: 40px;
+    margin-top: 50px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(23, 176, 171, 0.2);
+}
+
+.trust-node {
+    display: flex;
+    flex-direction: column;
+}
+
+.trust-val {
+    font-family: var(--mono-font);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-teal);
+}
+
+.trust-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.6;
+}
+
+/* ── Testimonial Grid ── */
+.testi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.testi-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(23, 176, 171, 0.15);
+    padding: 40px;
+    position: relative;
+    transition: var(--transition);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+}
+
+.testi-card:nth-child(even) {
+    margin-top: 40px;
+}
+
+.testi-card:hover {
+    background: rgba(23, 176, 171, 0.05);
+    border-color: var(--primary-teal);
+    transform: translateY(-10px);
+}
+
+.testi-card::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 20px;
+    height: 20px;
+    border-top: 2px solid var(--primary-teal);
+    border-left: 2px solid var(--primary-teal);
+}
+
+.testi-quote {
+    font-family: var(--mono-font);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.testi-quote::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: -10px;
+    font-size: 4rem;
+    color: var(--primary-teal);
+    opacity: 0.2;
+    font-family: serif;
+}
+
+.testi-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.testi-avatar {
+    width: 45px;
+    height: 45px;
+    background: var(--primary-teal);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: var(--deep-navy);
+    font-family: var(--mono-font);
+}
+
+.testi-info h5 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.testi-info span {
+    display: block;
+    font-family: var(--mono-font);
+    font-size: 0.65rem;
+    color: var(--primary-teal);
+    text-transform: uppercase;
+}
+
+.testi-rating {
+    margin-top: 20px;
+    display: flex;
+    gap: 4px;
+}
+
+.testi-rating svg {
+    color: var(--primary-teal);
+}
+
+/* Interlace Line Decoration */
+.interlace-svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    stroke: var(--primary-teal);
+    stroke-width: 0.5;
+    fill: none;
+    opacity: 0.15;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .testi-container {
+        grid-template-columns: 1fr;
+    }
+    .testi-header {
+        position: static;
+        text-align: center;
+    }
+    .trust-nodes {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .testi-grid {
+        grid-template-columns: 1fr;
+    }
+    .testi-card:nth-child(even) {
+        margin-top: 0;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<section class="testi-section reveal">
+    <svg class="wire-interlace" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+        <path d="M0,200 L1000,200 M200,0 L200,1000 M800,0 L800,1000 M0,800 L1000,800" stroke="rgba(23,176,171,0.1)" stroke-width="1" fill="none"/>
+        <circle cx="200" cy="200" r="3" fill="var(--primary-teal)"/>
+        <circle cx="800" cy="200" r="3" fill="var(--primary-teal)"/>
+        <circle cx="200" cy="800" r="3" fill="var(--primary-teal)"/>
+        <circle cx="800" cy="800" r="3" fill="var(--primary-teal)"/>
+    </svg>
+
+    <div class="testi-container">
+        <!-- Header -->
+        <div class="testi-header">
+            <span class="testi-kicker">Feedback Loop</span>
+            <h2>Voices of <span>The Pristine.</span></h2>
+            <p style="opacity: 0.7; line-height: 1.8; max-width: 400px;">Our reputation is built on the visible results we leave behind. Hear from the clients who transformed their environments with Top Cleaning.</p>
+            
+            <div class="trust-nodes">
+                <div class="trust-node">
+                    <span class="trust-val">4.9/5</span>
+                    <span class="trust-label">Avg. Rating</span>
+                </div>
+                <div class="trust-node">
+                    <span class="trust-val">96%</span>
+                    <span class="trust-label">Retention</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="testi-grid">
+            <!-- Testimonial 1 -->
+            <article class="testi-card">
+                <div class="testi-quote">
+                    "The level of detail is unlike any other service in Florida. They don't just clean; they restore the clarity of your home."
+                </div>
+                <div class="testi-meta">
+                    <div class="testi-avatar">SA</div>
+                    <div class="testi-info">
+                        <h5>Sarah Andersen</h5>
+                        <span>Residential Client</span>
+                    </div>
+                </div>
+                <div class="testi-rating">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </div>
+            </article>
+
+            <!-- Testimonial 2 -->
+            <article class="testi-card">
+                <div class="testi-quote">
+                    "Managing multiple AirBnBs is a nightmare without a reliable cleaning partner. Top Cleaning is the backbone of my 5-star host rating."
+                </div>
+                <div class="testi-meta">
+                    <div class="testi-avatar">JM</div>
+                    <div class="testi-info">
+                        <h5>James Miller</h5>
+                        <span>Property Manager</span>
+                    </div>
+                </div>
+                <div class="testi-rating">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </div>
+            </article>
+
+            <!-- Testimonial 3 -->
+            <article class="testi-card">
+                <div class="testi-quote">
+                    "Professional, punctual, and highly efficient. Our office workspace has never felt more inviting. Highly recommended for commercial needs."
+                </div>
+                <div class="testi-meta">
+                    <div class="testi-avatar">RL</div>
+                    <div class="testi-info">
+                        <h5>Rebecca Lynch</h5>
+                        <span>Ops Manager, TechBase</span>
+                    </div>
+                </div>
+                <div class="testi-rating">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </div>
+            </article>
+
+            <!-- Testimonial 4 -->
+            <article class="testi-card">
+                <div class="testi-quote">
+                    "After our move-out cleaning, we got our full deposit back without a single question. They caught things I would have completely missed."
+                </div>
+                <div class="testi-meta">
+                    <div class="testi-avatar">TH</div>
+                    <div class="testi-info">
+                        <h5>Tom Hiddles</h5>
+                        <span>Tenant</span>
+                    </div>
+                </div>
+                <div class="testi-rating">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
+
+
+

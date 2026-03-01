@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* ═══════════════════════════════════════════════════ 
+           TECTONIC BASALT ASSEMBLY: JOIN OUR TEAM 
+           ═══════════════════════════════════════════════════ */
+        
+        .join-section {
+            background: var(--sand);
+            padding: 120px 5%;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(13, 27, 46, 0.1);
+        }
+
+        .tectonic-bg-mark {
+            position: absolute;
+            bottom: -5%;
+            left: -2%;
+            font-family: var(--mono-font);
+            font-size: 20vw;
+            font-weight: 900;
+            color: var(--deep-navy);
+            opacity: 0.03;
+            pointer-events: none;
+            line-height: 0.8;
+            z-index: 0;
+        }
+
+        .join-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── Left Side: The Monolith Sidebar ────────────── */
+        .join-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .join-sidebar h2 {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -3px;
+            color: var(--deep-navy);
+        }
+
+        .join-sidebar h2 span {
+            display: block;
+            color: var(--primary-teal);
+            font-style: italic;
+            font-weight: 300;
+            letter-spacing: -1px;
+            font-size: 2.5rem;
+            margin-top: 10px;
+        }
+
+        .step-indicators {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border-left: 1px solid rgba(13, 27, 46, 0.1);
+        }
+
+        .step-node {
+            padding: 30px;
+            position: relative;
+            transition: var(--transition);
+            cursor: pointer;
+            border-bottom: 1px solid rgba(13, 27, 46, 0.05);
+        }
+
+        .step-node.active {
+            background: var(--deep-navy);
+            color: white;
+            transform: translateX(20px);
+            box-shadow: -20px 0 0 var(--primary-teal);
+        }
+
+        .step-node .node-num {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            color: var(--primary-teal);
+            display: block;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .step-node h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── Right Side: Tectonic Form Plates ───────────── */
+        .form-assembly {
+            position: relative;
+            min-height: 700px;
+        }
+
+        .form-plate {
+            position: absolute;
+            inset: 0;
+            background: white;
+            padding: 60px;
+            box-shadow: 30px 30px 0px rgba(13, 27, 46, 0.05);
+            border: 1px solid rgba(13, 27, 46, 0.08);
+            display: none;
+            flex-direction: column;
+            animation: plateSlide 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .form-plate.active {
+            display: flex;
+        }
+
+        @keyframes plateSlide {
+            from { opacity: 0; transform: translateY(40px) rotateX(-5deg); }
+            to { opacity: 1; transform: translateY(0) rotateX(0); }
+        }
+
+        .plate-header {
+            margin-bottom: 40px;
+            border-bottom: 3px solid var(--primary-teal);
+            width: fit-content;
+            padding-bottom: 10px;
+        }
+
+        .plate-header h3 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--deep-navy);
+            letter-spacing: -1px;
+        }
+
+        /* ── Grid Elements ─────────────────────────────── */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-group.full {
+            grid-column: span 2;
+        }
+
+        label {
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 16px;
+            background: var(--off-white);
+            border: 1px solid rgba(13, 27, 46, 0.1);
+            font-family: var(--sans-font);
+            font-size: 1rem;
+            color: var(--deep-navy);
+            transition: var(--transition-fast);
+            border-radius: 0;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(23, 176, 171, 0.1);
+        }
+
+        /* ── File Upload Monolith ──────────────────────── */
+        .file-upload-zone {
+            border: 2px dashed rgba(23, 176, 171, 0.3);
+            padding: 50px;
+            text-align: center;
+            background: var(--light-aquamarine);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            position: relative;
+        }
+
+        .file-upload-zone:hover {
+            border-color: var(--primary-teal);
+            background: white;
+        }
+
+        .file-upload-zone svg {
+            color: var(--primary-teal);
+            margin-bottom: 15px;
+        }
+
+        .file-upload-zone p {
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--deep-navy);
+        }
+
+        .file-input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* ── Radio Options ─────────────────────────────── */
+        .radio-set {
+            display: flex;
+            gap: 30px;
+            margin-top: 5px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .radio-item input {
+            accent-color: var(--primary-teal);
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ── Navigation Buttons ────────────────────────── */
+        .plate-actions {
+            margin-top: auto;
+            padding-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-btn {
+            font-family: var(--mono-font);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            padding: 18px 36px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-next {
+            background: var(--deep-navy);
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+            padding-right: 50px;
+        }
+
+        .btn-next:hover {
+            background: var(--primary-teal);
+            transform: translateX(10px);
+        }
+
+        .btn-prev {
+            background: transparent;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+        }
+
+        .btn-prev:hover {
+            color: var(--deep-navy);
+            border-bottom-color: var(--primary-teal);
+        }
+
+        .btn-submit {
+            background: var(--coral);
+            color: white;
+            box-shadow: 10px 10px 0 var(--deep-navy);
+        }
+
+        .btn-submit:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 14px 14px 0 var(--deep-navy);
+        }
+
+        @media (max-width: 1100px) {
+            .join-container { grid-template-columns: 1fr; gap: 40px; }
+            .join-sidebar h2 { font-size: 3rem; }
+            .step-indicators { flex-direction: row; overflow-x: auto; border-left: none; border-bottom: 1px solid rgba(13,27,46,0.1); }
+            .step-node.active { transform: translateY(-5px); box-shadow: 0 10px 0 var(--primary-teal); }
+            .form-assembly { min-height: 850px; }
+        }
+
+        @media (max-width: 768px) {
+            .input-grid { grid-template-columns: 1fr; }
+            .field-group.full { grid-column: span 1; }
+            .form-plate { padding: 30px; }
+            .form-assembly { min-height: 1100px; }
+        }
+    </style>
+</head>
+<body>
+
+<section class="join-section reveal">
+    <div class="tectonic-bg-mark">WORK</div>
+    
+    <div class="join-container">
+        <!-- Monolith Sidebar -->
+        <aside class="join-sidebar">
+            <header>
+                <h2>Join Our <span>Team of Experts</span></h2>
+            </header>
+            
+            <div class="step-indicators">
+                <div class="step-node active" data-step="1">
+                    <span class="node-num">PHASE 01</span>
+                    <h4>Personal Details</h4>
+                </div>
+                <div class="step-node" data-step="2">
+                    <span class="node-num">PHASE 02</span>
+                    <h4>Expertise & Area</h4>
+                </div>
+                <div class="step-node" data-step="3">
+                    <span class="node-num">PHASE 03</span>
+                    <h4>Legal & Background</h4>
+                </div>
+            </div>
+
+            <div style="background: var(--deep-navy); padding: 30px; color: white; margin-top: auto;">
+                <p style="font-family: var(--mono-font); font-size: 0.75rem; line-height: 1.6; opacity: 0.7;">
+                    "We don't just hire cleaners, we build partnerships with professionals who take pride in their craft."
+                </p>
+            </div>
+        </aside>
+
+        <!-- Form Assembly -->
+        <div class="form-assembly">
+            <form id="applicationForm">
+                
+                <!-- STEP 1: Personal -->
+                <div class="form-plate active" id="step1">
+                    <div class="plate-header">
+                        <h3>Tell us about you...</h3>
+                    </div>
+                    
+                    <div class="input-grid">
+                        <div class="field-group">
+                            <label>First Name</label>
+                            <input type="text" name="first_name" placeholder="John" required>
+                        </div>
+                        <div class="field-group">
+                            <label>Last Name</label>
+                            <input type="text" name="last_name" placeholder="Doe" required>
+                        </div>
+                        <div class="field-group">
+                            <label>Email Address</label>
+                            <input type="email" name="email" placeholder="john@example.com" required>
+                        </div>
+                        <div class="field-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone" placeholder="(555) 000-0000" required>
+                        </div>
+                        <div class="field-group full">
+                            <label>English Knowledge Level</label>
+                            <select name="english_level">
+                                <option value="very_low">Very Low</option>
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                                <option value="very_high">Very High</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="plate-actions">
+                        <span></span> <!-- Spacer -->
+                        <button type="button" class="nav-btn btn-next" onclick="nextStep(2)">Proceed to Experience</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Resume & Area -->
+                <div class="form-plate" id="step2">
+                    <div class="plate-header">
+                        <h3>Your Resume</h3>
+                    </div>
+
+                    <div class="field-group full" style="margin-bottom: 30px;">
+                        <label>Upload Resume (.pdf, .doc, .docx)</label>
+                        <div class="file-upload-zone" id="dropZone">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <p>Drag and drop your file here or click to browse</p>
+                            <input type="file" class="file-input" name="resume" accept=".pdf,.doc,.docx">
+                            <div id="fileNameDisplay" style="margin-top: 10px; font-weight: 700; color: var(--primary-teal);"></div>
+                        </div>
+                    </div>
+
+                    <div class="field-group full">
+                        <label>Area where you wish to apply</label>
+                        <select name="apply_area">
+                            <option value="" disabled selected>Select an area</option>
+                            <option value="brickell">Brickell</option>
+                            <option value="aventura">Aventura</option>
+                            <option value="fort_myers">Fort Myers</option>
+                            <option value="coral_springs">Coral Springs</option>
+                            <option value="miami_beach">Miami Beach</option>
+                            <option value="doral">Doral</option>
+                        </select>
+                    </div>
+
+                    <div class="plate-actions">
+                        <button type="button" class="nav-btn btn-prev" onclick="prevStep(1)">Back</button>
+                        <button type="button" class="nav-btn btn-next" onclick="nextStep(3)">Final Information</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Additional Info -->
+                <div class="form-plate" id="step3">
+                    <div class="plate-header">
+                        <h3>Additional Information</h3>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="field-group">
+                            <label>Authorized to work in US?</label>
+                            <div class="radio-set">
+                                <label class="radio-item"><input type="radio" name="auth_work" value="yes"> Yes</label>
+                                <label class="radio-item"><input type="radio" name="auth_work" value="no"> No</label>
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label>Own reliable transportation?</label>
+                            <div class="radio-set">
+                                <label class="radio-item"><input type="radio" name="transport" value="yes"> Yes</label>
+                                <label class="radio-item"><input type="radio" name="transport" value="no"> No</label>
+                            </div>
+                        </div>
+                        <div class="field-group full">
+                            <label>Best way to contact you?</label>
+                            <select name="contact_method">
+                                <option value="phone">Phone</option>
+                                <option value="email">Email</option>
+                                <option value="text">Text Message</option>
+                                <option value="whatsapp">WhatsApp</option>
+                            </select>
+                        </div>
+                        <div class="field-group full">
+                            <label>Tell us more about yourself</label>
+                            <textarea name="bio" rows="3" placeholder="Interests, availability, etc."></textarea>
+                        </div>
+                        <div class="field-group full">
+                            <label>What experience do you have in this field?</label>
+                            <textarea name="experience" rows="3" placeholder="List previous cleaning roles..."></textarea>
+                        </div>
+                        <div class="field-group full">
+                            <label>Allergic to any products or chemicals? (Optional)</label>
+                            <textarea name="allergies" rows="2" placeholder="N/A if none"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="plate-actions">
+                        <button type="button" class="nav-btn btn-prev" onclick="prevStep(2)">Back</button>
+                        <button type="submit" class="nav-btn btn-submit">Submit Application</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    function nextStep(step) {
+        // Validation could be added here
+        document.querySelectorAll('.form-plate').forEach(plate => plate.classList.remove('active'));
+        document.getElementById('step' + step).classList.add('active');
+        
+        document.querySelectorAll('.step-node').forEach(node => {
+            node.classList.remove('active');
+            if(node.dataset.step == step) node.classList.add('active');
+        });
+
+        // Scroll into view for mobile users
+        if(window.innerWidth < 1100) {
+            document.querySelector('.form-assembly').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function prevStep(step) {
+        nextStep(step);
+    }
+
+    // Handle File Name Display
+    const fileInput = document.querySelector('.file-input');
+    const nameDisplay = document.getElementById('fileNameDisplay');
+    
+    fileInput.addEventListener('change', function(e) {
+        if(this.files.length > 0) {
+            nameDisplay.textContent = "Selected: " + this.files[0].name;
+        }
+    });
+
+    // Form Submission
+    document.getElementById('applicationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Application successfully transmitted to Top Cleaning HR. We will reach out shortly.');
+    });
+
+    // Sidebar Node Clicks
+    document.querySelectorAll('.step-node').forEach(node => {
+        node.addEventListener('click', () => {
+            nextStep(node.dataset.step);
+        });
+    });
+</script>
+
+</body>
+</html>
