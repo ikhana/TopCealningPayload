@@ -38,6 +38,16 @@ export function TCHomeHeroClient(_props: Props) {
           from { opacity: 0; transform: translateX(40px); }
           to   { opacity: 1; transform: translateX(0); }
         }
+        @media (max-width: 768px) {
+          .tc-review-strip {
+            box-shadow: 8px 8px 0px var(--color-teal) !important;
+            gap: 16px !important;
+            padding: 16px 24px !important;
+          }
+          .tc-review-divider {
+            padding-left: 16px !important;
+          }
+        }
       `}</style>
 
       <section className="relative min-h-screen w-full flex flex-col -mt-20 lg:-mt-24">
@@ -63,13 +73,13 @@ export function TCHomeHeroClient(_props: Props) {
 
           {/* ── Left column: headline, description, review strip ─────── */}
           <div
-            className="py-16"
+            className="py-10 lg:py-16"
             style={{ animation: 'tc-hero-reveal-left 1.2s forwards 0.2s ease-out', opacity: 0 }}
           >
             {/* Headline */}
             <h1
               className={cn(
-                'font-black leading-[0.82] mb-8 tracking-[-2px] text-navy-deep',
+                'font-black leading-[0.82] mb-5 lg:mb-8 tracking-[-2px] text-navy-deep',
                 'text-[clamp(2.2rem,4.5vw,3.8rem)]',
               )}
             >
@@ -80,7 +90,7 @@ export function TCHomeHeroClient(_props: Props) {
             </h1>
 
             {/* Description */}
-            <p className="max-w-[460px] text-[1.1rem] leading-[1.7] mb-12 text-foreground/80">
+            <p className="max-w-[460px] text-[1.1rem] leading-[1.7] mb-8 lg:mb-12 text-foreground/80">
               Top Cleaning is your trusted cleaning service provider. We have a team of experienced
               and qualified cleaners who are dedicated to providing the best possible service to our
               customers.
@@ -88,13 +98,13 @@ export function TCHomeHeroClient(_props: Props) {
 
             {/* Review strip — signature navy badge with offset teal shadow */}
             <div
-              className="inline-flex items-center gap-8 bg-navy-deep text-white px-10 py-5 font-mono text-[0.75rem]"
+              className="tc-review-strip inline-flex items-center gap-8 bg-navy-deep text-white px-10 py-5 font-mono text-[0.75rem]"
               style={{ boxShadow: '20px 20px 0px var(--color-teal)' }}
             >
               <div>
                 <span className="text-[1rem]" style={{ color: '#f7b500' }}>★★★★★</span>
               </div>
-              <div className="border-l border-white/20 pl-8">
+              <div className="tc-review-divider border-l border-white/20 pl-8">
                 See our 275+ 4.7-Star Reviews on{' '}
                 <span className="text-teal ml-1 inline-flex items-center gap-1">
                   {/* Official Google logo colours — brand requirement, not a design token */}
@@ -125,7 +135,7 @@ export function TCHomeHeroClient(_props: Props) {
               className={cn(
                 'group relative overflow-hidden backdrop-blur-[15px]',
                 'bg-teal/[0.07] border border-teal/[0.22]',
-                'p-14',
+                'p-8 lg:p-14',
                 'transition-all duration-500',
                 'hover:-translate-y-2 hover:bg-white/85',
               )}
@@ -152,12 +162,12 @@ export function TCHomeHeroClient(_props: Props) {
               <span className="font-mono text-[0.7rem] uppercase tracking-[3px] text-teal-dark block mb-3">
                 Residential
               </span>
-              <h3 className="text-[2.2rem] font-extrabold tracking-[-1px] text-foreground mb-8 leading-tight">
+              <h3 className="text-[1.6rem] lg:text-[2.2rem] font-extrabold tracking-[-1px] text-foreground mb-5 lg:mb-8 leading-tight">
                 Homes that breathe.
               </h3>
               <Link
                 href="/booking"
-                className="inline-flex items-center px-10 py-5 bg-teal text-primary-foreground font-bold text-[0.85rem] tracking-[1px] no-underline transition-all duration-500 hover:bg-navy-deep"
+                className="inline-flex items-center px-7 py-4 lg:px-10 lg:py-5 bg-teal text-primary-foreground font-bold text-[0.85rem] tracking-[1px] no-underline transition-all duration-500 hover:bg-navy-deep"
                 style={{ border: '1px solid transparent' }}
               >
                 BOOK IN 60 SECONDS
@@ -169,7 +179,7 @@ export function TCHomeHeroClient(_props: Props) {
               className={cn(
                 'group relative overflow-hidden backdrop-blur-[15px]',
                 'bg-teal/[0.07] border border-teal/[0.22]',
-                'p-14',
+                'p-8 lg:p-14',
                 'transition-all duration-500',
                 'hover:-translate-y-2 hover:bg-white/85',
               )}
@@ -181,12 +191,12 @@ export function TCHomeHeroClient(_props: Props) {
               <span className="font-mono text-[0.7rem] uppercase tracking-[3px] text-teal-dark block mb-3">
                 Commercial
               </span>
-              <h3 className="text-[2.2rem] font-extrabold tracking-[-1px] text-foreground mb-8 leading-tight">
+              <h3 className="text-[1.6rem] lg:text-[2.2rem] font-extrabold tracking-[-1px] text-foreground mb-5 lg:mb-8 leading-tight">
                 Elevate your workspace.
               </h3>
               <Link
                 href="/booking"
-                className="inline-flex items-center px-10 py-5 bg-coral text-white font-bold text-[0.85rem] tracking-[1px] no-underline transition-all duration-500 hover:bg-navy-deep"
+                className="inline-flex items-center px-7 py-4 lg:px-10 lg:py-5 bg-coral text-white font-bold text-[0.85rem] tracking-[1px] no-underline transition-all duration-500 hover:bg-navy-deep"
                 style={{ border: '1px solid transparent' }}
               >
                 GET A CUSTOM QUOTE
