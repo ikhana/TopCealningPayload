@@ -2461,7 +2461,7 @@
     gap: 0;
     background: #0d1b2e;
     border: 10px solid #0d1b2e;
-    box-shadow: 40px 40px 0px #17b0ab;
+    box-shadow: 4px 4px 0px rgba(23, 176, 171, 0.25);
 }
 /* Card */
 .monolith {
@@ -2621,6 +2621,742 @@
         </div>
     </div>
 </section>
+
+<!-- ══════════════════════════════════════════════════════════
+     TESTIMONIALS — LIGHT THEME
+══════════════════════════════════════════════════════════ -->
+<style>
+/* ─── Testimonials: Light Theme ─── */
+.testi-section {
+    background: #ffffff;
+    padding: 140px 5%;
+    position: relative;
+    overflow: hidden;
+    color: var(--text-dark);
+}
+.testi-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 80px;
+    align-items: center;
+}
+.testi-header {
+    position: sticky;
+    top: 150px;
+}
+.testi-header h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -3px;
+    color: var(--deep-navy);
+    margin-bottom: 30px;
+}
+.testi-header h2 span {
+    display: block;
+    color: var(--primary-teal);
+}
+.testi-header p {
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 400px;
+}
+.testi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+.testi-card {
+    background: var(--light-aquamarine);
+    border: 1px solid rgba(23, 176, 171, 0.3);
+    border-radius: 4px;
+    padding: 40px;
+    position: relative;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(23, 176, 171, 0.1);
+}
+.testi-card:nth-child(even) { margin-top: 40px; }
+.testi-card:hover {
+    background: #cdf0ee;
+    border-color: var(--primary-teal);
+    box-shadow: 0 12px 40px rgba(23, 176, 171, 0.2);
+    transform: translateY(-6px);
+}
+.testi-quote {
+    font-family: var(--mono-font);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-dark);
+    margin-bottom: 30px;
+    position: relative;
+}
+.testi-quote::before {
+    content: '"';
+    position: absolute;
+    top: -20px; left: -10px;
+    font-size: 4rem;
+    color: var(--primary-teal);
+    opacity: 0.15;
+    font-family: serif;
+}
+.testi-meta { display: flex; align-items: center; gap: 15px; }
+.testi-avatar {
+    width: 45px; height: 45px;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.testi-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+}
+.testi-info h5 { font-size: 0.9rem; font-weight: 700; color: var(--deep-navy); letter-spacing: 0.5px; }
+.testi-info span {
+    display: block;
+    font-family: var(--mono-font);
+    font-size: 0.65rem;
+    color: var(--primary-teal);
+    text-transform: uppercase;
+}
+.testi-rating { margin-top: 20px; display: flex; gap: 4px; }
+.testi-rating svg { color: var(--primary-teal); }
+
+
+@media (max-width: 1100px) {
+    .testi-container { grid-template-columns: 1fr; }
+    .testi-header { position: static; text-align: center; }
+    .testi-header p { margin: 0 auto; }
+}
+@media (max-width: 768px) {
+    .testi-grid { grid-template-columns: 1fr; }
+    .testi-card:nth-child(even) { margin-top: 0; }
+}
+</style>
+
+<section class="testi-section">
+
+    <div class="testi-container">
+        <!-- Header / Sticky Sidebar -->
+        <div class="testi-header">
+            <h2>Voices of <span>The Pristine.</span></h2>
+            <p>Our reputation is built on the visible results we leave behind. Hear from the clients who transformed their environments with Top Cleaning.</p>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="testi-grid">
+            <article class="testi-card">
+                <div class="testi-quote">
+                    "The level of detail is unlike any other service in Florida. They don't just clean; they restore the clarity of your home."
+                </div>
+                <div class="testi-meta">
+                    <div class="testi-avatar"><img src="../public/images/testimonials/person1.jpg" alt="Sarah Andersen"></div>
+                    <div class="testi-info">
+                        <h5>Sarah Andersen</h5>
+                        <span>Residential Client</span>
+                    </div>
+                </div>
+                <div class="testi-rating">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </div>
+            </article>
+
+            <article class="testi-card">
+                <div class="testi-quote">
+                    "Managing multiple AirBnBs is a nightmare without a reliable cleaning partner. Top Cleaning is the backbone of my 5-star host rating."
+                </div>
+                <div class="testi-meta">
+                    <div class="testi-avatar"><img src="../public/images/testimonials/person2.jpg" alt="James Miller"></div>
+                    <div class="testi-info">
+                        <h5>James Miller</h5>
+                        <span>Property Manager</span>
+                    </div>
+                </div>
+                <div class="testi-rating">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </div>
+            </article>
+
+            <article class="testi-card">
+                <div class="testi-quote">
+                    "Professional, punctual, and highly efficient. Our office workspace has never felt more inviting. Highly recommended for commercial needs."
+                </div>
+                <div class="testi-meta">
+                    <div class="testi-avatar"><img src="../public/images/testimonials/person3.jpg" alt="Rebecca Lynch"></div>
+                    <div class="testi-info">
+                        <h5>Rebecca Lynch</h5>
+                        <span>Ops Manager, TechBase</span>
+                    </div>
+                </div>
+                <div class="testi-rating">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </div>
+            </article>
+
+            <article class="testi-card">
+                <div class="testi-quote">
+                    "After our move-out cleaning, we got our full deposit back without a single question. They caught things I would have completely missed."
+                </div>
+                <div class="testi-meta">
+                    <div class="testi-avatar"><img src="../public/images/testimonials/person4.jpg" alt="Tom Hiddles"></div>
+                    <div class="testi-info">
+                        <h5>Tom Hiddles</h5>
+                        <span>Tenant</span>
+                    </div>
+                </div>
+                <div class="testi-rating">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ── JOIN OUR TEAM ──────────────────────────────────────── -->
+<style>
+    /* ═══════════════════════════════════════════════════
+       JOIN OUR TEAM — TECTONIC BASALT ASSEMBLY
+       ═══════════════════════════════════════════════════ */
+
+    .join-section {
+        background: var(--sand);
+        padding: 120px 5%;
+        position: relative;
+        overflow: hidden;
+        border-top: 1px solid rgba(13, 27, 46, 0.1);
+    }
+
+    .join-bg-mark {
+        position: absolute;
+        bottom: -5%;
+        left: -2%;
+        font-family: var(--mono-font);
+        font-size: 20vw;
+        font-weight: 900;
+        color: var(--deep-navy);
+        opacity: 0.03;
+        pointer-events: none;
+        line-height: 0.8;
+        z-index: 0;
+    }
+
+    .join-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 80px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ── Sidebar ─────────────────────────────────────── */
+    .join-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .join-sidebar h2 {
+        font-size: 4rem;
+        font-weight: 900;
+        line-height: 0.85;
+        letter-spacing: -3px;
+        color: var(--deep-navy);
+    }
+
+    .join-sidebar h2 span {
+        display: block;
+        color: var(--primary-teal);
+        font-style: italic;
+        font-weight: 300;
+        letter-spacing: -1px;
+        font-size: 2.5rem;
+        margin-top: 10px;
+    }
+
+    .join-step-indicators {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border-left: 1px solid rgba(13, 27, 46, 0.1);
+    }
+
+    .join-step-node {
+        padding: 30px;
+        position: relative;
+        transition: var(--transition);
+        cursor: pointer;
+        border-bottom: 1px solid rgba(13, 27, 46, 0.05);
+    }
+
+    .join-step-node.active {
+        background: var(--deep-navy);
+        color: white;
+        transform: translateX(20px);
+        box-shadow: -4px 0 0 var(--primary-teal);
+    }
+
+    .join-step-node .join-node-num {
+        font-family: var(--mono-font);
+        font-size: 0.75rem;
+        color: var(--primary-teal);
+        display: block;
+        margin-bottom: 8px;
+        letter-spacing: 2px;
+    }
+
+    .join-step-node.active .join-node-num {
+        color: rgba(255, 255, 255, 0.55);
+    }
+
+    .join-step-node h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* ── Form Assembly ───────────────────────────────── */
+    .join-form-assembly {
+        position: relative;
+        min-height: 700px;
+    }
+
+    .join-form-plate {
+        position: absolute;
+        inset: 0;
+        background: white;
+        padding: 60px;
+        box-shadow: 0 2px 16px rgba(13, 27, 46, 0.07);
+        border: 1px solid rgba(13, 27, 46, 0.08);
+        display: none;
+        flex-direction: column;
+        animation: joinPlateSlide 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .join-form-plate.active {
+        display: flex;
+    }
+
+    @keyframes joinPlateSlide {
+        from { opacity: 0; transform: translateY(40px) rotateX(-5deg); }
+        to   { opacity: 1; transform: translateY(0) rotateX(0); }
+    }
+
+    .join-plate-header {
+        margin-bottom: 40px;
+        border-bottom: 3px solid var(--primary-teal);
+        width: fit-content;
+        padding-bottom: 10px;
+    }
+
+    .join-plate-header h3 {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--deep-navy);
+        letter-spacing: -1px;
+    }
+
+    /* ── Grid & Fields ───────────────────────────────── */
+    .join-input-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .join-field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .join-field-group.full {
+        grid-column: span 2;
+    }
+
+    .join-section label {
+        font-family: var(--mono-font);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--text-muted);
+        font-weight: 700;
+    }
+
+    .join-section input[type="text"],
+    .join-section input[type="email"],
+    .join-section input[type="tel"],
+    .join-section select,
+    .join-section textarea {
+        width: 100%;
+        padding: 16px;
+        background: var(--off-white);
+        border: 1px solid rgba(13, 27, 46, 0.1);
+        font-family: var(--sans-font);
+        font-size: 1rem;
+        color: var(--deep-navy);
+        transition: var(--transition-fast);
+        border-radius: 0;
+    }
+
+    .join-section input:focus,
+    .join-section select:focus,
+    .join-section textarea:focus {
+        outline: none;
+        border-color: var(--primary-teal);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(23, 176, 171, 0.1);
+    }
+
+    /* ── File Upload ─────────────────────────────────── */
+    .join-file-zone {
+        border: 2px dashed rgba(23, 176, 171, 0.3);
+        padding: 50px;
+        text-align: center;
+        background: var(--light-aquamarine);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        position: relative;
+    }
+
+    .join-file-zone:hover {
+        border-color: var(--primary-teal);
+        background: white;
+    }
+
+    .join-file-zone svg {
+        color: var(--primary-teal);
+        margin-bottom: 15px;
+    }
+
+    .join-file-zone p {
+        font-family: var(--mono-font);
+        font-size: 0.8rem;
+        color: var(--deep-navy);
+    }
+
+    .join-file-input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    /* ── Radio ───────────────────────────────────────── */
+    .join-radio-set {
+        display: flex;
+        gap: 30px;
+        margin-top: 5px;
+    }
+
+    .join-radio-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .join-radio-item input {
+        accent-color: var(--primary-teal);
+        width: 18px;
+        height: 18px;
+    }
+
+    /* ── Nav Buttons ─────────────────────────────────── */
+    .join-plate-actions {
+        margin-top: auto;
+        padding-top: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .join-nav-btn {
+        font-family: var(--mono-font);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.8rem;
+        padding: 18px 36px;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+    }
+
+    .join-btn-next {
+        background: var(--deep-navy);
+        color: white;
+        clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+        padding-right: 50px;
+    }
+
+    .join-btn-next:hover {
+        background: var(--primary-teal);
+        transform: translateX(10px);
+    }
+
+    .join-btn-prev {
+        background: transparent;
+        color: var(--text-muted);
+        border: none;
+        border-bottom: 2px solid transparent;
+    }
+
+    .join-btn-prev:hover {
+        color: var(--deep-navy);
+        border-bottom-color: var(--primary-teal);
+    }
+
+    .join-btn-submit {
+        background: var(--coral);
+        color: white;
+        box-shadow: 3px 3px 0 var(--deep-navy);
+    }
+
+    .join-btn-submit:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 5px 5px 0 var(--deep-navy);
+    }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 1100px) {
+        .join-container { grid-template-columns: 1fr; gap: 40px; }
+        .join-sidebar h2 { font-size: 3rem; }
+        .join-step-indicators { flex-direction: row; overflow-x: auto; border-left: none; border-bottom: 1px solid rgba(13,27,46,0.1); }
+        .join-step-node.active { transform: translateY(-3px); box-shadow: 0 3px 0 var(--primary-teal); }
+        .join-form-assembly { min-height: 850px; }
+    }
+
+    @media (max-width: 768px) {
+        .join-input-grid { grid-template-columns: 1fr; }
+        .join-field-group.full { grid-column: span 1; }
+        .join-form-plate { padding: 30px; }
+        .join-form-assembly { min-height: 1100px; }
+    }
+</style>
+
+<section class="join-section reveal" id="careers">
+    <div class="join-bg-mark">WORK</div>
+
+    <div class="join-container">
+        <!-- Sidebar -->
+        <aside class="join-sidebar">
+            <header>
+                <h2>Join Our <span>Team of Experts</span></h2>
+            </header>
+
+            <div class="join-step-indicators">
+                <div class="join-step-node active" data-jstep="1">
+                    <span class="join-node-num">PHASE 01</span>
+                    <h4>Personal Details</h4>
+                </div>
+                <div class="join-step-node" data-jstep="2">
+                    <span class="join-node-num">PHASE 02</span>
+                    <h4>Expertise &amp; Area</h4>
+                </div>
+                <div class="join-step-node" data-jstep="3">
+                    <span class="join-node-num">PHASE 03</span>
+                    <h4>Legal &amp; Background</h4>
+                </div>
+            </div>
+
+            <div style="background: var(--deep-navy); padding: 30px; color: white; margin-top: auto;">
+                <p style="font-family: var(--mono-font); font-size: 0.75rem; line-height: 1.6; opacity: 0.7;">
+                    "We don't just hire cleaners, we build partnerships with professionals who take pride in their craft."
+                </p>
+            </div>
+        </aside>
+
+        <!-- Form Assembly -->
+        <div class="join-form-assembly">
+            <form id="joinForm">
+
+                <!-- STEP 1: Personal -->
+                <div class="join-form-plate active" id="join-step1">
+                    <div class="join-plate-header">
+                        <h3>Tell us about you...</h3>
+                    </div>
+                    <div class="join-input-grid">
+                        <div class="join-field-group">
+                            <label>First Name</label>
+                            <input type="text" name="first_name" placeholder="John" required>
+                        </div>
+                        <div class="join-field-group">
+                            <label>Last Name</label>
+                            <input type="text" name="last_name" placeholder="Doe" required>
+                        </div>
+                        <div class="join-field-group">
+                            <label>Email Address</label>
+                            <input type="email" name="email" placeholder="john@example.com" required>
+                        </div>
+                        <div class="join-field-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone" placeholder="(555) 000-0000" required>
+                        </div>
+                        <div class="join-field-group full">
+                            <label>English Knowledge Level</label>
+                            <select name="english_level">
+                                <option value="" disabled selected>Select level...</option>
+                                <option value="very_low">Very Low</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="very_high">Very High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="join-plate-actions">
+                        <span></span>
+                        <button type="button" class="join-nav-btn join-btn-next" onclick="joinNextStep(2)">Proceed to Experience</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Resume & Area -->
+                <div class="join-form-plate" id="join-step2">
+                    <div class="join-plate-header">
+                        <h3>Your Resume</h3>
+                    </div>
+                    <div class="join-field-group full" style="margin-bottom: 30px;">
+                        <label>Upload Resume (.pdf, .doc, .docx)</label>
+                        <div class="join-file-zone" id="joinDropZone">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <p>Drag and drop your file here or click to browse</p>
+                            <input type="file" class="join-file-input" id="joinFileInput" name="resume" accept=".pdf,.doc,.docx">
+                            <div id="joinFileNameDisplay" style="margin-top: 10px; font-weight: 700; color: var(--primary-teal);"></div>
+                        </div>
+                    </div>
+                    <div class="join-field-group full">
+                        <label>Area where you wish to apply</label>
+                        <select name="apply_area">
+                            <option value="" disabled selected>Select an area</option>
+                            <option value="brickell">Brickell</option>
+                            <option value="aventura">Aventura</option>
+                            <option value="fort_myers">Fort Myers</option>
+                            <option value="coral_springs">Coral Springs</option>
+                            <option value="miami_beach">Miami Beach</option>
+                            <option value="doral">Doral</option>
+                        </select>
+                    </div>
+                    <div class="join-plate-actions">
+                        <button type="button" class="join-nav-btn join-btn-prev" onclick="joinNextStep(1)">Back</button>
+                        <button type="button" class="join-nav-btn join-btn-next" onclick="joinNextStep(3)">Final Information</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Additional Info -->
+                <div class="join-form-plate" id="join-step3">
+                    <div class="join-plate-header">
+                        <h3>Additional Information</h3>
+                    </div>
+                    <div class="join-input-grid">
+                        <div class="join-field-group">
+                            <label>Authorized to work in US?</label>
+                            <div class="join-radio-set">
+                                <label class="join-radio-item"><input type="radio" name="auth_work" value="yes"> Yes</label>
+                                <label class="join-radio-item"><input type="radio" name="auth_work" value="no"> No</label>
+                            </div>
+                        </div>
+                        <div class="join-field-group">
+                            <label>Own reliable transportation?</label>
+                            <div class="join-radio-set">
+                                <label class="join-radio-item"><input type="radio" name="transport" value="yes"> Yes</label>
+                                <label class="join-radio-item"><input type="radio" name="transport" value="no"> No</label>
+                            </div>
+                        </div>
+                        <div class="join-field-group full">
+                            <label>Best way to contact you?</label>
+                            <select name="contact_method">
+                                <option value="phone">Phone</option>
+                                <option value="email">Email</option>
+                                <option value="text">Text Message</option>
+                                <option value="whatsapp">WhatsApp</option>
+                            </select>
+                        </div>
+                        <div class="join-field-group full">
+                            <label>Tell us more about yourself</label>
+                            <textarea name="bio" rows="3" placeholder="Interests, availability, etc."></textarea>
+                        </div>
+                        <div class="join-field-group full">
+                            <label>What experience do you have in this field?</label>
+                            <textarea name="experience" rows="3" placeholder="List previous cleaning roles..."></textarea>
+                        </div>
+                        <div class="join-field-group full">
+                            <label>Allergic to any products or chemicals? (Optional)</label>
+                            <textarea name="allergies" rows="2" placeholder="N/A if none"></textarea>
+                        </div>
+                    </div>
+                    <div class="join-plate-actions">
+                        <button type="button" class="join-nav-btn join-btn-prev" onclick="joinNextStep(2)">Back</button>
+                        <button type="submit" class="join-nav-btn join-btn-submit">Submit Application</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    // ── Join Our Team — multi-step navigation
+    function joinNextStep(step) {
+        document.querySelectorAll('.join-form-plate').forEach(p => p.classList.remove('active'));
+        document.getElementById('join-step' + step).classList.add('active');
+
+        document.querySelectorAll('.join-step-node').forEach(node => {
+            node.classList.remove('active');
+            if (node.dataset.jstep == step) node.classList.add('active');
+        });
+
+        if (window.innerWidth < 1100) {
+            document.querySelector('.join-form-assembly').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // File name display
+    const joinFileInput = document.getElementById('joinFileInput');
+    const joinFileDisplay = document.getElementById('joinFileNameDisplay');
+    if (joinFileInput) {
+        joinFileInput.addEventListener('change', function () {
+            if (this.files.length > 0) {
+                joinFileDisplay.textContent = 'Selected: ' + this.files[0].name;
+            }
+        });
+    }
+
+    // Form submit
+    document.getElementById('joinForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        alert('Application successfully transmitted to Top Cleaning HR. We will reach out shortly.');
+    });
+
+    // Sidebar node clicks
+    document.querySelectorAll('.join-step-node').forEach(node => {
+        node.addEventListener('click', () => joinNextStep(node.dataset.jstep));
+    });
+</script>
 
 <!-- ── FOOTER ────────────────────────────────────────────── -->
 <footer class="obsidian-footer">
