@@ -9,7 +9,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 type Props = {
   id?: string
@@ -58,6 +58,15 @@ const STEPS = [
 ]
 
 export function TCProcessClient(_props: Props) {
+  const [loopIndex, setLoopIndex] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLoopIndex((n) => (n + 1) % STEPS.length)
+    }, 2800)
+    return () => clearInterval(id)
+  }, [])
+
   return (
     <>
       <style>{`
@@ -118,28 +127,45 @@ export function TCProcessClient(_props: Props) {
 
         /* Responsive: stack vertically, always show details */
         @media (max-width: 1024px) {
-          .tc-process-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .tc-process-monolith {
-            height: auto !important;
-            min-height: 300px;
-          }
+          .tc-process-grid    { grid-template-columns: 1fr !important; }
+          .tc-process-monolith { height: 480px !important; }
+          .tc-process-section { padding: 70px 5% !important; }
+          .tc-process-intro   { margin-bottom: 50px !important; }
+          .tc-process-content { padding: 40px !important; }
+          /* Details always fully visible — no expand/collapse on mobile */
           .tc-process-details {
-            max-height: 1000px !important;
+            max-height: 400px !important;
             opacity: 1 !important;
+            transition: none !important;
           }
-          .tc-process-title {
-            margin-bottom: 20px !important;
+          .tc-process-title { margin-bottom: 20px !important; }
+          /* Inactive bullet text: dark so readable on white background */
+          .tc-process-details li { color: rgba(13,27,46,0.75) !important; }
+          /* ── Loop only changes the visual overlay — card height stays fixed ── */
+          .tc-process-monolith.tc-loop-active { background: #17b0ab !important; }
+          .tc-process-monolith.tc-loop-active .tc-process-img {
+            opacity: 0.35 !important;
+            filter: grayscale(0) contrast(1) !important;
           }
+          .tc-process-monolith.tc-loop-active .tc-process-title { color: #ffffff !important; }
+          .tc-process-monolith.tc-loop-active .tc-process-num   { opacity: 0.15 !important; }
+          /* Restore white bullet text on teal active card */
+          .tc-process-monolith.tc-loop-active .tc-process-details li { color: #ffffff !important; }
+        }
+        @media (max-width: 768px) {
+          .tc-process-monolith { height: 400px !important; }
+          .tc-process-section  { padding: 60px 5% !important; }
+          .tc-process-intro    { margin-bottom: 35px !important; }
+          .tc-process-content  { padding: 28px 25px 35px !important; }
+          .tc-process-num      { font-size: 5rem !important; }
         }
       `}</style>
 
-      <section style={{ background: '#f5efe0', padding: '100px 5%' }}>
+      <section className="tc-process-section" style={{ background: '#f5efe0', padding: '100px 5%' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
 
           {/* ── Intro ───────────────────────────────────────────── */}
-          <div style={{ marginBottom: '80px' }}>
+          <div className="tc-process-intro" style={{ marginBottom: '80px' }}>
             <p
               style={{
                 fontFamily: 'var(--font-mono)',
@@ -194,7 +220,7 @@ export function TCProcessClient(_props: Props) {
             {STEPS.map((step, i) => (
               <div
                 key={step.num}
-                className="tc-process-monolith"
+                className={`tc-process-monolith${loopIndex === i ? ' tc-loop-active' : ''}`}
                 style={{
                   position: 'relative',
                   height: '700px',
@@ -241,6 +267,7 @@ export function TCProcessClient(_props: Props) {
 
                 {/* Content — pinned to bottom */}
                 <div
+                  className="tc-process-content"
                   style={{
                     position: 'relative',
                     zIndex: 2,

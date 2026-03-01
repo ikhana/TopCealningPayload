@@ -59,11 +59,11 @@ export function TCServiceCommitmentClient(_props: Props) {
         @media (max-width: 768px) {
           .tc-commit-s1      { padding-top: 60px !important; }
           .tc-commit-wrapper { padding: 30px !important; }
-          .tc-commit-s2      { margin: 0 !important; }
+          .tc-commit-s2      { overflow: hidden !important; }
           .tc-commit-g2      { min-height: auto !important; }
           .tc-commit-text2   { padding: 50px 5% !important; padding-right: 5% !important; }
           .tc-commit-seal    { display: none !important; }
-          .tc-commit-s3      { margin: 0 !important; clip-path: none !important; }
+          .tc-commit-s3      { clip-path: none !important; }
           .tc-commit-cta     { padding: 40px 5% !important; }
         }
       `}</style>
@@ -72,7 +72,7 @@ export function TCServiceCommitmentClient(_props: Props) {
           SECTION 1 — CUSTOMIZED MAINTENANCE PROGRAMS
           Diagonal Z-flow: header top-left → ticker full-width → closing bottom-right
       ══════════════════════════════════════════════════════════════ */}
-      <section className="tc-commit-s1 bg-[#fdfdfd] pt-[100px] pb-0 px-[5%]">
+      <section className="tc-commit-s1 bg-[#fdfdfd] pt-[100px] pb-0 px-[5%]" style={{ position: 'relative', zIndex: 2 }}>
         <div
           className="tc-commit-wrapper max-w-[1400px] mx-auto flex flex-col bg-white"
           style={{
@@ -158,32 +158,38 @@ export function TCServiceCommitmentClient(_props: Props) {
           Dark navy, 2-column: text + photo. Rotating circular seal.
       ══════════════════════════════════════════════════════════════ */}
       <section
-        className="tc-commit-s2 relative overflow-hidden text-white"
-        style={{ margin: '0 5%', background: 'var(--color-navy-deep)' }}
+        className="tc-commit-s2 relative text-white"
+        style={{
+          background: 'var(--color-navy-deep)',
+          marginTop: '-1px',
+          overflow: 'visible',
+          position: 'relative',
+        }}
       >
+        {/* Rotating seal — straddles Section 1 / Section 2 boundary */}
+        <div
+          className="tc-commit-seal tc-rotate-seal absolute flex items-center justify-center text-center font-mono text-[0.7rem] font-bold uppercase rounded-full border-2 border-teal"
+          style={{
+            width: '140px',
+            height: '140px',
+            top: '-70px',
+            right: '5%',
+            background: 'var(--color-navy-deep)',
+            boxShadow: '0 0 30px rgba(23,176,171,0.4)',
+            lineHeight: '1.4',
+            padding: '20px',
+            zIndex: 3,
+          }}
+        >
+          Top Quality<br />Guaranteed<br />★ ★ ★
+        </div>
+
         <div
           className="tc-commit-g2 max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] relative"
           style={{ minHeight: '500px' }}
         >
           {/* Left — text content */}
           <div className="tc-commit-text2 relative z-[2] py-[100px] lg:pr-10 px-[6%]">
-
-            {/* Rotating seal (decorative, positioned relative to content column) */}
-            <div
-              className="tc-commit-seal tc-rotate-seal absolute flex items-center justify-center text-center font-mono text-[0.7rem] font-bold uppercase rounded-full border-2 border-teal"
-              style={{
-                width: '140px',
-                height: '140px',
-                top: '-40px',
-                right: '80px',
-                background: 'var(--color-navy-deep)',
-                boxShadow: '0 0 30px rgba(23,176,171,0.4)',
-                lineHeight: '1.4',
-                padding: '20px',
-              }}
-            >
-              Top Quality<br />Guaranteed<br />★ ★ ★
-            </div>
 
             {/* Kicker */}
             <span className="block font-mono text-teal font-bold uppercase tracking-[0.3em] text-[0.8rem] mb-4">
@@ -242,7 +248,7 @@ export function TCServiceCommitmentClient(_props: Props) {
       <section
         className="tc-commit-s3 bg-teal text-white"
         style={{
-          margin: '0 5%',
+          marginTop: '-1px',
           clipPath: 'polygon(0 0, 100% 0, 97% 100%, 3% 100%)',
         }}
       >
