@@ -91,17 +91,35 @@ export function TCTestimonialsClient(_props: Props) {
 
         /* Responsive */
         @media (max-width: 1100px) {
-          .tc-testi-container { grid-template-columns: 1fr !important; }
+          .tc-testi-container { grid-template-columns: 1fr !important; gap: 40px !important; }
           .tc-testi-header { position: static !important; text-align: center; }
           .tc-testi-header p { margin: 0 auto; }
         }
         @media (max-width: 768px) {
-          .tc-testi-grid { grid-template-columns: 1fr !important; }
-          .tc-testi-card:nth-child(even) { margin-top: 0 !important; }
+          .tc-testi-section { padding: 60px 5% !important; }
+          /* Horizontal scroll snap — one card per view */
+          .tc-testi-grid {
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: scroll !important;
+            scroll-snap-type: x mandatory !important;
+            -webkit-overflow-scrolling: touch !important;
+            gap: 0 !important;
+            scrollbar-width: none !important;
+          }
+          .tc-testi-card {
+            flex: 0 0 100% !important;
+            min-width: 100% !important;
+            scroll-snap-align: start !important;
+            margin-top: 0 !important;
+          }
         }
+        /* Hide webkit scrollbar on card strip */
+        .tc-testi-grid::-webkit-scrollbar { display: none; }
       `}</style>
 
       <section
+        className="tc-testi-section"
         style={{
           background: '#ffffff',
           padding: '140px 5%',

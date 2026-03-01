@@ -90,18 +90,14 @@ export function TCWhyTopSectionClient(_props: Props) {
           }
         }
         @media (max-width: 768px) {
-          .wt-section {
-            padding: 60px 5% !important;
-          }
-          .wt-node-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .wt-stats {
-            grid-column: span 1 !important;
-          }
-          .wt-node {
-            padding: 30px !important;
-          }
+          .wt-section   { padding: 60px 5% !important; }
+          .wt-heading   { font-size: 2.2rem !important; letter-spacing: -1.5px !important; margin-bottom: 20px !important; }
+          .wt-node-grid { grid-template-columns: 1fr !important; }
+          .wt-stats     { grid-column: span 1 !important; }
+          .wt-node      { padding: 25px !important; }
+          /* Always reveal node content on touch (no hover available) */
+          .wt-node-title   { margin-bottom: 15px !important; }
+          .wt-node-content { max-height: 300px !important; opacity: 1 !important; }
         }
       `}</style>
 
@@ -118,7 +114,7 @@ export function TCWhyTopSectionClient(_props: Props) {
           {/* ── Sticky sidebar ──────────────────────────────── */}
           <aside className="wt-sidebar" style={{ position: 'sticky', top: '120px', height: 'fit-content' }}>
             <h2
-              className="font-mono font-bold text-navy-deep leading-[1] mb-[30px]"
+              className="wt-heading font-mono font-bold text-navy-deep leading-[1] mb-[30px]"
               style={{ fontSize: '3rem', letterSpacing: '-2px' }}
             >
               Our<br />
