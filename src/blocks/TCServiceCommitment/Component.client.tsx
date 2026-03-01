@@ -58,8 +58,14 @@ export function TCServiceCommitmentClient(_props: Props) {
           SECTION 1 — CUSTOMIZED MAINTENANCE PROGRAMS
           Diagonal Z-flow: header top-left → ticker full-width → closing bottom-right
       ══════════════════════════════════════════════════════════════ */}
-      <section style={{ background: '#f8fafc' }} className="py-[100px] px-[5%]">
-        <div className="max-w-[1400px] mx-auto flex flex-col">
+      <section className="bg-[#fdfdfd] pt-[100px] pb-0 px-[5%]">
+        <div
+          className="max-w-[1400px] mx-auto flex flex-col bg-white"
+          style={{
+            border: '1px solid rgba(13,27,46,0.08)',
+            padding: '60px',
+          }}
+        >
 
           {/* Row 1 — Header anchored top-left (~55% wide on desktop) */}
           <div className="w-full lg:max-w-[55%] pb-[60px]">
@@ -123,7 +129,7 @@ export function TCServiceCommitmentClient(_props: Props) {
           </div>
 
           {/* Row 3 — Closing statement anchored bottom-right */}
-          <div className="mt-[50px] ml-auto lg:max-w-[46%] md:max-w-[70%] max-w-full border-l-[3px] border-teal pl-6">
+          <div className="mt-[50px] ml-auto lg:max-w-[46%] md:max-w-[70%] max-w-full">
             <p className="text-[1.05rem] leading-[1.8] text-foreground/65 italic">
               These programs ensure that each client receives more efficient and effective cleaning
               solutions, guaranteeing an optimal service tailored to their needs.

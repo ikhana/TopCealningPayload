@@ -73,11 +73,41 @@ export function TCWhyTopSectionClient(_props: Props) {
           max-height: 200px !important;
           opacity: 1 !important;
         }
+
+        /* ── Responsive ── */
+        @media (max-width: 1024px) {
+          .wt-outer {
+            grid-template-columns: 1fr !important;
+            gap: 40px !important;
+          }
+          .wt-sidebar {
+            position: static !important;
+            height: auto !important;
+          }
+          .wt-sidebar-text {
+            border-right: none !important;
+            padding-right: 0 !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .wt-section {
+            padding: 60px 5% !important;
+          }
+          .wt-node-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .wt-stats {
+            grid-column: span 1 !important;
+          }
+          .wt-node {
+            padding: 30px !important;
+          }
+        }
       `}</style>
 
-      <section className="bg-white" style={{ padding: '100px 5%' }}>
+      <section className="wt-section bg-white" style={{ padding: '100px 5%' }}>
         <div
-          className="max-w-[1400px] mx-auto grid gap-[60px]"
+          className="wt-outer max-w-[1400px] mx-auto grid gap-[60px]"
           style={{
             gridTemplateColumns: 'clamp(260px, 350px, 30%) 1fr',
             borderTop: '1px solid rgba(13,27,46,0.1)',
@@ -86,7 +116,7 @@ export function TCWhyTopSectionClient(_props: Props) {
         >
 
           {/* ── Sticky sidebar ──────────────────────────────── */}
-          <aside style={{ position: 'sticky', top: '120px', height: 'fit-content' }}>
+          <aside className="wt-sidebar" style={{ position: 'sticky', top: '120px', height: 'fit-content' }}>
             <h2
               className="font-mono font-bold text-navy-deep leading-[1] mb-[30px]"
               style={{ fontSize: '3rem', letterSpacing: '-2px' }}
@@ -95,7 +125,7 @@ export function TCWhyTopSectionClient(_props: Props) {
               <span className="text-teal">Advantages</span>
             </h2>
             <p
-              className="text-[0.9rem] leading-[1.7] text-foreground/60 mb-[40px]"
+              className="wt-sidebar-text text-[0.9rem] leading-[1.7] text-foreground/60 mb-[40px]"
               style={{
                 borderRight: '1px solid oklch(var(--color-teal))',
                 paddingRight: '30px',
@@ -114,7 +144,7 @@ export function TCWhyTopSectionClient(_props: Props) {
 
           {/* ── 2-col node grid ─────────────────────────────── */}
           <div
-            className="grid"
+            className="wt-node-grid grid"
             style={{
               gridTemplateColumns: '1fr 1fr',
               gap: '1px',
@@ -162,7 +192,7 @@ export function TCWhyTopSectionClient(_props: Props) {
 
             {/* ── Stats row (spans 2 cols) ─────────────────── */}
             <div
-              className="flex justify-around items-center text-white"
+              className="wt-stats flex justify-around items-center text-white"
               style={{
                 gridColumn: 'span 2',
                 background: '#0d1b2e',
