@@ -68,9 +68,35 @@ export function TCAboutSectionClient(_props: Props) {
 
   return (
     <>
-      {/* No block-scoped keyframes needed — image hover is CSS-only */}
+      <style>{`
+        /* ── About section responsive ── */
+        @media (max-width: 1024px) {
+          .tc-about-section { padding-top: 70px !important; padding-bottom: 70px !important; }
+          .tc-about-grid    { gap: 40px !important; }
+          .tc-about-stepper { position: static !important; top: auto !important; }
+        }
+        @media (max-width: 768px) {
+          .tc-about-section { padding-top: 50px !important; padding-bottom: 50px !important; }
+          /* Collapse pane container height — let stacked content set it */
+          .tc-about-pane-container { min-height: 0 !important; }
+          /* Hide inactive panes (collapse height, not just visibility) */
+          .tc-about-pane[aria-hidden="true"] { display: none !important; }
+          /* Active pane: single column, normal flow */
+          .tc-about-pane {
+            position: relative !important;
+            inset: auto !important;
+            grid-template-columns: 1fr !important;
+          }
+          /* Image first, text second */
+          .tc-about-pane-image { order: -1; height: 220px !important; padding: 0 !important; box-shadow: none !important; }
+          .tc-about-pane-image > div { box-shadow: none !important; height: 100% !important; }
+          .tc-about-pane-text  { padding: 25px !important; border-left: none !important; }
+          /* Feature grid single column */
+          .tc-about-feature-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
 
-      <section className="relative bg-[#fdfdfd] py-[120px] px-[5%] overflow-hidden">
+      <section className="tc-about-section relative bg-[#fdfdfd] py-[120px] px-[5%] overflow-hidden">
 
         {/* ── Ambient teal glow (top-right decorative blob) ─────────── */}
         <div
@@ -87,7 +113,7 @@ export function TCAboutSectionClient(_props: Props) {
         />
 
         {/* ── Main 2-column grid ───────────────────────────────────────── */}
-        <div className="relative z-[1] max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-[80px] items-start">
+        <div className="tc-about-grid relative z-[1] max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-[80px] items-start">
 
           {/* ══ LEFT COLUMN ════════════════════════════════════════════ */}
           <div>
@@ -112,7 +138,7 @@ export function TCAboutSectionClient(_props: Props) {
             </p>
 
             {/* 2×2 Feature grid */}
-            <div className="grid grid-cols-2 gap-5">
+            <div className="tc-about-feature-grid grid grid-cols-2 gap-5">
               {FEATURE_ITEMS.map((item) => (
                 <div
                   key={item.label}
@@ -145,7 +171,7 @@ export function TCAboutSectionClient(_props: Props) {
 
           {/* ══ RIGHT COLUMN — Sticky Tabbed Stepper ══════════════════ */}
           <div
-            className="bg-white border border-teal/20 sticky top-[100px] overflow-hidden"
+            className="tc-about-stepper bg-white border border-teal/20 sticky top-[100px] overflow-hidden"
             style={{ boxShadow: '0 4px 30px rgba(13,27,46,0.10)' }}
           >
 
@@ -179,7 +205,7 @@ export function TCAboutSectionClient(_props: Props) {
             </div>
 
             {/* Panes container */}
-            <div className="relative min-h-[540px]" role="tabpanel">
+            <div className="tc-about-pane-container relative min-h-[540px]" role="tabpanel">
               {TABS.map(({ id, number }) => {
                 const pane    = TAB_CONTENT[id]
                 const isActive = activeTab === id
@@ -188,7 +214,7 @@ export function TCAboutSectionClient(_props: Props) {
                     key={id}
                     aria-hidden={!isActive}
                     className={cn(
-                      'absolute inset-0 grid grid-cols-2',
+                      'tc-about-pane absolute inset-0 grid grid-cols-2',
                       'transition-all duration-500',
                       isActive
                         ? 'opacity-100 visible translate-y-0'
@@ -196,7 +222,7 @@ export function TCAboutSectionClient(_props: Props) {
                     )}
                   >
                     {/* Left half — text content (About1 step-item active style) */}
-                    <div className="p-[50px] flex flex-col justify-center border-l-[3px] border-teal bg-gradient-to-r from-teal-light/50 to-transparent">
+                    <div className="tc-about-pane-text p-[50px] flex flex-col justify-center border-l-[3px] border-teal bg-gradient-to-r from-teal-light/50 to-transparent">
                       {/* Step number */}
                       <span className="block font-mono text-[0.9rem] font-bold tracking-[2px] mb-2 text-teal/50">
                         {number}
@@ -229,7 +255,7 @@ export function TCAboutSectionClient(_props: Props) {
                     </div>
 
                     {/* Right half — image (About4 style: padded + offset teal shadow) */}
-                    <div className="bg-[#fdfdfd] flex items-center justify-center p-[30px] h-full">
+                    <div className="tc-about-pane-image bg-[#fdfdfd] flex items-center justify-center p-[30px] h-full">
                       <div
                         className="overflow-hidden w-full h-full"
                         style={{ boxShadow: '20px 20px 0 var(--color-teal-light)' }}
