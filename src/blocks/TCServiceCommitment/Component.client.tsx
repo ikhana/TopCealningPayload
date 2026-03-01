@@ -52,15 +52,29 @@ export function TCServiceCommitmentClient(_props: Props) {
         .tc-rotate-seal {
           animation: tc-rotate-seal 20s linear infinite;
         }
+        /* ── Service Commitment responsive ── */
+        @media (max-width: 1024px) {
+          .tc-commit-g2 { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 768px) {
+          .tc-commit-s1      { padding-top: 60px !important; }
+          .tc-commit-wrapper { padding: 30px !important; }
+          .tc-commit-s2      { margin: 0 !important; }
+          .tc-commit-g2      { min-height: auto !important; }
+          .tc-commit-text2   { padding: 50px 5% !important; padding-right: 5% !important; }
+          .tc-commit-seal    { display: none !important; }
+          .tc-commit-s3      { margin: 0 !important; clip-path: none !important; }
+          .tc-commit-cta     { padding: 40px 5% !important; }
+        }
       `}</style>
 
       {/* ══════════════════════════════════════════════════════════════
           SECTION 1 — CUSTOMIZED MAINTENANCE PROGRAMS
           Diagonal Z-flow: header top-left → ticker full-width → closing bottom-right
       ══════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#fdfdfd] pt-[100px] pb-0 px-[5%]">
+      <section className="tc-commit-s1 bg-[#fdfdfd] pt-[100px] pb-0 px-[5%]">
         <div
-          className="max-w-[1400px] mx-auto flex flex-col bg-white"
+          className="tc-commit-wrapper max-w-[1400px] mx-auto flex flex-col bg-white"
           style={{
             border: '1px solid rgba(13,27,46,0.08)',
             padding: '60px',
@@ -144,19 +158,19 @@ export function TCServiceCommitmentClient(_props: Props) {
           Dark navy, 2-column: text + photo. Rotating circular seal.
       ══════════════════════════════════════════════════════════════ */}
       <section
-        className="relative overflow-hidden text-white"
+        className="tc-commit-s2 relative overflow-hidden text-white"
         style={{ margin: '0 5%', background: 'var(--color-navy-deep)' }}
       >
         <div
-          className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] relative"
+          className="tc-commit-g2 max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] relative"
           style={{ minHeight: '500px' }}
         >
           {/* Left — text content */}
-          <div className="relative z-[2] py-[100px] lg:pr-10 px-[6%]">
+          <div className="tc-commit-text2 relative z-[2] py-[100px] lg:pr-10 px-[6%]">
 
             {/* Rotating seal (decorative, positioned relative to content column) */}
             <div
-              className="tc-rotate-seal absolute flex items-center justify-center text-center font-mono text-[0.7rem] font-bold uppercase rounded-full border-2 border-teal"
+              className="tc-commit-seal tc-rotate-seal absolute flex items-center justify-center text-center font-mono text-[0.7rem] font-bold uppercase rounded-full border-2 border-teal"
               style={{
                 width: '140px',
                 height: '140px',
@@ -226,13 +240,13 @@ export function TCServiceCommitmentClient(_props: Props) {
           Teal, diagonal clip-path. Heading + body left, button right.
       ══════════════════════════════════════════════════════════════ */}
       <section
-        className="bg-teal text-white"
+        className="tc-commit-s3 bg-teal text-white"
         style={{
           margin: '0 5%',
           clipPath: 'polygon(0 0, 100% 0, 97% 100%, 3% 100%)',
         }}
       >
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-[30px] lg:gap-0 px-[5%] py-[60px] text-center lg:text-left">
+        <div className="tc-commit-cta flex flex-col lg:flex-row items-center justify-between gap-[30px] lg:gap-0 px-[5%] py-[60px] text-center lg:text-left">
 
           {/* Info */}
           <div>

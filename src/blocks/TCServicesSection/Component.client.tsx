@@ -167,18 +167,27 @@ export function TCServicesSectionClient(_props: Props) {
           background-color: white !important;
           color: #0d1b2e !important;
         }
-        /* Mobile: always show content */
+        /* ── Badge: hidden by default, reveal on hover ── */
+        .tc-prism-card .tc-svc-badge {
+          opacity: 0;
+          transition: opacity 0.4s ease;
+        }
+        .tc-prism-card:hover .tc-svc-badge {
+          opacity: 1;
+        }
+        /* ── Mobile: compact section, hover-reveal preserved ── */
         @media (max-width: 768px) {
-          .tc-prism-content { transform: translateY(0) !important; }
-          .tc-prism-desc { opacity: 1 !important; }
-          .tc-expanded-specs { max-height: 160px !important; padding-top: 16px !important; margin-bottom: 20px !important; }
+          .tc-svc-section { padding-top: 60px !important; padding-bottom: 60px !important; }
+          .tc-svc-header  { margin-bottom: 40px !important; }
+          .tc-svc-card    { height: 420px !important; }
+          .tc-svc-footer  { margin-top: 40px !important; padding: 40px 30px !important; }
         }
       `}</style>
 
       <section
         ref={sectionRef}
         id="services"
-        className="relative overflow-hidden px-[5%] py-[120px]"
+        className="tc-svc-section relative overflow-hidden px-[5%] py-[120px]"
         style={{
           background: 'radial-gradient(ellipse at top left, rgba(224,245,244,0.6) 0%, white 60%)',
         }}
@@ -200,7 +209,7 @@ export function TCServicesSectionClient(_props: Props) {
         <div className="relative z-[2] max-w-[1400px] mx-auto">
 
           {/* ── Header ───────────────────────────────────────────── */}
-          <header className="tc-reveal mb-[80px] max-w-[700px]">
+          <header className="tc-reveal tc-svc-header mb-[80px] max-w-[700px]">
             <span className="block font-mono text-teal text-[0.8rem] font-bold uppercase tracking-[0.4em] mb-4">
               Our Services
             </span>
@@ -224,7 +233,7 @@ export function TCServicesSectionClient(_props: Props) {
             {SERVICES.map((service, i) => (
               <article
                 key={service.title}
-                className="tc-reveal tc-prism-card relative overflow-hidden cursor-default group"
+                className="tc-reveal tc-prism-card tc-svc-card relative overflow-hidden cursor-default group"
                 style={{
                   height: '520px',
                   background: 'white',
@@ -256,7 +265,7 @@ export function TCServicesSectionClient(_props: Props) {
                   >
                     {/* Badge */}
                     <span
-                      className="inline-block font-mono text-[0.65rem] font-bold uppercase tracking-[1px] px-3 py-[6px] mb-4"
+                      className="tc-svc-badge inline-block font-mono text-[0.65rem] font-bold uppercase tracking-[1px] px-3 py-[6px] mb-4"
                       style={{
                         background: 'rgba(255,255,255,0.15)',
                         backdropFilter: 'blur(8px)',
@@ -341,7 +350,7 @@ export function TCServicesSectionClient(_props: Props) {
 
           {/* ── Footer CTA ───────────────────────────────────────── */}
           <div
-            className="tc-reveal mt-[80px] text-center px-[60px] py-[60px]"
+            className="tc-reveal tc-svc-footer mt-[80px] text-center px-[60px] py-[60px]"
             style={{
               background: 'white',
               border: '1px solid rgba(23,176,171,0.15)',

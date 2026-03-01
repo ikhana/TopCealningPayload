@@ -104,29 +104,32 @@ export function TCJoinTeamClient(_props: Props) {
 
         /* ── Responsive ── */
         @media (max-width: 1100px) {
-          .tc-join-container { grid-template-columns: 1fr !important; gap: 40px !important; }
-          .tc-join-step-indicators {
-            flex-direction: row !important;
-            overflow-x: auto;
-            border-left: none !important;
-            border-bottom: 1px solid rgba(13,27,46,0.1) !important;
-          }
-          .tc-join-node.active {
-            transform: translateY(-3px) !important;
-            box-shadow: 0 3px 0 #17b0ab !important;
-          }
-          .tc-join-form-assembly { min-height: 850px !important; }
+          /* Collapse to single column; steps stay vertical */
+          .tc-join-container     { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .tc-join-sidebar       { gap: 24px !important; }
+          .tc-join-form-assembly { min-height: auto !important; }
         }
         @media (max-width: 768px) {
-          .tc-join-input-grid { grid-template-columns: 1fr !important; }
-          .tc-join-field-full { grid-column: span 1 !important; }
-          .tc-join-form-plate { padding: 30px !important; }
-          .tc-join-form-assembly { min-height: 1100px !important; }
+          .tc-join-section       { padding: 60px 5% !important; }
+          .tc-join-heading       { font-size: 2.4rem !important; letter-spacing: -1.5px !important; }
+          .tc-join-quote         { display: none !important; }
+          /* Active node: reduce translateX to avoid right-edge overflow */
+          .tc-join-node          { padding: 16px 20px !important; }
+          .tc-join-node-num      { margin-bottom: 4px !important; }
+          .tc-join-node.active   { transform: translateX(6px) !important; }
+          /* Form fields single column, no overflow */
+          .tc-join-input-grid    { grid-template-columns: 1fr !important; }
+          .tc-join-field-full    { grid-column: span 1 !important; }
+          .tc-join-form-plate    { padding: 25px !important; overflow: hidden !important; }
+          .tc-join-form-assembly { min-height: auto !important; }
+          .tc-join-file-zone     { padding: 25px !important; }
+          .tc-join-btn-next      { clip-path: none !important; padding-right: 36px !important; }
         }
       `}</style>
 
       <section
         id="careers"
+        className="tc-join-section"
         style={{
           background: '#f8f4ee',
           padding: '120px 5%',
@@ -170,9 +173,10 @@ export function TCJoinTeamClient(_props: Props) {
         >
 
           {/* ── Sidebar ─────────────────────────────────────── */}
-          <aside style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+          <aside className="tc-join-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
             <header>
               <h2
+                className="tc-join-heading"
                 style={{
                   fontSize: '4rem',
                   fontWeight: 900,
@@ -250,6 +254,7 @@ export function TCJoinTeamClient(_props: Props) {
 
             {/* Quote block */}
             <div
+              className="tc-join-quote"
               style={{
                 background: '#0d1b2e',
                 padding: '30px',
