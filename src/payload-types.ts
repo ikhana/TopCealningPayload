@@ -1115,6 +1115,8 @@ export interface Page {
     | TCServicesSectionBlock
     | TCWhyTopBlock
     | TCProcessBlock
+    | TCTestimonialsBlock
+    | TCJoinTeamBlock
   )[];
   meta?: {
     title?: string | null;
@@ -4654,6 +4656,24 @@ export interface TCProcessBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCTestimonialsBlock".
+ */
+export interface TCTestimonialsBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcTestimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCJoinTeamBlock".
+ */
+export interface TCJoinTeamBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcJoinTeam';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addons".
  */
 export interface Addon {
@@ -5679,6 +5699,8 @@ export interface PagesSelect<T extends boolean = true> {
         tcServicesSection?: T | TCServicesSectionBlockSelect<T>;
         tcWhyTop?: T | TCWhyTopBlockSelect<T>;
         tcProcess?: T | TCProcessBlockSelect<T>;
+        tcTestimonials?: T | TCTestimonialsBlockSelect<T>;
+        tcJoinTeam?: T | TCJoinTeamBlockSelect<T>;
       };
   meta?:
     | T
@@ -6896,6 +6918,22 @@ export interface TCWhyTopBlockSelect<T extends boolean = true> {
  * via the `definition` "TCProcessBlock_select".
  */
 export interface TCProcessBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCTestimonialsBlock_select".
+ */
+export interface TCTestimonialsBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCJoinTeamBlock_select".
+ */
+export interface TCJoinTeamBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

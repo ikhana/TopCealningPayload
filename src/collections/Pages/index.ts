@@ -65,6 +65,8 @@ import { TCServiceCommitment } from '@/blocks/TCServiceCommitment/config'
 import { TCServicesSection } from '@/blocks/TCServicesSection/config'
 import { TCWhyTopSection } from '@/blocks/TCWhyTop/config'
 import { TCProcess } from '@/blocks/TCProcess/config'
+import { TCTestimonials } from '@/blocks/TCTestimonials/config'
+import { TCJoinTeam } from '@/blocks/TCJoinTeam/config'
 
 
 
@@ -212,6 +214,8 @@ export const Pages: CollectionConfig = {
                  TCServicesSection,
                  TCWhyTopSection,
                  TCProcess,
+                 TCTestimonials,
+                 TCJoinTeam,
 
               ],
               required: true,
