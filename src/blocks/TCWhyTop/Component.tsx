@@ -7,7 +7,7 @@ import { TCWhyTopSectionClient } from './Component.client'
 type Props = {
   id?: string
   blockName?: string | null
-  blockType?: 'tcWhyTop'
+  blockType?: 'tcWhyTopSection'
 }
 
 export const TCWhyTopSectionBlock: React.FC<Props> = (props) => {

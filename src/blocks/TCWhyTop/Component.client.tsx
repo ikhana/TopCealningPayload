@@ -128,19 +128,6 @@ export function TCWhyTopSectionClient(_props: Props) {
                 className="wt-node bg-white relative"
                 style={{ padding: '50px', transition: 'background 0.3s ease' }}
               >
-                {/* Decorative corner dot */}
-                <span
-                  aria-hidden
-                  className="absolute"
-                  style={{
-                    top: '20px',
-                    left: '20px',
-                    width: '8px',
-                    height: '8px',
-                    border: '1px solid oklch(var(--color-teal))',
-                  }}
-                />
-
                 {/* Category label */}
                 <h5
                   className="font-mono text-teal font-bold uppercase text-[0.7rem] mb-[10px]"

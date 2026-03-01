@@ -1114,6 +1114,7 @@ export interface Page {
     | TCServiceCommitmentBlock
     | TCServicesSectionBlock
     | TCWhyTopBlock
+    | TCProcessBlock
   )[];
   meta?: {
     title?: string | null;
@@ -4644,6 +4645,15 @@ export interface TCWhyTopBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCProcessBlock".
+ */
+export interface TCProcessBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcProcess';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addons".
  */
 export interface Addon {
@@ -5668,6 +5678,7 @@ export interface PagesSelect<T extends boolean = true> {
         tcServiceCommitment?: T | TCServiceCommitmentBlockSelect<T>;
         tcServicesSection?: T | TCServicesSectionBlockSelect<T>;
         tcWhyTop?: T | TCWhyTopBlockSelect<T>;
+        tcProcess?: T | TCProcessBlockSelect<T>;
       };
   meta?:
     | T
@@ -6877,6 +6888,14 @@ export interface TCServicesSectionBlockSelect<T extends boolean = true> {
  * via the `definition` "TCWhyTopBlock_select".
  */
 export interface TCWhyTopBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCProcessBlock_select".
+ */
+export interface TCProcessBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

@@ -51,6 +51,7 @@ import { TCAboutSectionBlock } from './TCAboutSection';
 import { TCServiceCommitmentBlock } from './TCServiceCommitment';
 import { TCServicesSectionBlock } from './TCServicesSection';
 import { TCWhyTopSectionBlock } from './TCWhyTop';
+import { TCProcessBlock } from './TCProcess';
 
 
 const blockComponents = {
@@ -109,6 +110,7 @@ tcAboutSection: TCAboutSectionBlock,
 tcServiceCommitment: TCServiceCommitmentBlock,
 tcServicesSection: TCServicesSectionBlock,
 tcWhyTop: TCWhyTopSectionBlock,
+tcProcess: TCProcessBlock,
 }
 
 export const RenderBlocks: React.FC<{
