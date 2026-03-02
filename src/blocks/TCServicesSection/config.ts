@@ -9,5 +9,26 @@ export const TCServicesSection: Block = {
     singular: 'TC Services Section',
     plural: 'TC Services Sections',
   },
-  fields: [],
+  fields: [
+    {
+      name: 'variant',
+      type: 'select',
+      defaultValue: 'home',
+      required: true,
+      options: [
+        {
+          label: 'Home Page — Crystalline hover cards',
+          value: 'home',
+        },
+        {
+          label: 'Services Page — Filterable grid with search',
+          value: 'services-page',
+        },
+      ],
+      admin: {
+        description:
+          'Home: full-image hover-reveal cards for the homepage. Services Page: filterable grid with search bar, used on the /services page.',
+      },
+    },
+  ],
 }

@@ -4632,6 +4632,10 @@ export interface TCServiceCommitmentBlock {
  * via the `definition` "TCServicesSectionBlock".
  */
 export interface TCServicesSectionBlock {
+  /**
+   * Home: full-image hover-reveal cards for the homepage. Services Page: filterable grid with search bar, used on the /services page.
+   */
+  variant: 'home' | 'services-page';
   id?: string | null;
   blockName?: string | null;
   blockType: 'tcServicesSection';
@@ -6902,6 +6906,7 @@ export interface TCServiceCommitmentBlockSelect<T extends boolean = true> {
  * via the `definition` "TCServicesSectionBlock_select".
  */
 export interface TCServicesSectionBlockSelect<T extends boolean = true> {
+  variant?: T;
   id?: T;
   blockName?: T;
 }

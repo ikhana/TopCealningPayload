@@ -8,6 +8,7 @@ type Props = {
   id?: string
   blockName?: string | null
   blockType?: 'tcServicesSection'
+  variant?: 'home' | 'services-page'
 }
 
 export const TCServicesSectionBlock: React.FC<Props> = (props) => {
