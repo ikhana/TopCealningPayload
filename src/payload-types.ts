@@ -1117,6 +1117,7 @@ export interface Page {
     | TCProcessBlock
     | TCTestimonialsBlock
     | TCJoinTeamBlock
+    | TCBookingFormBlock
   )[];
   meta?: {
     title?: string | null;
@@ -4678,6 +4679,15 @@ export interface TCJoinTeamBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCBookingFormBlock".
+ */
+export interface TCBookingFormBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcBookingForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addons".
  */
 export interface Addon {
@@ -5705,6 +5715,7 @@ export interface PagesSelect<T extends boolean = true> {
         tcProcess?: T | TCProcessBlockSelect<T>;
         tcTestimonials?: T | TCTestimonialsBlockSelect<T>;
         tcJoinTeam?: T | TCJoinTeamBlockSelect<T>;
+        tcBookingForm?: T | TCBookingFormBlockSelect<T>;
       };
   meta?:
     | T
@@ -6939,6 +6950,14 @@ export interface TCTestimonialsBlockSelect<T extends boolean = true> {
  * via the `definition` "TCJoinTeamBlock_select".
  */
 export interface TCJoinTeamBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCBookingFormBlock_select".
+ */
+export interface TCBookingFormBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

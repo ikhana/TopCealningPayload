@@ -67,6 +67,7 @@ import { TCWhyTopSection } from '@/blocks/TCWhyTop/config'
 import { TCProcess } from '@/blocks/TCProcess/config'
 import { TCTestimonials } from '@/blocks/TCTestimonials/config'
 import { TCJoinTeam } from '@/blocks/TCJoinTeam/config'
+import { TCBookingForm } from '@/blocks/TCBookingForm/config'
 
 
 
@@ -216,6 +217,7 @@ export const Pages: CollectionConfig = {
                  TCProcess,
                  TCTestimonials,
                  TCJoinTeam,
+                 TCBookingForm,
 
               ],
               required: true,

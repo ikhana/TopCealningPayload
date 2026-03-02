@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --sand: #f5efe0;
+            --off-white: #f8fafc;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --ease-fluid: cubic-bezier(0.3, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--off-white);
+            color: var(--deep-navy);
+            font-family: var(--sans-font);
+            padding: 80px 5%;
+            line-height: 1.5;
+        }
+
+        .system-header {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            border-left: 4px solid var(--primary-teal);
+            padding-left: 30px;
+        }
+
+        .system-header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+        }
+
+        .system-header p {
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+            color: var(--teal-dark);
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           BUTTON GALLERY GRID
+        ═══════════════════════════════════════════════════ */
+        .spec-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 80px 40px;
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .spec-label {
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #a0aec0;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-container {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VAR 1: THE LIQUID CORE (Primary CTA)
+           Concept: A pressurized fluid membrane.
+        ═══════════════════════════════════════════════════ */
+        .btn-liquid-core {
+            position: relative;
+            padding: 18px 42px;
+            background: var(--deep-navy);
+            color: white;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.3s var(--ease-fluid);
+        }
+
+        .btn-liquid-core .fluid-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 300%;
+            background: radial-gradient(circle, var(--primary-teal) 0%, transparent 70%);
+            transform: translate(-50%, -50%) translateY(100%);
+            transition: transform 0.6s var(--ease-fluid);
+            z-index: 0;
+        }
+
+        .btn-liquid-core span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-liquid-core:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(23, 176, 171, 0.25);
+        }
+
+        .btn-liquid-core:hover .fluid-bg {
+            transform: translate(-50%, -50%) translateY(0);
+        }
+
+        .btn-liquid-core:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VAR 2: THE REFRACTIVE GHOST
+           Concept: Diffusion through glass.
+        ═══════════════════════════════════════════════════ */
+        .btn-refractive {
+            padding: 16px 38px;
+            background: transparent;
+            color: var(--deep-navy);
+            font-family: var(--sans-font);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 2px solid var(--deep-navy);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.4s var(--ease-fluid);
+            z-index: 1;
+        }
+
+        .btn-refractive::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--primary-teal);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s var(--ease-fluid);
+            z-index: -1;
+        }
+
+        .btn-refractive:hover {
+            color: white;
+            border-color: var(--primary-teal);
+            box-shadow: 10px 10px 0 var(--light-aquamarine, #e0f5f4);
+        }
+
+        .btn-refractive:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VAR 3: THE SURFACE TENSION (Micro-Action)
+           Concept: A bead of water stretching.
+        ═══════════════════════════════════════════════════ */
+        .btn-tension {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            color: var(--primary-teal);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 0;
+        }
+
+        .btn-tension .circle {
+            width: 44px;
+            height: 44px;
+            border: 2px solid var(--primary-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s var(--ease-fluid);
+            position: relative;
+            background: white;
+        }
+
+        .btn-tension svg {
+            transition: transform 0.5s var(--ease-fluid);
+        }
+
+        .btn-tension:hover .circle {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            background: var(--primary-teal);
+            transform: translateX(10px) rotate(-15deg);
+        }
+
+        .btn-tension:hover svg {
+            color: white;
+            transform: scale(1.2);
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VAR 4: THE KINETIC CORAL (Urgent/Promo)
+           Concept: Osmotic pressure.
+        ═══════════════════════════════════════════════════ */
+        .btn-kinetic {
+            position: relative;
+            padding: 20px 48px;
+            background: var(--coral);
+            color: white;
+            font-weight: 900;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+            transition: all 0.3s var(--ease-fluid);
+        }
+
+        .btn-kinetic::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.6s;
+        }
+
+        .btn-kinetic:hover {
+            transform: skewX(-5deg) scale(1.05);
+            box-shadow: -15px 15px 0 var(--deep-navy);
+            background: #ff7070;
+        }
+
+        .btn-kinetic:hover::after {
+            left: 100%;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VAR 5: THE DEPTH DIFFUSION (Subtle/Nav)
+           Concept: Color bleeding into the environment.
+        ═══════════════════════════════════════════════════ */
+        .btn-diffusion {
+            padding: 12px 24px;
+            background: rgba(23, 176, 171, 0.05);
+            color: var(--teal-dark);
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 0.75rem;
+            border: 1px solid rgba(23, 176, 171, 0.2);
+            cursor: pointer;
+            transition: all 0.4s var(--ease-fluid);
+        }
+
+        .btn-diffusion:hover {
+            background: white;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 30px rgba(23, 176, 171, 0.15), inset 0 0 10px rgba(23, 176, 171, 0.1);
+            color: var(--primary-teal);
+            letter-spacing: 3px;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VAR 6: THE HYDRAULIC PIXEL
+           Concept: Mechanical fluid force.
+        ═══════════════════════════════════════════════════ */
+        .btn-hydraulic {
+            padding: 0;
+            background: var(--primary-teal);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: stretch;
+            box-shadow: 6px 6px 0 var(--teal-dark);
+            transition: all 0.1s;
+        }
+
+        .btn-hydraulic .text {
+            padding: 16px 30px;
+            background: white;
+            color: var(--deep-navy);
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border: 2px solid var(--primary-teal);
+        }
+
+        .btn-hydraulic .icon {
+            padding: 16px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-hydraulic:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0 var(--teal-dark);
+        }
+
+        .btn-hydraulic:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0 var(--teal-dark);
+        }
+
+        @media (max-width: 768px) {
+            .spec-grid { grid-template-columns: 1fr; }
+            body { padding: 40px 20px; }
+        }
+
+        /* SVG Gooey Filter */
+        .goo-filter { position: absolute; visibility: hidden; }
+    </style>
+</head>
+<body>
+
+    <header class="system-header">
+        <h1>Button Morphology</h1>
+        <p>TOP CLEANING DESIGN SYSTEM • V1.04 • AQUEOUS TENSION DIFFUSION</p>
+    </header>
+
+    <main class="spec-grid">
+        
+        <!-- Variation 1 -->
+        <div class="spec-item">
+            <div class="spec-label">
+                <span>01. Primary Fluid Core</span>
+                <span>CTA / Main Action</span>
+            </div>
+            <div class="btn-container">
+                <button class="btn-liquid-core">
+                    <div class="fluid-bg"></div>
+                    <span>Book In 60 Seconds</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Variation 2 -->
+        <div class="spec-item">
+            <div class="spec-label">
+                <span>02. Refractive Ghost</span>
+                <span>Secondary / Outline</span>
+            </div>
+            <div class="btn-container">
+                <button class="btn-refractive">View Cleaning Checklist</button>
+            </div>
+        </div>
+
+        <!-- Variation 3 -->
+        <div class="spec-item">
+            <div class="spec-label">
+                <span>03. Surface Tension</span>
+                <span>Interaction / Learn More</span>
+            </div>
+            <div class="btn-container">
+                <button class="btn-tension">
+                    <div class="circle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </div>
+                    Learn Our Process
+                </button>
+            </div>
+        </div>
+
+        <!-- Variation 4 -->
+        <div class="spec-item">
+            <div class="spec-label">
+                <span>04. Kinetic Coral</span>
+                <span>Promotion / Urgent</span>
+            </div>
+            <div class="btn-container">
+                <button class="btn-kinetic">CLAIM 15% DISCOUNT</button>
+            </div>
+        </div>
+
+        <!-- Variation 5 -->
+        <div class="spec-item">
+            <div class="spec-label">
+                <span>05. Depth Diffusion</span>
+                <span>Utility / Filter</span>
+            </div>
+            <div class="btn-container">
+                <button class="btn-diffusion">ALL SERVICES</button>
+            </div>
+        </div>
+
+        <!-- Variation 6 -->
+        <div class="spec-item">
+            <div class="spec-label">
+                <span>06. Hydraulic Press</span>
+                <span>Form Submission</span>
+            </div>
+            <div class="btn-container">
+                <button class="btn-hydraulic">
+                    <div class="text">Submit Application</div>
+                    <div class="icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- For advanced gooey liquid effects if needed in future JS additions -->
+    <svg class="goo-filter" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+            <filter id="gooey">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+        </defs>
+    </svg>
+
+</body>
+</html>

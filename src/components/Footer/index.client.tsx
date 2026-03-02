@@ -82,14 +82,14 @@ export function FooterClient({ footer }: Props) {
                 <Image
                   src={logoImage.url}
                   alt={logoImage.alt || 'Top Cleaning'}
-                  width={160}
-                  height={44}
-                  className="h-11 w-auto"
+                  width={300}
+                  height={110}
+                  className="h-[110px] w-auto"
                 />
               ) : (
                 <>
                   <div
-                    className="w-[34px] h-[34px] bg-teal flex-shrink-0"
+                    className="w-[52px] h-[52px] bg-teal flex-shrink-0"
                     style={{
                       clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)',
                       boxShadow: '0 0 20px color-mix(in oklch, var(--color-teal) 40%, transparent)',

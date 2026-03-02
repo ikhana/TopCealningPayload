@@ -158,7 +158,7 @@ export function TCServiceCommitmentClient(_props: Props) {
           Dark navy, 2-column: text + photo. Rotating circular seal.
       ══════════════════════════════════════════════════════════════ */}
       <section
-        className="tc-commit-s2 relative text-white"
+        className="tc-commit-s2 relative text-white mx-[5%]"
         style={{
           background: 'var(--color-navy-deep)',
           marginTop: '-1px',
@@ -173,7 +173,7 @@ export function TCServiceCommitmentClient(_props: Props) {
             width: '140px',
             height: '140px',
             top: '-70px',
-            right: '5%',
+            right: '40px',
             background: 'var(--color-navy-deep)',
             boxShadow: '0 0 30px rgba(23,176,171,0.4)',
             lineHeight: '1.4',
@@ -246,7 +246,7 @@ export function TCServiceCommitmentClient(_props: Props) {
           Teal, diagonal clip-path. Heading + body left, button right.
       ══════════════════════════════════════════════════════════════ */}
       <section
-        className="tc-commit-s3 bg-teal text-white"
+        className="tc-commit-s3 bg-teal text-white mx-[5%]"
         style={{
           marginTop: '-1px',
           clipPath: 'polygon(0 0, 100% 0, 97% 100%, 3% 100%)',
