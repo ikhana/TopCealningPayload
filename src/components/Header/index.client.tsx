@@ -109,27 +109,31 @@ export function HeaderClient({ header }: Props) {
       >
         <div className="flex items-center justify-between h-full px-[5%]">
 
-          {/* ── Logo ─────────────────────────────────────── */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0 no-underline">
+          {/* ── Logo — oversized, overflows below header border ── */}
+          <Link
+            href="/"
+            className="flex items-center gap-3 flex-shrink-0 no-underline relative z-[10]"
+            style={{ transform: 'translateY(22px)' }}
+          >
             {logoImage?.url ? (
               <Image
                 src={logoImage.url}
                 alt={logoImage.alt || 'Top Cleaning'}
-                width={160}
-                height={44}
-                className="h-11 w-auto"
+                width={300}
+                height={110}
+                className="h-[110px] w-auto"
                 priority
               />
             ) : (
               <>
                 <div
-                  className="w-[30px] h-[30px] bg-teal flex-shrink-0"
+                  className="w-[52px] h-[52px] bg-teal flex-shrink-0"
                   style={{
                     clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)',
                     boxShadow: '0 4px 12px color-mix(in oklch, var(--color-teal) 35%, transparent)',
                   }}
                 />
-                <span className="text-[1.3rem] font-black text-navy-deep tracking-[-0.5px] leading-none">
+                <span className="text-[1.9rem] font-black text-navy-deep tracking-[-0.5px] leading-none">
                   TOP CLEANING
                 </span>
               </>
