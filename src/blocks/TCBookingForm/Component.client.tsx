@@ -12,7 +12,10 @@ import { Step03Property } from '@/components/booking/sections/Step03Property'
 import { Step04AddOns } from '@/components/booking/sections/Step04AddOns'
 import { Step05Frequency } from '@/components/booking/sections/Step05Frequency'
 import { Step06Schedule } from '@/components/booking/sections/Step06Schedule'
-// Steps 07–10 added in Checkpoint 3
+import { Step07Access } from '@/components/booking/sections/Step07Access'
+import { Step08Address } from '@/components/booking/sections/Step08Address'
+import { Step09Payment } from '@/components/booking/sections/Step09Payment'
+import { Step10Terms } from '@/components/booking/sections/Step10Terms'
 
 /* ── Step metadata ─────────────────────────────────────────── */
 const STEPS = [
@@ -45,8 +48,33 @@ const navBtnBase: React.CSSProperties = {
   borderRadius: 0,
 }
 
+/* ── Success screen shown after booking is confirmed ─────── */
+function BookingSuccess() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', textAlign: 'center', padding: '60px 8%' }}>
+      {/* Animated checkmark */}
+      <div style={{ width: '72px', height: '72px', background: 'var(--color-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '28px', animation: 'bf-in 0.5s ease forwards' }}>
+        <svg width="32" height="24" viewBox="0 0 32 24" fill="none">
+          <path d="M2 12L12 22L30 2" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 900, letterSpacing: '-2px', color: 'var(--color-navy-deep)', marginBottom: '16px' }}>
+        Booking Confirmed!
+      </h2>
+      <p style={{ fontSize: '1rem', color: 'rgba(74,90,106,0.75)', maxWidth: '420px', lineHeight: 1.7, marginBottom: '36px' }}>
+        Thank you — we&apos;ve received your request. A confirmation email will be on its way shortly. Our team will reach out to finalise the details.
+      </p>
+      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'rgba(74,90,106,0.5)', letterSpacing: '0.08em', border: '1px solid rgba(13,27,46,0.08)', padding: '12px 24px' }}>
+        TOPCLEANING · EST. 2019
+      </div>
+    </div>
+  )
+}
+
 export function TCBookingFormClient() {
   const [currentStep, setCurrentStep] = useState(1)
+  const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const goNext = () => setCurrentStep((s) => Math.min(s + 1, TOTAL_STEPS))
   const goBack = () => setCurrentStep((s) => Math.max(s - 1, 1))
@@ -54,7 +82,27 @@ export function TCBookingFormClient() {
     if (step < currentStep) setCurrentStep(step)
   }
 
-  const isLastStep = currentStep === TOTAL_STEPS
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+    // Placeholder: replace with real API call
+    await new Promise((r) => setTimeout(r, 1200))
+    setIsSubmitting(false)
+    setSubmitted(true)
+  }
+
+  if (submitted) {
+    return (
+      <>
+        <style>{`
+          @keyframes bf-in {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+        <BookingSuccess />
+      </>
+    )
+  }
 
   return (
     <BookingProvider>
@@ -98,7 +146,7 @@ export function TCBookingFormClient() {
           display: 'grid',
           gridTemplateColumns: '280px 1fr 400px',
           minHeight: 'calc(100vh - 80px)',
-          background: '#f5efe0',
+          background: '#fcfdfd',
         }}
       >
 
@@ -109,6 +157,7 @@ export function TCBookingFormClient() {
           className="bf-left-rail"
           style={{
             padding: '60px 36px',
+            background: '#f5efe0',
             borderRight: '1px solid rgba(13,27,46,0.08)',
             position: 'sticky',
             top: '80px',
@@ -209,54 +258,68 @@ export function TCBookingFormClient() {
         >
           {/* Animated section */}
           <div key={currentStep} className="bf-section-in">
-            {currentStep === 1 && <Step01Customer />}
-            {currentStep === 2 && <Step02Service />}
-            {currentStep === 3 && <Step03Property />}
-            {currentStep === 4 && <Step04AddOns />}
-            {currentStep === 5 && <Step05Frequency />}
-            {currentStep === 6 && <Step06Schedule />}
-            {/* Steps 7–10 wired in Checkpoint 3 */}
-            {currentStep > 6 && (
-              <div style={{ padding: '60px 0', textAlign: 'center', color: 'rgba(74,90,106,0.5)', fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
-                Phase {String(currentStep).padStart(2, '0')} — Coming in next checkpoint
+            {currentStep === 1  && <Step01Customer />}
+            {currentStep === 2  && <Step02Service />}
+            {currentStep === 3  && <Step03Property />}
+            {currentStep === 4  && <Step04AddOns />}
+            {currentStep === 5  && <Step05Frequency />}
+            {currentStep === 6  && <Step06Schedule />}
+            {currentStep === 7  && <Step07Access />}
+            {currentStep === 8  && <Step08Address />}
+            {currentStep === 9  && <Step09Payment />}
+            {currentStep === 10 && <Step10Terms onSubmit={handleSubmit} isSubmitting={isSubmitting} />}
+          </div>
+
+          {/* ── Back / Continue buttons — hidden on step 10 (Step10Terms has its own submit) ── */}
+          {currentStep < TOTAL_STEPS && (
+            <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <button
+                type="button"
+                className="bf-nav-back"
+                onClick={goBack}
+                disabled={currentStep === 1}
+                style={{
+                  ...navBtnBase,
+                  opacity: currentStep === 1 ? 0.3 : 1,
+                  cursor: currentStep === 1 ? 'not-allowed' : 'pointer',
+                }}
+              >
+                Back
+              </button>
+
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(74,90,106,0.45)', letterSpacing: '1px' }}>
+                {currentStep} / {TOTAL_STEPS}
               </div>
-            )}
-          </div>
 
-          {/* ── Back / Continue buttons ── */}
-          <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <button
-              type="button"
-              className="bf-nav-back"
-              onClick={goBack}
-              disabled={currentStep === 1}
-              style={{
-                ...navBtnBase,
-                opacity: currentStep === 1 ? 0.3 : 1,
-                cursor: currentStep === 1 ? 'not-allowed' : 'pointer',
-              }}
-            >
-              Back
-            </button>
-
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(74,90,106,0.45)', letterSpacing: '1px' }}>
-              {currentStep} / {TOTAL_STEPS}
+              <button
+                type="button"
+                className="bf-nav-next"
+                onClick={goNext}
+                style={{
+                  ...navBtnBase,
+                  background: 'var(--color-navy-deep)',
+                  color: 'white',
+                  borderColor: 'var(--color-navy-deep)',
+                }}
+              >
+                Continue
+              </button>
             </div>
+          )}
 
-            <button
-              type="button"
-              className="bf-nav-next"
-              onClick={goNext}
-              style={{
-                ...navBtnBase,
-                background: 'var(--color-navy-deep)',
-                color: 'white',
-                borderColor: 'var(--color-navy-deep)',
-              }}
-            >
-              {isLastStep ? 'Review' : 'Continue'}
-            </button>
-          </div>
+          {/* On step 10: just show a Back button so the user can return to payment */}
+          {currentStep === TOTAL_STEPS && (
+            <div style={{ marginTop: '28px' }}>
+              <button
+                type="button"
+                className="bf-nav-back"
+                onClick={goBack}
+                style={{ ...navBtnBase }}
+              >
+                ← Back
+              </button>
+            </div>
+          )}
         </main>
 
         {/* ══════════════════════════════════════════════════
@@ -265,7 +328,7 @@ export function TCBookingFormClient() {
         <aside
           className="bf-right"
           style={{
-            background: '#f5efe0',
+            background: '#ffffff',
             padding: '60px 36px',
             position: 'sticky',
             top: '80px',

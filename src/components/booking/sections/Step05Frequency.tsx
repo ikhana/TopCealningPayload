@@ -21,10 +21,6 @@ export function Step05Frequency() {
 
   return (
     <div>
-      {/* Kicker + title */}
-      <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-teal)', fontSize: '0.75rem', fontWeight: 700, display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-        Phase 05 — Continuity
-      </span>
       <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '32px' }}>
         How Often?
       </h2>

@@ -54,10 +54,6 @@ export function Step01Customer() {
 
   return (
     <div>
-      {/* Section kicker + title */}
-      <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-teal)', fontSize: '0.75rem', fontWeight: 700, display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-        Phase 01 — Contact Details
-      </span>
       <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '40px' }}>
         Who are you?
       </h2>
