@@ -106,7 +106,7 @@ const SERVICES = [
     description:
       'Transform cluttered spaces into organized, functional storage areas with systems that keep you tidy long-term.',
     specs: ['Custom systems', 'Label & sort', 'Space optimization', 'Follow-up tips'],
-    image: '/images/services/organizing.jpg',
+    image: '/images/services/organization.jpg',
     href: '/services/organizing',
     meta: { label1: 'Starting From', value1: 'Custom / hour', label2: 'Type', value2: 'Systematic' },
   },
@@ -312,7 +312,6 @@ export function TCServicesSectionServicesPage() {
 
                 {/* Body */}
                 <div className="sp-card-body">
-                  <span className="sp-card-category">{service.category}</span>
                   <h4 className="sp-card-title">{service.title}</h4>
                   <span className="sp-card-subtitle">{service.subtitle}</span>
                   <p className="sp-card-desc">{service.description}</p>
