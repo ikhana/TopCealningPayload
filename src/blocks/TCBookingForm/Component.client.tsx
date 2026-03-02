@@ -5,10 +5,14 @@
 
 import React, { useState } from 'react'
 import { BookingProvider } from '@/components/booking/BookingContext'
+import { BookingSummary } from '@/components/booking/BookingSummary'
 import { Step01Customer } from '@/components/booking/sections/Step01Customer'
 import { Step02Service } from '@/components/booking/sections/Step02Service'
 import { Step03Property } from '@/components/booking/sections/Step03Property'
-// Steps 04–10 added in Checkpoints 2 & 3
+import { Step04AddOns } from '@/components/booking/sections/Step04AddOns'
+import { Step05Frequency } from '@/components/booking/sections/Step05Frequency'
+import { Step06Schedule } from '@/components/booking/sections/Step06Schedule'
+// Steps 07–10 added in Checkpoint 3
 
 /* ── Step metadata ─────────────────────────────────────────── */
 const STEPS = [
@@ -94,7 +98,7 @@ export function TCBookingFormClient() {
           display: 'grid',
           gridTemplateColumns: '280px 1fr 400px',
           minHeight: 'calc(100vh - 80px)',
-          background: '#fcfdfd',
+          background: '#f5efe0',
         }}
       >
 
@@ -208,8 +212,11 @@ export function TCBookingFormClient() {
             {currentStep === 1 && <Step01Customer />}
             {currentStep === 2 && <Step02Service />}
             {currentStep === 3 && <Step03Property />}
-            {/* Steps 4–10 wired in Checkpoints 2 & 3 */}
-            {currentStep > 3 && (
+            {currentStep === 4 && <Step04AddOns />}
+            {currentStep === 5 && <Step05Frequency />}
+            {currentStep === 6 && <Step06Schedule />}
+            {/* Steps 7–10 wired in Checkpoint 3 */}
+            {currentStep > 6 && (
               <div style={{ padding: '60px 0', textAlign: 'center', color: 'rgba(74,90,106,0.5)', fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
                 Phase {String(currentStep).padStart(2, '0')} — Coming in next checkpoint
               </div>
@@ -253,99 +260,21 @@ export function TCBookingFormClient() {
         </main>
 
         {/* ══════════════════════════════════════════════════
-            RIGHT — Summary panel (BookingSummary added in Checkpoint 2)
+            RIGHT — Live summary panel
         ══════════════════════════════════════════════════ */}
         <aside
           className="bf-right"
           style={{
-            background: '#ffffff',
+            background: '#f5efe0',
             padding: '60px 36px',
             position: 'sticky',
             top: '80px',
             height: 'calc(100vh - 80px)',
-            display: 'flex',
-            flexDirection: 'column',
             borderLeft: '1px solid rgba(13,27,46,0.08)',
             overflowY: 'auto',
           }}
         >
-          {/* Summary header */}
-          <div style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.75rem',
-            textTransform: 'uppercase',
-            letterSpacing: '2px',
-            color: 'rgba(74,90,106,0.6)',
-            marginBottom: '30px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-          }}>
-            Booking Summary
-            <div style={{ flex: 1, height: '1px', background: 'rgba(13,27,46,0.08)' }} />
-          </div>
-
-          {/* Placeholder rows — BookingSummary component wired in Checkpoint 2 */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {['Base Service', 'Add-ons', 'Discount'].map((label) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
-                <span style={{ color: 'rgba(74,90,106,0.7)' }}>{label}</span>
-                <span style={{ fontFamily: 'var(--font-mono)', color: label === 'Discount' ? '#fc8181' : 'inherit' }}>
-                  {label === 'Discount' ? '-$0.00' : '$0.00'}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Total */}
-          <div style={{
-            marginTop: 'auto',
-            paddingTop: '24px',
-            borderTop: '2px solid var(--color-navy-deep)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            fontWeight: 800,
-            fontSize: '1.3rem',
-          }}>
-            <span>Estimate</span>
-            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-teal)' }}>$0.00</span>
-          </div>
-
-          <p style={{ fontSize: '0.68rem', color: 'rgba(74,90,106,0.55)', marginTop: '16px', lineHeight: 1.6 }}>
-            By clicking &ldquo;Book Now&rdquo;, you agree to our terms of service and privacy policy.
-            Secure 256-bit SSL encrypted payment.
-          </p>
-
-          {/* Book button */}
-          <button
-            type="button"
-            style={{
-              width: '100%',
-              padding: '18px',
-              background: 'var(--color-teal)',
-              color: 'white',
-              border: 'none',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              letterSpacing: '2px',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              marginTop: '20px',
-              clipPath: 'polygon(0 0, 100% 0, 95% 100%, 0% 100%)',
-              transition: 'all 0.35s cubic-bezier(0.25,1,0.5,1)',
-            }}
-            onMouseEnter={(e) => {
-              ;(e.currentTarget as HTMLButtonElement).style.background = 'var(--color-navy-deep)'
-              ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-3px)'
-            }}
-            onMouseLeave={(e) => {
-              ;(e.currentTarget as HTMLButtonElement).style.background = 'var(--color-teal)'
-              ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'
-            }}
-          >
-            Book Your Service
-          </button>
+          <BookingSummary onBook={goNext} />
         </aside>
 
       </div>
