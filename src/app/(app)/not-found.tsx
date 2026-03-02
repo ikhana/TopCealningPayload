@@ -1,162 +1,310 @@
+'use client'
+
+// app/(app)/not-found.tsx
+// Design reference: design/404.html
+// Pigment-sedimentation 404 — sand bg, ghost 404 with SVG displacement,
+// sediment wave, floating dust particles, mouse-parallax on big numbers.
+// "Link Integrity Error" kicker removed per design direction.
+
 import Link from 'next/link'
-import { Home, Sparkles } from 'lucide-react'
-
-const bubbles = [
-  { top: '15%', left: '10%',  right: undefined, delay: '0s',   w: 80,  h: 80  },
-  { top: '65%', left: '15%',  right: undefined, delay: '1.2s', w: 60,  h: 60  },
-  { top: '25%', left: undefined, right: '12%', delay: '0.5s', w: 70,  h: 70  },
-  { top: '75%', left: undefined, right: '18%', delay: '1.8s', w: 50,  h: 50  },
-  { top: '45%', left: '25%',  right: undefined, delay: '2.3s', w: 45,  h: 45  },
-  { top: '35%', left: undefined, right: '25%', delay: '1.5s', w: 60,  h: 60  },
-]
-
-const suggestionLinks = [
-  { label: 'Cleaning Services', href: '/buyservices' },
-  { label: 'About Us',          href: '/#about'      },
-  { label: 'Book a Cleaning',   href: '/booking'     },
-  { label: 'FAQs',              href: '/faqs'        },
-]
+import { useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function NotFound() {
+  const big404Ref    = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const router       = useRouter()
+
+  // ── Dust particles ──────────────────────────────────────────────────────
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const particles: HTMLDivElement[] = []
+
+    for (let i = 0; i < 40; i++) {
+      const el   = document.createElement('div')
+      const size = Math.random() * 4 + 1
+      el.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        background: #17b0ab;
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: ${Math.random() * 0.35};
+      `
+      el.animate(
+        [
+          { transform: 'translateY(0) translateX(0)',                                                                           opacity: 0 },
+          { opacity: 0.4,                                                                                                        offset: 0.2 },
+          { transform: `translateY(-${100 + Math.random() * 200}px) translateX(${Math.random() * 50 - 25}px)`, opacity: 0 },
+        ],
+        {
+          duration:   (10 + Math.random() * 20) * 1000,
+          iterations: Infinity,
+          delay:      Math.random() * 5000,
+          easing:     'ease-in-out',
+        },
+      )
+      container.appendChild(el)
+      particles.push(el)
+    }
+
+    return () => particles.forEach((p) => p.remove())
+  }, [])
+
+  // ── Mouse parallax on big 404 ───────────────────────────────────────────
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const el = big404Ref.current
+      if (!el) return
+      const x = (e.clientX - window.innerWidth  / 2) * 0.05
+      const y = (e.clientY - window.innerHeight / 2) * 0.05
+      el.style.transform = `translate(${x}px, ${y}px) rotate(${x * 0.1}deg)`
+    }
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
+
   return (
-    <div className="min-h-screen relative overflow-hidden bg-background py-16 px-4">
+    <>
+      {/* ── SVG filter defs (hidden) ───────────────────────────────────── */}
+      <svg style={{ display: 'none' }} aria-hidden>
+        <defs>
+          <filter id="nf-pigment">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <filter id="nf-grain">
+            <feTurbulence type="turbulence" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+            <feComponentTransfer>
+              <feFuncR type="linear" slope="0.3" />
+              <feFuncG type="linear" slope="0.3" />
+              <feFuncB type="linear" slope="0.3" />
+            </feComponentTransfer>
+          </filter>
+        </defs>
+      </svg>
 
-      {/* ── Gradient blobs ───────────────────────────────────────── */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div
-          className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full"
-          style={{ background: 'radial-gradient(circle, oklch(var(--primary) / 0.08) 0%, transparent 70%)' }}
-        />
-        <div
-          className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full"
-          style={{ background: 'radial-gradient(circle, oklch(var(--secondary) / 0.06) 0%, transparent 70%)' }}
-        />
-      </div>
+      <style>{`
+        /* ── Page shell ── */
+        .nf-shell {
+          font-family: var(--font-sans, Inter, sans-serif);
+          background: #f5efe0;
+          color: #0d1b2e;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
+        }
 
-      {/* ── Floating bubbles ─────────────────────────────────────── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {bubbles.map((b, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-geometric-float backdrop-blur-sm"
-            style={{
-              top:              b.top,
-              left:             b.left,
-              right:            b.right,
-              width:            b.w,
-              height:           b.h,
-              animationDelay:   b.delay,
-              background:       'oklch(var(--primary) / 0.12)',
-              boxShadow:        '0 4px 12px oklch(0 0 0 / 0.05)',
-            }}
-          />
-        ))}
-      </div>
+        /* ── Grain overlay ── */
+        .nf-grain {
+          position: fixed; inset: 0;
+          pointer-events: none; z-index: 9999;
+          opacity: 0.4; mix-blend-mode: multiply;
+        }
 
-      {/* ── Card ─────────────────────────────────────────────────── */}
-      <div className="container max-w-3xl flex items-center justify-center min-h-[calc(100vh-8rem)]">
-        <div className="relative w-full bg-background/80 backdrop-blur-sm rounded-3xl p-8 md:p-14 text-center shadow-2xl border border-border">
+        /* ── Main viewport ── */
+        .nf-viewport {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 80px 5% 60px;
+          position: relative;
+          overflow: hidden;
+        }
 
-          {/* Gradient border lines */}
-          <div className="absolute left-0 top-0    h-px w-full bg-gradient-to-l from-border-gradient-light via-border-gradient-mid to-border-gradient-dark" />
-          <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-border-gradient-light via-border-gradient-mid to-border-gradient-dark" />
-          <div className="absolute inset-y-0 left-0  w-px bg-gradient-to-t from-border-gradient-light via-border-gradient-mid to-border-gradient-dark" />
-          <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-t from-border-gradient-light via-border-gradient-mid to-border-gradient-dark" />
+        /* ── Sediment wave ── */
+        .nf-sediment {
+          position: absolute; bottom: 0; width: 100%; height: 100%;
+          background: #17b0ab;
+          clip-path: polygon(0 65%,15% 55%,35% 70%,55% 50%,75% 75%,90% 60%,100% 80%,100% 100%,0% 100%);
+          opacity: 0;
+          animation: nf-settle 4s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+          pointer-events: none;
+        }
 
-          {/* ── 4 [Sparkle] 4 ──────────────────────────────────────── */}
-          <div className="flex justify-center items-center gap-3 md:gap-6 mb-8">
-            <span
-              className="font-heading font-black text-foreground leading-none"
-              style={{
-                fontSize: 'clamp(4rem, 12vw, 8rem)',
-                textShadow: '2px 2px 0 oklch(var(--primary) / 0.2), -2px -2px 0 oklch(var(--primary) / 0.2)',
-              }}
-            >
-              4
-            </span>
+        /* ── 2-col grid ── */
+        .nf-grid {
+          position: relative; z-index: 10;
+          max-width: 1200px; width: 100%;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          align-items: center;
+          gap: 40px;
+        }
 
-            <div
-              className="shrink-0 rounded-full flex items-center justify-center"
-              style={{
-                width:           'clamp(64px, 10vw, 100px)',
-                height:          'clamp(64px, 10vw, 100px)',
-                backgroundColor: 'oklch(var(--primary))',
-                boxShadow:       '0 8px 25px oklch(var(--primary) / 0.3)',
-              }}
-            >
-              <Sparkles
-                style={{
-                  width:     'clamp(32px, 5vw, 56px)',
-                  height:    'clamp(32px, 5vw, 56px)',
-                  color:     'oklch(var(--primary-foreground))',
-                  animation: 'spin 10s linear infinite',
-                  strokeWidth: 1.5,
-                }}
-              />
-            </div>
+        /* ── Ghost 404 ── */
+        .nf-visual {
+          position: relative; height: 500px;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .nf-big {
+          font-size: 28vw; font-weight: 900; line-height: 1;
+          color: transparent;
+          background: linear-gradient(180deg, #0d1b2e 0%, #0f8a86 100%);
+          -webkit-background-clip: text; background-clip: text;
+          filter: url(#nf-pigment);
+          opacity: 0.15;
+          position: absolute;
+          user-select: none;
+          animation: nf-drift 20s infinite alternate ease-in-out;
+          transition: transform 0.1s ease-out;
+        }
 
-            <span
-              className="font-heading font-black text-foreground leading-none"
-              style={{
-                fontSize: 'clamp(4rem, 12vw, 8rem)',
-                textShadow: '2px 2px 0 oklch(var(--primary) / 0.2), -2px -2px 0 oklch(var(--primary) / 0.2)',
-              }}
-            >
-              4
-            </span>
-          </div>
+        /* ── Content ── */
+        .nf-content { position: relative; z-index: 20; }
 
-          {/* ── Title ──────────────────────────────────────────────── */}
-          <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Page Not Found
-          </h1>
+        .nf-h1 {
+          font-size: clamp(3rem, 6vw, 5rem);
+          font-weight: 900;
+          line-height: 0.9;
+          color: #0d1b2e;
+          margin-bottom: 30px;
+          letter-spacing: -0.04em;
+          opacity: 0;
+          transform: translateY(30px);
+          animation: nf-reveal 0.8s 0.4s forwards;
+        }
+        .nf-h1 span {
+          display: block;
+          color: #fc8181;
+          font-style: italic;
+          font-weight: 300;
+        }
 
-          {/* ── Description ────────────────────────────────────────── */}
-          <p className="font-body text-base md:text-lg text-muted-foreground mb-10 max-w-md mx-auto">
-            Oops! The page you&apos;re looking for seems to have been swept away during our cleaning.
-          </p>
+        .nf-desc {
+          font-size: 1.2rem; line-height: 1.7;
+          color: #1a2840;
+          max-width: 480px;
+          margin-bottom: 40px;
+          opacity: 0; transform: translateY(30px);
+          animation: nf-reveal 0.8s 0.6s forwards;
+        }
 
-          {/* ── CTA buttons ────────────────────────────────────────── */}
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
-            <Link
-              href="/"
-              className="btn-primary inline-flex items-center justify-center gap-2 no-underline"
-            >
-              <Home className="w-5 h-5" />
-              Go Home
-            </Link>
-            <Link
-              href="/booking"
-              className="btn-secondary inline-flex items-center justify-center gap-2 no-underline"
-            >
-              Book a Cleaning
-            </Link>
-          </div>
+        .nf-actions {
+          display: flex; gap: 20px;
+          opacity: 0; transform: translateY(30px);
+          animation: nf-reveal 0.8s 0.8s forwards;
+        }
 
-          {/* ── Suggestion links ───────────────────────────────────── */}
-          <div className="pt-6 border-t border-border">
-            <h2 className="font-semibold text-foreground mb-4 text-base md:text-lg font-heading">
-              Looking for our services?
-            </h2>
-            <div className="flex flex-wrap justify-center gap-3">
-              {suggestionLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="px-5 py-2 rounded-full font-medium text-sm transition-all duration-300 hover:-translate-y-0.5 no-underline"
-                  style={{
-                    backgroundColor: 'oklch(var(--primary) / 0.1)',
-                    color:           'oklch(var(--primary))',
-                  }}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+        .nf-btn {
+          display: inline-flex; align-items: center;
+          padding: 1.2rem 2.5rem;
+          font-family: var(--font-mono, monospace);
+          font-weight: 700; font-size: 0.85rem;
+          letter-spacing: 1px;
+          text-decoration: none;
+          border: none; cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+          background: none;
+        }
+        .nf-btn-primary {
+          background: #17b0ab;
+          color: white;
+          box-shadow: 8px 8px 0 #0d1b2e;
+        }
+        .nf-btn-primary:hover {
+          transform: translate(-4px,-4px);
+          box-shadow: 12px 12px 0 #fc8181;
+          color: white;
+          text-decoration: none;
+        }
+        .nf-btn-secondary {
+          background: transparent;
+          color: #0d1b2e;
+          border: 1px solid rgba(13,27,46,0.2);
+        }
+        .nf-btn-secondary:hover {
+          background: rgba(255,255,255,0.5);
+          border-color: #0d1b2e;
+        }
 
+/* ── Animations ── */
+        @keyframes nf-reveal {
+          to { opacity:1; transform:translateY(0); }
+        }
+        @keyframes nf-settle {
+          from { transform:translateY(100%) scaleY(2); opacity:0; }
+          to   { transform:translateY(0) scaleY(1);   opacity:0.06; }
+        }
+        @keyframes nf-drift {
+          from { transform:translate(-20px,-10px) rotate(-1deg); }
+          to   { transform:translate(20px,10px)   rotate(1deg);  }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 1024px) {
+          .nf-grid { grid-template-columns:1fr; text-align:center; }
+          .nf-visual { order:-1; height:300px; }
+          .nf-big { font-size:40vw; }
+          .nf-desc { margin-inline:auto; }
+          .nf-actions { justify-content:center; flex-direction:column; }
+          .nf-btn { width:100%; justify-content:center; }
+        }
+      `}</style>
+
+      <div className="nf-shell">
+
+        {/* Grain overlay */}
+        <div className="nf-grain" aria-hidden>
+          <svg width="100%" height="100%">
+            <rect width="100%" height="100%" filter="url(#nf-grain)" />
+          </svg>
         </div>
+
+        {/* Main 404 area */}
+        <main className="nf-viewport">
+          {/* Sediment wave */}
+          <div className="nf-sediment" aria-hidden />
+
+          {/* Dust particle container */}
+          <div ref={containerRef} className="absolute inset-0 pointer-events-none" aria-hidden />
+
+          <div className="nf-grid">
+
+            {/* Left — ghost 404 */}
+            <div className="nf-visual" aria-hidden>
+              <div ref={big404Ref} className="nf-big">404</div>
+            </div>
+
+            {/* Right — content */}
+            <div className="nf-content">
+              <h1 className="nf-h1">
+                Even we couldn&apos;t
+                <span>clean up this mess.</span>
+              </h1>
+
+              <p className="nf-desc">
+                The page you&apos;re looking for has settled into the digital dust.
+                It might have been moved, deleted, or never existed in the first place.
+              </p>
+
+              <div className="nf-actions">
+                <Link href="/" className="nf-btn nf-btn-primary">
+                  START FRESH AT HOME
+                </Link>
+                <button
+                  className="nf-btn nf-btn-secondary"
+                  onClick={() => router.back()}
+                >
+                  GO BACK A STEP
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </main>
+
+
       </div>
-    </div>
+    </>
   )
 }
