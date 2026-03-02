@@ -14,9 +14,9 @@ export const generateMeta = async (args: { doc: Page | Product | BlogPost }): Pr
     `${process.env.NEXT_PUBLIC_SERVER_URL}${doc.meta.image.url}`
 
   return {
-    description: doc?.meta?.description ?? 'Strategic financial planning and wealth management solutions tailored to your goals.',
+    description: doc?.meta?.description ?? 'TopCleaning offers professional residential and commercial cleaning services — trusted, eco-friendly, and tailored to your home.',
     openGraph: mergeOpenGraph({
-      description: doc?.meta?.description ?? 'Strategic financial planning and wealth management solutions tailored to your goals.',
+      description: doc?.meta?.description ?? 'TopCleaning offers professional residential and commercial cleaning services — trusted, eco-friendly, and tailored to your home.',
       images: ogImage
         ? [
             {
@@ -24,9 +24,9 @@ export const generateMeta = async (args: { doc: Page | Product | BlogPost }): Pr
             },
           ]
         : undefined,
-      title: doc?.meta?.title ?? 'Mazco LLC | Financial Planning & Wealth Management',
+      title: doc?.meta?.title ?? 'TopCleaning | Professional Cleaning Services',
       url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
     }),
-    title: doc?.meta?.title ?? 'Mazco LLC | Financial Planning & Wealth Management',
+    title: doc?.meta?.title ?? 'TopCleaning | Professional Cleaning Services',
   }
 }

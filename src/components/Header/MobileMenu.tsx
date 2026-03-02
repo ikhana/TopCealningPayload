@@ -104,7 +104,7 @@ export function MobileMenu({ menu }: Props) {
           <div className="px-6 py-6 border-b border-border">
             <div className="text-center">
               <span className="inline-block px-4 py-2 bg-primary/10 text-primary font-heading font-semibold text-base uppercase">
-                Mazco LLC
+                TopCleaning
               </span>
             </div>
           </div>

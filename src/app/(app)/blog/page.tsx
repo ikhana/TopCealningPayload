@@ -16,8 +16,8 @@ const GradientBorders = () => (
 )
 
 export const metadata: Metadata = {
-  title: 'Blog | Mazco LLC',
-  description: 'Insights and updates from our team',
+  title: 'Blog | TopCleaning',
+  description: 'Cleaning tips, home care guides, and updates from the TopCleaning team.',
 }
 
 type Props = {

@@ -30,7 +30,7 @@ export const Faq: Block = {
       name: 'eyebrow',
       type: 'text',
       required: false,
-      defaultValue: 'About Mazco LLC',
+      defaultValue: 'About TopCleaning',
       admin: {
         description: 'Small text above title',
       },

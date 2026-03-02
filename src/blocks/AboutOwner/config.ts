@@ -30,7 +30,7 @@ export const AboutOwner: Block = {
       name: 'title',
       type: 'text',
       required: true,
-      defaultValue: 'About Mazco',
+      defaultValue: 'About TopCleaning',
     },
     
     {

@@ -41,7 +41,7 @@ export type GenerateTitle2<T = unknown> = (args: {
 }) => Promise<string> | string
 
 const generateTitle: GenerateTitle = <Page>({ doc }) => {
-  return `${doc?.title ?? ''} | Mazco LLC`
+  return `${doc?.title ?? ''} | TopCleaning`
 }
 
 export default buildConfig({
