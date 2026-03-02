@@ -127,29 +127,34 @@ export function TCProcessClient(_props: Props) {
 
         /* Responsive: stack vertically, always show details */
         @media (max-width: 1024px) {
-          .tc-process-grid    { grid-template-columns: 1fr !important; }
+          .tc-process-grid     { grid-template-columns: 1fr !important; }
           .tc-process-monolith { height: 480px !important; }
-          .tc-process-section { padding: 70px 5% !important; }
-          .tc-process-intro   { margin-bottom: 50px !important; }
-          .tc-process-content { padding: 40px !important; }
-          /* Details always fully visible — no expand/collapse on mobile */
+          .tc-process-section  { padding: 70px 5% !important; }
+          .tc-process-intro    { margin-bottom: 50px !important; }
+          .tc-process-content  { padding: 40px !important; }
+
+          /* Details hidden on inactive cards — no animation */
           .tc-process-details {
-            max-height: 400px !important;
-            opacity: 1 !important;
+            max-height: 0 !important;
+            opacity: 0 !important;
             transition: none !important;
           }
-          .tc-process-title { margin-bottom: 20px !important; }
-          /* Inactive bullet text: dark so readable on white background */
-          .tc-process-details li { color: rgba(13,27,46,0.75) !important; }
-          /* ── Loop only changes the visual overlay — card height stays fixed ── */
+
+          /* Only the looping active card turns teal and reveals details */
           .tc-process-monolith.tc-loop-active { background: #17b0ab !important; }
           .tc-process-monolith.tc-loop-active .tc-process-img {
             opacity: 0.35 !important;
             filter: grayscale(0) contrast(1) !important;
           }
-          .tc-process-monolith.tc-loop-active .tc-process-title { color: #ffffff !important; }
-          .tc-process-monolith.tc-loop-active .tc-process-num   { opacity: 0.15 !important; }
-          /* Restore white bullet text on teal active card */
+          .tc-process-monolith.tc-loop-active .tc-process-title {
+            color: #ffffff !important;
+            margin-bottom: 20px !important;
+          }
+          .tc-process-monolith.tc-loop-active .tc-process-num { opacity: 0.15 !important; }
+          .tc-process-monolith.tc-loop-active .tc-process-details {
+            max-height: 400px !important;
+            opacity: 1 !important;
+          }
           .tc-process-monolith.tc-loop-active .tc-process-details li { color: #ffffff !important; }
         }
         @media (max-width: 768px) {

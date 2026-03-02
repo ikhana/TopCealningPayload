@@ -28,27 +28,31 @@ export function FooterClient({ footer }: Props) {
   const hasContact  = contactInfo.phone1 || contactInfo.email || contactInfo.hours
 
   return (
-    <footer className="bg-navy-obsidian text-white relative overflow-hidden">
+    <footer className="bg-navy-obsidian text-white relative" style={{ zIndex: 2, position: 'relative' }}>
 
-      {/* ── Ambient teal glow (decorative, top-right corner) ─────── */}
-      <div
-        aria-hidden
-        className="absolute pointer-events-none z-[1]"
-        style={{
-          width: '40vw', height: '40vw',
-          background: 'radial-gradient(circle, color-mix(in oklch, var(--color-teal) 8%, transparent) 0%, transparent 70%)',
-          top: '-20vw', right: '-10vw',
-          filter: 'blur(60px)',
-        }}
-      />
+      {/* ── Ambient teal glow — clipped inside its own box so footer has no overflow restriction ── */}
+      <div aria-hidden className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+        <div
+          style={{
+            position: 'absolute',
+            width: '40vw', height: '40vw',
+            background: 'radial-gradient(circle, color-mix(in oklch, var(--color-teal) 8%, transparent) 0%, transparent 70%)',
+            top: '-20vw', right: '-10vw',
+            filter: 'blur(60px)',
+          }}
+        />
+      </div>
 
-      {/* ── CTA Band ──────────────────────────────────────────────────── */}
-      <div className="relative z-[2] max-w-[1400px] mx-auto px-[5%] pt-[60px]">
-        <div className={cn(
-          'flex flex-col md:flex-row items-center justify-between gap-6',
-          'bg-white/[0.04] border border-teal/25',
-          'px-10 py-9',
-        )}>
+      {/* ── CTA Band — straddles section above / footer boundary ─────── */}
+      <div className="relative z-[10] max-w-[1400px] mx-auto px-[5%]" style={{ marginTop: '-80px' }}>
+        <div
+          className={cn(
+            'flex flex-col md:flex-row items-center justify-between gap-6',
+            'bg-navy-obsidian border border-teal/25',
+            'px-10 py-9',
+          )}
+          style={{ boxShadow: '0 -10px 60px rgba(0,0,0,0.35), 0 0 40px color-mix(in oklch, var(--color-teal) 10%, transparent)' }}
+        >
           <h3 className="text-[1.8rem] font-extrabold text-white m-0">
             Ready for a spotless space?
           </h3>

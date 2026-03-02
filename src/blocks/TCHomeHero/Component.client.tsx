@@ -55,7 +55,7 @@ export function TCHomeHeroClient(_props: Props) {
         {/* ── Background image + left-to-right teal-light gradient overlay ── */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000"
+            src="/images/cleaning/hero-bg1.jpg"
             alt="Pristine cleaned interior"
             className="w-full h-full object-cover object-center"
             style={{

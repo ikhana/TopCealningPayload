@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --scaffold-line: rgba(13, 27, 46, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--sans-font);
+            background: #ffffff;
+            color: var(--deep-navy);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ─── TECTONIC HERO ARCHITECTURE ─── */
+        .tectonic-hero {
+            position: relative;
+            width: 100%;
+            height: 75vh; /* Compact height to show next section */
+            min-height: 600px;
+            background: var(--slate-100);
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            overflow: hidden;
+            border-bottom: 1px solid var(--deep-navy);
+        }
+
+        /* Structural Grid Overlay */
+        .scaffold-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, var(--scaffold-line) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--scaffold-line) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ─── CONTENT BLOCK (LEFT) ─── */
+        .hero-content-slab {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10% 0 8%;
+            background: #ffffff;
+            clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+            box-shadow: 40px 0 80px rgba(0,0,0,0.05);
+        }
+
+        .kicker-assembly {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .kicker-tag {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            background: rgba(23, 176, 171, 0.08);
+            padding: 4px 12px;
+            border: 1px solid var(--primary-teal);
+        }
+
+        .scaffold-num {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            color: var(--slate-400);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4.2rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        h1 span {
+            display: block;
+            color: var(--primary-teal);
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-description {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #4a5a6a;
+            max-width: 520px;
+            border-left: 2px solid var(--primary-teal);
+            padding-left: 24px;
+            margin-bottom: 48px;
+        }
+
+        /* ─── IMAGE BLOCK (RIGHT) ─── */
+        .hero-visual-slab {
+            position: relative;
+            height: 100%;
+            background: var(--deep-navy);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: brightness(0.8) contrast(1.1);
+            opacity: 0.9;
+            transition: transform 10s ease;
+        }
+
+        .tectonic-hero:hover .hero-image {
+            transform: scale(1.1);
+        }
+
+        .image-overlay-tectonic {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, #ffffff 0%, transparent 20%, transparent 80%, rgba(23, 176, 171, 0.1) 100%);
+            z-index: 2;
+        }
+
+        /* Decorative "Mechanical" labels */
+        .mech-label {
+            position: absolute;
+            font-family: var(--mono-font);
+            font-size: 10px;
+            color: var(--slate-400);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 5;
+        }
+
+        .label-tr { top: 30px; right: 30px; transform: rotate(90deg); transform-origin: right top; }
+        .label-br { bottom: 30px; right: 30px; }
+
+        /* ─── NAVIGATION / FILTER DOCK (FOOTER OF HERO) ─── */
+        .hero-dock {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 20;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 8% 0 8%;
+            pointer-events: none;
+        }
+
+        .dock-assembly {
+            background: var(--deep-navy);
+            display: flex;
+            pointer-events: auto;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .dock-item {
+            padding: 24px 40px;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .dock-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: var(--primary-teal);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .dock-item:hover::before {
+            height: 100%;
+        }
+
+        .dock-item.active {
+            background: var(--primary-teal);
+        }
+
+        .dock-item span {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .dock-item:hover span {
+            color: #ffffff;
+        }
+
+        /* ─── CTA BUTTON ─── */
+        .cta-monolith {
+            background: var(--coral);
+            padding: 24px 50px;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto;
+            pointer-events: auto;
+        }
+
+        .cta-monolith:hover {
+            background: #ffffff;
+            color: var(--deep-navy);
+            transform: translateY(-5px);
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes slideInUp {
+            from { transform: translateY(60px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .reveal {
+            animation: slideInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; opacity: 0; }
+        .delay-2 { animation-delay: 0.4s; opacity: 0; }
+        .delay-3 { animation-delay: 0.6s; opacity: 0; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1100px) {
+            .tectonic-hero {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: 80vh;
+            }
+            .hero-content-slab {
+                padding: 100px 5% 140px;
+                clip-path: none;
+            }
+            .hero-visual-slab {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                opacity: 0.15;
+            }
+            .hero-dock {
+                flex-wrap: wrap;
+                padding: 0;
+            }
+            .dock-assembly {
+                width: 100%;
+                overflow-x: auto;
+            }
+            .cta-monolith {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="tectonic-hero">
+        <div class="scaffold-overlay"></div>
+        
+        <!-- Mechanical Labels -->
+        <div class="mech-label label-tr">System_v4.2 // Services_Init</div>
+        <div class="mech-label label-br">Lat: 25.7617° N // Long: 80.1918° W</div>
+
+        <!-- Left Content Monolith -->
+        <div class="hero-content-slab">
+            <div class="kicker-assembly reveal">
+                <span class="scaffold-num">REF: 001</span>
+                <span class="kicker-tag">Professional & Reliable</span>
+            </div>
+            
+            <h1 class="reveal delay-1">Services <span>Comprehensive Solutions</span></h1>
+            
+            <p class="hero-description reveal delay-2">
+                Tailored cleaning solutions engineered with architectural precision. We manage the details so you can dominate your day in a pristine environment.
+            </p>
+        </div>
+
+        <!-- Right Visual Monolith -->
+        <div class="hero-visual-slab">
+            <div class="image-overlay-tectonic"></div>
+            <img src="https://images.unsplash.com/photo-1600585154526-990dbee4b221?auto=format&fit=crop&q=80&w=2000" alt="Modern Minimalist Interior" class="hero-image">
+        </div>
+
+        <!-- Hero Navigation Dock -->
+        <div class="hero-dock reveal delay-3">
+            <nav class="dock-assembly">
+                <a href="#" class="dock-item active">
+                    <span>01</span> All Services
+                </a>
+                <a href="#" class="dock-item">
+                    <span>02</span> Residential
+                </a>
+                <a href="#" class="dock-item">
+                    <span>03</span> Commercial
+                </a>
+                <a href="#" class="dock-item">
+                    <span>04</span> Specialized
+                </a>
+            </nav>
+            
+            <a href="#" class="cta-monolith">
+                Schedule Now
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Visual Anchor for next section visibility -->
+    <div style="height: 100px; background: #ffffff; border-left: 80px solid var(--primary-teal); padding: 40px; font-family: var(--mono-font); font-size: 0.7rem; color: var(--slate-400);">
+        [ SCROLL_TO_EXPLORE_CATALOGUE ]
+    </div>
+
+</body>
+</html>

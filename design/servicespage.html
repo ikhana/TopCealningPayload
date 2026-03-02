@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-pale: #e0f5f4;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --sand: #f5efe0;
+            --off-white: #fcfcfc;
+            --text-dark: #1a2840;
+            --text-muted: #5a6a7a;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --header-height: 70px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans-font);
+            background: var(--off-white);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* ─── SHARED UTILITIES ─── */
+        .tectonic-border {
+            border: 1px solid rgba(13, 27, 46, 0.1);
+            position: relative;
+        }
+        .tectonic-border::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border: 1px solid var(--primary-teal);
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+        .tectonic-border:hover::after {
+            opacity: 0.4;
+            inset: 4px;
+        }
+
+        /* ─── HEADER (Simplified for Services Page) ─── */
+        .main-header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(23, 176, 171, 0.1);
+        }
+        .logo {
+            text-decoration: none;
+            color: var(--deep-navy);
+            font-weight: 900;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-mark {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-teal);
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+        }
+        .nav-items { display: flex; gap: 30px; list-style: none; }
+        .nav-items a { 
+            text-decoration: none; 
+            color: var(--text-dark); 
+            font-family: var(--mono-font); 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            font-weight: 700;
+        }
+
+        /* ─── COMPACT HERO SECTION ─── */
+        .hero {
+            position: relative;
+            height: 45vh;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background: var(--deep-navy);
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1581578731548-c64695cc6954?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+            opacity: 0.6;
+            filter: saturate(0.8) contrast(1.1);
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, var(--off-white) 35%, transparent 75%);
+        }
+        .hero-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .hero-content {
+            max-width: 540px;
+            animation: slideLeft 1s ease-out;
+        }
+        @keyframes slideLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .hero-kicker {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 900;
+            line-height: 1.1;
+            color: var(--deep-navy);
+            margin-bottom: 1.5rem;
+            letter-spacing: -1.5px;
+        }
+        .hero p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ─── SERVICES NAVIGATION / TABS ─── */
+        .services-nav {
+            background: white;
+            padding: 2rem 5%;
+            border-bottom: 1px solid rgba(13, 27, 46, 0.05);
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: var(--header-height);
+            z-index: 900;
+        }
+        .filter-group {
+            display: flex;
+            background: var(--sand);
+            padding: 4px;
+            border-radius: 0;
+            gap: 2px;
+        }
+        .filter-btn {
+            border: none;
+            background: none;
+            padding: 12px 24px;
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-muted);
+        }
+        .filter-btn.active {
+            background: var(--deep-navy);
+            color: white;
+        }
+        .filter-btn:hover:not(.active) {
+            background: rgba(23, 176, 171, 0.1);
+        }
+
+        /* ─── COMPACT SERVICE CARDS ─── */
+        .services-section {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        .service-card {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            height: 100%;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(13, 27, 46, 0.05);
+        }
+        .card-img-wrapper {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        .service-card:hover .card-img-wrapper img {
+            transform: scale(1.1);
+        }
+        .card-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            padding: 4px 10px;
+            font-family: var(--mono-font);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-left: 3px solid var(--primary-teal);
+        }
+        .card-body {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-body h3 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--deep-navy);
+            letter-spacing: -0.5px;
+        }
+        .card-body p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .card-meta {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(13, 27, 46, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .price-label {
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: block;
+        }
+        .price-value {
+            font-family: var(--mono-font);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-sm {
+            padding: 12px;
+            font-family: var(--mono-font);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .btn-primary { background: var(--deep-navy); color: white; }
+        .btn-primary:hover { background: var(--primary-teal); }
+        .btn-outline { border-color: rgba(13, 27, 46, 0.1); color: var(--text-dark); }
+        .btn-outline:hover { border-color: var(--primary-teal); color: var(--primary-teal); }
+
+        /* ─── FINAL CTA SECTION ─── */
+        .final-cta {
+            background: var(--sand);
+            padding: 100px 5%;
+            text-align: center;
+            position: relative;
+        }
+        .final-cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .final-cta h2 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            color: var(--deep-navy);
+            margin-bottom: 1.5rem;
+        }
+        .final-cta p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .btn-large {
+            padding: 20px 40px;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .btn-teal { background: var(--primary-teal); color: white; }
+        .btn-teal:hover { background: var(--teal-dark); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(23, 176, 171, 0.2); }
+        .btn-dark { background: var(--deep-navy); color: white; }
+        .btn-dark:hover { background: #000; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(13, 27, 46, 0.2); }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--deep-navy);
+            padding: 60px 5% 30px;
+            color: rgba(255,255,255,0.6);
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .hero-overlay { background: rgba(255, 255, 255, 0.85); }
+            .hero-container { grid-template-columns: 1fr; }
+            .hero-content { text-align: center; margin: 0 auto; }
+            .services-nav { overflow-x: auto; justify-content: flex-start; }
+            .filter-group { width: max-content; }
+        }
+
+        @media (max-width: 600px) {
+            .cta-buttons { flex-direction: column; }
+            .card-actions { grid-template-columns: 1fr; }
+        }
+
+        /* Utility: Hide elements based on filter */
+        .service-card.hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="#" class="logo">
+            <div class="logo-mark"></div>
+            TOP CLEANING
+        </a>
+        <nav>
+            <ul class="nav-items">
+                <li><a href="#">Home</a></li>
+                <li><a href="#" style="color: var(--primary-teal);">Services</a></li>
+                <li><a href="#">Join Team</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-kicker">Professional & Reliable</span>
+                <h1>SERVICES</h1>
+                <p>Comprehensive cleaning solutions tailored to your specific needs with attention to every detail.</p>
+            </div>
+        </div>
+    </section>
+
+    <nav class="services-nav">
+        <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">All Services</button>
+            <button class="filter-btn" data-filter="residential">Residential</button>
+            <button class="filter-btn" data-filter="commercial">Commercial</button>
+            <button class="filter-btn" data-filter="specialized">Specialized</button>
+        </div>
+    </nav>
+
+    <section class="services-section">
+        <div class="services-grid" id="servicesGrid">
+            
+            <!-- 1. Regular Cleaning -->
+            <article class="service-card tectonic-border" data-category="residential">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&q=80&w=800" alt="Regular Cleaning">
+                    <span class="card-tag">Popular</span>
+                </div>
+                <div class="card-body">
+                    <h3>Regular Cleaning</h3>
+                    <p>Maintain a consistently clean space. Our standard service keeps your home immaculate with regular maintenance.</p>
+                    <div class="card-meta">
+                        <div>
+                            <span class="price-label">Starts from</span>
+                            <span class="price-value">Custom/visit</span>
+                        </div>
+                        <span class="price-label">Flexible</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn-sm btn-outline">Learn More</a>
+                        <a href="#" class="btn-sm btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 2. Deep Cleaning -->
+            <article class="service-card tectonic-border" data-category="residential">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800" alt="Deep Cleaning">
+                </div>
+                <div class="card-body">
+                    <h3>Professional Deep Cleaning</h3>
+                    <p>Thorough cleaning for a fresh start. Covers every corner and detail of your space for ultimate hygiene.</p>
+                    <div class="card-meta">
+                        <div>
+                            <span class="price-label">Starts from</span>
+                            <span class="price-value">Custom/session</span>
+                        </div>
+                        <span class="price-label">Flexible</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn-sm btn-outline">Learn More</a>
+                        <a href="#" class="btn-sm btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 3. After Party -->
+            <article class="service-card tectonic-border" data-category="specialized">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800" alt="After Party">
+                </div>
+                <div class="card-body">
+                    <h3>After Party Cleaning</h3>
+                    <p>Swift and thorough cleaning service to restore your space after parties and special events.</p>
+                    <div class="card-meta">
+                        <div>
+                            <span class="price-label">Starts from</span>
+                            <span class="price-value">Custom/event</span>
+                        </div>
+                        <span class="price-label">Flexible</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn-sm btn-outline">Learn More</a>
+                        <a href="#" class="btn-sm btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 4. Moving In/Out -->
+            <article class="service-card tectonic-border" data-category="specialized">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800" alt="Moving">
+                </div>
+                <div class="card-body">
+                    <h3>Moving In/Out Cleaning</h3>
+                    <p>Detailed cleaning to prepare for move-in or ensure your deposit return when moving out.</p>
+                    <div class="card-meta">
+                        <div>
+                            <span class="price-label">Starts from</span>
+                            <span class="price-value">Custom/service</span>
+                        </div>
+                        <span class="price-label">Flexible</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn-sm btn-outline">Learn More</a>
+                        <a href="#" class="btn-sm btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 5. Airbnb Cleaning -->
+            <article class="service-card tectonic-border" data-category="commercial">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=800" alt="Airbnb">
+                    <span class="card-tag">Popular</span>
+                </div>
+                <div class="card-body">
+                    <h3>Airbnb Cleaning</h3>
+                    <p>Professional turnover service for short-term rental properties. Guest-ready perfection every time.</p>
+                    <div class="card-meta">
+                        <div>
+                            <span class="price-label">Starts from</span>
+                            <span class="price-value">Custom/turnover</span>
+                        </div>
+                        <span class="price-label">Flexible</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn-sm btn-outline">Learn More</a>
+                        <a href="#" class="btn-sm btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 6. Organize Closets -->
+            <article class="service-card tectonic-border" data-category="residential">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&q=80&w=800" alt="Organizing">
+                </div>
+                <div class="card-body">
+                    <h3>Organize Closets & Cabinets</h3>
+                    <p>Transform your cluttered spaces into organized, functional and aesthetic storage areas.</p>
+                    <div class="card-meta">
+                        <div>
+                            <span class="price-label">Starts from</span>
+                            <span class="price-value">Custom/hour</span>
+                        </div>
+                        <span class="price-label">Flexible</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn-sm btn-outline">Learn More</a>
+                        <a href="#" class="btn-sm btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 7. Laundry & Ironing -->
+            <article class="service-card tectonic-border" data-category="residential">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1545173168-9f1947eebb7f?auto=format&fit=crop&q=80&w=800" alt="Laundry">
+                </div>
+                <div class="card-body">
+                    <h3>Laundry & Ironing Services</h3>
+                    <p>Comprehensive garment care including washing, drying, folding, and professional ironing.</p>
+                    <div class="card-meta">
+                        <div>
+                            <span class="price-label">Starts from</span>
+                            <span class="price-value">Custom/load</span>
+                        </div>
+                        <span class="price-label">Flexible</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn-sm btn-outline">Learn More</a>
+                        <a href="#" class="btn-sm btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 8. Handyman Services -->
+            <article class="service-card tectonic-border" data-category="specialized">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1621905252507-b354bcadcabc?auto=format&fit=crop&q=80&w=800" alt="Handyman">
+                </div>
+                <div class="card-body">
+                    <h3>Handyman Services</h3>
+                    <p>Skilled handyman services for various home maintenance, repair, and installation needs.</p>
+                    <div class="card-meta">
+                        <div>
+                            <span class="price-label">Starts from</span>
+                            <span class="price-value">Custom/hour</span>
+                        </div>
+                        <span class="price-label">Flexible</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn-sm btn-outline">Learn More</a>
+                        <a href="#" class="btn-sm btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="final-cta-container">
+            <h2>Ready to Experience the Difference?</h2>
+            <p>Book your service today and join thousands of satisfied customers who trust us with their cleaning needs.</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn-large btn-teal">Schedule Your Cleaning</a>
+                <a href="#" class="btn-large btn-dark">Get a Quote</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div style="margin-bottom: 20px;">
+            <span style="color: white; font-weight: 700;">TOP CLEANING</span> &copy; 2024. ALL RIGHTS RESERVED.
+        </div>
+        <div>LICENSED &bull; INSURED &bull; PROFESSIONAL</div>
+    </footer>
+
+    <script>
+        // Tab Filtering Logic
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.service-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active state
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+
+                cards.forEach(card => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(10px)';
+                    
+                    setTimeout(() => {
+                        if (filter === 'all' || card.dataset.category === filter) {
+                            card.classList.remove('hidden');
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 50);
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }, 300);
+                });
+            });
+        });
+
+        // Simple Intersection Observer for scroll entrance
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
+
+
