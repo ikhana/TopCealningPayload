@@ -36,6 +36,27 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         />
       </head>
       <body className="flex flex-col antialiased font-body">
+        {/* ── Global grain overlay (backgrond.html technique) ──────────
+            Fixed SVG fractal-noise filter, multiply blend, pointer-events:none.
+            Applies the cellulose-fiber tactile texture across all sections. */}
+        <div
+          aria-hidden
+          style={{
+            position: 'fixed', top: 0, left: 0,
+            width: '100%', height: '100%',
+            pointerEvents: 'none', zIndex: 9999,
+            opacity: 0.32,
+            mixBlendMode: 'multiply',
+          }}
+        >
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <filter id="tc-global-grain">
+              <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+              <feColorMatrix type="saturate" values="0" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#tc-global-grain)" />
+          </svg>
+        </div>
         <Providers>
           <HashScrollHandler />
           <AdminBar />

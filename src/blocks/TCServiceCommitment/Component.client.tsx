@@ -72,7 +72,8 @@ export function TCServiceCommitmentClient(_props: Props) {
           SECTION 1 — CUSTOMIZED MAINTENANCE PROGRAMS
           Diagonal Z-flow: header top-left → ticker full-width → closing bottom-right
       ══════════════════════════════════════════════════════════════ */}
-      <section className="tc-commit-s1 bg-[#fdfdfd] pt-[100px] pb-0 px-[5%]" style={{ position: 'relative', zIndex: 2 }}>
+      {/* background1 rhythm: ceramic continuation flowing from TCAboutSection */}
+      <section className="tc-commit-s1 bg-[#f4f7f6] pt-[100px] pb-0 px-[5%]" style={{ position: 'relative', zIndex: 2 }}>
         <div
           className="tc-commit-wrapper max-w-[1400px] mx-auto flex flex-col bg-white"
           style={{

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash UI | Cellulose Fiber-Press Aesthetic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --ink-navy: #0d1b2e;
+            --paper-white: #fdfdfb;
+            --fiber-gray: #f2f2ee;
+            --water-teal: rgba(23, 176, 171, 0.05);
+            --sans: 'Inter', sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--paper-white);
+            font-family: var(--sans);
+            color: var(--ink-navy);
+            overflow-x: hidden;
+        }
+
+        /* ── SVG FIBER NOISE FILTER ── */
+        .fiber-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+            mix-blend-mode: multiply;
+        }
+
+        section {
+            position: relative;
+            min-height: 60vh;
+            padding: 120px 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid rgba(13, 27, 46, 0.05);
+        }
+
+        /* ── HEADING ARCHITECTURE ── */
+        .kicker {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            color: var(--primary-teal);
+            margin-bottom: 20px;
+            display: block;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 30px;
+        }
+
+        h2 span {
+            display: block;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--ink-navy);
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SECTION 1: HERO (Atmospheric Immersion)
+           ═══════════════════════════════════════════════════ */
+        .hero-section {
+            min-height: 100vh;
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(23, 176, 171, 0.12), transparent 40%),
+                radial-gradient(circle at 10% 80%, rgba(23, 176, 171, 0.08), transparent 40%),
+                var(--paper-white);
+        }
+
+        .hero-section h1 {
+            font-size: clamp(3.5rem, 10vw, 8.5rem);
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -0.06em;
+            margin-bottom: 20px;
+        }
+
+        .hero-section h1 mark {
+            background: none;
+            color: var(--primary-teal);
+        }
+
+        .hero-background-graphic {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--water-teal));
+            clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+            z-index: -1;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SECTION 2: ABOUT (The Pressed Paper)
+           ═══════════════════════════════════════════════════ */
+        .about-section {
+            background-color: var(--fiber-gray);
+            border-top: 2px solid var(--ink-navy);
+        }
+
+        .about-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3BaseFilter id='filter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/feTurbulence%3E%3C/baseFilter%3E%3Crect width='100%25' height='100%25' filter='url(%23filter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+        }
+
+        .about-heading {
+            max-width: 800px;
+            border-left: 8px solid var(--primary-teal);
+            padding-left: 40px;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SECTION 3: SERVICES (Crystalline Refraction)
+           ═══════════════════════════════════════════════════ */
+        .services-section {
+            background: white;
+        }
+
+        .services-grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(var(--water-teal) 2px, transparent 2px);
+            background-size: 40px 40px;
+            opacity: 0.5;
+        }
+
+        .services-section h2 {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SECTION 4: WHY US (The Blueprint Scaffold)
+           ═══════════════════════════════════════════════════ */
+        .why-section {
+            background-color: var(--ink-navy);
+            color: white;
+        }
+
+        .why-section h2 span {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+        }
+
+        .why-bg-text {
+            position: absolute;
+            bottom: -50px;
+            right: -20px;
+            font-size: 20vw;
+            font-weight: 900;
+            color: white;
+            opacity: 0.02;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SECTION 5: HOW IT WORKS (Tectonic Assembly)
+           ═══════════════════════════════════════════════════ */
+        .how-section {
+            background: linear-gradient(180deg, var(--paper-white) 0%, #f0f7f7 100%);
+        }
+
+        .how-step-num {
+            font-family: var(--mono);
+            font-size: 10rem;
+            position: absolute;
+            top: 0;
+            left: 5%;
+            opacity: 0.05;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SECTION 6: TESTIMONIALS (The Aura Glow)
+           ═══════════════════════════════════════════════════ */
+        .testi-section {
+            background: white;
+            overflow: hidden;
+        }
+
+        .aura-glow {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(23, 176, 171, 0.07) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SECTION 7: JOIN TEAM (Raw Cellulose)
+           ═══════════════════════════════════════════════════ */
+        .join-section {
+            background-color: #f7f3ee;
+            border-top: 1px solid #e0ddd8;
+        }
+
+        .join-section h2 {
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SECTION 8: FOOTER (Obsidian Press)
+           ═══════════════════════════════════════════════════ */
+        footer {
+            background: #050a12;
+            padding: 100px 8% 40px;
+            color: #94a3b8;
+        }
+
+        .footer-heading {
+            font-family: var(--mono);
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-heading::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* ── ANIMATIONS ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- FIBER NOISE OVERLAY -->
+    <svg class="fiber-overlay" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noise)" />
+    </svg>
+
+    <!-- ── HERO SECTION ── -->
+    <section class="hero-section">
+        <div class="hero-background-graphic"></div>
+        <span class="kicker">Premium Cleaning Solutions</span>
+        <h1 class="reveal active">Pristine<br>Spaces.<br><mark>Pressed Daily.</mark></h1>
+        <div style="font-family: var(--mono); font-size: 0.9rem; margin-top: 40px;">
+            [ EST. 2024 ] · NOW SERVICING FLORIDA COAST
+        </div>
+    </section>
+
+    <!-- ── ABOUT SECTION ── -->
+    <section class="about-section">
+        <div class="about-heading">
+            <span class="kicker">Our Philosophy</span>
+            <h2 class="reveal">Built on the <span>Foundation of Care.</span></h2>
+            <p style="font-size: 1.2rem; max-width: 600px; color: var(--text-muted); line-height: 1.6;">
+                Cleanliness isn't just a service; it's a sensory reset. We treat every surface like a fresh sheet of paper.
+            </p>
+        </div>
+    </section>
+
+    <!-- ── SERVICES SECTION ── -->
+    <section class="services-section">
+        <div class="services-grid-bg"></div>
+        <span class="kicker" style="text-align: center;">Our Expertise</span>
+        <h2 class="reveal">Refractive <span>Cleaning Systems</span></h2>
+        <div style="height: 200px; border: 1px dashed var(--primary-teal); display: flex; align-items: center; justify-content: center; font-family: var(--mono); opacity: 0.3;">
+            [ SERVICE GRID ARCHITECTURE GOES HERE ]
+        </div>
+    </section>
+
+    <!-- ── WHY US SECTION ── -->
+    <section class="why-section">
+        <div class="why-bg-text">ADVANTAGE</div>
+        <span class="kicker">The Edge</span>
+        <h2 class="reveal">Uncompromising <span>Precision.</span></h2>
+        <p style="color: rgba(255,255,255,0.6); max-width: 500px; line-height: 1.8;">
+            Using industrial-grade filtration and eco-cellulose methods to ensure your environment is clinically spotless.
+        </p>
+    </section>
+
+    <!-- ── HOW IT WORKS ── -->
+    <section class="how-section">
+        <span class="how-step-num">01</span>
+        <div style="position: relative; z-index: 2;">
+            <span class="kicker">The Process</span>
+            <h2 class="reveal">Tectonic <span>Step-by-Step</span></h2>
+            <p style="max-width: 450px;">A streamlined assembly line of cleaning professionals dispatched to your door within 60 seconds of booking.</p>
+        </div>
+    </section>
+
+    <!-- ── TESTIMONIALS ── -->
+    <section class="testi-section">
+        <div class="aura-glow"></div>
+        <span class="kicker" style="text-align: center;">Client Voice</span>
+        <h2 class="reveal" style="text-align: center;">Voices of <span>The Satisfied.</span></h2>
+        <div style="display: flex; justify-content: center; gap: 20px; font-family: var(--mono); font-size: 0.8rem; opacity: 0.5;">
+            ★★★★★ · 4.9 GOOGLE RATING · 200+ REVIEWS
+        </div>
+    </section>
+
+    <!-- ── JOIN TEAM ── -->
+    <section class="join-section">
+        <span class="kicker">Careers</span>
+        <h2 class="reveal">Join the <span>Expert Circle.</span></h2>
+        <div style="margin-top: 30px; display: flex; align-items: center; gap: 20px;">
+            <div style="width: 50px; height: 2px; background: var(--ink-navy);"></div>
+            <span style="font-family: var(--mono); font-weight: 700;">WE ARE HIRING</span>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-heading">TOP CLEANING CO.</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 60px;">
+            <div>
+                <h4 style="color: white; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 20px;">NAVIGATION</h4>
+                <div style="line-height: 2;">Home<br>Services<br>Careers<br>Contact</div>
+            </div>
+            <div>
+                <h4 style="color: white; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 20px;">CONTACT</h4>
+                <div style="line-height: 2;">info@topcleaning.com<br>+1 (754) 307-4034<br>Miami, FL</div>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; font-size: 0.7rem; letter-spacing: 1px;">
+            © 2024 TOP CLEANING. ALL RIGHTS RESERVED. [ CELLULOSE FIBER-PRESS UI ]
+        </div>
+    </footer>
+
+    <script>
+        // Simple Scroll Reveal Observer
+        const observerOptions = {
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Subtle Mouse parallax for backgrounds
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.aura-glow').forEach(glow => {
+                glow.style.transform = `translate(${(x - 0.5) * 50}px, ${(y - 0.5) * 50}px) translate(-50%, -50%)`;
+            });
+        });
+    </script>
+</body>
+</html>
+
+

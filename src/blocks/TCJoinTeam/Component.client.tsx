@@ -127,15 +127,15 @@ export function TCJoinTeamClient(_props: Props) {
         }
       `}</style>
 
+      {/* background1 rhythm: diagonal split — ceramic #f4f7f6 (left 50%) / teal #17b0ab (right 50%) */}
       <section
         id="careers"
         className="tc-join-section"
         style={{
-          background: '#f8f4ee',
+          background: 'linear-gradient(135deg, #f4f7f6 50%, #17b0ab 50%)',
           padding: '120px 5%',
           position: 'relative',
           overflow: 'hidden',
-          borderTop: '1px solid rgba(13,27,46,0.1)',
         }}
       >
         {/* Ghost watermark */}

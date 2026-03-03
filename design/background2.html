@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash UI - Sterile Monolith Design System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --deep-navy: #09121d;
+            --sterile-white: #ffffff;
+            --fluid-grey: #f4f7f7;
+            --glass-teal: rgba(23, 176, 171, 0.1);
+            --border-color: rgba(9, 18, 29, 0.08);
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--sterile-white);
+            font-family: var(--sans-font);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── SHARED HEADING STYLES ─── */
+        .kicker {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            color: var(--primary-teal);
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: clamp(3rem, 8vw, 6.5rem);
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            color: var(--deep-navy);
+            text-transform: uppercase;
+        }
+
+        /* ─── 01 HERO: THE STERILE GRADIENT ─── */
+        .section-hero {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0fafa 0%, #ffffff 100%);
+        }
+
+        /* Moving Mesh Background */
+        .hero-bg-mesh {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(23, 176, 171, 0.15), transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(23, 176, 171, 0.1), transparent 40%);
+            filter: blur(80px);
+            animation: pulseBg 15s infinite alternate ease-in-out;
+        }
+
+        .hero-grain {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.4;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .hero-heading {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-heading span {
+            display: block;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--deep-navy);
+        }
+
+        /* ─── 02 ABOUT: LIGHT SLICE ─── */
+        .section-about {
+            position: relative;
+            padding: 180px 5%;
+            background-color: var(--sterile-white);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .about-bg-slice {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40%;
+            height: 100%;
+            background: var(--fluid-grey);
+            clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+            z-index: 0;
+        }
+
+        .about-heading {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        /* ─── 03 SERVICES: PRISMATIC GRID ─── */
+        .section-services {
+            position: relative;
+            padding: 160px 5%;
+            background-color: var(--deep-navy);
+            color: var(--sterile-white);
+        }
+
+        .services-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(23, 176, 171, 0.15) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+        }
+
+        .services-heading .section-title {
+            color: var(--sterile-white);
+        }
+
+        .services-heading .accent {
+            color: var(--primary-teal);
+        }
+
+        /* ─── 04 MAINTENANCE: FLUID FLOW ─── */
+        .section-maintenance {
+            position: relative;
+            padding: 140px 5%;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .maintenance-fluid-bg {
+            position: absolute;
+            bottom: -10%;
+            left: -5%;
+            width: 110%;
+            height: 60%;
+            background: var(--glass-teal);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation: waveFlow 20s infinite alternate ease-in-out;
+            z-index: 0;
+        }
+
+        /* ─── 05 GUARANTEE: THE METALLIC VAULT ─── */
+        .section-guarantee {
+            position: relative;
+            padding: 120px 5%;
+            background: linear-gradient(180deg, #0d1b2e 0%, #050a12 100%);
+            text-align: center;
+        }
+
+        .guarantee-sheen {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.05) 50%, transparent 55%);
+            background-size: 200% 200%;
+            animation: sheenMove 8s infinite linear;
+        }
+
+        .guarantee-heading h2 {
+            color: var(--sterile-white);
+            font-size: clamp(2.5rem, 6vw, 5rem);
+        }
+
+        /* ─── 06 PROCESS: ARCHITECTURAL BLUEPRINT ─── */
+        .section-process {
+            position: relative;
+            padding: 160px 5%;
+            background-color: #fdfdfd;
+        }
+
+        .process-blueprint-lines {
+            position: absolute;
+            inset: 0;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            margin: 0 5%;
+            pointer-events: none;
+        }
+
+        .process-bg-num {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            font-family: var(--sans-font);
+            font-weight: 900;
+            font-size: 20vw;
+            color: var(--deep-navy);
+            opacity: 0.03;
+            line-height: 1;
+        }
+
+        /* ─── 07 TESTIMONIALS: REVERB LAYERS ─── */
+        .section-testimonials {
+            position: relative;
+            padding: 140px 5%;
+            background: var(--sterile-white);
+        }
+
+        .testi-echo-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw;
+            height: 60vw;
+            border: 1px solid var(--glass-teal);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .testi-echo-circle::after {
+            content: '';
+            position: absolute;
+            inset: 15%;
+            border: 1px solid var(--glass-teal);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        /* ─── 08 CAREERS: THE HALP-TONE ─── */
+        .section-careers {
+            position: relative;
+            padding: 140px 5%;
+            background: var(--primary-teal);
+        }
+
+        .careers-dots {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(0,0,0,0.1) 2px, transparent 2px);
+            background-size: 20px 20px;
+        }
+
+        .careers-heading .section-title {
+            color: var(--deep-navy);
+        }
+
+        /* ─── 09 FOOTER: THE DEEP FINISH ─── */
+        .section-footer {
+            position: relative;
+            padding: 100px 5% 40px;
+            background: var(--deep-navy);
+            overflow: hidden;
+        }
+
+        .footer-reflection {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(0deg, rgba(23, 176, 171, 0.08) 0%, transparent 100%);
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes pulseBg {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.1) translate(2%, 2%); }
+        }
+
+        @keyframes waveFlow {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: rotate(0deg); }
+            100% { border-radius: 60% 40% 30% 70% / 50% 60% 40% 60%; transform: rotate(5deg); }
+        }
+
+        @keyframes sheenMove {
+            0% { background-position: -200% -200%; }
+            100% { background-position: 200% 200%; }
+        }
+
+        @media (max-width: 768px) {
+            .section-title { font-size: 3.5rem; }
+            .kicker { letter-spacing: 0.2em; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 01 HERO SECTION -->
+    <section class="section-hero">
+        <div class="hero-bg-mesh"></div>
+        <div class="hero-grain"></div>
+        <div class="hero-heading">
+            <span class="kicker">Evolution of Clean</span>
+            <h1 class="section-title">
+                Pristine<br>
+                <span>By Design.</span>
+            </h1>
+        </div>
+    </section>
+
+    <!-- 02 ABOUT SECTION -->
+    <section class="section-about">
+        <div class="about-bg-slice"></div>
+        <div class="about-heading">
+            <span class="kicker">Foundations</span>
+            <h2 class="section-title">The Standard of Pure.</h2>
+        </div>
+    </section>
+
+    <!-- 03 SERVICES SECTION -->
+    <section class="section-services">
+        <div class="services-grid-overlay"></div>
+        <div class="services-heading">
+            <span class="kicker">Our Solutions</span>
+            <h2 class="section-title">01 / <span class="accent">Systemic</span><br>Execution.</h2>
+        </div>
+    </section>
+
+    <!-- 04 MAINTENANCE SECTION -->
+    <section class="section-maintenance">
+        <div class="maintenance-fluid-bg"></div>
+        <div class="maintenance-heading">
+            <span class="kicker">Sustainability</span>
+            <h2 class="section-title">Continuous<br>Preservation.</h2>
+        </div>
+    </section>
+
+    <!-- 05 GUARANTEE SECTION -->
+    <section class="section-guarantee">
+        <div class="guarantee-sheen"></div>
+        <div class="guarantee-heading">
+            <span class="kicker">The Promise</span>
+            <h2 class="section-title">Uncompromising<br>Clarity.</h2>
+        </div>
+    </section>
+
+    <!-- 06 PROCESS SECTION -->
+    <section class="section-process">
+        <div class="process-blueprint-lines"></div>
+        <div class="process-bg-num">03</div>
+        <div class="process-heading">
+            <span class="kicker">Protocol</span>
+            <h2 class="section-title">Workflow<br>Architecture.</h2>
+        </div>
+    </section>
+
+    <!-- 07 TESTIMONIALS SECTION -->
+    <section class="section-testimonials">
+        <div class="testi-echo-circle"></div>
+        <div class="testi-heading">
+            <span class="kicker">Social Proof</span>
+            <h2 class="section-title">Reflected<br>Trust.</h2>
+        </div>
+    </section>
+
+    <!-- 08 CAREERS SECTION -->
+    <section class="section-careers">
+        <div class="careers-dots"></div>
+        <div class="careers-heading">
+            <span class="kicker">Opportunities</span>
+            <h2 class="section-title">The Expert<br>Cohort.</h2>
+        </div>
+    </section>
+
+    <!-- 09 FOOTER SECTION -->
+    <footer class="section-footer">
+        <div class="footer-reflection"></div>
+        <div class="footer-heading">
+            <span class="kicker">Contact</span>
+            <h2 class="section-title" style="color: white; font-size: 2rem;">Top Cleaning<br><span style="color: var(--primary-teal);">Est. 2026</span></h2>
+        </div>
+    </footer>
+
+    <script>
+        // High-performance Parallax for background elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            
+            // Hero mesh movement
+            const heroMesh = document.querySelector('.hero-bg-mesh');
+            if (heroMesh) heroMesh.style.transform = `translateY(${scrolled * 0.3}px)`;
+
+            // About slice movement
+            const aboutSlice = document.querySelector('.about-bg-slice');
+            if (aboutSlice) aboutSlice.style.transform = `translateX(${scrolled * 0.05}px)`;
+
+            // Process number movement
+            const processNum = document.querySelector('.process-bg-num');
+            if (processNum) processNum.style.transform = `translateY(${(scrolled - 4000) * -0.1}px)`;
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /c/Users/HP/BBWEBSITES/TopCleaningPayload/src/app/\\\\\\(app\\\\\\)/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(ls -la \"C:\\\\Users\\\\HP\\\\BBWEBSITES\\\\TopCleaningPayload/src/app/\\(app\\)/\")",
+      "Bash(ls -la \"C:\\\\Users\\\\HP\\\\BBWEBSITES\\\\TopCleaningPayload/src/app/\\(app\\)/[slug]\")",
+      "mcp__Claude_Preview__preview_start",
+      "WebFetch(domain:topcleaningg.vercel.app)",
+      "Bash(ls /c/Users/HP/BBWEBSITES/TopCleaningPayload/src/blocks/TC*/)",
+      "Bash(grep -r \"tcAboutSection\\\\|tcServiceCommitment\\\\|tcServicesSection\\\\|blocks\" /c/Users/HP/BBWEBSITES/TopCleaningPayload/src/app/\\\\\\(app\\\\\\)/[slug]/page.tsx)",
+      "Bash(grep -rn \"layout\\\\|blocks\\\\|homepage\\\\|home\" /c/Users/HP/BBWEBSITES/TopCleaningPayload/src/app/\\\\\\(app\\\\\\)/[slug]/page.tsx)",
+      "Bash(xargs grep -l \"tcAboutSection\\\\|tcServiceCommitment\\\\|tcServicesSection\")"
+    ]
+  }
+}

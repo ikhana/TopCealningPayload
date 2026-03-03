@@ -103,6 +103,10 @@ export function TCServicesSectionHome() {
   return (
     <>
       <style>{`
+        @keyframes tc-svc-streak {
+          0%   { transform: rotate(-35deg) translateY(-200px) translateX(-100%); }
+          100% { transform: rotate(-35deg) translateY(-200px) translateX(200%); }
+        }
         .tc-reveal { opacity:0; transform:translateY(30px); transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1); }
         .tc-reveal-active { opacity:1; transform:translateY(0); }
         .tc-prism-card .tc-refraction { background:linear-gradient(180deg,transparent 20%,rgba(13,27,46,.95) 100%); transition:background .6s cubic-bezier(.22,1,.36,1); }
@@ -121,14 +125,37 @@ export function TCServicesSectionHome() {
         }
       `}</style>
 
+      {/* background1 rhythm: white bg + teal line grid + sweeping light streak */}
       <section
         ref={sectionRef}
         id="services"
         className="tc-svc-section relative overflow-hidden px-[5%] py-[120px]"
-        style={{ background: 'radial-gradient(ellipse at top left,rgba(224,245,244,.6) 0%,white 60%)' }}
+        style={{ background: '#ffffff' }}
       >
-        <div aria-hidden className="absolute pointer-events-none rounded-full"
-          style={{ width:'600px', height:'600px', background:'radial-gradient(circle,rgba(23,176,171,.05) 0%,transparent 70%)', top:'-200px', right:'-100px', filter:'blur(40px)' }} />
+        {/* Teal line grid overlay */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(23,176,171,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(23,176,171,0.05) 1px, transparent 1px)',
+            backgroundSize: '100px 100px',
+          }}
+        />
+        {/* Sweeping light streak animation */}
+        <div
+          aria-hidden
+          className="absolute pointer-events-none z-0 tc-svc-streak"
+          style={{
+            width: '150%',
+            height: '80px',
+            background: 'linear-gradient(90deg, transparent, rgba(23,176,171,0.08), transparent)',
+            transform: 'rotate(-35deg) translateY(-200px)',
+            top: '0',
+            left: '-25%',
+            animation: 'tc-svc-streak 10s infinite linear',
+          }}
+        />
 
         <div className="relative z-[2] max-w-[1400px] mx-auto">
 

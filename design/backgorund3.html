@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash UI - Prismatic Cleaning Aesthetics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --deep-navy: #0d1b2e;
+            --soft-aqua: #e0f5f4;
+            --crystal-white: #ffffff;
+            --vapor-gray: #f8fafc;
+            --accent-coral: #fc8181;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--vapor-gray);
+            font-family: var(--sans-font);
+            color: var(--deep-navy);
+            overflow-x: hidden;
+        }
+
+        section {
+            position: relative;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 100px 8%;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* ── SECTION HEADINGS ── */
+        .kicker {
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: var(--primary-teal);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .main-heading {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -3px;
+            margin-bottom: 30px;
+        }
+
+        .main-heading span {
+            display: block;
+            font-weight: 300;
+            font-style: italic;
+            letter-spacing: -1px;
+            opacity: 0.8;
+        }
+
+        /* ── 1. HERO: PRISMATIC VAPOR ── */
+        .section-hero {
+            background: white;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* Animated Vapor Orbs */
+        .vapor-orb {
+            position: absolute;
+            filter: blur(80px);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: floatVapor 20s infinite alternate ease-in-out;
+        }
+
+        .orb-1 { width: 40vw; height: 40vw; background: var(--soft-aqua); top: -10%; right: -5%; }
+        .orb-2 { width: 30vw; height: 30vw; background: #fff5e6; bottom: 10%; left: -5%; animation-delay: -5s; }
+        .orb-3 { width: 25vw; height: 25vw; background: #f0e6ff; top: 20%; left: 30%; animation-delay: -10s; }
+
+        .hero-content { position: relative; z-index: 10; max-width: 900px; }
+        
+        .hero-heading {
+            color: var(--deep-navy);
+            text-shadow: 0 10px 30px rgba(23, 176, 171, 0.1);
+        }
+
+        @keyframes floatVapor {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 100px) scale(1.1); }
+        }
+
+        /* ── 2. SERVICES: CRYSTALLINE FLOW ── */
+        .section-services {
+            background: var(--deep-navy);
+            color: white;
+        }
+
+        .services-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(23, 176, 171, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(252, 129, 129, 0.1) 0%, transparent 50%);
+        }
+
+        .services-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 100px 100px;
+            z-index: 2;
+        }
+
+        .services-heading {
+            position: relative;
+            z-index: 10;
+            border-left: 5px solid var(--primary-teal);
+            padding-left: 40px;
+        }
+
+        .services-heading .kicker { color: white; opacity: 0.6; }
+
+        /* ── 3. ABOUT: PRISTINE MINIMALISM ── */
+        .section-about {
+            background: #ffffff;
+        }
+
+        .about-bg {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 40%;
+            height: 100%;
+            background: var(--soft-aqua);
+            clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+            z-index: 1;
+        }
+
+        .about-heading {
+            position: relative;
+            z-index: 10;
+        }
+
+        .about-heading h2 {
+            font-size: 4rem;
+            color: var(--deep-navy);
+            max-width: 600px;
+        }
+
+        .about-heading .kicker { color: var(--accent-coral); }
+
+        /* ── 4. PROCESS: TECTONIC SHIFT ── */
+        .section-process {
+            background: #f1f5f9;
+        }
+
+        .process-bg-text {
+            position: absolute;
+            font-family: var(--sans-font);
+            font-weight: 900;
+            font-size: 25vw;
+            color: white;
+            line-height: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .process-heading {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .process-heading h2 {
+            display: inline-block;
+            background: linear-gradient(to bottom, var(--deep-navy) 50%, var(--primary-teal) 50%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 100% 200%;
+            background-position: top;
+            transition: background-position 0.5s;
+        }
+
+        .process-heading:hover h2 { background-position: bottom; }
+
+        /* ── 5. JOIN US: REFRACTIVE MINT ── */
+        .section-join {
+            background: var(--primary-teal);
+            color: white;
+            overflow: hidden;
+        }
+
+        .join-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.2;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(255,255,255,0.1) 20px,
+                rgba(255,255,255,0.1) 40px
+            );
+            z-index: 1;
+        }
+
+        .join-heading {
+            position: relative;
+            z-index: 10;
+        }
+
+        .join-heading h2 {
+            font-family: var(--mono-font);
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            font-size: 3.5rem;
+        }
+
+        .join-heading .kicker { color: var(--deep-navy); font-weight: 700; }
+
+        /* ── 6. FOOTER: OBSIDIAN DEPTH ── */
+        .section-footer {
+            background: #050a12;
+            color: #94a3b8;
+            min-height: 40vh;
+        }
+
+        .footer-glow {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 200px;
+            background: radial-gradient(ellipse at center, rgba(23, 176, 171, 0.15) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .footer-heading {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .footer-heading h2 {
+            font-size: 1.2rem;
+            font-family: var(--mono-font);
+            letter-spacing: 10px;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .footer-divider {
+            width: 60px;
+            height: 2px;
+            background: var(--primary-teal);
+            margin: 30px auto;
+        }
+
+        /* ── DECORATIVE ELEMENTS ── */
+        .glass-tag {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: white;
+            border-radius: 100px;
+            width: fit-content;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- SECTION 1: HERO -->
+    <section class="section-hero">
+        <div class="hero-bg">
+            <div class="vapor-orb orb-1"></div>
+            <div class="vapor-orb orb-2"></div>
+            <div class="vapor-orb orb-3"></div>
+        </div>
+        <div class="hero-content">
+            <span class="kicker">Premium Care</span>
+            <h1 class="main-heading hero-heading">
+                The Art of <span>Pristine Spaces.</span>
+            </h1>
+            <div class="glass-tag" style="color: var(--primary-teal); border-color: var(--primary-teal);">CLEANING REDEFINED</div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: SERVICES -->
+    <section class="section-services">
+        <div class="services-bg"></div>
+        <div class="services-grid-overlay"></div>
+        <div class="services-heading">
+            <span class="kicker">Core Expertise</span>
+            <h2 class="main-heading">Tailored Service <span>Architectures.</span></h2>
+            <p style="font-family: var(--mono-font); opacity: 0.6; font-size: 0.9rem;">01 / RESIDENTIAL — 02 / COMMERCIAL — 03 / DEEP CLEAN</p>
+        </div>
+    </section>
+
+    <!-- SECTION 3: ABOUT -->
+    <section class="section-about">
+        <div class="about-bg"></div>
+        <div class="about-heading">
+            <span class="kicker">Our Philosophy</span>
+            <h2 class="main-heading">Beyond Surface <span>Level Clarity.</span></h2>
+            <div style="width: 100px; height: 1px; background: var(--deep-navy); margin: 40px 0;"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: PROCESS -->
+    <section class="section-process">
+        <div class="process-bg-text">PROCESS</div>
+        <div class="process-heading">
+            <span class="kicker">The Workflow</span>
+            <h2 class="main-heading">Effortless From <span>First Contact.</span></h2>
+        </div>
+    </section>
+
+    <!-- SECTION 5: JOIN US -->
+    <section class="section-join">
+        <div class="join-bg"></div>
+        <div class="join-heading">
+            <span class="kicker">Careers</span>
+            <h2 class="main-heading">Build Your Future <span>With The Best.</span></h2>
+            <div class="glass-tag">WE ARE HIRING</div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: FOOTER -->
+    <section class="section-footer">
+        <div class="footer-glow"></div>
+        <div class="footer-heading">
+            <h2 class="main-heading">Top Cleaning</h2>
+            <div class="footer-divider"></div>
+            <p style="font-family: var(--mono-font); font-size: 0.7rem;">ESTABLISHED 2026 — FLORIDA, USA</p>
+        </div>
+    </section>
+
+</body>
+</html>

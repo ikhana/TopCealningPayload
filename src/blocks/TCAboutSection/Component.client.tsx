@@ -96,19 +96,18 @@ export function TCAboutSectionClient(_props: Props) {
         }
       `}</style>
 
-      <section className="tc-about-section relative bg-[#fdfdfd] py-[120px] px-[5%] overflow-hidden">
+      {/* background1 rhythm: ceramic #f4f7f6 bg + white clip-path polygon slab on right */}
+      <section className="tc-about-section relative bg-[#f4f7f6] py-[120px] px-[5%] overflow-hidden">
 
-        {/* ── Ambient teal glow (top-right decorative blob) ─────────── */}
+        {/* ── White clip-path polygon slab (right 40%) ──────────────── */}
         <div
           aria-hidden
-          className="absolute pointer-events-none z-0"
+          className="absolute top-0 right-0 h-full pointer-events-none z-0"
           style={{
-            width: '50vw',
-            height: '50vw',
-            background: 'radial-gradient(circle, color-mix(in oklch, var(--color-teal) 6%, transparent) 0%, transparent 70%)',
-            top: '-15vw',
-            right: '-15vw',
-            filter: 'blur(80px)',
+            width: '42%',
+            background: '#ffffff',
+            clipPath: 'polygon(18% 0, 100% 0, 100% 100%, 0% 100%)',
+            boxShadow: '-30px 0 60px rgba(0,0,0,0.03)',
           }}
         />
 

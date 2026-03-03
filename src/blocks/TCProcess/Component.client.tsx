@@ -166,8 +166,30 @@ export function TCProcessClient(_props: Props) {
         }
       `}</style>
 
-      <section className="tc-process-section" style={{ background: '#f5efe0', padding: '100px 5%' }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      {/* background1 rhythm: muted grey-green #eef2f1 + ghost "PROCESS" watermark rotated 90° */}
+      <section className="tc-process-section" style={{ background: '#eef2f1', padding: '100px 5%', position: 'relative' }}>
+        {/* Ghost PROCESS watermark — rotated 90° on right edge */}
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            right: '-8%',
+            top: '50%',
+            transform: 'translateY(-50%) rotate(90deg)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '15vw',
+            fontWeight: 900,
+            color: 'rgba(23,176,171,0.04)',
+            pointerEvents: 'none',
+            userSelect: 'none',
+            whiteSpace: 'nowrap',
+            lineHeight: 1,
+            zIndex: 0,
+          }}
+        >
+          PROCESS
+        </div>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
           {/* ── Intro ───────────────────────────────────────────── */}
           <div className="tc-process-intro" style={{ marginBottom: '80px' }}>

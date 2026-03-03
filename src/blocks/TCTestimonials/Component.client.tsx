@@ -1,6 +1,7 @@
 // src/blocks/TCTestimonials/Component.client.tsx
 // "Voices of The Pristine" — sticky sidebar + 2×2 testimonial card grid.
-// Design reference: design/hero5.html (.testi-section).
+// background1 rhythm: deepest dark #050a12 + centred teal glow blob.
+// All card/text colours flipped to light for dark bg.
 //
 // Justified <style> + inline exceptions:
 //   • ::before pseudo-element for ghost quote mark — not possible in Tailwind
@@ -63,7 +64,7 @@ export function TCTestimonialsClient(_props: Props) {
         /* Staggered even-card vertical offset */
         .tc-testi-card:nth-child(even) { margin-top: 40px; }
 
-        /* Ghost opening quote mark */
+        /* Ghost opening quote mark — teal at higher opacity on dark bg */
         .tc-testi-quote { position: relative; }
         .tc-testi-quote::before {
           content: '"';
@@ -72,20 +73,20 @@ export function TCTestimonialsClient(_props: Props) {
           left: -10px;
           font-size: 4rem;
           color: #17b0ab;
-          opacity: 0.15;
+          opacity: 0.25;
           font-family: serif;
           line-height: 1;
           pointer-events: none;
         }
 
-        /* Card hover */
+        /* Card hover on dark bg */
         .tc-testi-card {
           transition: all 0.6s cubic-bezier(0.22,1,0.36,1);
         }
         .tc-testi-card:hover {
-          background: #cdf0ee !important;
+          background: rgba(23,176,171,0.18) !important;
           border-color: #17b0ab !important;
-          box-shadow: 0 12px 40px rgba(23,176,171,0.2) !important;
+          box-shadow: 0 12px 40px rgba(0,0,0,0.4) !important;
           transform: translateY(-6px);
         }
 
@@ -97,7 +98,6 @@ export function TCTestimonialsClient(_props: Props) {
         }
         @media (max-width: 768px) {
           .tc-testi-section { padding: 60px 5% !important; }
-          /* Horizontal scroll snap — one card per view */
           .tc-testi-grid {
             display: flex !important;
             flex-direction: row !important;
@@ -114,19 +114,37 @@ export function TCTestimonialsClient(_props: Props) {
             margin-top: 0 !important;
           }
         }
-        /* Hide webkit scrollbar on card strip */
         .tc-testi-grid::-webkit-scrollbar { display: none; }
       `}</style>
 
+      {/* background1 rhythm: deepest dark #050a12 */}
       <section
         className="tc-testi-section"
         style={{
-          background: '#ffffff',
+          background: '#050a12',
           padding: '140px 5%',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
+        {/* Centred teal glow blob */}
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            width: '500px',
+            height: '500px',
+            background: '#17b0ab',
+            filter: 'blur(150px)',
+            opacity: 0.08,
+            borderRadius: '50%',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            pointerEvents: 'none',
+          }}
+        />
+
         <div
           className="tc-testi-container"
           style={{
@@ -136,6 +154,8 @@ export function TCTestimonialsClient(_props: Props) {
             gridTemplateColumns: '1fr 1.8fr',
             gap: '80px',
             alignItems: 'center',
+            position: 'relative',
+            zIndex: 1,
           }}
         >
 
@@ -147,14 +167,14 @@ export function TCTestimonialsClient(_props: Props) {
                 fontWeight: 900,
                 lineHeight: 1,
                 letterSpacing: '-3px',
-                color: '#0d1b2e',
+                color: '#ffffff',
                 marginBottom: '30px',
               }}
             >
               Voices of{' '}
               <span style={{ display: 'block', color: '#17b0ab' }}>The Pristine.</span>
             </h2>
-            <p style={{ color: 'rgba(26,40,64,0.6)', lineHeight: 1.8, maxWidth: '400px', margin: 0 }}>
+            <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, maxWidth: '400px', margin: 0 }}>
               Our reputation is built on the visible results we leave behind. Hear from the clients
               who transformed their environments with Top Cleaning.
             </p>
@@ -174,12 +194,12 @@ export function TCTestimonialsClient(_props: Props) {
                 key={t.name}
                 className="tc-testi-card"
                 style={{
-                  background: '#e0f5f4',
-                  border: '1px solid rgba(23,176,171,0.3)',
+                  background: '#0d1b2e',
+                  border: '1px solid rgba(23,176,171,0.2)',
                   borderRadius: '4px',
                   padding: '40px',
                   position: 'relative',
-                  boxShadow: '0 4px 20px rgba(23,176,171,0.1)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
                 }}
               >
                 {/* Quote */}
@@ -189,7 +209,7 @@ export function TCTestimonialsClient(_props: Props) {
                     fontFamily: 'var(--font-mono)',
                     fontSize: '1rem',
                     lineHeight: 1.65,
-                    color: '#1a2840',
+                    color: 'rgba(255,255,255,0.85)',
                     marginBottom: '30px',
                   }}
                 >
@@ -224,7 +244,7 @@ export function TCTestimonialsClient(_props: Props) {
                       style={{
                         fontSize: '0.9rem',
                         fontWeight: 700,
-                        color: '#0d1b2e',
+                        color: '#ffffff',
                         letterSpacing: '0.5px',
                         margin: 0,
                       }}
