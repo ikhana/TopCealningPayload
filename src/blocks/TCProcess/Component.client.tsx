@@ -9,6 +9,7 @@
 
 'use client'
 
+import { TCHeadingStack } from '@/components/ui/TCHeading'
 import React, { useEffect, useState } from 'react'
 
 type Props = {
@@ -193,31 +194,15 @@ export function TCProcessClient(_props: Props) {
 
           {/* ── Intro ───────────────────────────────────────────── */}
           <div className="tc-process-intro" style={{ marginBottom: '80px' }}>
-            <p
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.8rem',
-                color: '#fc8181',
-                textTransform: 'uppercase',
-                letterSpacing: '4px',
-                marginBottom: '10px',
-                fontWeight: 700,
-              }}
-            >
-              How It Works
-            </p>
-            <h2
-              style={{
-                fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
-                fontWeight: 900,
-                color: '#0d1b2e',
-                letterSpacing: '-2px',
-                marginBottom: '20px',
-                lineHeight: 1.1,
-              }}
-            >
-              Our Process Is Simple
-            </h2>
+            {/* Heading — ghost kicker + tight-stack (TCHeadingStack) */}
+            <TCHeadingStack
+              ghostKicker="How It Works"
+              mainLine="Our Process"
+              secondaryLine="Is Simple"
+              theme="light"
+              size="lg"
+              className="mb-5"
+            />
             <p
               style={{
                 fontSize: '1.2rem',

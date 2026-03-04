@@ -10,6 +10,7 @@
 
 'use client'
 
+import { TCHeadingStack } from '@/components/ui/TCHeading'
 import Link from 'next/link'
 
 type Props = {
@@ -114,22 +115,15 @@ export function TCWhyTopSectionClient(_props: Props) {
 
           {/* ── Sticky sidebar ──────────────────────────────── */}
           <aside className="wt-sidebar" style={{ position: 'sticky', top: '120px', height: 'fit-content' }}>
-            <h2
-              className="wt-heading font-mono font-bold leading-[1] mb-[30px] text-white"
-              style={{ fontSize: '3rem', letterSpacing: '-2px' }}
-            >
-              Our<br />
-              {/* Ghost outline — background1 technique for dark sections */}
-              <span style={{
-                color: 'transparent',
-                WebkitTextStroke: '1px rgba(255,255,255,0.25)',
-                fontStyle: 'italic',
-                fontWeight: 300,
-                letterSpacing: '-1px',
-              }}>
-                Advantages
-              </span>
-            </h2>
+            {/* Heading — ghost kicker + tight-stack (TCHeadingStack) */}
+            <TCHeadingStack
+              ghostKicker="Why Top"
+              mainLine="Our"
+              secondaryLine="Advantages"
+              theme="dark"
+              size="md"
+              className="mb-[30px]"
+            />
             <p
               className="wt-sidebar-text text-[0.9rem] leading-[1.7] mb-[40px]"
               style={{

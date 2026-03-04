@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --off-white: #f8fafc;
+            --text-dark: #1a2840;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--sans-font);
+            background: #f0f2f5;
+        }
+
+        .gallery-container {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 100px;
+        }
+
+        .preview-box {
+            padding: 60px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .preview-box.light {
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .preview-box.dark {
+            background: var(--deep-navy);
+            color: white;
+        }
+
+        .variation-label {
+            font-family: var(--mono-font);
+            font-size: 11px;
+            color: var(--primary-teal);
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.6;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VARIATION 1: THE KINETIC BLOCK
+           (Uses a solid mono-tag "sintered" to the main text)
+           ═══════════════════════════════════════════════════ */
+        
+        .h-kinetic {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .h-kinetic .kicker {
+            background: var(--primary-teal);
+            color: white;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            transform: skewX(-10deg);
+        }
+
+        .h-kinetic h2 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1;
+            margin: 0;
+            letter-spacing: -1.5px;
+            color: inherit;
+            text-transform: uppercase;
+        }
+
+        .dark .h-kinetic h2 { color: #ffffff; }
+        .light .h-kinetic h2 { color: var(--deep-navy); }
+
+        /* ═══════════════════════════════════════════════════ 
+           VARIATION 2: THE MONOLITH OFFSET
+           (Uses tight vertical spacing and a distinct mono weight shift)
+           ═══════════════════════════════════════════════════ */
+
+        .h-monolith {
+            position: relative;
+        }
+
+        .h-monolith .kicker {
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
+            color: var(--primary-teal);
+        }
+
+        .h-monolith h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 0.9;
+            margin: 0;
+            letter-spacing: -2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .h-monolith h2 span {
+            display: block;
+            font-size: 0.5em;
+            letter-spacing: 0px;
+            font-weight: 700;
+            color: var(--coral);
+            margin-top: 5px;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VARIATION 3: THE SINTERED INSET
+           (Small heavy block accent, very compact)
+           ═══════════════════════════════════════════════════ */
+
+        .h-inset {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .h-inset .mark {
+            width: 12px;
+            height: 38px;
+            background: var(--primary-teal);
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .h-inset .content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .h-inset h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .h-inset .kicker {
+            font-family: var(--mono-font);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            margin-bottom: 2px;
+        }
+
+        /* ═══════════════════════════════════════════════════ 
+           VARIATION 4: THE TECTONIC OVERLAP
+           (Uses font-weight contrast instead of lines)
+           ═══════════════════════════════════════════════════ */
+
+        .h-overlap {
+            display: inline-grid;
+        }
+
+        .h-overlap .kicker {
+            grid-area: 1/1;
+            font-family: var(--mono-font);
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+            opacity: 0.1;
+            line-height: 0.8;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
+        .h-overlap h2 {
+            grid-area: 1/1;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin: 1.2rem 0 0 0.5rem;
+            line-height: 1;
+            letter-spacing: -1px;
+            color: inherit;
+        }
+
+        .dark .h-overlap h2 { color: #fff; }
+        .light .h-overlap h2 { color: var(--deep-navy); }
+
+        @media (max-width: 800px) {
+            .preview-grid { grid-template-columns: 1fr; }
+            .preview-box { padding: 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gallery-container">
+        
+        <div class="variation-label">Variation 01 // The Kinetic Tag</div>
+        <div class="preview-grid">
+            <div class="preview-box light">
+                <div class="h-kinetic">
+                    <span class="kicker">PHASE_01</span>
+                    <h2>Residential<br>Excellence</h2>
+                </div>
+            </div>
+            <div class="preview-box dark">
+                <div class="h-kinetic">
+                    <span class="kicker">PHASE_01</span>
+                    <h2>Residential<br>Excellence</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="variation-label">Variation 02 // Monolith Offset</div>
+        <div class="preview-grid">
+            <div class="preview-box light">
+                <div class="h-monolith">
+                    <span class="kicker">Our Focus</span>
+                    <h2>Deep Clean<span>Protocol v.4</span></h2>
+                </div>
+            </div>
+            <div class="preview-box dark">
+                <div class="h-monolith">
+                    <span class="kicker">Our Focus</span>
+                    <h2>Deep Clean<span>Protocol v.4</span></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="variation-label">Variation 03 // Sintered Inset</div>
+        <div class="preview-grid">
+            <div class="preview-box light">
+                <div class="h-inset">
+                    <div class="mark"></div>
+                    <div class="content">
+                        <span class="kicker">Availability</span>
+                        <h2>Now Servicing<br>Fort Myers</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="preview-box dark">
+                <div class="h-inset">
+                    <div class="mark"></div>
+                    <div class="content">
+                        <span class="kicker">Availability</span>
+                        <h2>Now Servicing<br>Fort Myers</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="variation-label">Variation 04 // Tectonic Ghost</div>
+        <div class="preview-grid">
+            <div class="preview-box light">
+                <div class="h-overlap">
+                    <span class="kicker">Expert</span>
+                    <h2>Commercial<br>Solutions</h2>
+                </div>
+            </div>
+            <div class="preview-box dark">
+                <div class="h-overlap">
+                    <span class="kicker">Expert</span>
+                    <h2>Commercial<br>Solutions</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;0,900;1,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --off-white: #f8fafc;
+            --text-dark: #1a2840;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans-font);
+            background: #f0f2f5;
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 40px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .showcase-label {
+            font-family: var(--mono-font);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-teal);
+            margin-bottom: 40px;
+            display: block;
+            text-align: center;
+        }
+
+        /* ─── SECTION STYLES ─── */
+        .section-preview {
+            padding: 100px 60px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 80px;
+            align-items: start;
+        }
+
+        .light-bg {
+            background: var(--off-white);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        }
+
+        .dark-bg {
+            background: var(--deep-navy);
+            color: white;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+        }
+
+        /* ─── VARIATION 1: THE TIGHT STACK ─── */
+        /* Focus: Compressed line height and high-contrast font weights */
+        .h-var-1 {
+            max-width: 400px;
+        }
+        .h-var-1 .kicker {
+            font-family: var(--mono-font);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary-teal);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .h-var-1 h2 {
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+        .h-var-1 h2 span {
+            display: block;
+            font-weight: 300;
+            font-style: italic;
+            text-transform: none;
+            letter-spacing: -0.01em;
+            opacity: 0.8;
+        }
+        .dark-bg .h-var-1 h2 span { color: var(--primary-teal); }
+        .light-bg .h-var-1 h2 { color: var(--deep-navy); }
+
+        /* ─── VARIATION 2: THE MONO-NUMERIC ─── */
+        /* Focus: Using numbers and mono-font to create a "technical grid" feel */
+        .h-var-2 {
+            display: flex;
+            gap: 20px;
+            max-width: 450px;
+        }
+        .h-var-2 .index {
+            font-family: var(--mono-font);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-teal);
+            padding-top: 8px;
+        }
+        .h-var-2 .content h2 {
+            font-size: 34px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 15px;
+        }
+        .h-var-2 .content p {
+            font-size: 15px;
+            opacity: 0.7;
+            line-height: 1.6;
+        }
+        .light-bg .h-var-2 .content h2 { color: var(--deep-navy); }
+
+        /* ─── VARIATION 3: THE COMPRESSED SLAB ─── */
+        /* Focus: Horizontal density, minimal vertical footprint */
+        .h-var-3 {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+        }
+        .h-var-3 h2 {
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        .h-var-3 .meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .h-var-3 .meta .tag {
+            font-family: var(--mono-font);
+            font-size: 10px;
+            padding: 2px 8px;
+            background: var(--primary-teal);
+            color: white;
+            font-weight: 700;
+        }
+        .h-var-3 .meta .sub {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.6;
+        }
+        .dark-bg .h-var-3 .meta .sub { color: white; }
+        .light-bg .h-var-3 .meta .sub { color: var(--deep-navy); }
+
+        /* ─── VARIATION 4: THE ACCENT BLOCK ─── */
+        /* Focus: Color blocking on a single keyword to guide the eye */
+        .h-var-4 {
+            max-width: 400px;
+        }
+        .h-var-4 h2 {
+            font-size: 40px;
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+        }
+        .h-var-4 h2 mark {
+            background: none;
+            color: var(--primary-teal);
+            position: relative;
+        }
+        .h-var-4 h2 mark::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--primary-teal);
+            opacity: 0.15;
+            z-index: -1;
+        }
+        .light-bg .h-var-4 h2 { color: var(--deep-navy); }
+
+        /* ─── DECORATIVE GRAIN (From existing design) ─── */
+        .grain {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+            mix-blend-mode: overlay;
+        }
+
+        /* Responsive Tweak */
+        @media (max-width: 768px) {
+            .section-preview {
+                padding: 60px 30px;
+                gap: 50px;
+            }
+            .h-var-1 h2, .h-var-3 h2, .h-var-4 h2 { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+    <span class="showcase-label">Heading Variations System</span>
+
+    <div class="container">
+        
+        <!-- WHITE SECTION VARIATIONS -->
+        <div class="section-preview light-bg">
+            <div class="grain">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/></filter>
+                    <rect width="100%" height="100%" filter="url(#n)" opacity="0.15"/>
+                </svg>
+            </div>
+
+            <!-- Var 1 Light -->
+            <div class="h-var-1">
+                <span class="kicker">Quality First</span>
+                <h2>Pristine Spaces<span>For modern living</span></h2>
+            </div>
+
+            <!-- Var 2 Light -->
+            <div class="h-var-2">
+                <div class="index">01/</div>
+                <div class="content">
+                    <h2>Our Specialized Cleaning Process</h2>
+                    <p>Meticulous attention to detail in every corner of your residential property.</p>
+                </div>
+            </div>
+
+            <!-- Var 3 Light -->
+            <div class="h-var-3">
+                <h2>Commercial Excellence</h2>
+                <div class="meta">
+                    <span class="tag">PRO</span>
+                    <span class="sub">Vetted Technicians</span>
+                </div>
+            </div>
+
+            <!-- Var 4 Light -->
+            <div class="h-var-4">
+                <h2>The most <mark>reliable</mark> service in Florida.</h2>
+            </div>
+        </div>
+
+        <!-- DARK SECTION VARIATIONS -->
+        <div class="section-preview dark-bg">
+            <div class="grain">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <filter id="n2"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter>
+                    <rect width="100%" height="100%" filter="url(#n2)" opacity="0.1"/>
+                </svg>
+            </div>
+
+            <!-- Var 1 Dark -->
+            <div class="h-var-1">
+                <span class="kicker">Work with us</span>
+                <h2>Join The Team<span>Career opportunities</span></h2>
+            </div>
+
+            <!-- Var 2 Dark -->
+            <div class="h-var-2">
+                <div class="index">02/</div>
+                <div class="content">
+                    <h2>Customized Maintenance</h2>
+                    <p>Tailored programs designed specifically for high-traffic office environments.</p>
+                </div>
+            </div>
+
+            <!-- Var 3 Dark -->
+            <div class="h-var-3">
+                <h2>After Party Cleanup</h2>
+                <div class="meta">
+                    <span class="tag">NEW</span>
+                    <span class="sub">Express Turnaround</span>
+                </div>
+            </div>
+
+            <!-- Var 4 Dark -->
+            <div class="h-var-4">
+                <h2>Book your <mark>transformation</mark> today.</h2>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+

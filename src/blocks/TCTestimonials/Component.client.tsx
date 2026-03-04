@@ -10,6 +10,7 @@
 
 'use client'
 
+import { TCHeadingStack } from '@/components/ui/TCHeading'
 import React from 'react'
 
 type Props = {
@@ -161,19 +162,15 @@ export function TCTestimonialsClient(_props: Props) {
 
           {/* ── Sticky sidebar ─────────────────────────────── */}
           <div className="tc-testi-header" style={{ position: 'sticky', top: '150px' }}>
-            <h2
-              style={{
-                fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                fontWeight: 900,
-                lineHeight: 1,
-                letterSpacing: '-3px',
-                color: '#ffffff',
-                marginBottom: '30px',
-              }}
-            >
-              Voices of{' '}
-              <span style={{ display: 'block', color: '#17b0ab' }}>The Pristine.</span>
-            </h2>
+            {/* Heading — ghost kicker + tight-stack (TCHeadingStack) */}
+            <TCHeadingStack
+              ghostKicker="Voices"
+              mainLine="Voices of"
+              secondaryLine="The Pristine."
+              theme="dark"
+              size="lg"
+              className="mb-[30px]"
+            />
             <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, maxWidth: '400px', margin: 0 }}>
               Our reputation is built on the visible results we leave behind. Hear from the clients
               who transformed their environments with Top Cleaning.

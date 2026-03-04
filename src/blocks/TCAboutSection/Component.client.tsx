@@ -9,6 +9,7 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
+import { TCHeadingStack } from '@/components/ui/TCHeading'
 import { useState } from 'react'
 
 type Tab = 'vision' | 'mission' | 'values'
@@ -117,17 +118,15 @@ export function TCAboutSectionClient(_props: Props) {
           {/* ══ LEFT COLUMN ════════════════════════════════════════════ */}
           <div>
 
-            {/* Kicker */}
-            <span className="block font-mono text-[0.8rem] text-teal uppercase tracking-[6px] font-bold mb-5">
-              Who We Are
-            </span>
-
-            {/* Headline */}
-            <h2 className="font-black text-navy-deep leading-[1.1] tracking-[-1.5px] mb-8"
-              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
-            >
-              Foundations of Excellence
-            </h2>
+            {/* Heading — ghost kicker + tight-stack (TCHeadingStack) */}
+            <TCHeadingStack
+              ghostKicker="Who We Are"
+              mainLine="Foundations"
+              secondaryLine="of Excellence"
+              theme="light"
+              size="md"
+              className="mb-8"
+            />
 
             {/* Subtext with teal left border */}
             <p className="text-[1.1rem] leading-[1.7] text-foreground/70 border-l-[3px] border-teal pl-6 mb-10 max-w-[480px]">

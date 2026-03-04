@@ -32,7 +32,7 @@
 
         body {
             font-family: var(--sans-font);
-            background: #f0fafa;
+            background: #0d1b2e;
             color: var(--text-dark);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
@@ -367,7 +367,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            background: #f0fafa;
+            background: #0d1b2e;
         }
 
         .hero-bg {
@@ -392,9 +392,19 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(90deg,
-                rgba(240, 250, 250, 0.96) 0%,
-                rgba(240, 250, 250, 0.60) 48%,
-                transparent 100%);
+                rgba(13, 27, 46, 0.97) 0%,
+                rgba(13, 27, 46, 0.78) 45%,
+                rgba(13, 27, 46, 0.15) 100%);
+        }
+
+        /* Radial teal glow — top-right accent on dark hero */
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 72% 28%, rgba(23,176,171,0.13) 0%, transparent 48%);
+            z-index: 1;
+            pointer-events: none;
         }
 
         /* ═══════════════════════════════════════════════════
@@ -424,7 +434,7 @@
             line-height: 0.95;
             margin-bottom: 2rem;
             letter-spacing: -2px;
-            color: var(--deep-navy);
+            color: #ffffff;
         }
 
         h1 span {
@@ -440,8 +450,10 @@
             font-size: 1.1rem;
             line-height: 1.7;
             margin-bottom: 3rem;
-            color: #2d4545;
+            color: rgba(245,239,224,0.72);
             font-weight: 400;
+            border-left: 2px solid #17b0ab;
+            padding-left: 1.5rem;
         }
 
         /* ── CTA Panels ───────────────────────────────────── */
@@ -499,7 +511,7 @@
             margin-bottom: 2rem;
             font-weight: 800;
             letter-spacing: -1px;
-            color: var(--text-dark);
+            color: #ffffff;
         }
 
         .btn {
@@ -526,12 +538,15 @@
             display: inline-flex;
             align-items: center;
             gap: 2rem;
-            background: var(--deep-navy);
+            background: rgba(13,27,46,0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             color: white;
             padding: 1.2rem 2.5rem;
             font-family: var(--mono-font);
             font-size: 0.75rem;
-            box-shadow: 20px 20px 0px var(--primary-teal);
+            border-left: 4px solid #17b0ab;
+            box-shadow: 20px 20px 0px rgba(23,176,171,0.2);
         }
 
         .stars { color: #f7b500; font-size: 1rem; }
@@ -624,7 +639,7 @@
         @media (max-width: 1100px) {
             main { grid-template-columns: 1fr; gap: 2rem; }
             .hero-bg::after {
-                background: linear-gradient(180deg, rgba(240,250,250,0.85) 0%, rgba(240,250,250,0.97) 100%);
+                background: linear-gradient(180deg, rgba(13,27,46,0.85) 0%, rgba(13,27,46,0.97) 100%);
             }
             .hero-content { text-align: center; display: flex; flex-direction: column; align-items: center; }
             .service-description { margin-inline: auto; }
@@ -650,20 +665,19 @@
         /* ═══════════════════════════════════════════════════
            FOOTER
         ═══════════════════════════════════════════════════ */
-        /* Hero → Footer: floating CTA sits at bottom of hero, overlaps footer */
-        .hero-footer-cta {
-            position: relative;
-            z-index: 10;
-            padding: 3rem 5% 0;
-            margin-bottom: -75px;
-        }
-
         .obsidian-footer {
             background: #050a12;
             color: #f8fafc;
             position: relative;
-            padding-top: 110px;
+            padding-top: 0;
             overflow: hidden;
+        }
+
+        /* CTA strip — top of footer, full-width with side padding */
+        .footer-cta-strip {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 5% 0;
         }
 
         .footer-glow {
@@ -880,26 +894,28 @@
             .footer-container { grid-template-columns: 1fr; }
             .footer-brand { grid-column: span 1; }
             .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
-            .hero-footer-cta { padding: 2rem 5% 0; }
-            .footer-cta-box { padding: 25px; }
+            .footer-cta-strip { padding: 40px 5% 0; }
+            .footer-cta-box { padding: 25px; flex-direction: column; text-align: center; gap: 25px; }
         }
 
         /* ═══════════════════════════════════════════════════
            ABOUT SECTION
         ═══════════════════════════════════════════════════ */
         .about-section {
-            background: #fdfdfd;
+            background: #f4f7f6;
             padding: 120px 5%;
             position: relative;
             overflow: hidden;
         }
 
+        /* White clip-path slab — right 42% — mirrors background1 rhythm */
         .about-glow {
             position: absolute;
-            width: 50vw; height: 50vw;
-            background: radial-gradient(circle, rgba(23,176,171,0.06) 0%, transparent 70%);
-            top: -15vw; right: -15vw;
-            filter: blur(80px);
+            top: 0; right: 0;
+            width: 42%; height: 100%;
+            background: #ffffff;
+            clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+            box-shadow: -30px 0 60px rgba(0,0,0,0.03);
             pointer-events: none;
             z-index: 0;
         }
@@ -916,32 +932,46 @@
         }
 
         /* ── Left column ──────────────────────────────── */
+        /* "Who We Are" becomes the ghost watermark — heading overlaps into it */
         .about-kicker {
             display: block;
             font-family: var(--mono-font);
-            font-size: 0.8rem;
-            color: var(--primary-teal);
+            font-size: clamp(2.8rem, 6vw, 5.5rem);
+            font-weight: 900;
+            color: rgba(23, 176, 171, 0.1);
             text-transform: uppercase;
-            letter-spacing: 6px;
-            font-weight: 700;
-            margin-bottom: 20px;
+            letter-spacing: -1px;
+            line-height: 0.85;
+            margin-bottom: -1.2rem;
+            pointer-events: none;
+            user-select: none;
         }
 
+        /* Tight Stack — headings.html Var 1 */
         .about-headline {
             font-weight: 900;
             color: var(--deep-navy);
-            line-height: 1.1;
-            letter-spacing: -1.5px;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
             margin-bottom: 30px;
             font-size: clamp(2rem, 4vw, 3rem);
+            text-transform: uppercase;
+        }
+
+        .about-headline span {
+            display: block;
+            font-weight: 300;
+            font-style: italic;
+            text-transform: none;
+            letter-spacing: -0.01em;
+            color: #000000;
+            opacity: 0.85;
         }
 
         .about-subtext {
             font-size: 1.1rem;
             line-height: 1.7;
             color: rgba(26,40,64,0.7);
-            border-left: 3px solid var(--primary-teal);
-            padding-left: 24px;
             margin-bottom: 40px;
             max-width: 480px;
         }
@@ -1147,7 +1177,7 @@
            CUSTOMIZED MAINTENANCE SECTION
         ═══════════════════════════════════════════════════ */
         .maint-section {
-            background: #fdfdfd;
+            background: #f4f7f6;
             padding: 100px 5% 0;
         }
 
@@ -1167,13 +1197,36 @@
             padding-bottom: 60px;
         }
 
+        .maint-ghost-kicker {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: clamp(2.8rem, 6vw, 5.5rem);
+            font-weight: 900;
+            color: rgba(23, 176, 171, 0.1);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 0.85;
+            margin-bottom: -1.2rem;
+            pointer-events: none;
+            user-select: none;
+        }
         .maint-header h3 {
-            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
             font-weight: 900;
             color: var(--deep-navy);
-            letter-spacing: -1px;
-            line-height: 1.1;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            text-transform: uppercase;
             margin-bottom: 18px;
+        }
+        .maint-header h3 span {
+            display: block;
+            font-weight: 300;
+            font-style: italic;
+            text-transform: none;
+            letter-spacing: -0.01em;
+            color: #000000;
+            opacity: 0.85;
         }
 
         .maint-header p {
@@ -1296,51 +1349,36 @@
             background: linear-gradient(90deg, var(--deep-navy) 0%, transparent 100%);
         }
 
-        .guarantee-seal {
-            width: 140px;
-            height: 140px;
-            border: 2px solid var(--primary-teal);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-family: var(--mono-font);
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 20px;
-            position: absolute;
-            top: -40px;
-            right: 80px;
-            background: var(--deep-navy);
-            box-shadow: 0 0 30px rgba(23,176,171,0.4);
-            animation: rotateSeal 20s linear infinite;
-            line-height: 1.4;
-        }
-
-        @keyframes rotateSeal {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
-        }
 
         .plate-content .kicker-guar {
-            font-family: var(--mono-font);
-            color: var(--primary-teal);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-            font-size: 0.8rem;
             display: block;
-            margin-bottom: 1rem;
+            font-family: var(--mono-font);
+            font-size: clamp(2.8rem, 6vw, 5.5rem);
+            font-weight: 900;
+            color: rgba(23, 176, 171, 0.1);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 0.85;
+            margin-bottom: -1.2rem;
+            pointer-events: none;
+            user-select: none;
         }
 
         .plate-content h3 {
-            font-size: 3rem;
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
             font-weight: 900;
             margin-bottom: 20px;
-            line-height: 1.1;
-            letter-spacing: -1px;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+        .plate-content h3 span {
+            display: block;
+            font-weight: 300;
+            font-style: italic;
+            text-transform: none;
+            letter-spacing: -0.01em;
+            color: rgba(255,255,255,0.55);
         }
 
         .plate-content > p {
@@ -1458,9 +1496,21 @@
             opacity: 1;
             transform: translateY(0);
         }
+
     </style>
 </head>
 <body>
+
+<!-- ── GLOBAL GRAIN OVERLAY — background1 cellulose texture ── -->
+<div aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0.32;mix-blend-mode:multiply;">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <filter id="tc-grain">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/>
+            <feColorMatrix type="saturate" values="0"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#tc-grain)"/>
+    </svg>
+</div>
 
 <!-- ── UTILITY BAR ──────────────────────────────────────── -->
 <div class="utility-bar" id="topBar">
@@ -1603,15 +1653,6 @@
         </div>
     </main>
 
-    <!-- Floating CTA — lives in hero, overlaps the footer below -->
-    <div class="hero-footer-cta">
-        <div class="footer-cta-box" id="footerCta">
-            <div class="cta-text">
-                <h3>Ready for a spotless space?</h3>
-            </div>
-            <a href="#" class="footer-cta-btn">BOOK ONLINE NOW</a>
-        </div>
-    </div>
 
 </div>
 
@@ -1624,7 +1665,7 @@
         <!-- LEFT COLUMN -->
         <div class="about-left">
             <span class="about-kicker">Who We Are</span>
-            <h2 class="about-headline">Foundations of Excellence</h2>
+            <h2 class="about-headline">Foundations<span>of Excellence</span></h2>
             <p class="about-subtext">
                 Top Cleaning is built on a commitment to quality, reliability, and care.
                 Every service we deliver reflects our belief that a clean space is a better
@@ -1733,7 +1774,8 @@
 
         <!-- Row 1: Header — top-left -->
         <div class="maint-header">
-            <h3>Customized Maintenance Programs</h3>
+            <span class="maint-ghost-kicker">Maintenance</span>
+            <h3>Customized<span>Programs</span></h3>
             <p>Customized Maintenance Programs are cleaning and maintenance plans designed to meet the specific needs of each client. Instead of offering a standard service, these programs are created based on factors such as:</p>
         </div>
 
@@ -1789,9 +1831,8 @@
 <section class="guarantee-plate reveal">
     <div class="plate-inner">
         <div class="plate-content">
-            <div class="guarantee-seal">Top Quality<br>Guaranteed<br>★ ★ ★</div>
-            <span class="kicker-guar">The Promise</span>
-            <h3>Satisfaction<br>Guaranteed.</h3>
+<span class="kicker-guar">The Promise</span>
+            <h3>Satisfaction<span>Guaranteed.</span></h3>
             <p>We are committed to delivering high-quality cleaning and disinfection services. If results don't meet our standard of excellence, we make it right — no questions asked.</p>
             <div class="plate-stats">
                 <div class="plate-stat">
@@ -1829,20 +1870,35 @@
 /* ── Section shell ─────────────────────────────────────── */
 .srv-section {
     padding: 120px 5%;
-    background: radial-gradient(ellipse at top left, rgba(224,245,244,0.6) 0%, #fff 60%);
+    background: #ffffff;
+    background-image:
+        linear-gradient(rgba(23,176,171,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23,176,171,0.05) 1px, transparent 1px);
+    background-size: 100px 100px;
     position: relative;
     overflow: hidden;
 }
+/* Light streak animation — replaces static blob */
 .srv-crystal-emitter {
     position: absolute;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(23,176,171,0.05) 0%, transparent 70%);
-    top: -200px;
-    right: -100px;
-    filter: blur(40px);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     pointer-events: none;
     z-index: 0;
+    overflow: hidden;
+}
+.srv-crystal-emitter::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: -40%;
+    width: 30%; height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(23,176,171,0.04), transparent);
+    transform: rotate(-35deg) translateY(-50%);
+    animation: srv-streak 12s infinite linear 3s;
+}
+@keyframes srv-streak {
+    0%   { left: -40%; }
+    100% { left: 140%; }
 }
 .srv-container {
     max-width: 1400px;
@@ -1857,22 +1913,35 @@
     max-width: 700px;
 }
 .srv-header .kicker {
-    font-family: var(--mono-font);
-    color: var(--primary-teal);
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.4em;
     display: block;
-    margin-bottom: 16px;
+    font-family: var(--mono-font);
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 900;
+    color: rgba(23, 176, 171, 0.1);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    line-height: 0.85;
+    margin-bottom: -1.2rem;
+    pointer-events: none;
+    user-select: none;
 }
 .srv-header h2 {
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 900;
     color: var(--deep-navy);
-    line-height: 1;
+    line-height: 0.9;
     letter-spacing: -0.04em;
+    text-transform: uppercase;
     margin-bottom: 20px;
+}
+.srv-header h2 span {
+    display: block;
+    font-weight: 300;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: #000000;
+    opacity: 0.85;
 }
 .srv-header p {
     font-size: 1.15rem;
@@ -2072,7 +2141,7 @@
         <!-- Header -->
         <header class="srv-header reveal">
             <span class="kicker">Our Services</span>
-            <h2>Cleaning solutions built around your needs.</h2>
+            <h2>Cleaning Solutions<span>Built Around Your Needs.</span></h2>
             <p>From residential homes to commercial spaces, every service is delivered with precision, care, and guaranteed satisfaction.</p>
         </header>
 
@@ -2252,8 +2321,9 @@
 ══════════════════════════════════════════════════════════ -->
 <section class="wt-section">
     <style>
+        /* background1 rhythm: obsidian dark section */
         .wt-section {
-            background: white;
+            background: #050a12;
             padding: 100px 5%;
         }
         .wt-container {
@@ -2262,7 +2332,7 @@
             display: grid;
             grid-template-columns: 350px 1fr;
             gap: 60px;
-            border-top: 1px solid rgba(13,27,46,0.1);
+            border-top: 1px solid rgba(255,255,255,0.08);
             padding-top: 60px;
         }
         .wt-sidebar {
@@ -2270,37 +2340,58 @@
             top: 120px;
             height: fit-content;
         }
-        .wt-sidebar h2 {
+        .wt-ghost-kicker {
+            display: block;
             font-family: var(--mono-font);
-            font-size: 3rem;
-            line-height: 1;
-            margin-bottom: 30px;
-            color: var(--deep-navy);
-            letter-spacing: -2px;
+            font-size: clamp(2.8rem, 6vw, 5.5rem);
+            font-weight: 900;
+            color: rgba(23, 176, 171, 0.1);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 0.85;
+            margin-bottom: -1.2rem;
+            pointer-events: none;
+            user-select: none;
         }
-        .wt-sidebar h2 span { color: var(--primary-teal); }
+        .wt-sidebar h2 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 30px;
+            color: #ffffff;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+        .wt-sidebar h2 span {
+            display: block;
+            font-weight: 300;
+            font-style: italic;
+            text-transform: none;
+            letter-spacing: -0.01em;
+            color: rgba(255,255,255,0.55);
+        }
         .wt-summary {
             font-size: 0.9rem;
-            color: var(--text-muted);
+            color: rgba(255,255,255,0.55);
             line-height: 1.7;
             margin-bottom: 40px;
-            border-right: 1px solid var(--primary-teal);
+            border-right: 1px solid rgba(23,176,171,0.4);
             padding-right: 30px;
         }
         .wt-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1px;
-            background: rgba(13,27,46,0.1);
-            border: 1px solid rgba(13,27,46,0.1);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.06);
         }
         .wt-node {
-            background: white;
+            background: #0d1b2e;
             padding: 50px;
             position: relative;
             transition: background 0.3s ease;
         }
-        .wt-node:hover { background: var(--light-aquamarine); }
+        .wt-node:hover { background: rgba(23,176,171,0.12); }
 
         .wt-node h5 {
             font-family: var(--mono-font);
@@ -2313,7 +2404,7 @@
         .wt-node h4 {
             font-size: 1.4rem;
             font-weight: 800;
-            color: var(--deep-navy);
+            color: #ffffff;
             margin-bottom: 0;
             transition: margin-bottom 0.3s ease;
         }
@@ -2329,11 +2420,11 @@
         .wt-node-content p {
             font-size: 0.9rem;
             line-height: 1.6;
-            color: var(--text-dark);
+            color: rgba(255,255,255,0.65);
         }
         .wt-stats {
             grid-column: span 2;
-            background: var(--deep-navy);
+            background: #000a12;
             display: flex;
             justify-content: space-around;
             padding: 40px;
@@ -2347,6 +2438,7 @@
             font-weight: 700;
             color: var(--primary-teal);
         }
+        .wt-stat { color: rgba(255,255,255,0.5); }
         @media (max-width: 1100px) {
             .wt-container { grid-template-columns: 1fr; }
             .wt-sidebar { position: static; }
@@ -2357,7 +2449,8 @@
 
     <div class="wt-container">
         <aside class="wt-sidebar">
-            <h2>Our<br><span>Advantages</span></h2>
+            <span class="wt-ghost-kicker">Why Top</span>
+            <h2>Our<span>Advantages</span></h2>
             <p class="wt-summary">Top Cleaning combines expertise, reliability, and attention to detail to exceed your expectations in every workspace.</p>
             <a href="#" class="btn">Book Your Cleaning</a>
         </aside>
@@ -2420,27 +2513,63 @@
      HOW IT WORKS — Tectonic Monolith Grid
 ══════════════════════════════════════════════════════════ -->
 <style>
+/* background1 rhythm: grey-green process section */
 .tectonic-section {
-    background: #f5efe0;
+    background: #eef2f1;
     padding: 100px 5%;
     font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
 }
-.tectonic-container { max-width: 1400px; margin: 0 auto; }
+/* Ghost PROCESS watermark rotated 90deg on right edge */
+.tectonic-section::before {
+    content: 'PROCESS';
+    position: absolute;
+    right: -8%;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15vw;
+    font-weight: 900;
+    color: rgba(23,176,171,0.04);
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    line-height: 1;
+    z-index: 0;
+}
+.tectonic-container { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
 .tectonic-intro { margin-bottom: 80px; }
 .tectonic-intro h2 {
+    display: block;
     font-family: var(--mono-font);
-    font-size: 0.8rem;
-    color: #fc8181;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 900;
+    color: rgba(23, 176, 171, 0.1);
     text-transform: uppercase;
-    letter-spacing: 4px;
-    margin-bottom: 10px;
+    letter-spacing: -1px;
+    line-height: 0.85;
+    margin-bottom: -1.2rem;
+    pointer-events: none;
+    user-select: none;
 }
 .tectonic-intro h3 {
-    font-size: 3.5rem;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
     font-weight: 900;
     color: #0d1b2e;
-    letter-spacing: -2px;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    text-transform: uppercase;
     margin-bottom: 20px;
+}
+.tectonic-intro h3 span {
+    display: block;
+    font-weight: 300;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: #000000;
+    opacity: 0.85;
 }
 .tectonic-intro p {
     font-size: 1.2rem;
@@ -2557,7 +2686,7 @@
     <div class="tectonic-container">
         <div class="tectonic-intro">
             <h2>How It Works</h2>
-            <h3>Our Process Is Simple</h3>
+            <h3>Our Process<span>Is Simple</span></h3>
             <p>We've streamlined our cleaning process to make it as easy as possible for you. Just three simple steps to a spotless space.</p>
         </div>
         <div class="monolith-grid">
@@ -2619,13 +2748,13 @@
      TESTIMONIALS — LIGHT THEME
 ══════════════════════════════════════════════════════════ -->
 <style>
-/* ─── Testimonials: Light Theme ─── */
+/* ─── Testimonials: Dark Theme (background1 rhythm) ─── */
 .testi-section {
-    background: #ffffff;
+    background: #050a12;
     padding: 140px 5%;
     position: relative;
     overflow: hidden;
-    color: var(--text-dark);
+    color: rgba(255,255,255,0.85);
 }
 .testi-container {
     max-width: 1400px;
@@ -2640,20 +2769,38 @@
     position: sticky;
     top: 150px;
 }
+.testi-ghost-kicker {
+    display: block;
+    font-family: var(--mono-font);
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 900;
+    color: rgba(23, 176, 171, 0.1);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    line-height: 0.85;
+    margin-bottom: -1.2rem;
+    pointer-events: none;
+    user-select: none;
+}
 .testi-header h2 {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 900;
-    line-height: 1;
-    letter-spacing: -3px;
-    color: var(--deep-navy);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: #ffffff;
     margin-bottom: 30px;
+    text-transform: uppercase;
 }
 .testi-header h2 span {
     display: block;
-    color: var(--primary-teal);
+    font-weight: 300;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: rgba(255,255,255,0.55);
 }
 .testi-header p {
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.55);
     line-height: 1.8;
     max-width: 400px;
 }
@@ -2663,26 +2810,26 @@
     gap: 30px;
 }
 .testi-card {
-    background: var(--light-aquamarine);
-    border: 1px solid rgba(23, 176, 171, 0.3);
+    background: #0d1b2e;
+    border: 1px solid rgba(23, 176, 171, 0.2);
     border-radius: 4px;
     padding: 40px;
     position: relative;
     transition: var(--transition);
-    box-shadow: 0 4px 20px rgba(23, 176, 171, 0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 .testi-card:nth-child(even) { margin-top: 40px; }
 .testi-card:hover {
-    background: #cdf0ee;
-    border-color: var(--primary-teal);
-    box-shadow: 0 12px 40px rgba(23, 176, 171, 0.2);
+    background: rgba(23,176,171,0.18);
+    border-color: #17b0ab;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
     transform: translateY(-6px);
 }
 .testi-quote {
     font-family: var(--mono-font);
     font-size: 1rem;
     line-height: 1.65;
-    color: var(--text-dark);
+    color: rgba(255,255,255,0.85);
     margin-bottom: 30px;
     position: relative;
 }
@@ -2708,7 +2855,7 @@
     object-position: center top;
     display: block;
 }
-.testi-info h5 { font-size: 0.9rem; font-weight: 700; color: var(--deep-navy); letter-spacing: 0.5px; }
+.testi-info h5 { font-size: 0.9rem; font-weight: 700; color: #ffffff; letter-spacing: 0.5px; }
 .testi-info span {
     display: block;
     font-family: var(--mono-font);
@@ -2733,10 +2880,14 @@
 
 <section class="testi-section">
 
-    <div class="testi-container">
+    <!-- Centred teal glow blob — background1 dark section accent -->
+    <div aria-hidden="true" style="position:absolute;width:500px;height:500px;background:#17b0ab;filter:blur(150px);opacity:0.08;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;"></div>
+
+    <div class="testi-container" style="position:relative;z-index:1;">
         <!-- Header / Sticky Sidebar -->
         <div class="testi-header">
-            <h2>Voices of <span>The Pristine.</span></h2>
+            <span class="testi-ghost-kicker">Voices</span>
+            <h2>Voices of<span>The Pristine.</span></h2>
             <p>Our reputation is built on the visible results we leave behind. Hear from the clients who transformed their environments with Top Cleaning.</p>
         </div>
 
@@ -2831,12 +2982,12 @@
        JOIN OUR TEAM — TECTONIC BASALT ASSEMBLY
        ═══════════════════════════════════════════════════ */
 
+    /* background1 rhythm: diagonal ceramic-to-teal split */
     .join-section {
-        background: var(--sand);
+        background: linear-gradient(135deg, #f4f7f6 50%, #17b0ab 50%);
         padding: 120px 5%;
         position: relative;
         overflow: hidden;
-        border-top: 1px solid rgba(13, 27, 46, 0.1);
     }
 
     .join-bg-mark {
@@ -2870,22 +3021,37 @@
         gap: 40px;
     }
 
-    .join-sidebar h2 {
-        font-size: 4rem;
+    .join-ghost-kicker {
+        display: block;
+        font-family: var(--mono-font);
+        font-size: clamp(2.8rem, 6vw, 5.5rem);
         font-weight: 900;
+        color: rgba(23, 176, 171, 0.1);
+        text-transform: uppercase;
+        letter-spacing: -1px;
         line-height: 0.85;
-        letter-spacing: -3px;
+        margin-bottom: -1.2rem;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    .join-sidebar h2 {
+        font-size: clamp(2.5rem, 4vw, 3.8rem);
+        font-weight: 900;
+        line-height: 0.9;
+        letter-spacing: -0.04em;
         color: var(--deep-navy);
+        text-transform: uppercase;
     }
 
     .join-sidebar h2 span {
         display: block;
-        color: var(--primary-teal);
-        font-style: italic;
         font-weight: 300;
-        letter-spacing: -1px;
-        font-size: 2.5rem;
-        margin-top: 10px;
+        font-style: italic;
+        text-transform: none;
+        letter-spacing: -0.01em;
+        color: #000000;
+        opacity: 0.85;
     }
 
     .join-step-indicators {
@@ -3158,7 +3324,8 @@
         <!-- Sidebar -->
         <aside class="join-sidebar">
             <header>
-                <h2>Join Our <span>Team of Experts</span></h2>
+                <span class="join-ghost-kicker">Careers</span>
+                <h2>Join Our<span>Team of Experts</span></h2>
             </header>
 
             <div class="join-step-indicators">
@@ -3354,6 +3521,16 @@
 <!-- ── FOOTER ────────────────────────────────────────────── -->
 <footer class="obsidian-footer">
     <div class="footer-glow"></div>
+
+    <!-- CTA strip — top of footer -->
+    <div class="footer-cta-strip">
+        <div class="footer-cta-box" id="footerCta">
+            <div class="cta-text">
+                <h3>Ready for a spotless space?</h3>
+            </div>
+            <a href="#" class="footer-cta-btn">BOOK ONLINE NOW</a>
+        </div>
+    </div>
 
     <div class="footer-container">
 

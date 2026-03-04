@@ -16,6 +16,7 @@
 
 'use client'
 
+import { TCHeadingStack } from '@/components/ui/TCHeading'
 import React, { useRef, useState } from 'react'
 
 type Props = {
@@ -175,32 +176,14 @@ export function TCJoinTeamClient(_props: Props) {
           {/* ── Sidebar ─────────────────────────────────────── */}
           <aside className="tc-join-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
             <header>
-              <h2
-                className="tc-join-heading"
-                style={{
-                  fontSize: '4rem',
-                  fontWeight: 900,
-                  lineHeight: 0.85,
-                  letterSpacing: '-3px',
-                  color: '#0d1b2e',
-                  margin: 0,
-                }}
-              >
-                Join Our{' '}
-                <span
-                  style={{
-                    display: 'block',
-                    color: '#17b0ab',
-                    fontStyle: 'italic',
-                    fontWeight: 300,
-                    letterSpacing: '-1px',
-                    fontSize: '2.5rem',
-                    marginTop: '10px',
-                  }}
-                >
-                  Team of Experts
-                </span>
-              </h2>
+              {/* Heading — ghost kicker + tight-stack (TCHeadingStack) */}
+              <TCHeadingStack
+                ghostKicker="Careers"
+                mainLine="Join Our"
+                secondaryLine="Team of Experts"
+                theme="light"
+                size="lg"
+              />
             </header>
 
             {/* Step indicators */}

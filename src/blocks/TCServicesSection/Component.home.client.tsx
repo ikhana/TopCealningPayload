@@ -5,6 +5,7 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
+import { TCHeadingStack } from '@/components/ui/TCHeading'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 
@@ -161,13 +162,15 @@ export function TCServicesSectionHome() {
 
           {/* Header */}
           <header className="tc-reveal tc-svc-header mb-[80px] max-w-[700px]">
-            <span className="block font-mono text-teal text-[0.8rem] font-bold uppercase tracking-[0.4em] mb-4">
-              Our Services
-            </span>
-            <h2 className="font-black text-navy-deep leading-[1] mb-5"
-              style={{ fontSize:'clamp(2.5rem,5vw,3.5rem)', letterSpacing:'-0.04em' }}>
-              Cleaning solutions built around your needs.
-            </h2>
+            {/* Heading — ghost kicker + tight-stack (TCHeadingStack) */}
+            <TCHeadingStack
+              ghostKicker="Our Services"
+              mainLine="Cleaning Solutions"
+              secondaryLine="Built Around Your Needs."
+              theme="light"
+              size="lg"
+              className="mb-5"
+            />
             <p className="text-[1.15rem] text-foreground/60 leading-[1.6]">
               From residential homes to commercial spaces, every service is delivered with
               precision, care, and guaranteed satisfaction.
