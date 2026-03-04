@@ -37,7 +37,7 @@ export function PromotionalBanner({
   const hasSocials = socialLinks?.facebook || socialLinks?.instagram || socialLinks?.twitter
 
   return (
-    <div className="w-full h-10 flex items-center justify-between overflow-hidden font-mono text-[11px] tracking-[0.05em] relative z-[1001] bg-teal border-b border-white/[0.15]">
+    <div className="w-full h-11 flex items-center justify-between overflow-hidden font-mono text-[11px] tracking-[0.05em] relative z-[1001] bg-teal border-b border-white/[0.15]">
 
       {/* ── Left: contact info ─────────────────────────────── */}
       <div className="flex items-center gap-5 px-[5%]">

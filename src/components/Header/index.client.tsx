@@ -114,7 +114,7 @@ export function HeaderClient({ header }: Props) {
       <header
         className={cn(
           'sticky top-0 z-[1000] w-full',
-          'h-20 bg-[#0d1b2e]/[0.90] backdrop-blur-md border-b border-white/[0.08]',
+          'h-[76px] bg-[#0d1b2e]/[0.90] backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-b border-white/[0.08]',
         )}
       >
         <div className="flex items-center justify-between h-full px-[5%]">
