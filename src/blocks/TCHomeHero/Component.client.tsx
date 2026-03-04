@@ -103,14 +103,10 @@ export function TCHomeHeroClient(_props: Props) {
               </span>
             </h1>
 
-            {/* Description — sand-tinted colour + teal left border */}
+            {/* Description */}
             <p
               className="max-w-[520px] text-[1.1rem] leading-[1.7] mb-8 lg:mb-12"
-              style={{
-                color: 'rgba(245,239,224,0.72)',
-                borderLeft: '2px solid #17b0ab',
-                paddingLeft: '1.5rem',
-              }}
+              style={{ color: 'rgba(245,239,224,0.72)' }}
             >
               Top Cleaning is your trusted cleaning service provider. We have a team of experienced
               and qualified cleaners who are dedicated to providing the best possible service to our

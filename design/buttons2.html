@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --obsidian: #050a12;
+            --coral: #fc8181;
+            --sand: #f5efe0;
+            --basalt-grey: #4a5a6a;
+            --off-white: #f8fafc;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition-tectonic: all 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+            --brutalist-shadow: 6px 6px 0px rgba(0,0,0,1);
+            --teal-shadow: 6px 6px 0px var(--primary-teal);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--off-white);
+            font-family: var(--sans-font);
+            color: var(--deep-navy);
+            padding: 80px 5%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--primary-teal);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-label::after {
+            content: '';
+            height: 1px;
+            flex-grow: 1;
+            background: currentColor;
+            opacity: 0.2;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 100px;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           BASE BUTTON ARCHITECTURE (TECTONIC)
+           ═══════════════════════════════════════════════════ */
+        
+        .btn-tectonic {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 36px;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: var(--transition-tectonic);
+            z-index: 1;
+        }
+
+        .btn-tectonic span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-tectonic svg {
+            margin-left: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-tectonic:hover svg {
+            transform: translateX(5px);
+        }
+
+        /* ─── Hero Variations ──────────────────────────────── */
+
+        .hero-primary {
+            background: var(--primary-teal);
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+        }
+
+        .hero-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--obsidian);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: var(--transition-tectonic);
+        }
+
+        .hero-primary:hover {
+            padding-right: 45px;
+            box-shadow: 12px 12px 0 var(--coral);
+        }
+
+        .hero-primary:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .hero-ghost {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--primary-teal);
+            overflow: hidden;
+        }
+
+        .hero-ghost::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-teal);
+            z-index: -1;
+            transition: var(--transition-tectonic);
+            transform: skewX(-20deg);
+        }
+
+        .hero-ghost:hover {
+            color: var(--obsidian);
+        }
+
+        .hero-ghost:hover::after {
+            left: 0;
+            transform: skewX(0deg);
+        }
+
+        /* ─── Light Section Variations ──────────────────────── */
+
+        .light-solid {
+            background: var(--obsidian);
+            color: white;
+            box-shadow: 0px 0px 0 var(--primary-teal);
+        }
+
+        .light-solid:hover {
+            transform: translate(-6px, -6px);
+            box-shadow: 6px 6px 0 var(--primary-teal), 12px 12px 0 rgba(23, 176, 171, 0.2);
+        }
+
+        .light-outline {
+            background: transparent;
+            color: var(--obsidian);
+            border: 1px solid var(--obsidian);
+        }
+
+        .light-outline:hover {
+            background: var(--obsidian);
+            color: white;
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+        }
+
+        .light-inline {
+            padding: 10px 0;
+            color: var(--obsidian);
+            background: transparent;
+            border-bottom: 2px solid var(--primary-teal);
+            justify-content: flex-start;
+            font-size: 0.8rem;
+        }
+
+        .light-inline:hover {
+            color: var(--primary-teal);
+            padding-left: 10px;
+        }
+
+        /* ─── Dark Section Variations ───────────────────────── */
+
+        .dark-tectonic {
+            background: white;
+            color: var(--obsidian);
+            font-weight: 900;
+        }
+
+        .dark-tectonic::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 100%;
+            height: 100%;
+            border: 1px solid white;
+            z-index: -1;
+            transition: var(--transition-tectonic);
+        }
+
+        .dark-tectonic:hover {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        .dark-tectonic:hover::before {
+            transform: translate(8px, 8px);
+            border-color: var(--primary-teal);
+        }
+
+        .dark-accent {
+            background: var(--coral);
+            color: white;
+            clip-path: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .dark-accent:hover {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            transform: scale(1.05);
+            background: var(--primary-teal);
+        }
+
+        .dark-inline {
+            background: transparent;
+            color: var(--primary-teal);
+            border: none;
+            padding: 10px 0;
+            font-family: var(--mono-font);
+            letter-spacing: 3px;
+        }
+
+        .dark-inline::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--coral);
+            transition: var(--transition-tectonic);
+        }
+
+        .dark-inline:hover {
+            color: white;
+        }
+
+        .dark-inline:hover::after {
+            width: 100%;
+            background: var(--primary-teal);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           VISUAL DEMO WRAPPERS
+           ═══════════════════════════════════════════════════ */
+
+        .demo-dark-bg {
+            background: var(--obsidian);
+            padding: 60px;
+            margin-top: 20px;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Grain Overlay */
+        .grain {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.4;
+            mix-blend-mode: overlay;
+        }
+
+        .btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-tag {
+            font-family: var(--mono-font);
+            font-size: 10px;
+            color: var(--basalt-grey);
+            text-transform: uppercase;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div aria-hidden="true" class="grain">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <filter id="grainy">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+                <feColorMatrix type="saturate" values="0"/>
+            </filter>
+            <rect width="100%" height="100%" filter="url(#grainy)"/>
+        </svg>
+    </div>
+
+    <div class="container">
+
+        <!-- ── HERO SECTION BUTTONS ── -->
+        <div class="section-label">01. Hero & High Impact</div>
+        <div class="demo-dark-bg" style="margin-bottom: 60px; background: var(--deep-navy);">
+            <div class="button-grid">
+                <div class="btn-wrapper">
+                    <span class="btn-tag">Primary / Tectonic Shift</span>
+                    <a href="#" class="btn-tectonic hero-primary">
+                        <span>Book Cleaning</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                </div>
+                <div class="btn-wrapper">
+                    <span class="btn-tag">Ghost / Infill Reveal</span>
+                    <a href="#" class="btn-tectonic hero-ghost">
+                        <span>View Services</span>
+                    </a>
+                </div>
+                <div class="btn-wrapper">
+                    <span class="btn-tag">Accent / Basalt Solid</span>
+                    <a href="#" class="btn-tectonic" style="background: var(--coral); color: white; box-shadow: 8px 8px 0 var(--obsidian);">
+                        <span>Get 15% Off</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── LIGHT SECTION BUTTONS ── -->
+        <div class="section-label">02. Light Backgrounds / Sand</div>
+        <div class="button-grid">
+            <div class="btn-wrapper">
+                <span class="btn-tag">Solid / Brutalist Shadow</span>
+                <button class="btn-tectonic light-solid">
+                    <span>Send Message</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                </button>
+            </div>
+            <div class="btn-wrapper">
+                <span class="btn-tag">Outline / Clip Morph</span>
+                <button class="btn-tectonic light-outline">
+                    <span>Learn More</span>
+                </button>
+            </div>
+            <div class="btn-wrapper">
+                <span class="btn-tag">Inline / Monospace Lead</span>
+                <button class="btn-tectonic light-inline">
+                    <span>Explore our process</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ── DARK SECTION BUTTONS ── -->
+        <div class="section-label">03. Dark Sections / Obsidian</div>
+        <div class="demo-dark-bg">
+            <div class="button-grid" style="margin-bottom: 0;">
+                <div class="btn-wrapper">
+                    <span class="btn-tag">Monolith / Double Frame</span>
+                    <button class="btn-tectonic dark-tectonic">
+                        <span>Join the Team</span>
+                    </button>
+                </div>
+                <div class="btn-wrapper">
+                    <span class="btn-tag">Skew / Asymmetric Shard</span>
+                    <button class="btn-tectonic dark-accent">
+                        <span>Instant Quote</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    </button>
+                </div>
+                <div class="btn-wrapper">
+                    <span class="btn-tag">Ghost / Minimal underline</span>
+                    <button class="btn-tectonic dark-inline">
+                        <span>All Specialties</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // High-performance hover tracking for specialized tectonic effects
+        document.querySelectorAll('.btn-tectonic').forEach(button => {
+            button.addEventListener('mousemove', e => {
+                const rect = button.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                button.style.setProperty('--x', `${x}px`);
+                button.style.setProperty('--y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>
+

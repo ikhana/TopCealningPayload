@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --coral: #fc8181;
+            --glass-white: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-dark: #1a2840;
+            --off-white: #f8fafc;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', sans-serif;
+            --ease: cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #050a12;
+            font-family: var(--sans);
+            color: white;
+            padding-bottom: 100px;
+        }
+
+        /* ── CRYSTALLINE OVERLAY ── */
+        .grain-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; opacity: 0.15;
+            mix-blend-mode: overlay;
+        }
+
+        /* ── SECTION STYLING ── */
+        .btn-showcase {
+            padding: 120px 8%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-label {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--primary-teal);
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 40px;
+            align-items: center;
+        }
+
+        /* ══════════════════════════════════════════════════
+           BUTTON CORE ARCHITECTURE (VITREOUS REFRACTIVE)
+           ══════════════════════════════════════════════════ */
+        
+        .btn-v {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 2.8rem;
+            font-family: var(--mono);
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.5s var(--ease);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* ── VARIATION: HERO PRIMARY (CRYSTAL TEAL) ── */
+        .btn-hero-primary {
+            background: var(--primary-teal);
+            color: white;
+            box-shadow: 0 20px 40px rgba(23, 176, 171, 0.25);
+        }
+
+        .btn-hero-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.6s var(--ease);
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: #1dc5bf;
+            box-shadow: 0 30px 60px rgba(23, 176, 171, 0.4);
+        }
+
+        .btn-hero-primary:hover::before {
+            left: 100%;
+        }
+
+        /* ── VARIATION: HERO GHOST (REFRACTIVE EDGE) ── */
+        .btn-hero-ghost {
+            background: rgba(255, 255, 255, 0.03);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-hero-ghost::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, var(--primary-teal), transparent, var(--coral)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            opacity: 0;
+            transition: 0.4s var(--ease);
+        }
+
+        .btn-hero-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: transparent;
+        }
+
+        .btn-hero-ghost:hover::after {
+            opacity: 1;
+        }
+
+        /* ── VARIATION: LIGHT SECTION (BASALT INLINE) ── */
+        .btn-light-solid {
+            background: var(--deep-navy);
+            color: white;
+            padding: 1rem 2.2rem;
+        }
+
+        .btn-light-solid:hover {
+            background: var(--primary-teal);
+            transform: translate(4px, -4px);
+            box-shadow: -8px 8px 0 rgba(23, 176, 171, 0.2);
+        }
+
+        .btn-light-ghost {
+            background: transparent;
+            color: var(--deep-navy);
+            border: 1px solid rgba(13, 27, 46, 0.2);
+        }
+
+        .btn-light-ghost:hover {
+            border-color: var(--deep-navy);
+            background: rgba(13, 27, 46, 0.02);
+        }
+
+        /* ── VARIATION: DARK SECTION (NEON VITREOUS) ── */
+        .btn-dark-neon {
+            background: transparent;
+            color: var(--teal-glow);
+            border: 1px solid var(--primary-teal);
+            box-shadow: inset 0 0 0 0 var(--primary-teal);
+        }
+
+        .btn-dark-neon:hover {
+            color: var(--deep-navy);
+            box-shadow: inset 0 0 0 60px var(--primary-teal);
+            text-shadow: none;
+        }
+
+        .btn-dark-glass {
+            background: var(--glass-white);
+            border: 1px solid var(--glass-border);
+            color: white;
+            backdrop-filter: blur(15px);
+        }
+
+        .btn-dark-glass:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-teal);
+        }
+
+        /* ── VARIATION: INLINE TEXT (REFRACTION UNDERLINE) ── */
+        .btn-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--mono);
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--primary-teal);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding: 5px 0;
+            transition: 0.3s var(--ease);
+        }
+
+        .btn-inline::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 2px;
+            background: currentColor;
+            transform: scaleX(0.3);
+            transform-origin: left;
+            transition: 0.5s var(--ease);
+        }
+
+        .btn-inline:hover {
+            color: white;
+            gap: 15px;
+        }
+
+        .btn-inline:hover::after {
+            transform: scaleX(1);
+            background: var(--coral);
+        }
+
+        /* ── LAYOUT SECTIONS ── */
+        .section-hero {
+            background: radial-gradient(circle at 80% 20%, rgba(23, 176, 171, 0.15), transparent 40%), #0d1b2e;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .section-light {
+            background: #f4f7f6;
+            color: var(--deep-navy);
+        }
+
+        .section-dark {
+            background: #050a12;
+            background-image: linear-gradient(rgba(23,176,171,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(23,176,171,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* ── ICONOGRAPHY ── */
+        .icon {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            transition: transform 0.3s var(--ease);
+        }
+        .btn-v:hover .icon {
+            transform: translateX(5px);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="grain-overlay">
+        <svg width="100%" height="100%">
+            <filter id="grain">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+                <feColorMatrix type="saturate" values="0"/>
+            </filter>
+            <rect width="100%" height="100%" filter="url(#grain)"/>
+        </svg>
+    </div>
+
+    <!-- ── HERO VARIATIONS ── -->
+    <section class="btn-showcase section-hero">
+        <span class="section-label">Hero Viewport / High Impact</span>
+        <div class="grid">
+            <a href="#" class="btn-v btn-hero-primary">
+                Instant Booking
+                <svg class="icon" viewBox="0 0 24 24" style="margin-left: 12px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#" class="btn-v btn-hero-ghost">
+                View Portfolio
+            </a>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <a href="#" class="btn-inline">
+                    Explore Strategy
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+                <a href="#" class="btn-inline" style="color: var(--coral)">
+                    Limited Offer
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── LIGHT SECTION VARIATIONS ── -->
+    <section class="btn-showcase section-light">
+        <span class="section-label" style="color: var(--teal-dark)">Light Sections / High Legibility</span>
+        <div class="grid">
+            <button class="btn-v btn-light-solid">
+                Confirm Details
+            </button>
+            <button class="btn-v btn-light-ghost">
+                Download PDF
+            </button>
+            <a href="#" class="btn-inline" style="color: var(--deep-navy)">
+                Documentation
+                <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- ── DARK SECTION VARIATIONS ── -->
+    <section class="btn-showcase section-dark">
+        <span class="section-label">Dark Sections / Vitreous Depth</span>
+        <div class="grid">
+            <button class="btn-v btn-dark-neon">
+                Activate Pulse
+            </button>
+            <button class="btn-v btn-dark-glass">
+                Request Access
+            </button>
+            <a href="#" class="btn-inline" style="color: var(--teal-glow)">
+                System Logs
+                <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- ── UTILITY / ACTION STRIP ── -->
+    <section class="btn-showcase" style="padding-top: 0;">
+        <span class="section-label">Iconic Only / Minimal</span>
+        <div style="display: flex; gap: 20px;">
+            <button class="btn-v btn-hero-ghost" style="padding: 1.2rem; min-width: 60px;">
+                <svg class="icon" viewBox="0 0 24 24" style="stroke-width: 3;"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="btn-v btn-hero-ghost" style="padding: 1.2rem; min-width: 60px;">
+                <svg class="icon" viewBox="0 0 24 24" style="stroke-width: 3;"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button class="btn-v btn-hero-primary" style="padding: 1.2rem; min-width: 60px; border-radius: 50%;">
+                <svg class="icon" viewBox="0 0 24 24" style="margin: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <script>
+        // Subtle Mouse parallax for hero buttons
+        document.querySelector('.section-hero').addEventListener('mousemove', (e) => {
+            const btns = e.currentTarget.querySelectorAll('.btn-v');
+            const x = (e.clientX - window.innerWidth / 2) / 50;
+            const y = (e.clientY - window.innerHeight / 2) / 50;
+
+            btns.forEach((btn, i) => {
+                const depth = (i + 1) * 0.5;
+                btn.style.transform = `translate(${x * depth}px, ${y * depth}px) translateY(${btn.matches(':hover') ? -5 : 0}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
