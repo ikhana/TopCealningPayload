@@ -31,45 +31,14 @@ export function HeaderClient({ header }: Props) {
   const menu     = header.navItems || []
   const pathname = usePathname()
 
-  const [scrolled,    setScrolled]    = useState(false)
+  const isDark = true // always dark for now
+
   const [megaOpen,    setMegaOpen]    = useState(false)
   const [mobileOpen,  setMobileOpen]  = useState(false)
-  const [isDark,      setIsDark]      = useState(false)
 
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const panelRef   = useRef<HTMLDivElement   | null>(null)
   const closeTO    = useRef<number | null>(null)
-
-  // ── Scroll shrink: 80px → 68px ───────────────────────────
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // ── Adaptive dark hero detection ─────────────────────────
-  // Watches [data-dark-hero] elements via IntersectionObserver.
-  // rootMargin '0px 0px -92% 0px' → only fires when the element is
-  // inside the top ~8% of the viewport (the header zone).
-  useEffect(() => {
-    const sections = Array.from(document.querySelectorAll('[data-dark-hero]'))
-
-    if (!sections.length) {
-      setIsDark(false)
-      return
-    }
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        // Go dark if ANY dark-hero section is in the top zone
-        setIsDark(entries.some((e) => e.isIntersecting))
-      },
-      { rootMargin: '0px 0px -92% 0px', threshold: 0 },
-    )
-
-    sections.forEach((el) => io.observe(el))
-    return () => io.disconnect()
-  }, [pathname])
 
   // ── Close on route change ─────────────────────────────────
   useEffect(() => {
@@ -145,22 +114,7 @@ export function HeaderClient({ header }: Props) {
       <header
         className={cn(
           'sticky top-0 z-[1000] w-full',
-          'transition-all duration-300',
-          // ── Dark-hero mode ──
-          isDark
-            ? [
-                scrolled
-                  ? 'h-[68px] bg-[#0d1b2e]/[0.90] backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
-                  : 'h-20 bg-transparent',
-                'border-b border-white/[0.08]',
-              ]
-            // ── Light mode (default) ──
-            : [
-                scrolled
-                  ? 'h-[68px] bg-white/[0.97] shadow-[0_8px_30px_rgba(0,0,0,0.09)]'
-                  : 'h-20 bg-white/[0.88] backdrop-blur-lg shadow-[0_4px_30px_rgba(0,0,0,0.04)]',
-                'border-b border-teal/20',
-              ],
+          'h-20 bg-[#0d1b2e]/[0.90] backdrop-blur-md border-b border-white/[0.08]',
         )}
       >
         <div className="flex items-center justify-between h-full px-[5%]">
@@ -179,7 +133,6 @@ export function HeaderClient({ header }: Props) {
                 height={110}
                 className="h-[110px] w-auto"
                 priority
-                style={isDark ? { filter: 'brightness(0) invert(1)' } : undefined}
               />
             ) : (
               <>
