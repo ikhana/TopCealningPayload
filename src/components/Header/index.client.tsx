@@ -4,11 +4,17 @@
 //   1. `bg-white/[0.88|0.97]`  — functional semi-transparent white, not a brand token
 //   2. `style={{ borderTop }}` — the mega dropdown top accent border uses
 //      `var(--color-teal)` so it still reads from the design system
+//
+// Adaptive dark/light mode:
+//   • IntersectionObserver watches [data-dark-hero] elements (rootMargin: top 8% only)
+//   • isDark=true  → transparent/dark-glass header + white nav text
+//   • isDark=false → white frosted-glass header + navy nav text (existing behaviour)
 
 'use client'
 
 import { cn } from '@/utilities/cn'
 import { CMSLink } from '@/components/CMSLink'
+import btnStyles from '@/components/ui/TCButton/TCButton.module.css'
 import { ChevronDown, Menu, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,6 +34,7 @@ export function HeaderClient({ header }: Props) {
   const [scrolled,    setScrolled]    = useState(false)
   const [megaOpen,    setMegaOpen]    = useState(false)
   const [mobileOpen,  setMobileOpen]  = useState(false)
+  const [isDark,      setIsDark]      = useState(false)
 
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const panelRef   = useRef<HTMLDivElement   | null>(null)
@@ -39,6 +46,30 @@ export function HeaderClient({ header }: Props) {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // ── Adaptive dark hero detection ─────────────────────────
+  // Watches [data-dark-hero] elements via IntersectionObserver.
+  // rootMargin '0px 0px -92% 0px' → only fires when the element is
+  // inside the top ~8% of the viewport (the header zone).
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll('[data-dark-hero]'))
+
+    if (!sections.length) {
+      setIsDark(false)
+      return
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        // Go dark if ANY dark-hero section is in the top zone
+        setIsDark(entries.some((e) => e.isIntersecting))
+      },
+      { rootMargin: '0px 0px -92% 0px', threshold: 0 },
+    )
+
+    sections.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [pathname])
 
   // ── Close on route change ─────────────────────────────────
   useEffect(() => {
@@ -80,6 +111,20 @@ export function HeaderClient({ header }: Props) {
   const socials      = header.socialLinks || {}
   const dropdownItem = menu.find((m: any) => m?.type === 'dropdown') as any
 
+  // ── Derived style tokens ──────────────────────────────────
+  // nav link colours
+  const navLinkClass = isDark
+    ? 'text-white/80 hover:text-white'
+    : 'text-navy-deep hover:text-teal'
+
+  // hamburger / icon colours
+  const iconClass = isDark
+    ? 'text-white hover:text-teal'
+    : 'text-navy-deep hover:text-teal'
+
+  // bottom underline accent on active/hover nav items
+  const accentBg = isDark ? 'bg-white/70' : 'bg-teal'
+
   return (
     <>
       {/* ── Utility Bar (PromotionalBanner override) ──────── */}
@@ -100,11 +145,22 @@ export function HeaderClient({ header }: Props) {
       <header
         className={cn(
           'sticky top-0 z-[1000] w-full',
-          'border-b border-teal/20',
           'transition-all duration-300',
-          scrolled
-            ? 'h-[68px] bg-white/[0.97] shadow-[0_8px_30px_rgba(0,0,0,0.09)]'
-            : 'h-20    bg-white/[0.88] backdrop-blur-lg shadow-[0_4px_30px_rgba(0,0,0,0.04)]',
+          // ── Dark-hero mode ──
+          isDark
+            ? [
+                scrolled
+                  ? 'h-[68px] bg-[#0d1b2e]/[0.90] backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
+                  : 'h-20 bg-transparent',
+                'border-b border-white/[0.08]',
+              ]
+            // ── Light mode (default) ──
+            : [
+                scrolled
+                  ? 'h-[68px] bg-white/[0.97] shadow-[0_8px_30px_rgba(0,0,0,0.09)]'
+                  : 'h-20 bg-white/[0.88] backdrop-blur-lg shadow-[0_4px_30px_rgba(0,0,0,0.04)]',
+                'border-b border-teal/20',
+              ],
         )}
       >
         <div className="flex items-center justify-between h-full px-[5%]">
@@ -123,6 +179,7 @@ export function HeaderClient({ header }: Props) {
                 height={110}
                 className="h-[110px] w-auto"
                 priority
+                style={isDark ? { filter: 'brightness(0) invert(1)' } : undefined}
               />
             ) : (
               <>
@@ -133,7 +190,10 @@ export function HeaderClient({ header }: Props) {
                     boxShadow: '0 4px 12px color-mix(in oklch, var(--color-teal) 35%, transparent)',
                   }}
                 />
-                <span className="text-[1.9rem] font-black text-navy-deep tracking-[-0.5px] leading-none">
+                <span className={cn(
+                  'text-[1.9rem] font-black tracking-[-0.5px] leading-none transition-colors duration-300',
+                  isDark ? 'text-white' : 'text-navy-deep',
+                )}>
                   TOP CLEANING
                 </span>
               </>
@@ -165,7 +225,8 @@ export function HeaderClient({ header }: Props) {
                       className={cn(
                         'flex items-center gap-[5px] h-full px-[1.4rem]',
                         'font-mono text-[0.8rem] font-semibold uppercase tracking-[0.5px]',
-                        'text-navy-deep hover:text-teal transition-colors duration-200',
+                        navLinkClass,
+                        'transition-colors duration-200',
                         'bg-transparent border-none cursor-pointer',
                       )}
                     >
@@ -180,7 +241,8 @@ export function HeaderClient({ header }: Props) {
                     <span
                       aria-hidden
                       className={cn(
-                        'absolute bottom-0 inset-x-[20%] h-[3px] bg-teal',
+                        'absolute bottom-0 inset-x-[20%] h-[3px]',
+                        accentBg,
                         'transition-transform duration-500 origin-center',
                         megaOpen ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
                       )}
@@ -198,14 +260,19 @@ export function HeaderClient({ header }: Props) {
                       className={cn(
                         'flex items-center h-full px-[1.4rem]',
                         'font-mono text-[0.8rem] font-semibold uppercase tracking-[0.5px]',
-                        'text-navy-deep hover:text-teal transition-colors duration-200 no-underline',
+                        navLinkClass,
+                        'transition-colors duration-200 no-underline',
                       )}
                     >
                       {item.link.label}
                     </CMSLink>
                     <span
                       aria-hidden
-                      className="absolute bottom-0 inset-x-[20%] h-[3px] bg-teal scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"
+                      className={cn(
+                        'absolute bottom-0 inset-x-[20%] h-[3px]',
+                        accentBg,
+                        'scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center',
+                      )}
                     />
                   </div>
                 )
@@ -224,17 +291,18 @@ export function HeaderClient({ header }: Props) {
                 link={header.ctaButton.link}
                 className={cn(
                   'hidden md:inline-flex items-center no-underline',
-                  'px-[1.6rem] py-[0.85rem]',
-                  'bg-teal text-primary-foreground',
-                  'font-mono font-bold text-[0.75rem] uppercase tracking-[1px]',
-                  'transition-all duration-300',
-                  'hover:bg-navy-deep hover:-translate-y-[2px]',
+                  'bg-teal text-white font-mono font-black uppercase',
+                  'px-[36px] py-[18px] text-[0.85rem] tracking-[1.5px]',
+                  btnStyles.primary,
                 )}
-                style={{
-                  ['--tw-shadow' as any]: '0 8px 20px color-mix(in oklch, var(--color-teal) 30%, transparent)',
-                }}
               >
-                {header.ctaButton.link.label || 'BOOK YOUR CLEANING'}
+                <span className={btnStyles.primaryContent}>
+                  {header.ctaButton.link.label || 'BOOK YOUR CLEANING'}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={btnStyles.primaryArrow}>
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
               </CMSLink>
             )}
 
@@ -242,7 +310,11 @@ export function HeaderClient({ header }: Props) {
             <button
               type="button"
               onClick={() => setMobileOpen((s) => !s)}
-              className="md:hidden flex flex-col gap-[5px] p-2 text-navy-deep hover:text-teal transition-colors cursor-pointer bg-transparent border-none"
+              className={cn(
+                'md:hidden flex flex-col gap-[5px] p-2',
+                iconClass,
+                'transition-colors cursor-pointer bg-transparent border-none',
+              )}
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
             >
@@ -373,13 +445,19 @@ export function HeaderClient({ header }: Props) {
               <CMSLink
                 link={header.ctaButton.link}
                 className={cn(
-                  'mt-2 px-4 py-[0.9rem] text-center no-underline',
-                  'font-mono font-bold text-[0.8rem] uppercase tracking-[1px]',
-                  'bg-teal text-primary-foreground',
-                  'hover:bg-navy-deep transition-colors duration-200',
+                  'mt-2 flex items-center justify-center no-underline',
+                  'bg-teal text-white font-mono font-black uppercase',
+                  'px-[36px] py-[18px] text-[0.85rem] tracking-[1.5px]',
+                  btnStyles.primary,
                 )}
               >
-                {header.ctaButton.link.label || 'BOOK YOUR CLEANING'}
+                <span className={btnStyles.primaryContent}>
+                  {header.ctaButton.link.label || 'BOOK YOUR CLEANING'}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={btnStyles.primaryArrow}>
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
               </CMSLink>
             )}
           </nav>

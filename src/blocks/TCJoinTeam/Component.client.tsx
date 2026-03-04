@@ -581,26 +581,7 @@ export function TCJoinTeamClient(_props: Props) {
 
                     <PlateActions>
                       <NavButton variant="prev" onClick={() => setActiveStep(2)}>Back</NavButton>
-                      <button
-                        type="submit"
-                        className="tc-join-btn-submit"
-                        style={{
-                          fontFamily: 'var(--font-mono)',
-                          fontWeight: 700,
-                          textTransform: 'uppercase',
-                          letterSpacing: '2px',
-                          fontSize: '0.8rem',
-                          padding: '18px 36px',
-                          cursor: 'pointer',
-                          border: 'none',
-                          background: '#e05c5c',
-                          color: 'white',
-                          boxShadow: '3px 3px 0 #0d1b2e',
-                          transition: 'all 0.3s',
-                        }}
-                      >
-                        Submit Application
-                      </button>
+                      <TCButton variant="submit" type="submit">Submit Application</TCButton>
                     </PlateActions>
                   </div>
                 )}

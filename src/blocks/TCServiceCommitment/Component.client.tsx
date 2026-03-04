@@ -15,6 +15,7 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
+import { TCButton } from '@/components/ui/TCButton'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 import Link from 'next/link'
 
@@ -253,17 +254,7 @@ export function TCServiceCommitmentClient(_props: Props) {
 
           {/* CTA button */}
           <div className="flex-shrink-0 lg:ml-10">
-            <Link
-              href="/services"
-              className={cn(
-                'inline-block font-mono font-bold text-[0.85rem] tracking-[1px]',
-                'bg-navy-deep no-underline text-white px-9 py-[18px]',
-                'transition-all duration-500',
-                'hover:-translate-y-[5px] hover:bg-white hover:text-navy-deep',
-              )}
-            >
-              Explore our services
-            </Link>
+            <TCButton variant="primary" href="/services">Explore our services</TCButton>
           </div>
 
         </div>

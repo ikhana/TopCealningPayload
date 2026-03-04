@@ -4,6 +4,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { TCButton } from '@/components/ui/TCButton'
 import { BookingProvider } from '@/components/booking/BookingContext'
 import { BookingSummary } from '@/components/booking/BookingSummary'
 import { Step01Customer } from '@/components/booking/sections/Step01Customer'
@@ -32,21 +33,6 @@ const STEPS = [
 ]
 
 const TOTAL_STEPS = STEPS.length
-
-/* ── Nav button styles ─────────────────────────────────────── */
-const navBtnBase: React.CSSProperties = {
-  padding: '14px 36px',
-  fontFamily: 'var(--font-mono)',
-  fontWeight: 700,
-  fontSize: '0.8rem',
-  textTransform: 'uppercase',
-  letterSpacing: '1px',
-  cursor: 'pointer',
-  border: '1px solid rgba(13,27,46,0.12)',
-  background: 'white',
-  transition: 'all 0.35s cubic-bezier(0.25,1,0.5,1)',
-  borderRadius: 0,
-}
 
 /* ── Success screen shown after booking is confirmed ─────── */
 function BookingSuccess() {
@@ -115,8 +101,6 @@ export function TCBookingFormClient() {
         .bf-section-in {
           animation: bf-in 0.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
         }
-        .bf-nav-back:hover  { background: var(--color-navy-deep) !important; color: white !important; border-color: var(--color-navy-deep) !important; }
-        .bf-nav-next:hover  { background: var(--color-teal) !important; border-color: var(--color-teal) !important; }
         .bf-step-clickable:hover .bf-step-label { color: var(--color-navy-deep) !important; }
 
         /* ── Responsive ── */
@@ -273,51 +257,31 @@ export function TCBookingFormClient() {
           {/* ── Back / Continue buttons — hidden on step 10 (Step10Terms has its own submit) ── */}
           {currentStep < TOTAL_STEPS && (
             <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <button
-                type="button"
-                className="bf-nav-back"
+              <TCButton
+                variant="ghost"
                 onClick={goBack}
                 disabled={currentStep === 1}
-                style={{
-                  ...navBtnBase,
-                  opacity: currentStep === 1 ? 0.3 : 1,
-                  cursor: currentStep === 1 ? 'not-allowed' : 'pointer',
-                }}
+                className={currentStep === 1 ? 'opacity-30 pointer-events-none' : ''}
               >
                 Back
-              </button>
+              </TCButton>
 
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(74,90,106,0.45)', letterSpacing: '1px' }}>
                 {currentStep} / {TOTAL_STEPS}
               </div>
 
-              <button
-                type="button"
-                className="bf-nav-next"
-                onClick={goNext}
-                style={{
-                  ...navBtnBase,
-                  background: 'var(--color-navy-deep)',
-                  color: 'white',
-                  borderColor: 'var(--color-navy-deep)',
-                }}
-              >
+              <TCButton variant="primary" onClick={goNext}>
                 Continue
-              </button>
+              </TCButton>
             </div>
           )}
 
           {/* On step 10: just show a Back button so the user can return to payment */}
           {currentStep === TOTAL_STEPS && (
             <div style={{ marginTop: '28px' }}>
-              <button
-                type="button"
-                className="bf-nav-back"
-                onClick={goBack}
-                style={{ ...navBtnBase }}
-              >
+              <TCButton variant="ghost" onClick={goBack}>
                 ← Back
-              </button>
+              </TCButton>
             </div>
           )}
         </main>

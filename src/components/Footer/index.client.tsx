@@ -8,6 +8,7 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
+import { TCButton } from '@/components/ui/TCButton'
 import { CMSLink } from '@/components/CMSLink'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -56,13 +57,7 @@ export function FooterClient({ footer }: Props) {
           <h3 className="text-[1.8rem] font-extrabold text-white m-0">
             Ready for a spotless space?
           </h3>
-          <Link
-            href="/booking"
-            className="flex-shrink-0 inline-flex items-center px-10 py-5 bg-teal text-primary-foreground font-bold font-mono text-[0.8rem] tracking-[1px] no-underline transition-all duration-500 hover:-translate-y-[5px] hover:bg-white hover:text-navy-deep"
-            style={{ boxShadow: '0 10px 30px color-mix(in oklch, var(--color-teal) 30%, transparent)' }}
-          >
-            BOOK ONLINE NOW
-          </Link>
+          <TCButton variant="primary" href="/booking">BOOK ONLINE NOW</TCButton>
         </div>
       </div>
 

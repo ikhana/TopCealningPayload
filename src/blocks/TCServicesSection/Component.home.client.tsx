@@ -5,6 +5,7 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
+import { TCButton } from '@/components/ui/TCButton'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
@@ -213,19 +214,8 @@ export function TCServicesSectionHome() {
                       </ul>
                     </div>
                     <div className="flex items-center gap-4">
-                      <Link href={service.href}
-                        className="flex items-center gap-2 font-mono text-[0.75rem] font-bold uppercase tracking-[1px] text-white no-underline hover:text-teal transition-colors duration-200">
-                        Learn More
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                          strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                          <line x1="5" y1="12" x2="19" y2="12" />
-                          <polyline points="12 5 19 12 12 19" />
-                        </svg>
-                      </Link>
-                      <Link href="/booking"
-                        className="tc-quote-btn bg-teal font-mono text-[0.7rem] font-bold uppercase tracking-[1px] text-white no-underline px-5 py-3 transition-all duration-200">
-                        Get a Quote
-                      </Link>
+                      <TCButton variant="inline" size="sm" href={service.href}>Learn More</TCButton>
+                      <TCButton variant="primary" size="sm" href="/booking">Get a Quote</TCButton>
                     </div>
                   </div>
                 </div>
@@ -239,15 +229,7 @@ export function TCServicesSectionHome() {
             <h3 className="text-[2rem] font-extrabold text-navy-deep mb-[30px] leading-tight">
               Ready to experience exceptional cleaning?
             </h3>
-            <Link href="/booking"
-              className={cn(
-                'inline-block font-mono font-bold text-[0.85rem] uppercase tracking-[1px]',
-                'bg-teal text-white no-underline px-16 py-6 transition-all duration-500',
-                'hover:-translate-y-[5px] hover:bg-navy-deep',
-              )}
-              style={{ boxShadow:'0 10px 30px rgba(23,176,171,.3)' }}>
-              Get Your Instant Estimate
-            </Link>
+            <TCButton variant="primary" href="/booking">Get Your Instant Estimate</TCButton>
           </div>
 
         </div>

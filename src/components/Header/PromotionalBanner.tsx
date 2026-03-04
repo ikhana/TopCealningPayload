@@ -37,7 +37,7 @@ export function PromotionalBanner({
   const hasSocials = socialLinks?.facebook || socialLinks?.instagram || socialLinks?.twitter
 
   return (
-    <div className="w-full h-10 flex items-center justify-between overflow-hidden font-mono text-[11px] tracking-[0.05em] relative z-[1001] bg-navy-deep border-b border-white/[0.08]">
+    <div className="w-full h-10 flex items-center justify-between overflow-hidden font-mono text-[11px] tracking-[0.05em] relative z-[1001] bg-teal border-b border-white/[0.15]">
 
       {/* ── Left: contact info ─────────────────────────────── */}
       <div className="flex items-center gap-5 px-[5%]">
@@ -70,11 +70,11 @@ export function PromotionalBanner({
       {/* ── Centre: pulsing status badge ───────────────────── */}
       {showStatus && statusText && (
         <div
-          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 px-[10px] py-[3px] font-bold text-[10px] text-teal whitespace-nowrap border border-teal bg-teal/[0.12]"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 px-[10px] py-[3px] font-bold text-[10px] text-white whitespace-nowrap border border-white/40 bg-white/[0.15]"
         >
           <span
-            className="w-[6px] h-[6px] rounded-full flex-shrink-0 animate-pulse bg-teal"
-            style={{ boxShadow: '0 0 8px var(--color-teal)' }}
+            className="w-[6px] h-[6px] rounded-full flex-shrink-0 animate-pulse bg-white"
+            style={{ boxShadow: '0 0 8px rgba(255,255,255,0.6)' }}
           />
           {statusText}
         </div>

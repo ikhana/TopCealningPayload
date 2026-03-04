@@ -6,7 +6,7 @@
 // sediment wave, floating dust particles, mouse-parallax on big numbers.
 // "Link Integrity Error" kicker removed per design direction.
 
-import Link from 'next/link'
+import { TCButton } from '@/components/ui/TCButton'
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -163,6 +163,7 @@ export default function NotFound() {
         .nf-content { position: relative; z-index: 20; }
 
         .nf-h1 {
+          font-family: var(--font-heading, 'Soleil', var(--font-sans, 'Inter', sans-serif));
           font-size: clamp(3rem, 6vw, 5rem);
           font-weight: 900;
           line-height: 0.9;
@@ -195,37 +196,6 @@ export default function NotFound() {
           animation: nf-reveal 0.8s 0.8s forwards;
         }
 
-        .nf-btn {
-          display: inline-flex; align-items: center;
-          padding: 1.2rem 2.5rem;
-          font-family: var(--font-mono, monospace);
-          font-weight: 700; font-size: 0.85rem;
-          letter-spacing: 1px;
-          text-decoration: none;
-          border: none; cursor: pointer;
-          transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
-          background: none;
-        }
-        .nf-btn-primary {
-          background: #17b0ab;
-          color: white;
-          box-shadow: 8px 8px 0 #0d1b2e;
-        }
-        .nf-btn-primary:hover {
-          transform: translate(-4px,-4px);
-          box-shadow: 12px 12px 0 #fc8181;
-          color: white;
-          text-decoration: none;
-        }
-        .nf-btn-secondary {
-          background: transparent;
-          color: #0d1b2e;
-          border: 1px solid rgba(13,27,46,0.2);
-        }
-        .nf-btn-secondary:hover {
-          background: rgba(255,255,255,0.5);
-          border-color: #0d1b2e;
-        }
 
 /* ── Animations ── */
         @keyframes nf-reveal {
@@ -246,8 +216,7 @@ export default function NotFound() {
           .nf-visual { order:-1; height:300px; }
           .nf-big { font-size:40vw; }
           .nf-desc { margin-inline:auto; }
-          .nf-actions { justify-content:center; flex-direction:column; }
-          .nf-btn { width:100%; justify-content:center; }
+          .nf-actions { justify-content:center; flex-direction:column; align-items:center; }
         }
       `}</style>
 
@@ -288,15 +257,8 @@ export default function NotFound() {
               </p>
 
               <div className="nf-actions">
-                <Link href="/" className="nf-btn nf-btn-primary">
-                  START FRESH AT HOME
-                </Link>
-                <button
-                  className="nf-btn nf-btn-secondary"
-                  onClick={() => router.back()}
-                >
-                  GO BACK A STEP
-                </button>
+                <TCButton variant="primary" href="/">START FRESH AT HOME</TCButton>
+                <TCButton variant="ghost" onClick={() => router.back()}>GO BACK A STEP</TCButton>
               </div>
             </div>
 

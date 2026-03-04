@@ -11,6 +11,7 @@
 'use client'
 
 import { TCHeadingStack } from '@/components/ui/TCHeading'
+import { TCButton } from '@/components/ui/TCButton'
 import Link from 'next/link'
 
 type Props = {
@@ -133,12 +134,7 @@ export function TCWhyTopSectionClient(_props: Props) {
               Top Cleaning combines expertise, reliability, and attention to detail to exceed
               your expectations in every workspace.
             </p>
-            <Link
-              href="/booking"
-              className="inline-block font-mono font-bold text-[0.85rem] uppercase tracking-[1px] bg-teal text-white no-underline px-8 py-[18px] transition-all duration-300 hover:bg-white hover:text-navy-deep"
-            >
-              Book Your Cleaning
-            </Link>
+            <TCButton variant="dark" href="/booking">Book Your Cleaning</TCButton>
           </aside>
 
           {/* ── 2-col node grid ─────────────────────────────── */}

@@ -93,7 +93,6 @@ export function AboutSplitClient(props: AboutSplitBlock) {
         .sh-text-block {
           width: 55%;
           padding: 40px;
-          border-left: 3px solid #17b0ab;
           background: rgba(13, 27, 46, 0.85);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
@@ -178,7 +177,7 @@ export function AboutSplitClient(props: AboutSplitBlock) {
         }
       `}</style>
 
-      <div className="sh-blade">
+      <div data-dark-hero="true" className="sh-blade">
 
         {/* Background image — left diagonal clip */}
         {/* eslint-disable-next-line @next/next/no-img-element */}

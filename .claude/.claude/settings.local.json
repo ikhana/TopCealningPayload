@@ -10,7 +10,8 @@
       "Bash(ls /c/Users/HP/BBWEBSITES/TopCleaningPayload/src/blocks/TC*/)",
       "Bash(grep -r \"tcAboutSection\\\\|tcServiceCommitment\\\\|tcServicesSection\\\\|blocks\" /c/Users/HP/BBWEBSITES/TopCleaningPayload/src/app/\\\\\\(app\\\\\\)/[slug]/page.tsx)",
       "Bash(grep -rn \"layout\\\\|blocks\\\\|homepage\\\\|home\" /c/Users/HP/BBWEBSITES/TopCleaningPayload/src/app/\\\\\\(app\\\\\\)/[slug]/page.tsx)",
-      "Bash(xargs grep -l \"tcAboutSection\\\\|tcServiceCommitment\\\\|tcServicesSection\")"
+      "Bash(xargs grep -l \"tcAboutSection\\\\|tcServiceCommitment\\\\|tcServicesSection\")",
+      "Bash(dir \"C:\\\\Users\\\\HP\\\\BBWEBSITES\\\\TopCleaningPayload\\\\src\\\\blocks\" /b)"
     ]
   }
 }

@@ -10,7 +10,7 @@
 
 'use client'
 
-import Link from 'next/link'
+import { TCButton } from '@/components/ui/TCButton'
 import { useEffect, useRef, useState } from 'react'
 
 const SERVICES = [
@@ -233,21 +233,13 @@ export function TCServicesSectionServicesPage() {
         }
         .sp-meta-label { font-family:var(--font-mono,monospace); font-size:0.58rem; text-transform:uppercase; color:#5a6a84; margin-bottom:3px; display:block; }
         .sp-meta-value { font-weight:700; font-size:0.85rem; color:#0d1b2e; }
-        .sp-card-actions { display:grid; grid-template-columns:1fr 1.2fr; gap:12px; }
-        .sp-btn-secondary {
-          font-family:var(--font-mono,monospace); font-size:0.68rem; font-weight:700;
-          text-transform:uppercase; color:#0d1b2e; padding:13px;
-          border:1px solid rgba(13,27,46,.12); text-align:center; text-decoration:none;
-          transition:all .4s ease; letter-spacing:0.5px; display:block;
+        .sp-card-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+
+        /* ── Background streak ── */
+        @keyframes sp-streak {
+          0%   { transform: rotate(-35deg) translateY(-200px) translateX(-100%); }
+          100% { transform: rotate(-35deg) translateY(-200px) translateX(200%); }
         }
-        .sp-btn-secondary:hover { border-color:#0d1b2e; background:#0d1b2e; color:white; }
-        .sp-btn-primary {
-          font-family:var(--font-mono,monospace); font-size:0.68rem; font-weight:700;
-          text-transform:uppercase; background:#17b0ab; color:white; padding:13px;
-          text-align:center; text-decoration:none; transition:all .4s ease;
-          letter-spacing:0.5px; display:block;
-        }
-        .sp-btn-primary:hover { background:#0d1b2e; transform:translateY(-2px); box-shadow:0 10px 20px rgba(13,27,46,.2); }
 
         /* ── Empty state ── */
         .sp-empty { grid-column:1/-1; text-align:center; padding:80px 20px; font-family:var(--font-mono,monospace); color:#5a6a84; font-size:0.85rem; }
@@ -291,8 +283,23 @@ export function TCServicesSectionServicesPage() {
       </div>
 
       {/* ── Card grid ── */}
-      <div className="px-[4%] py-[60px]" style={{ background: '#fcfcf9' }}>
-        <div ref={gridRef} className="sp-grid max-w-[1440px] mx-auto">
+      <div className="relative px-[4%] py-[60px] overflow-hidden" style={{ background: '#ffffff' }}>
+
+        {/* Teal line grid */}
+        <div aria-hidden className="absolute inset-0 pointer-events-none z-0" style={{
+          backgroundImage: 'linear-gradient(rgba(23,176,171,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(23,176,171,0.05) 1px, transparent 1px)',
+          backgroundSize: '100px 100px',
+        }} />
+
+        {/* Sweeping light streak */}
+        <div aria-hidden className="absolute pointer-events-none z-0" style={{
+          width: '150%', height: '80px',
+          background: 'linear-gradient(90deg, transparent, rgba(23,176,171,0.08), transparent)',
+          transform: 'rotate(-35deg) translateY(-200px)',
+          top: '0', left: '-25%',
+          animation: 'sp-streak 10s infinite linear',
+        }} />
+        <div ref={gridRef} className="sp-grid max-w-[1440px] mx-auto relative z-[1]">
           {filtered.length === 0 ? (
             <div className="sp-empty">
               No services found — try a different search or filter.
@@ -330,8 +337,8 @@ export function TCServicesSectionServicesPage() {
 
                   {/* Buttons */}
                   <div className="sp-card-actions">
-                    <Link href={service.href} className="sp-btn-secondary">Learn More</Link>
-                    <Link href="/booking"    className="sp-btn-primary">Book Now</Link>
+                    <TCButton variant="inline" size="sm" href={service.href}>Learn More</TCButton>
+                    <TCButton variant="primary" size="sm" href="/booking">Book Now</TCButton>
                   </div>
                 </div>
 

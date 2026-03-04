@@ -12,6 +12,7 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
+import { TCButton } from '@/components/ui/TCButton'
 import Link from 'next/link'
 
 type Props = {
@@ -47,7 +48,7 @@ export function TCHomeHeroClient(_props: Props) {
         }
       `}</style>
 
-      <section className="relative min-h-screen w-full flex flex-col -mt-20 lg:-mt-24 bg-[#0d1b2e]">
+      <section data-dark-hero="true" className="relative min-h-screen w-full flex flex-col -mt-20 lg:-mt-24 bg-[#0d1b2e]">
 
         {/* ── Background image + dark left-to-right overlay ── */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
@@ -187,12 +188,7 @@ export function TCHomeHeroClient(_props: Props) {
               <h3 className="text-[1.6rem] lg:text-[2.2rem] font-extrabold tracking-[-1px] text-white mb-5 lg:mb-8 leading-tight">
                 Homes that breathe.
               </h3>
-              <Link
-                href="/booking"
-                className="inline-flex items-center px-7 py-4 lg:px-10 lg:py-5 bg-teal text-white font-bold text-[0.85rem] tracking-[1px] no-underline transition-all duration-500 hover:bg-navy-deep"
-              >
-                BOOK IN 60 SECONDS
-              </Link>
+              <TCButton variant="primary" href="/booking">BOOK IN 60 SECONDS</TCButton>
             </div>
 
             {/* Panel 2 — Commercial */}
@@ -215,12 +211,7 @@ export function TCHomeHeroClient(_props: Props) {
               <h3 className="text-[1.6rem] lg:text-[2.2rem] font-extrabold tracking-[-1px] text-white mb-5 lg:mb-8 leading-tight">
                 Elevate your workspace.
               </h3>
-              <Link
-                href="/booking"
-                className="inline-flex items-center px-7 py-4 lg:px-10 lg:py-5 bg-coral text-white font-bold text-[0.85rem] tracking-[1px] no-underline transition-all duration-500 hover:bg-navy-deep"
-              >
-                GET A CUSTOM QUOTE
-              </Link>
+              <TCButton variant="dark" href="/booking">GET A CUSTOM QUOTE</TCButton>
             </div>
 
           </div>
