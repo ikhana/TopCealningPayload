@@ -128,8 +128,6 @@ export function TCWhyTopSectionClient(_props: Props) {
               className="wt-sidebar-text text-[0.9rem] leading-[1.7] mb-[40px]"
               style={{
                 color: 'rgba(255,255,255,0.55)',
-                borderRight: '1px solid rgba(23,176,171,0.4)',
-                paddingRight: '30px',
               }}
             >
               Top Cleaning combines expertise, reliability, and attention to detail to exceed

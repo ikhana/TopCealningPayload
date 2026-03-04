@@ -174,6 +174,7 @@ export const TCHeadingStack: React.FC<TCHeadingStackProps> = ({
             letterSpacing: '-1px',
             lineHeight: 0.85,
             marginBottom: '-1.2rem',
+            whiteSpace: 'nowrap',
           }}
           aria-hidden="true"
         >

@@ -129,7 +129,7 @@ export function TCAboutSectionClient(_props: Props) {
             />
 
             {/* Subtext with teal left border */}
-            <p className="text-[1.1rem] leading-[1.7] text-foreground/70 border-l-[3px] border-teal pl-6 mb-10 max-w-[480px]">
+            <p className="text-[1.1rem] leading-[1.7] text-foreground/70 mb-10 max-w-[480px]">
               Top Cleaning is built on a commitment to quality, reliability, and care. Every service
               we deliver reflects our belief that a clean space is a better space — for living,
               working, and thriving.

@@ -15,6 +15,7 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
+import { TCHeadingStack } from '@/components/ui/TCHeading'
 import Link from 'next/link'
 
 type Props = {
@@ -45,13 +46,7 @@ export function TCServiceCommitmentClient(_props: Props) {
         .tc-ticker-wrap:hover .tc-ticker-track {
           animation-play-state: paused;
         }
-        @keyframes tc-rotate-seal {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        .tc-rotate-seal {
-          animation: tc-rotate-seal 20s linear infinite;
-        }
+
         /* ── Service Commitment responsive ── */
         @media (max-width: 1024px) {
           .tc-commit-g2 { grid-template-columns: 1fr !important; }
@@ -62,7 +57,7 @@ export function TCServiceCommitmentClient(_props: Props) {
           .tc-commit-s2      { overflow: hidden !important; }
           .tc-commit-g2      { min-height: auto !important; }
           .tc-commit-text2   { padding: 50px 5% !important; padding-right: 5% !important; }
-          .tc-commit-seal    { display: none !important; }
+
           .tc-commit-s3      { clip-path: none !important; }
           .tc-commit-cta     { padding: 40px 5% !important; }
         }
@@ -84,12 +79,16 @@ export function TCServiceCommitmentClient(_props: Props) {
 
           {/* Row 1 — Header anchored top-left (~55% wide on desktop) */}
           <div className="w-full lg:max-w-[55%] pb-[60px]">
-            <h3
-              className="font-black text-navy-deep leading-[1.1] tracking-[-1px] mb-[18px]"
-              style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}
-            >
-              Customized Maintenance Programs
-            </h3>
+            {/* Heading — ghost kicker + tight-stack (TCHeadingStack) */}
+            <TCHeadingStack
+              ghostKicker="Maintenance"
+              mainLine="Customized"
+              secondaryLine="Programs"
+              level="h3"
+              theme="light"
+              size="md"
+              className="mb-[18px]"
+            />
             <p className="text-[1.05rem] leading-[1.75] text-foreground/60">
               Customized Maintenance Programs are cleaning and maintenance plans designed to meet
               the specific needs of each client. Instead of offering a standard service, these
@@ -167,23 +166,6 @@ export function TCServiceCommitmentClient(_props: Props) {
           position: 'relative',
         }}
       >
-        {/* Rotating seal — straddles Section 1 / Section 2 boundary */}
-        <div
-          className="tc-commit-seal tc-rotate-seal absolute flex items-center justify-center text-center font-mono text-[0.7rem] font-bold uppercase rounded-full border-2 border-teal"
-          style={{
-            width: '140px',
-            height: '140px',
-            top: '-70px',
-            right: '40px',
-            background: 'var(--color-navy-deep)',
-            boxShadow: '0 0 30px rgba(23,176,171,0.4)',
-            lineHeight: '1.4',
-            padding: '20px',
-            zIndex: 3,
-          }}
-        >
-          Top Quality<br />Guaranteed<br />★ ★ ★
-        </div>
 
         <div
           className="tc-commit-g2 max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] relative"
@@ -192,15 +174,16 @@ export function TCServiceCommitmentClient(_props: Props) {
           {/* Left — text content */}
           <div className="tc-commit-text2 relative z-[2] py-[100px] lg:pr-10 px-[6%]">
 
-            {/* Kicker */}
-            <span className="block font-mono text-teal font-bold uppercase tracking-[0.3em] text-[0.8rem] mb-4">
-              The Promise
-            </span>
-
-            {/* Heading */}
-            <h3 className="font-black leading-[1.1] tracking-[-1px] mb-5 text-[3rem]">
-              Satisfaction<br />Guaranteed.
-            </h3>
+            {/* Heading — ghost kicker + tight-stack (TCHeadingStack) */}
+            <TCHeadingStack
+              ghostKicker="The Promise"
+              mainLine="Satisfaction"
+              secondaryLine="Guaranteed."
+              level="h3"
+              theme="dark"
+              size="lg"
+              className="mb-5"
+            />
 
             {/* Body */}
             <p className="text-[1.1rem] leading-[1.7] mb-10 max-w-[500px] opacity-80">
