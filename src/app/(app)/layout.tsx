@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           crossOrigin="anonymous"
         />
       </head>
-      <body className="flex flex-col antialiased font-body overflow-x-hidden">
+      <body className="flex flex-col antialiased font-body">
         {/* ── Global grain overlay (backgrond.html technique) ──────────
             Fixed SVG fractal-noise filter, multiply blend, pointer-events:none.
             Applies the cellulose-fiber tactile texture across all sections. */}

@@ -8,7 +8,7 @@
 
 @custom-variant dark (&:is([data-theme='dark'] *));
 
-html { overflow-x: hidden; }
+html, body { overflow-x: clip; }
 
 /* Custom Fonts — Soleil */
 @font-face {
