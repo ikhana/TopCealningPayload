@@ -95,7 +95,7 @@ export function HeaderClient({ header }: Props) {
   const accentBg = isDark ? 'bg-white/70' : 'bg-teal'
 
   return (
-    <>
+    <div className="sticky top-0 z-[1000] w-full">
       {/* ── Utility Bar (PromotionalBanner override) ──────── */}
       <PromotionalBanner
         phone1={utilityBar.phone1}
@@ -110,11 +110,11 @@ export function HeaderClient({ header }: Props) {
         }}
       />
 
-      {/* ── Sticky Main Header ───────────────────────────────*/}
+      {/* ── Main Header ──────────────────────────────────────*/}
       <header
         className={cn(
-          'sticky top-0 z-[1000] w-full',
-          'h-[76px] bg-[#0d1b2e]/[0.90] backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-b border-white/[0.08]',
+          'w-full',
+          'h-[56px] md:h-[76px] bg-[#0d1b2e]/[0.90] backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-b border-white/[0.08]',
         )}
       >
         <div className="flex items-center justify-between h-full px-[5%]">
@@ -122,8 +122,7 @@ export function HeaderClient({ header }: Props) {
           {/* ── Logo — oversized, overflows below header border ── */}
           <Link
             href="/"
-            className="flex items-center gap-3 flex-shrink-0 no-underline relative z-[10]"
-            style={{ transform: 'translateY(22px)' }}
+            className="tc-header-logo flex items-center gap-3 flex-shrink-0 no-underline relative z-[10]"
           >
             {logoImage?.url ? (
               <Image
@@ -131,20 +130,20 @@ export function HeaderClient({ header }: Props) {
                 alt={logoImage.alt || 'Top Cleaning'}
                 width={300}
                 height={110}
-                className="h-[110px] w-auto"
+                className="h-[75px] md:h-[110px] w-auto"
                 priority
               />
             ) : (
               <>
                 <div
-                  className="w-[52px] h-[52px] bg-teal flex-shrink-0"
+                  className="w-[36px] h-[36px] md:w-[52px] md:h-[52px] bg-teal flex-shrink-0"
                   style={{
                     clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)',
                     boxShadow: '0 4px 12px color-mix(in oklch, var(--color-teal) 35%, transparent)',
                   }}
                 />
                 <span className={cn(
-                  'text-[1.9rem] font-black tracking-[-0.5px] leading-none transition-colors duration-300',
+                  'text-[1.3rem] md:text-[1.9rem] font-black tracking-[-0.5px] leading-none transition-colors duration-300',
                   isDark ? 'text-white' : 'text-navy-deep',
                 )}>
                   TOP CLEANING
@@ -416,6 +415,6 @@ export function HeaderClient({ header }: Props) {
           </nav>
         </div>
       </header>
-    </>
+    </div>
   )
 }
