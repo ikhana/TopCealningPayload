@@ -1,78 +1,245 @@
 // src/blocks/TextContent/Component.tsx
+// TC-branded rich text content block.
+// Clean editorial layout — white bg, Soleil headings, teal accents.
+//
+// Typography system:
+//   • Headings  → Soleil (var(--font-heading)), navy-deep (#0d1b2e)
+//   • H2        → teal (#17b0ab), with teal left border
+//   • Body      → Poppins (var(--font-body)), muted dark
+//   • Links     → teal, underline on hover
+//   • Blockquote → teal left border, teal-light bg
+//   • Lists     → teal bullet/number markers
+//   • Code      → JetBrains Mono, sand bg
+//   • HR        → teal thin rule
 
 import RichText from '@/components/RichText'
 import type { TextContentBlock as TextContentBlockProps } from '@/payload-types'
-import { cn } from '@/utilities/cn'
 import React from 'react'
 
 export const TextContentBlock: React.FC<TextContentBlockProps> = ({ content }) => {
   if (!content) return null
 
   return (
-    <section className="relative py-12 lg:py-16 bg-background dark:bg-card">
-      <div className="container mx-auto px-4">
-        
-        <div className="relative max-w-4xl mx-auto p-8 lg:p-12 bg-background dark:bg-card">
-          
-          <div className="absolute left-0 top-0 h-px w-full bg-gradient-to-l from-border-gradient-light via-border-gradient-mid to-border-gradient-dark" />
-          <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-border-gradient-light via-border-gradient-mid to-border-gradient-dark" />
-          <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-t from-border-gradient-light via-border-gradient-mid to-border-gradient-dark" />
-          <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-t from-border-gradient-light via-border-gradient-mid to-border-gradient-dark" />
+    <>
+      <style>{`
+        /* ── Section shell ── */
+        .tc-text-section {
+          background: #ffffff;
+          padding: 80px 5%;
+        }
 
-          <div className="absolute top-6 left-6 w-3 h-3 border-2 border-primary bg-primary/5" />
-          <div className="absolute bottom-6 right-6 w-3 h-3 border-2 border-primary bg-primary/5" />
+        /* ── Content column ── */
+        .tc-text-inner {
+          max-width: 860px;
+          margin: 0 auto;
+          position: relative;
+          padding-left: 28px;
+          border-left: 3px solid #17b0ab;
+        }
 
-          <div className="relative">
-            <div className="absolute -left-3 top-0 w-1 h-16 bg-gradient-to-b from-primary via-primary/50 to-transparent" />
-            
-            <div className={cn(
-              'prose prose-lg max-w-none',
-              
-              'prose-headings:font-heading prose-headings:text-foreground prose-headings:font-semibold prose-headings:tracking-wide',
-              'prose-h2:text-2xl lg:prose-h2:text-3xl prose-h2:font-bold prose-h2:mb-6 prose-h2:text-primary',
-              'prose-h3:text-xl lg:prose-h3:text-2xl prose-h3:font-semibold prose-h3:mb-4 prose-h3:text-primary',
-              'prose-h4:text-lg lg:prose-h4:text-xl prose-h4:font-medium prose-h4:mb-3',
-              
-              'prose-p:font-body prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:mb-4',
-              'prose-p:text-base lg:prose-p:text-lg',
-              
-              'prose-strong:text-foreground prose-strong:font-semibold',
-              'prose-em:text-muted-foreground prose-em:italic',
-              
-              'prose-a:text-primary prose-a:no-underline prose-a:transition-colors prose-a:duration-200',
-              'hover:prose-a:text-primary/80',
-              'prose-a:border-b prose-a:border-primary/30',
-              'hover:prose-a:border-primary',
-              
-              'prose-ul:space-y-2 prose-ol:space-y-2',
-              'prose-li:text-muted-foreground prose-li:font-body',
-              'prose-li:marker:text-primary',
-              
-              'prose-blockquote:border-l-4 prose-blockquote:border-primary/40',
-              'prose-blockquote:pl-6 prose-blockquote:italic',
-              'prose-blockquote:text-muted-foreground',
-              'prose-blockquote:bg-primary/5',
-              'prose-blockquote:py-4 prose-blockquote:rounded-r-lg',
-              
-              'prose-code:bg-muted prose-code:text-foreground',
-              'prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:font-mono prose-code:text-sm',
-              
-              'prose-table:border-collapse',
-              'prose-th:bg-muted prose-th:text-foreground prose-th:font-semibold prose-th:px-4 prose-th:py-3 prose-th:font-body',
-              'prose-td:text-muted-foreground prose-td:px-4 prose-td:py-3 prose-td:font-body',
-              
-              'prose-hr:border-border'
-            )}>
-              <RichText data={content} enableGutter={false} enableProse={false} />
-            </div>
-          </div>
+        /* ── Headings ── */
+        .tc-text-inner .prose h1,
+        .tc-text-inner .prose h2,
+        .tc-text-inner .prose h3,
+        .tc-text-inner .prose h4 {
+          font-family: var(--font-heading, 'Soleil', system-ui, sans-serif);
+          color: #0d1b2e;
+          line-height: 1.15;
+          letter-spacing: -0.3px;
+          margin-top: 2em;
+          margin-bottom: 0.6em;
+        }
 
-          <div className="absolute top-8 right-8 flex items-center gap-2 opacity-30">
-            <div className="w-2 h-2 border border-primary bg-primary/10" />
-            <div className="w-1.5 h-1.5 border border-primary bg-primary/10" />
+        .tc-text-inner .prose h1 {
+          font-size: clamp(2rem, 4vw, 3rem);
+          font-weight: 900;
+        }
+
+        .tc-text-inner .prose h2 {
+          font-size: clamp(1.5rem, 3vw, 2.25rem);
+          font-weight: 800;
+          color: #17b0ab;
+        }
+
+        .tc-text-inner .prose h3 {
+          font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+          font-weight: 700;
+        }
+
+        .tc-text-inner .prose h4 {
+          font-size: 1.1rem;
+          font-weight: 700;
+          font-family: var(--font-mono, 'JetBrains Mono', monospace);
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          color: #17b0ab;
+          font-size: 0.85rem;
+        }
+
+        /* ── Body text ── */
+        .tc-text-inner .prose p {
+          font-family: var(--font-body, 'Poppins', sans-serif);
+          font-size: 1.05rem;
+          line-height: 1.85;
+          color: rgba(13, 27, 46, 0.72);
+          margin-bottom: 1.4em;
+        }
+
+        /* ── Links ── */
+        .tc-text-inner .prose a {
+          color: #17b0ab;
+          text-decoration: none;
+          border-bottom: 1px solid rgba(23, 176, 171, 0.35);
+          transition: border-color 0.25s ease, color 0.25s ease;
+        }
+
+        .tc-text-inner .prose a:hover {
+          color: #0f8a86;
+          border-bottom-color: #0f8a86;
+        }
+
+        /* ── Strong / Em ── */
+        .tc-text-inner .prose strong {
+          font-weight: 700;
+          color: #0d1b2e;
+        }
+
+        .tc-text-inner .prose em {
+          color: rgba(13, 27, 46, 0.65);
+        }
+
+        /* ── Lists ── */
+        .tc-text-inner .prose ul,
+        .tc-text-inner .prose ol {
+          padding-left: 1.5em;
+          margin-bottom: 1.4em;
+        }
+
+        .tc-text-inner .prose li {
+          font-family: var(--font-body, 'Poppins', sans-serif);
+          font-size: 1.05rem;
+          line-height: 1.75;
+          color: rgba(13, 27, 46, 0.72);
+          margin-bottom: 0.4em;
+        }
+
+        .tc-text-inner .prose ul li::marker {
+          color: #17b0ab;
+        }
+
+        .tc-text-inner .prose ol li::marker {
+          color: #17b0ab;
+          font-family: var(--font-mono, monospace);
+          font-weight: 700;
+        }
+
+        /* ── Blockquote ── */
+        .tc-text-inner .prose blockquote {
+          border-left: 4px solid #17b0ab;
+          background: #e0f5f4;
+          margin: 2em 0;
+          padding: 20px 28px;
+          border-radius: 0 4px 4px 0;
+        }
+
+        .tc-text-inner .prose blockquote p {
+          font-size: 1.1rem;
+          font-style: italic;
+          color: #0d1b2e;
+          margin-bottom: 0;
+        }
+
+        /* ── Code ── */
+        .tc-text-inner .prose code {
+          font-family: var(--font-mono, 'JetBrains Mono', monospace);
+          font-size: 0.875rem;
+          background: #f5efe0;
+          color: #0d1b2e;
+          padding: 3px 8px;
+          border-radius: 2px;
+        }
+
+        .tc-text-inner .prose pre {
+          background: #0d1b2e;
+          padding: 24px;
+          border-radius: 0;
+          border-left: 3px solid #17b0ab;
+          overflow-x: auto;
+        }
+
+        .tc-text-inner .prose pre code {
+          background: transparent;
+          color: #e0f5f4;
+          padding: 0;
+          font-size: 0.9rem;
+        }
+
+        /* ── HR ── */
+        .tc-text-inner .prose hr {
+          border: none;
+          border-top: 1px solid rgba(23, 176, 171, 0.3);
+          margin: 2.5em 0;
+        }
+
+        /* ── Table ── */
+        .tc-text-inner .prose table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 1.4em;
+          font-size: 0.95rem;
+        }
+
+        .tc-text-inner .prose th {
+          background: #0d1b2e;
+          color: #ffffff;
+          font-family: var(--font-mono, monospace);
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          padding: 12px 16px;
+          text-align: left;
+        }
+
+        .tc-text-inner .prose td {
+          padding: 12px 16px;
+          border-bottom: 1px solid rgba(23, 176, 171, 0.15);
+          color: rgba(13, 27, 46, 0.75);
+          vertical-align: top;
+        }
+
+        .tc-text-inner .prose tr:last-child td {
+          border-bottom: none;
+        }
+
+        /* ── First element — no top margin ── */
+        .tc-text-inner .prose > *:first-child {
+          margin-top: 0;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+          .tc-text-section {
+            padding: 60px 5%;
+          }
+
+          .tc-text-inner {
+            padding-left: 20px;
+          }
+
+          .tc-text-inner .prose p,
+          .tc-text-inner .prose li {
+            font-size: 1rem;
+          }
+        }
+      `}</style>
+
+      <section className="tc-text-section">
+        <div className="tc-text-inner">
+          <div className="prose max-w-none">
+            <RichText data={content} enableGutter={false} enableProse={false} />
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }
