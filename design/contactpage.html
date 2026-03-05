@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #17b0ab;
+            --teal-dark: #0f8a86;
+            --teal-glow: #3dcfca;
+            --deep-navy: #0d1b2e;
+            --cobalt-core: #1e293b;
+            --cobalt-accent: #334155;
+            --coral: #fc8181;
+            --sand: #f5efe0;
+            --off-white: #f8fafc;
+            --mono-font: 'JetBrains Mono', monospace;
+            --sans-font: 'Inter', sans-serif;
+            --transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
+            --assembly-border: 1px solid rgba(23, 176, 171, 0.25);
+            --header-height: 80px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--sans-font);
+            background: #050a12;
+            color: var(--off-white);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── GLOBAL GRAIN OVERLAY ── */
+        .grain-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; opacity: 0.25; mix-blend-mode: multiply;
+        }
+
+        /* ── UTILITY & HEADER (Synched with Home) ── */
+        .utility-bar {
+            background: var(--deep-navy);
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            font-family: var(--mono-font);
+            font-size: 11px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .main-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--primary-teal);
+        }
+
+        .logo-section {
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: var(--deep-navy);
+            font-weight: 900; font-size: 1.3rem; letter-spacing: -0.5px;
+        }
+
+        .logo-mark {
+            width: 30px; height: 30px; background: var(--primary-teal);
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+        }
+
+        /* ── CONTACT HERO: MACHINED COBALT ASSEMBLY ── */
+        .contact-hero {
+            padding: 120px 5% 60px;
+            position: relative;
+            background: radial-gradient(circle at 70% 30%, rgba(23, 176, 171, 0.08) 0%, transparent 60%);
+        }
+
+        .hero-assembly {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: flex-start;
+        }
+
+        .hero-text-block {
+            position: relative;
+            padding-top: 40px;
+        }
+
+        .machined-kicker {
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            color: var(--primary-teal);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .machined-kicker::before {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--primary-teal);
+        }
+
+        .hero-text-block h1 {
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .hero-text-block h1 span {
+            display: block;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+        }
+
+        .ghost-watermark {
+            position: absolute;
+            top: -20px;
+            left: -40px;
+            font-size: 10rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.02);
+            z-index: -1;
+            pointer-events: none;
+            user-select: none;
+            font-family: var(--mono-font);
+        }
+
+        /* ── ASSEMBLY FORM GRID ── */
+        .contact-assembly-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .assembly-unit {
+            background: var(--deep-navy);
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .assembly-unit:hover {
+            background: var(--cobalt-core);
+        }
+
+        .unit-label {
+            font-family: var(--mono-font);
+            font-size: 0.65rem;
+            color: var(--primary-teal);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .assembly-unit h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .assembly-unit p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .unit-action {
+            margin-top: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: white;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .unit-action svg {
+            transition: transform 0.3s ease;
+        }
+
+        .assembly-unit:hover .unit-action {
+            color: var(--primary-teal);
+        }
+
+        .assembly-unit:hover .unit-action svg {
+            transform: translateX(10px);
+        }
+
+        /* ── THE FORM ENGINE ── */
+        .form-engine-container {
+            background: white;
+            padding: 80px;
+            color: var(--deep-navy);
+            box-shadow: 40px 40px 0 var(--primary-teal);
+            position: relative;
+        }
+
+        .form-engine-container::before {
+            content: '01';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: var(--mono-font);
+            font-weight: 900;
+            font-size: 3rem;
+            color: rgba(23, 176, 171, 0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .field-full { grid-column: span 2; }
+
+        .input-machine {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-machine label {
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--teal-dark);
+        }
+
+        .input-machine input, 
+        .input-machine textarea,
+        .input-machine select {
+            width: 100%;
+            padding: 18px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-family: var(--sans-font);
+            font-size: 1rem;
+            color: var(--deep-navy);
+            transition: var(--transition);
+            border-radius: 0;
+        }
+
+        .input-machine input:focus, 
+        .input-machine textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            background: white;
+            box-shadow: 0 10px 30px rgba(23, 176, 171, 0.1);
+        }
+
+        .submit-button {
+            margin-top: 40px;
+            width: 100%;
+            background: var(--deep-navy);
+            color: white;
+            border: none;
+            padding: 24px;
+            font-family: var(--mono-font);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .submit-button::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .submit-button:hover {
+            background: var(--primary-teal);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(23, 176, 171, 0.3);
+        }
+
+        .submit-button:hover::after {
+            left: 100%;
+        }
+
+        /* ── COORDINATES STRIP ── */
+        .coord-strip {
+            margin-top: 100px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 40px 0;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--mono-font);
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 2px;
+        }
+
+        /* ── MAP ASSEMBLY ── */
+        .map-section {
+            background: var(--off-white);
+            height: 600px;
+            position: relative;
+            margin-top: 100px;
+            border-top: 4px solid var(--primary-teal);
+        }
+
+        .map-overlay-card {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+            background: var(--deep-navy);
+            padding: 50px;
+            width: 420px;
+            z-index: 5;
+            box-shadow: 30px 30px 0 rgba(23, 176, 171, 0.2);
+        }
+
+        .map-overlay-card h4 {
+            font-family: var(--mono-font);
+            color: var(--primary-teal);
+            font-size: 0.7rem;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .address-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 30px;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .map-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1) contrast(1.1) brightness(0.8);
+            opacity: 0.6;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1100px) {
+            .hero-assembly { grid-template-columns: 1fr; gap: 60px; }
+            .form-engine-container { padding: 40px; box-shadow: 20px 20px 0 var(--primary-teal); }
+            .hero-text-block h1 { font-size: 4rem; }
+        }
+
+        @media (max-width: 768px) {
+            .contact-assembly-grid { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .field-full { grid-column: span 1; }
+            .map-overlay-card { position: static; transform: none; width: 100%; }
+            .map-section { height: auto; display: flex; flex-direction: column-reverse; }
+            .map-placeholder { height: 300px; }
+            .coord-strip { flex-direction: column; gap: 20px; text-align: center; }
+        }
+
+        /* ── FOOTER SNIPPET (Consistent) ── */
+        .obsidian-footer {
+            background: #050a12;
+            padding: 80px 5% 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 60px;
+        }
+
+        .footer-logo {
+            display: flex; align-items: center; gap: 12px;
+            color: white; text-decoration: none; font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grain-overlay" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <filter id="tc-grain">
+                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/>
+                <feColorMatrix type="saturate" values="0"/>
+            </filter>
+            <rect width="100%" height="100%" filter="url(#tc-grain)"/>
+        </svg>
+    </div>
+
+    <!-- UTILITY BAR -->
+    <div class="utility-bar">
+        <div style="display: flex; gap: 20px;">
+            <a href="mailto:Topcleaningfl@gmail.com" style="color: rgba(255,255,255,0.6); text-decoration: none;">Topcleaningfl@gmail.com</a>
+            <a href="tel:7543074034" style="color: rgba(255,255,255,0.6); text-decoration: none;">(754) 307-4034</a>
+        </div>
+        <div style="color: var(--primary-teal); font-weight: 700;">[ STATUS: ACTIVE ]</div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <a href="/" class="logo-section">
+            <div class="logo-mark"></div> TOP CLEANING
+        </a>
+        <a href="/" style="font-family: var(--mono-font); text-decoration: none; color: var(--deep-navy); font-size: 0.8rem; font-weight: 700;">BACK TO HOME</a>
+    </header>
+
+    <!-- CONTACT HERO SECTION -->
+    <section class="contact-hero">
+        <div class="hero-assembly">
+            
+            <div class="hero-text-block reveal">
+                <span class="ghost-watermark">CONTACT</span>
+                <div class="machined-kicker">Assembly Phase</div>
+                <h1>Let's Connect <span>Our Experts</span></h1>
+                <p style="font-size: 1.15rem; line-height: 1.8; color: rgba(255,255,255,0.6); max-width: 500px; margin-bottom: 40px;">
+                    Experience the precision of high-fidelity cleaning. Whether it's a home sanctuary or a corporate hub, our assembly line is ready to deploy.
+                </p>
+
+                <div class="contact-assembly-grid">
+                    <div class="assembly-unit">
+                        <span class="unit-label">Dispatch 01</span>
+                        <h3>Residential</h3>
+                        <p>Specialized home units for weekly or deep cycle cleaning.</p>
+                        <a href="tel:7543074034" class="unit-action">
+                            CALL DISPATCH 
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                    </div>
+                    <div class="assembly-unit">
+                        <span class="unit-label">Dispatch 02</span>
+                        <h3>Commercial</h3>
+                        <p>High-volume maintenance programs for business environments.</p>
+                        <a href="mailto:Topcleaningfl@gmail.com" class="unit-action">
+                            EMAIL OFFICE
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="coord-strip">
+                    <span>LAT: 25.7617° N</span>
+                    <span>LNG: 80.1918° W</span>
+                    <span>FLORIDA ASSEMBLY</span>
+                </div>
+            </div>
+
+            <div class="form-engine-container reveal" style="transition-delay: 0.2s;">
+                <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 40px; letter-spacing: -1px;">Inquiry Module</h2>
+                <form id="contactForm" class="form-grid">
+                    <div class="input-machine">
+                        <label>Identity</label>
+                        <input type="text" placeholder="Your Name" required>
+                    </div>
+                    <div class="input-machine">
+                        <label>Protocol</label>
+                        <select required>
+                            <option value="" disabled selected>Select Service</option>
+                            <option>Deep Cleaning</option>
+                            <option>Commercial Maintenance</option>
+                            <option>AirBnB Turnover</option>
+                            <option>Move In / Out</option>
+                        </select>
+                    </div>
+                    <div class="input-machine">
+                        <label>Electronic Mail</label>
+                        <input type="email" placeholder="email@example.com" required>
+                    </div>
+                    <div class="input-machine">
+                        <label>Phone Comms</label>
+                        <input type="tel" placeholder="(000) 000-0000">
+                    </div>
+                    <div class="input-machine field-full">
+                        <label>Detailed Specifications</label>
+                        <textarea rows="5" placeholder="How can we assist you?"></textarea>
+                    </div>
+                    <div class="field-full">
+                        <button type="submit" class="submit-button">
+                            INITIALIZE REQUEST
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="22" y1="2" x2="11" y2="13"/><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- MAP SECTION -->
+    <section class="map-section reveal">
+        <div class="map-overlay-card">
+            <h4>Physical Node</h4>
+            <div class="address-text">
+                FLORIDA REGIONAL HQ<br>
+                Fort Myers &amp; Miami Area Operations
+            </div>
+            <div style="font-family: var(--mono-font); font-size: 0.85rem; color: rgba(255,255,255,0.5);">
+                <p>Operations: Mon — Sun</p>
+                <p>Active Window: 08:00 — 18:00</p>
+            </div>
+            <a href="https://maps.google.com" target="_blank" class="unit-action" style="margin-top: 30px; border-bottom: 1px solid var(--primary-teal); padding-bottom: 5px;">
+                OPEN NAV-SYS
+            </a>
+        </div>
+        <div class="map-placeholder">
+            <!-- Simulated stylized map image -->
+            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=2000" alt="Map View">
+            <div style="position: absolute; width: 40px; height: 40px; background: var(--primary-teal); border-radius: 50%; box-shadow: 0 0 30px var(--primary-teal); animation: statusPulse 2s infinite;"></div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="obsidian-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo">
+                    <div class="logo-mark"></div> TOP CLEANING
+                </a>
+                <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; line-height: 1.6;">
+                    Providing high-fidelity cleaning and maintenance programs across the Florida region.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h5 style="color: var(--primary-teal); font-family: var(--mono-font); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 25px;">Services</h5>
+                <ul style="list-style: none; color: rgba(255,255,255,0.5); font-size: 0.85rem; line-height: 2;">
+                    <li>Deep Cleaning</li>
+                    <li>Residential</li>
+                    <li>Commercial</li>
+                    <li>AirBnB</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5 style="color: var(--primary-teal); font-family: var(--mono-font); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 25px;">Company</h5>
+                <ul style="list-style: none; color: rgba(255,255,255,0.5); font-size: 0.85rem; line-height: 2;">
+                    <li>About Us</li>
+                    <li>Join Team</li>
+                    <li>Privacy</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5 style="color: var(--primary-teal); font-family: var(--mono-font); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 25px;">Comms</h5>
+                <p style="color: white; font-weight: 700;">(754) 307-4034</p>
+                <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Fort Myers, FL</p>
+            </div>
+        </div>
+        <div style="margin-top: 60px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); font-family: var(--mono-font); font-size: 0.65rem; color: rgba(255,255,255,0.3); text-align: center;">
+            © 2026 TOP CLEANING — MACHINED COBALT DESIGN ASSEMBLY.
+        </div>
+    </footer>
+
+    <script>
+        // ── SCROLL REVEAL ──
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // ── MAGNETIC BUTTON EFFECT ──
+        const submitBtn = document.querySelector('.submit-button');
+        if (submitBtn) {
+            submitBtn.addEventListener('mousemove', (e) => {
+                const rect = submitBtn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                submitBtn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+            });
+            submitBtn.addEventListener('mouseleave', () => {
+                submitBtn.style.transform = `translate(0, 0)`;
+            });
+        }
+
+        // ── FORM SUBMISSION SIMULATION ──
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "[ PROCESSING... ]";
+            btn.style.pointerEvents = "none";
+            btn.style.background = "#0f8a86";
+
+            setTimeout(() => {
+                btn.innerHTML = "[ DISPATCHED SUCCESSFULLY ]";
+                btn.style.background = "#17b0ab";
+                e.target.reset();
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.pointerEvents = "all";
+                    btn.style.background = "";
+                }, 3000);
+            }, 1500);
+        });
+
+        // ── MOUSE PARALLAX FOR WATERMARK ──
+        document.addEventListener('mousemove', (e) => {
+            const ghost = document.querySelector('.ghost-watermark');
+            if (ghost) {
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.02;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
+                ghost.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
+

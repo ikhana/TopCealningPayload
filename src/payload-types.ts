@@ -1118,6 +1118,7 @@ export interface Page {
     | TCTestimonialsBlock
     | TCJoinTeamBlock
     | TCBookingFormBlock
+    | TCContactMapBlock
   )[];
   meta?: {
     title?: string | null;
@@ -4688,6 +4689,23 @@ export interface TCBookingFormBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCContactMapBlock".
+ */
+export interface TCContactMapBlock {
+  /**
+   * Paste the embed URL from Google Maps → Share → Embed a map (the src="..." value)
+   */
+  embedUrl?: string | null;
+  /**
+   * Direct link that opens Google Maps when the user clicks "OPEN NAV-SYS"
+   */
+  mapsUrl?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcContactMap';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addons".
  */
 export interface Addon {
@@ -5716,6 +5734,7 @@ export interface PagesSelect<T extends boolean = true> {
         tcTestimonials?: T | TCTestimonialsBlockSelect<T>;
         tcJoinTeam?: T | TCJoinTeamBlockSelect<T>;
         tcBookingForm?: T | TCBookingFormBlockSelect<T>;
+        tcContactMap?: T | TCContactMapBlockSelect<T>;
       };
   meta?:
     | T
@@ -6958,6 +6977,16 @@ export interface TCJoinTeamBlockSelect<T extends boolean = true> {
  * via the `definition` "TCBookingFormBlock_select".
  */
 export interface TCBookingFormBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCContactMapBlock_select".
+ */
+export interface TCContactMapBlockSelect<T extends boolean = true> {
+  embedUrl?: T;
+  mapsUrl?: T;
   id?: T;
   blockName?: T;
 }
