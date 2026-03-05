@@ -52,16 +52,19 @@ export function TCHomeHeroClient(_props: Props) {
 
         {/* ── Background image + dark left-to-right overlay ── */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
-          <img
-            src="/images/backgrounds/herotop1.png"
-            alt="Pristine cleaned interior"
-            className="w-full h-full object-cover object-center"
-            style={{
-              filter: 'brightness(0.85) contrast(1.1)',
-              transform: 'scale(1.05)',
-              animation: 'tc-hero-zoom 20s infinite alternate linear',
-            }}
-          />
+          <picture className="w-full h-full">
+            <source media="(max-width: 768px)" srcSet="/images/backgrounds/herotopmobile.png" />
+            <img
+              src="/images/backgrounds/herotop1.png"
+              alt="Pristine cleaned interior"
+              className="w-full h-full object-cover object-center"
+              style={{
+                filter: 'brightness(0.85) contrast(1.1)',
+                transform: 'scale(1.05)',
+                animation: 'tc-hero-zoom 20s infinite alternate linear',
+              }}
+            />
+          </picture>
           {/* Dark gradient: solid navy-obsidian left → transparent right */}
           <div
             className="absolute inset-0"

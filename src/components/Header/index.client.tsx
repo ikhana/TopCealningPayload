@@ -290,7 +290,7 @@ export function HeaderClient({ header }: Props) {
             onMouseEnter={openMega}
             onMouseLeave={onPanelLeave}
             className={cn(
-              'absolute left-1/2 -translate-x-1/2 top-full z-[1002] w-[560px]',
+              'hidden md:block absolute left-1/2 -translate-x-1/2 top-full z-[1002] w-[560px]',
               'transition-all duration-200',
               megaOpen
                 ? 'opacity-100 translate-y-0 pointer-events-auto'
@@ -298,7 +298,7 @@ export function HeaderClient({ header }: Props) {
             )}
           >
             <div
-              className="bg-background border border-teal/20 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.14)]"
+              className="bg-[#0d1b2e]/[0.97] backdrop-blur-md border border-teal/20 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]"
               style={{ borderTop: '3px solid var(--color-teal)' }}
             >
               <div className="grid grid-cols-2 p-6 gap-1">
@@ -310,9 +310,9 @@ export function HeaderClient({ header }: Props) {
                       link={item.link}
                       className={cn(
                         'flex items-center px-4 py-[0.65rem] no-underline',
-                        'text-[0.85rem] font-medium text-foreground',
+                        'text-[0.85rem] font-medium text-white/80',
                         'border-l-[3px] border-l-transparent',
-                        'hover:bg-teal-light hover:text-teal-dark hover:border-l-teal hover:pl-[1.3rem]',
+                        'hover:bg-teal/[0.12] hover:text-white hover:border-l-teal hover:pl-[1.3rem]',
                         'transition-all duration-200',
                       )}
                     >
@@ -330,7 +330,7 @@ export function HeaderClient({ header }: Props) {
           id="mobile-menu"
           className={cn(
             'md:hidden absolute inset-x-0 top-full z-[1001]',
-            'bg-background border-b border-teal/20',
+            'bg-[#0d1b2e]/[0.97] backdrop-blur-md border-b border-teal/20',
             'transition-all duration-300 overflow-hidden',
             mobileOpen
               ? 'opacity-100 pointer-events-auto max-h-[600px]'
@@ -350,8 +350,8 @@ export function HeaderClient({ header }: Props) {
                     className={cn(
                       'px-4 py-3 no-underline',
                       'font-mono text-[0.8rem] font-semibold uppercase',
-                      'text-foreground border-l-[3px] border-l-transparent',
-                      'hover:text-teal hover:border-l-teal hover:bg-teal-light hover:pl-5',
+                      'text-white/80 border-l-[3px] border-l-transparent',
+                      'hover:text-white hover:border-l-teal hover:bg-teal/[0.12] hover:pl-5',
                       'transition-all duration-200',
                     )}
                   >
@@ -364,7 +364,7 @@ export function HeaderClient({ header }: Props) {
               if (item.type === 'dropdown' && item.dropdown) {
                 return (
                   <div key={index}>
-                    <div className="px-4 py-2 font-mono text-[0.8rem] font-semibold uppercase text-muted-foreground">
+                    <div className="px-4 py-2 font-mono text-[0.8rem] font-semibold uppercase text-white/40">
                       {item.dropdown.label}
                     </div>
                     {item.dropdown.items?.map((dropItem: any, idx: number) => {
@@ -375,9 +375,9 @@ export function HeaderClient({ header }: Props) {
                           link={dropItem.link}
                           className={cn(
                             'block pl-8 pr-4 py-2 no-underline',
-                            'text-[0.85rem] font-medium text-foreground',
+                            'text-[0.85rem] font-medium text-white/70',
                             'border-l-[3px] border-l-transparent',
-                            'hover:text-teal hover:border-l-teal hover:bg-teal-light',
+                            'hover:text-white hover:border-l-teal hover:bg-teal/[0.12]',
                             'transition-all duration-200',
                           )}
                         >
