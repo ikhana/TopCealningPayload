@@ -56,6 +56,7 @@ import { TCTestimonialsBlock } from './TCTestimonials'
 import { TCJoinTeamBlock } from './TCJoinTeam';
 import { TCBookingFormComponent } from './TCBookingForm';
 import { TCContactMapBlock } from './TCContactMap';
+import { TCContactFormBlock } from './TCContactForm';
 
 
 const blockComponents = {
@@ -119,6 +120,7 @@ tcTestimonials: TCTestimonialsBlock,
 tcJoinTeam: TCJoinTeamBlock,
 tcBookingForm: TCBookingFormComponent,
 tcContactMap: TCContactMapBlock,
+tcContactForm: TCContactFormBlock,
 }
 
 export const RenderBlocks: React.FC<{

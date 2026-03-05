@@ -1119,6 +1119,7 @@ export interface Page {
     | TCJoinTeamBlock
     | TCBookingFormBlock
     | TCContactMapBlock
+    | TCContactFormBlock
   )[];
   meta?: {
     title?: string | null;
@@ -4706,6 +4707,15 @@ export interface TCContactMapBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCContactFormBlock".
+ */
+export interface TCContactFormBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcContactForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addons".
  */
 export interface Addon {
@@ -5735,6 +5745,7 @@ export interface PagesSelect<T extends boolean = true> {
         tcJoinTeam?: T | TCJoinTeamBlockSelect<T>;
         tcBookingForm?: T | TCBookingFormBlockSelect<T>;
         tcContactMap?: T | TCContactMapBlockSelect<T>;
+        tcContactForm?: T | TCContactFormBlockSelect<T>;
       };
   meta?:
     | T
@@ -6987,6 +6998,14 @@ export interface TCBookingFormBlockSelect<T extends boolean = true> {
 export interface TCContactMapBlockSelect<T extends boolean = true> {
   embedUrl?: T;
   mapsUrl?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCContactFormBlock_select".
+ */
+export interface TCContactFormBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

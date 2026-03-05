@@ -69,6 +69,7 @@ import { TCTestimonials } from '@/blocks/TCTestimonials/config'
 import { TCJoinTeam } from '@/blocks/TCJoinTeam/config'
 import { TCBookingForm } from '@/blocks/TCBookingForm/config'
 import { TCContactMap } from '@/blocks/TCContactMap/config'
+import { TCContactForm } from '@/blocks/TCContactForm/config'
 
 
 
@@ -220,6 +221,7 @@ export const Pages: CollectionConfig = {
                  TCJoinTeam,
                  TCBookingForm,
                  TCContactMap,
+                 TCContactForm,
 
               ],
               required: true,
