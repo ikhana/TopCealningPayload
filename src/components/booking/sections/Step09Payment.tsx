@@ -115,8 +115,8 @@ export function Step09Payment() {
           </div>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: isFirstTimeClient ? 'var(--color-teal)' : 'rgba(74,90,106,0.6)' }}>
             {isFirstTimeClient
-              ? `10% discount applied → New total: $${(pricing.total * 0.9).toFixed(2)}`
-              : '10% first-time discount available'}
+              ? `15% discount applied → New total: $${pricing.total.toFixed(2)}`
+              : '15% first-time discount available'}
           </div>
         </div>
       </div>
