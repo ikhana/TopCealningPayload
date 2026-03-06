@@ -90,7 +90,7 @@ export function TCServiceCommitmentClient(_props: Props) {
               size="md"
               className="mb-[18px]"
             />
-            <p className="text-[1.05rem] leading-[1.75] text-foreground/60">
+            <p className="text-[1.05rem] leading-[1.75] text-[#2a4365]/60">
               Customized Maintenance Programs are cleaning and maintenance plans designed to meet
               the specific needs of each client. Instead of offering a standard service, these
               programs are created based on factors such as:
@@ -145,7 +145,7 @@ export function TCServiceCommitmentClient(_props: Props) {
 
           {/* Row 3 — Closing statement anchored bottom-right */}
           <div className="mt-[50px] ml-auto lg:max-w-[46%] md:max-w-[70%] max-w-full">
-            <p className="text-[1.05rem] leading-[1.8] text-foreground/65 italic">
+            <p className="text-[1.05rem] leading-[1.8] text-[#2a4365]/65 italic">
               These programs ensure that each client receives more efficient and effective cleaning
               solutions, guaranteeing an optimal service tailored to their needs.
             </p>

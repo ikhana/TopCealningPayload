@@ -129,7 +129,7 @@ export function TCAboutSectionClient(_props: Props) {
             />
 
             {/* Subtext with teal left border */}
-            <p className="text-[1.1rem] leading-[1.7] text-foreground/70 mb-10 max-w-[480px]">
+            <p className="text-[1.1rem] leading-[1.7] text-[#2a4365]/70 mb-10 max-w-[480px]">
               Top Cleaning is built on a commitment to quality, reliability, and care. Every service
               we deliver reflects our belief that a clean space is a better space — for living,
               working, and thriving.
@@ -189,7 +189,7 @@ export function TCAboutSectionClient(_props: Props) {
                       'border-0 cursor-pointer transition-all duration-200',
                       isActive
                         ? 'text-teal bg-teal-light'
-                        : 'text-foreground/40 bg-transparent hover:text-foreground/70',
+                        : 'text-[#2a4365]/40 bg-transparent hover:text-[#2a4365]/70',
                     )}
                   >
                     {label}
@@ -230,7 +230,7 @@ export function TCAboutSectionClient(_props: Props) {
                       </h4>
 
                       {pane.body && (
-                        <p className="text-[0.95rem] leading-[1.8] text-foreground/70">
+                        <p className="text-[0.95rem] leading-[1.8] text-[#2a4365]/70">
                           {pane.body}
                         </p>
                       )}
@@ -243,7 +243,7 @@ export function TCAboutSectionClient(_props: Props) {
                               <span className="block font-mono text-[0.75rem] uppercase tracking-[2px] text-teal font-bold mb-1">
                                 {v.title}
                               </span>
-                              <p className="text-[0.9rem] leading-[1.6] text-foreground/70 m-0">
+                              <p className="text-[0.9rem] leading-[1.6] text-[#2a4365]/70 m-0">
                                 {v.desc}
                               </p>
                             </div>

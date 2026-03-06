@@ -172,7 +172,7 @@ export function TCServicesSectionHome() {
               size="lg"
               className="mb-5"
             />
-            <p className="text-[1.15rem] text-foreground/60 leading-[1.6]">
+            <p className="text-[1.15rem] text-[#2a4365]/60 leading-[1.6]">
               From residential homes to commercial spaces, every service is delivered with
               precision, care, and guaranteed satisfaction.
             </p>
