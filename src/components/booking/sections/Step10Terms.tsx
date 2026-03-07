@@ -48,9 +48,8 @@ export function Step10Terms({ onSubmit, isSubmitting = false }: Step10TermsProps
   const { pricing, isFirstTimeClient } = bookingData
   const [accepted, setAccepted] = useState(false)
 
-  const finalTotal = isFirstTimeClient
-    ? (pricing.total * 0.9).toFixed(2)
-    : pricing.total.toFixed(2)
+  // pricing.total already has all discounts (first-time or recurring) applied via context
+  const finalTotal = pricing.total.toFixed(2)
 
   return (
     <div>
@@ -130,14 +129,18 @@ export function Step10Terms({ onSubmit, isSubmitting = false }: Step10TermsProps
         }}
         onMouseEnter={(e) => {
           if (accepted && !isSubmitting) {
-            (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-teal)'
-            ;(e.currentTarget as HTMLButtonElement).style.clipPath = 'polygon(0 0, 96% 0, 100% 100%, 0% 100%)'
+            const btn = e.currentTarget as HTMLButtonElement
+            btn.style.background = 'var(--color-teal)'
+            btn.style.color = 'var(--color-navy-deep)'
+            btn.style.clipPath = 'polygon(0 0, 96% 0, 100% 100%, 0% 100%)'
           }
         }}
         onMouseLeave={(e) => {
           if (accepted && !isSubmitting) {
-            (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-navy-deep)'
-            ;(e.currentTarget as HTMLButtonElement).style.clipPath = 'polygon(0 0, 100% 0, 96% 100%, 0% 100%)'
+            const btn = e.currentTarget as HTMLButtonElement
+            btn.style.background = 'var(--color-navy-deep)'
+            btn.style.color = 'white'
+            btn.style.clipPath = 'polygon(0 0, 100% 0, 96% 100%, 0% 100%)'
           }
         }}
       >
