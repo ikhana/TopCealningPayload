@@ -13,13 +13,31 @@
 
 import { cn } from '@/utilities/cn'
 import { TCButton } from '@/components/ui/TCButton'
-import Link from 'next/link'
+import { TCHeadingStack } from '@/components/ui/TCHeading'
 
 type Props = {
   id?: string
   blockName?: string | null
   blockType?: 'tcHomeHero'
 }
+
+/* ── Hero service cards ──────────────────────────────────────────── */
+const HERO_CARDS = [
+  {
+    id: 'residential',
+    eyebrow: 'Residential',
+    heading: 'Residential homes, done properly.',
+    cta: { label: 'BOOK IN 60 SECONDS', href: '/booking', variant: 'primary' as const },
+    badge: { save: 'Save', pct: '15%', sub: 'First Book' },
+  },
+  {
+    id: 'commercial',
+    eyebrow: 'Commercial',
+    heading: 'Commercial spaces, kept in order.',
+    cta: { label: 'GET A CUSTOM QUOTE', href: '/booking', variant: 'dark' as const },
+    badge: null,
+  },
+]
 
 export function TCHomeHeroClient(_props: Props) {
   return (
@@ -94,18 +112,16 @@ export function TCHomeHeroClient(_props: Props) {
               opacity: 0,
             }}
           >
-            {/* Headline */}
-            <h1
-              className={cn(
-                'font-black leading-[0.82] mb-5 lg:mb-8 tracking-[-2px] text-white',
-                'text-[clamp(2.2rem,4.5vw,3.8rem)]',
-              )}
-            >
-              Cleaning Service
-              <span className="block text-teal italic font-light tracking-[-1px] leading-[1]">
-                Now servicing YOUR area!
-              </span>
-            </h1>
+            {/* Headline — TCHeadingStack dark theme, teal accent line */}
+            <TCHeadingStack
+              mainLine="Cleaning Service"
+              secondaryLine="Now servicing YOUR area!"
+              level="h1"
+              theme="dark"
+              size="lg"
+              accentColor="#17b0ab"
+              className="mb-5 lg:mb-8"
+            />
 
             {/* Description */}
             <p
@@ -146,7 +162,7 @@ export function TCHomeHeroClient(_props: Props) {
             </div>
           </div>
 
-          {/* ── Right column: Residential + Commercial panels ────────── */}
+          {/* ── Right column: Service panels (mapped from HERO_CARDS) ── */}
           <div
             className="grid grid-cols-1 gap-5"
             style={{
@@ -155,73 +171,48 @@ export function TCHomeHeroClient(_props: Props) {
               opacity: 0,
             }}
           >
-
-            {/* Panel 1 — Residential */}
-            <div
-              className={cn(
-                'group relative overflow-hidden backdrop-blur-[20px]',
-                'bg-teal/[0.08] border border-teal/[0.22]',
-                'p-8 lg:p-14',
-                'transition-all duration-500',
-                'hover:-translate-y-2 hover:bg-white/[0.06]',
-              )}
-              style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
-            >
-              {/* Shimmer sweep on hover */}
-              <div className="pointer-events-none absolute top-0 left-[-100%] w-1/2 h-full -skew-x-[25deg] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-[left] duration-700 group-hover:left-[150%]" />
-
-              {/* Offer badge — coral circle, floating */}
+            {HERO_CARDS.map((card) => (
               <div
-                aria-hidden
-                className="absolute top-[-20px] right-[-20px] w-[120px] h-[120px] bg-coral rounded-full flex flex-col items-center justify-center text-white font-mono font-black leading-none border-2 border-white/35 z-[15]"
-                style={{
-                  transform: 'rotate(12deg)',
-                  boxShadow: '0 15px 35px rgba(252,129,129,0.45)',
-                  animation: 'tc-badge-float 5s infinite ease-in-out',
-                }}
+                key={card.id}
+                className={cn(
+                  'group relative overflow-hidden backdrop-blur-[20px]',
+                  'bg-teal/[0.08] border border-teal/[0.22]',
+                  'p-8 lg:p-14',
+                  'transition-all duration-500',
+                  'hover:-translate-y-2 hover:bg-white/[0.06]',
+                )}
+                style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
               >
-                <small className="text-[0.55rem] uppercase">Save</small>
-                <span className="text-[1.8rem]">15%</span>
-                <small className="text-[0.55rem] uppercase">First Book</small>
+{/* Offer badge — coral circle, floating (optional per card) */}
+                {card.badge && (
+                  <div
+                    aria-hidden
+                    className="absolute bottom-[-20px] right-[-20px] w-[120px] h-[120px] bg-coral rounded-full flex flex-col items-center justify-center text-white font-mono font-black leading-none border-2 border-white/35 z-[15]"
+                    style={{
+                      transform: 'rotate(12deg)',
+                      boxShadow: '0 15px 35px rgba(252,129,129,0.45)',
+                      animation: 'tc-badge-float 5s infinite ease-in-out',
+                    }}
+                  >
+                    <small className="text-[0.55rem] uppercase">{card.badge.save}</small>
+                    <span className="text-[1.8rem]">{card.badge.pct}</span>
+                    <small className="text-[0.55rem] uppercase">{card.badge.sub}</small>
+                  </div>
+                )}
+
+                <h3 className="text-[1.3rem] lg:text-[1.7rem] font-extrabold tracking-[-1px] text-white mb-5 lg:mb-8 leading-tight">
+                  {card.heading}
+                </h3>
+                <TCButton variant={card.cta.variant} href={card.cta.href}>
+                  {card.cta.label}
+                </TCButton>
               </div>
-
-              <span className="font-mono text-[0.7rem] uppercase tracking-[3px] text-teal block mb-3">
-                Residential
-              </span>
-              <h3 className="text-[1.6rem] lg:text-[2.2rem] font-extrabold tracking-[-1px] text-white mb-5 lg:mb-8 leading-tight">
-                Homes that breathe.
-              </h3>
-              <TCButton variant="primary" href="/booking">BOOK IN 60 SECONDS</TCButton>
-            </div>
-
-            {/* Panel 2 — Commercial */}
-            <div
-              className={cn(
-                'group relative overflow-hidden backdrop-blur-[20px]',
-                'bg-teal/[0.08] border border-teal/[0.22]',
-                'p-8 lg:p-14',
-                'transition-all duration-500',
-                'hover:-translate-y-2 hover:bg-white/[0.06]',
-              )}
-              style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
-            >
-              {/* Shimmer sweep on hover */}
-              <div className="pointer-events-none absolute top-0 left-[-100px] w-1/2 h-full -skew-x-[25deg] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-[left] duration-700 group-hover:left-[150%]" />
-
-              <span className="font-mono text-[0.7rem] uppercase tracking-[3px] text-teal block mb-3">
-                Commercial
-              </span>
-              <h3 className="text-[1.6rem] lg:text-[2.2rem] font-extrabold tracking-[-1px] text-white mb-5 lg:mb-8 leading-tight">
-                Elevate your workspace.
-              </h3>
-              <TCButton variant="dark" href="/booking">GET A CUSTOM QUOTE</TCButton>
-            </div>
-
+            ))}
           </div>
+
         </div>
 
       </section>
     </>
   )
 }
-// Heading to be imported from components ui 

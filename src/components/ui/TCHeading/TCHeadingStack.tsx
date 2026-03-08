@@ -9,7 +9,7 @@ import React from 'react'
 export type TCHeadingTheme = 'light' | 'dark'
 
 /** Semantic heading element to render */
-export type TCHeadingLevel = 'h2' | 'h3'
+export type TCHeadingLevel = 'h1' | 'h2' | 'h3'
 
 /**
  * Font-size preset — controls clamp() values for both the ghost
@@ -58,6 +58,14 @@ export interface TCHeadingStackProps {
    * Default: 'md'
    */
   size?: TCHeadingSize
+
+  /**
+   * Optional color override for the secondaryLine span.
+   * Overrides the theme-derived color — useful when the accent line
+   * should be teal rather than white (e.g. on a dark hero section).
+   * e.g. accentColor="var(--color-teal)"
+   */
+  accentColor?: string
 
   className?: string
 }
@@ -129,6 +137,7 @@ export const TCHeadingStack: React.FC<TCHeadingStackProps> = ({
   level = 'h2',
   theme = 'light',
   size = 'md',
+  accentColor,
   className,
 }) => {
   const headingStyle: React.CSSProperties = {
@@ -152,8 +161,8 @@ export const TCHeadingStack: React.FC<TCHeadingStackProps> = ({
             fontStyle: 'italic',
             textTransform: 'none',
             letterSpacing: '-0.01em',
-            color: SECONDARY_COLOR[theme],
-            opacity: SECONDARY_OPACITY[theme],
+            color: accentColor ?? SECONDARY_COLOR[theme],
+            opacity: accentColor ? 1 : SECONDARY_OPACITY[theme],
           }}
         >
           {secondaryLine}
@@ -183,7 +192,11 @@ export const TCHeadingStack: React.FC<TCHeadingStackProps> = ({
       )}
 
       {/* Tight-stack heading */}
-      {level === 'h2' ? (
+      {level === 'h1' ? (
+        <h1 className="font-heading" style={headingStyle}>
+          {headingContent}
+        </h1>
+      ) : level === 'h2' ? (
         <h2 className="font-heading" style={headingStyle}>
           {headingContent}
         </h2>
