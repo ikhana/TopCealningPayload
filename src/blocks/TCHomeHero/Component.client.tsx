@@ -224,3 +224,4 @@ export function TCHomeHeroClient(_props: Props) {
     </>
   )
 }
+// Heading to be imported from components ui 
