@@ -24,6 +24,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { AddOns } from './collections/AddOns'
+import { Bookings } from './collections/Bookings'
 import { BlogCategories } from './collections/BlogCategories'
 import { BlogPosts } from './collections/BlogPosts'
 import { BlogTags } from './collections/BlogTags'
@@ -54,18 +55,19 @@ export default buildConfig({
   },
   
   collections: [
-    Users, 
-    Products, 
-    Pages, 
+    Users,
+    Products,
+    Pages,
     Categories,
-    Media, 
-    Orders, 
-    AddOns, 
-    PersonalizationOptions, 
+    Media,
+    Orders,
+    Bookings,
+    AddOns,
+    PersonalizationOptions,
     ProductComponents,
     BlogPosts,
     BlogCategories,
-    BlogTags
+    BlogTags,
   ],
   
   db: postgresAdapter({

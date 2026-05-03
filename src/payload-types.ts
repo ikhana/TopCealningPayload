@@ -93,6 +93,7 @@ export interface Config {
     categories: Category;
     media: Media;
     orders: Order;
+    bookings: Booking;
     addons: Addon;
     'personalization-options': PersonalizationOption;
     'product-components': ProductComponent;
@@ -119,6 +120,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    bookings: BookingsSelect<false> | BookingsSelect<true>;
     addons: AddonsSelect<false> | AddonsSelect<true>;
     'personalization-options': PersonalizationOptionsSelect<false> | PersonalizationOptionsSelect<true>;
     'product-components': ProductComponentsSelect<false> | ProductComponentsSelect<true>;
@@ -5005,6 +5007,94 @@ export interface ProductComponent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings".
+ */
+export interface Booking {
+  id: number;
+  user: number | User;
+  /**
+   * e.g. TC-2026-0042
+   */
+  confirmationCode: string;
+  serviceType: 'residential' | 'movein-out' | 'airbnb' | 'commercial' | 'renovation' | 'hoarding' | 'custom';
+  frequency: 'one-time' | 'weekly' | 'biweekly' | '3weekly' | 'monthly' | '8weekly';
+  /**
+   * YYYY-MM-DD
+   */
+  serviceDate: string;
+  /**
+   * e.g. 09:00 AM
+   */
+  serviceTime: string;
+  address: {
+    street: string;
+    apt?: string | null;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+  property?: {
+    squareFootage?: number | null;
+    bedrooms?: string | null;
+    bathrooms?: number | null;
+  };
+  selectedExtras?:
+    | {
+        extraId: string;
+        label: string;
+        price: number;
+        id?: string | null;
+      }[]
+    | null;
+  hasChildren?: boolean | null;
+  hasPets?: boolean | null;
+  accessMethod?: string | null;
+  customerNotes?: string | null;
+  pricing: {
+    basePrice?: number | null;
+    extrasTotal?: number | null;
+    discount?: number | null;
+    total: number;
+    currency?: string | null;
+  };
+  status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled' | 'refunded';
+  /**
+   * GoHighLevel Contact ID
+   */
+  ghlContactId?: string | null;
+  /**
+   * GoHighLevel Appointment ID
+   */
+  ghlAppointmentId?: string | null;
+  /**
+   * GoHighLevel Opportunity ID
+   */
+  ghlOpportunityId?: string | null;
+  /**
+   * Authorize.net CIM Customer Profile ID
+   */
+  authnetCustomerProfileId?: string | null;
+  /**
+   * Authorize.net CIM Payment Profile ID
+   */
+  authnetPaymentProfileId?: string | null;
+  /**
+   * Authorize.net Transaction ID (set on completion)
+   */
+  authnetTransactionId?: string | null;
+  /**
+   * UUID v4 — prevents double-submit
+   */
+  idempotencyKey?: string | null;
+  /**
+   * Error detail for cancelled/failed bookings
+   */
+  failureReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -5169,6 +5259,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'orders';
         value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'bookings';
+        value: number | Booking;
       } | null)
     | ({
         relationTo: 'addons';
@@ -7111,6 +7205,66 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   notes?: T;
   customerNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings_select".
+ */
+export interface BookingsSelect<T extends boolean = true> {
+  user?: T;
+  confirmationCode?: T;
+  serviceType?: T;
+  frequency?: T;
+  serviceDate?: T;
+  serviceTime?: T;
+  address?:
+    | T
+    | {
+        street?: T;
+        apt?: T;
+        city?: T;
+        state?: T;
+        zipCode?: T;
+      };
+  property?:
+    | T
+    | {
+        squareFootage?: T;
+        bedrooms?: T;
+        bathrooms?: T;
+      };
+  selectedExtras?:
+    | T
+    | {
+        extraId?: T;
+        label?: T;
+        price?: T;
+        id?: T;
+      };
+  hasChildren?: T;
+  hasPets?: T;
+  accessMethod?: T;
+  customerNotes?: T;
+  pricing?:
+    | T
+    | {
+        basePrice?: T;
+        extrasTotal?: T;
+        discount?: T;
+        total?: T;
+        currency?: T;
+      };
+  status?: T;
+  ghlContactId?: T;
+  ghlAppointmentId?: T;
+  ghlOpportunityId?: T;
+  authnetCustomerProfileId?: T;
+  authnetPaymentProfileId?: T;
+  authnetTransactionId?: T;
+  idempotencyKey?: T;
+  failureReason?: T;
   updatedAt?: T;
   createdAt?: T;
 }

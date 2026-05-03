@@ -55,8 +55,17 @@ const initialBookingData: BookingFormData = {
   referralSource: '',
 }
 
+export interface PaymentNonce {
+  dataDescriptor: string
+  dataValue: string
+}
+
 export const useBookingForm = () => {
   const [bookingData, setBookingData] = useState<BookingFormData>(initialBookingData)
+  const [paymentNonce, setPaymentNonce] = useState<PaymentNonce | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submissionError, setSubmissionError] = useState<string | null>(null)
+  const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null)
 
   const updateCustomerInfo = (data: Partial<CustomerInfo>) => {
     setBookingData((prev) => ({ ...prev, customer: { ...prev.customer, ...data } }))
@@ -174,5 +183,14 @@ export const useBookingForm = () => {
     toggleFlexibleTime,
     togglePetType,
     updateReferralSource,
+    // Payment + submission state
+    paymentNonce,
+    setPaymentNonce,
+    isSubmitting,
+    setIsSubmitting,
+    submissionError,
+    setSubmissionError,
+    idempotencyKey,
+    setIdempotencyKey,
   }
 }
