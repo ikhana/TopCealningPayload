@@ -1,21 +1,8 @@
-// src/components/booking/sections/Step06Schedule.tsx
 'use client'
 
-import React from 'react'
-import { CalendarDays, Clock, Info } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { CalendarDays, Clock, Info, Loader2 } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
-
-const TIME_SLOTS = [
-  { value: '08:00', label: '8:00 AM' },
-  { value: '09:00', label: '9:00 AM' },
-  { value: '10:00', label: '10:00 AM' },
-  { value: '11:00', label: '11:00 AM' },
-  { value: '12:00', label: '12:00 PM' },
-  { value: '13:00', label: '1:00 PM' },
-  { value: '14:00', label: '2:00 PM' },
-  { value: '15:00', label: '3:00 PM' },
-  { value: '16:00', label: '4:00 PM' },
-]
 
 const FLEXIBLE = ['Morning', 'Afternoon', 'Evening']
 
@@ -33,12 +20,44 @@ const labelStyle: React.CSSProperties = {
 const getTomorrow = () => {
   const d = new Date()
   d.setDate(d.getDate() + 1)
-  return d.toISOString().split('T')[0]
+  return d.toISOString().split('T')[0]!
+}
+
+function formatSlotLabel(iso: string): string {
+  const d = new Date(iso)
+  return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
 }
 
 export function Step06Schedule() {
   const { bookingData, updateServiceDateTime, toggleFlexibleTime } = useBooking()
   const { serviceDate, serviceTime, flexibleTimes } = bookingData
+
+  const [slots, setSlots] = useState<string[]>([])
+  const [loadingSlots, setLoadingSlots] = useState(false)
+  const [slotsError, setSlotsError] = useState(false)
+
+  useEffect(() => {
+    if (!serviceDate) { setSlots([]); return }
+
+    setLoadingSlots(true)
+    setSlotsError(false)
+
+    fetch(`/api/availability?date=${serviceDate}`)
+      .then((r) => r.json())
+      .then((data) => {
+        const daySlots = data.slots?.find((d: { date: string; times: string[] }) => d.date === serviceDate)
+        setSlots(daySlots?.times ?? [])
+      })
+      .catch(() => setSlotsError(true))
+      .finally(() => setLoadingSlots(false))
+  }, [serviceDate])
+
+  // Clear selected time if it's no longer in the available slots
+  useEffect(() => {
+    if (serviceTime && slots.length > 0 && !slots.includes(serviceTime)) {
+      updateServiceDateTime(serviceDate, '')
+    }
+  }, [slots])
 
   const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
     e.target.style.borderColor = 'var(--color-teal)'
@@ -55,7 +74,6 @@ export function Step06Schedule() {
         When to Arrive?
       </h2>
 
-      {/* Date + time row */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '36px' }}>
 
         {/* Date */}
@@ -69,7 +87,7 @@ export function Step06Schedule() {
               type="date"
               value={serviceDate}
               min={getTomorrow()}
-              onChange={(e) => updateServiceDateTime(e.target.value, serviceTime)}
+              onChange={(e) => updateServiceDateTime(e.target.value, '')}
               onFocus={onFocus}
               onBlur={onBlur}
               style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1px solid rgba(13,27,46,0.1)', background: 'white', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.3s, box-shadow 0.3s', borderRadius: 0 }}
@@ -84,26 +102,39 @@ export function Step06Schedule() {
         {/* Time */}
         <div>
           <label style={labelStyle}>
-            Preferred Time <span style={{ color: 'var(--color-teal)' }}>*</span>
+            Available Time <span style={{ color: 'var(--color-teal)' }}>*</span>
           </label>
           <div style={{ position: 'relative' }}>
-            <Clock size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
-            <select
-              value={serviceTime}
-              onChange={(e) => updateServiceDateTime(serviceDate, e.target.value)}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1px solid rgba(13,27,46,0.1)', background: 'white', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.3s', borderRadius: 0, cursor: 'pointer', appearance: 'none' as const }}
-              required
-            >
-              <option value="">Select a time</option>
-              {TIME_SLOTS.map((s) => (
-                <option key={s.value} value={s.value}>{s.label}</option>
-              ))}
-            </select>
+            {loadingSlots ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', border: '1px solid rgba(13,27,46,0.1)', color: 'rgba(74,90,106,0.6)', fontSize: '0.88rem' }}>
+                <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Checking availability...
+              </div>
+            ) : (
+              <>
+                <Clock size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
+                <select
+                  value={serviceTime}
+                  onChange={(e) => updateServiceDateTime(serviceDate, e.target.value)}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  disabled={!serviceDate || slots.length === 0}
+                  style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1px solid rgba(13,27,46,0.1)', background: 'white', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.3s', borderRadius: 0, cursor: serviceDate && slots.length > 0 ? 'pointer' : 'not-allowed', appearance: 'none' as const, opacity: !serviceDate ? 0.5 : 1 }}
+                  required
+                >
+                  {!serviceDate && <option value="">Select a date first</option>}
+                  {serviceDate && slots.length === 0 && !slotsError && <option value="">No availability — pick another date</option>}
+                  {serviceDate && slotsError && <option value="">Could not load slots — try again</option>}
+                  {slots.length > 0 && <option value="">Select a time</option>}
+                  {slots.map((iso) => (
+                    <option key={iso} value={iso}>{formatSlotLabel(iso)}</option>
+                  ))}
+                </select>
+              </>
+            )}
           </div>
           <p style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '6px', fontSize: '0.72rem', color: 'rgba(74,90,106,0.65)' }}>
-            <Info size={11} /> Select your preferred start time
+            <Info size={11} />
+            {!serviceDate ? 'Pick a date to see available times' : slots.length > 0 ? `${slots.length} slot${slots.length > 1 ? 's' : ''} available` : 'Try a different date'}
           </p>
         </div>
       </div>
@@ -121,16 +152,7 @@ export function Step06Schedule() {
               <div
                 key={time}
                 onClick={() => toggleFlexibleTime(time)}
-                style={{
-                  border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
-                  padding: '14px 12px',
-                  cursor: 'pointer',
-                  background: sel ? '#e0f5f4' : 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  transition: 'all 0.3s',
-                }}
+                style={{ border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`, padding: '14px 12px', cursor: 'pointer', background: sel ? '#e0f5f4' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.3s' }}
                 onMouseEnter={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-teal)' }}
                 onMouseLeave={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,46,0.1)' }}
               >
@@ -143,6 +165,8 @@ export function Step06Schedule() {
           })}
         </div>
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }
