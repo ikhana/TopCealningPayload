@@ -10,7 +10,7 @@ import React, { Fragment } from 'react'
 
 import { AccountForm } from './AccountForm'
 import { AccountNav } from '@/components/AccountNav'
-import { Order } from '@/payload-types'
+import { Order, Booking } from '@/payload-types'
 import { notFound } from 'next/navigation'
 import { OrderItem } from '@/components/OrderItem'
 
@@ -22,6 +22,39 @@ export default async function Account() {
   })
 
   let orders: Order[] | null = null
+  let recentBookings: Booking[] = []
+
+  try {
+    const bookingsRes = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings?depth=0&sort=-createdAt&limit=3&where[user][equals]=${user?.id}`,
+      {
+        cache: 'no-store',
+        headers: {
+          Authorization: `JWT ${token}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+    if (bookingsRes.ok) {
+      const json = await bookingsRes.json()
+      recentBookings = json.docs ?? []
+    }
+  } catch {
+    // render empty
+  }
+
+  const STATUS_COLORS: Record<string, string> = {
+    pending: '#854d0e', confirmed: '#065f46', 'in-progress': '#1e40af',
+    completed: '#166534', cancelled: '#6b7280', refunded: '#991b1b',
+  }
+  const STATUS_BG: Record<string, string> = {
+    pending: '#fef9c3', confirmed: '#ccfbf1', 'in-progress': '#dbeafe',
+    completed: '#dcfce7', cancelled: '#f3f4f6', refunded: '#fee2e2',
+  }
+  const SERVICE_LABELS: Record<string, string> = {
+    residential: 'Residential', 'movein-out': 'Move In/Out', airbnb: 'Airbnb',
+    commercial: 'Commercial', renovation: 'Post-Renovation', hoarding: 'Hoarding', custom: 'Custom',
+  }
 
   try {
     orders = await fetch(
@@ -62,6 +95,51 @@ export default async function Account() {
           <div className="border p-8 rounded-lg bg-primary-foreground">
             <h1 className="text-3xl font-medium mb-8">Account settings</h1>
             <AccountForm />
+          </div>
+
+          {/* Recent Bookings */}
+          <div className="border p-8 rounded-lg bg-primary-foreground">
+            <h2 className="text-3xl font-medium mb-4">Recent Bookings</h2>
+            <div className="prose dark:prose-invert mb-6">
+              <p>Your most recent cleaning bookings. Track status and details in My Bookings.</p>
+            </div>
+
+            {recentBookings.length === 0 ? (
+              <p className="mb-6">No bookings yet. <Link href="/booking" className="underline">Book a cleaning →</Link></p>
+            ) : (
+              <ul className="flex flex-col gap-3 mb-6">
+                {recentBookings.map((booking) => (
+                  <li key={booking.id}>
+                    <Link href={`/account/bookings/${booking.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div style={{ border: '1px solid rgba(13,27,46,0.08)', padding: '14px 18px', background: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '2px' }}>
+                            {SERVICE_LABELS[booking.serviceType] ?? booking.serviceType}
+                          </div>
+                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'var(--color-teal)', letterSpacing: '0.08em' }}>
+                            {booking.confirmationCode} · {booking.serviceDate ?? ''}
+                          </div>
+                        </div>
+                        <span style={{
+                          padding: '3px 10px',
+                          background: STATUS_BG[booking.status] ?? '#f3f4f6',
+                          color: STATUS_COLORS[booking.status] ?? '#6b7280',
+                          fontSize: '0.65rem', fontWeight: 700,
+                          fontFamily: 'var(--font-mono)', letterSpacing: '0.5px',
+                          textTransform: 'uppercase', borderRadius: '2px',
+                        }}>
+                          {booking.status}
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <Button asChild variant="default">
+              <Link href="/account/bookings">View all bookings</Link>
+            </Button>
           </div>
 
           <div className=" border p-8 rounded-lg bg-primary-foreground">
