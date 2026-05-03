@@ -3,10 +3,13 @@
 // Design: design/form.html — no background grid, compact fields
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { ChevronUp, ShieldCheck, AlertCircle } from 'lucide-react'
 import { TCButton } from '@/components/ui/TCButton'
 import { BookingProvider } from '@/components/booking/BookingContext'
 import { BookingSummary } from '@/components/booking/BookingSummary'
+import { useBooking } from '@/components/booking/BookingContext'
+import { generateIdempotencyKeyClient } from '@/lib/booking/idempotency'
 import { Step01Customer } from '@/components/booking/sections/Step01Customer'
 import { Step02Service } from '@/components/booking/sections/Step02Service'
 import { Step03Property } from '@/components/booking/sections/Step03Property'
@@ -17,6 +20,158 @@ import { Step07Access } from '@/components/booking/sections/Step07Access'
 import { Step08Address } from '@/components/booking/sections/Step08Address'
 import { Step09Payment } from '@/components/booking/sections/Step09Payment'
 import { Step10Terms } from '@/components/booking/sections/Step10Terms'
+
+const fmt = (n: number) => `$${n.toFixed(2)}`
+
+/* ── Mobile sticky bottom bar ───────────────────────────────── */
+function MobileBottomBar({
+  currentStep,
+  totalSteps,
+  stepLabel,
+  onContinue,
+  onBack,
+  onSubmit,
+  isSubmitting,
+}: {
+  currentStep: number
+  totalSteps: number
+  stepLabel: string
+  onContinue: () => void
+  onBack: () => void
+  onSubmit: () => void
+  isSubmitting: boolean
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const { bookingData } = useBooking()
+  const { pricing, property } = bookingData
+  const hasPrice = property.squareFootage > 0
+  const isLastStep = currentStep === totalSteps
+
+  return (
+    <div className="bf-mobile-bar">
+      {/* Expandable summary sheet */}
+      {expanded && (
+        <div style={{
+          padding: '24px 20px 0',
+          borderBottom: '1px solid rgba(13,27,46,0.08)',
+          background: 'white',
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+            {[
+              ['Base Service', hasPrice ? fmt(pricing.basePrice) : '—'],
+              ['Add-ons', pricing.extrasTotal > 0 ? `+${fmt(pricing.extrasTotal)}` : '$0.00'],
+              ['Discount', pricing.discount > 0 ? `-${fmt(pricing.discount)}` : '-$0.00'],
+            ].map(([label, value]) => (
+              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'rgba(74,90,106,0.7)' }}>{label}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{value}</span>
+              </div>
+            ))}
+          </div>
+          <p style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.65rem', color: 'rgba(74,90,106,0.5)', marginBottom: '16px' }}>
+            <ShieldCheck size={11} style={{ color: 'var(--color-teal)', flexShrink: 0 }} />
+            256-bit SSL encrypted · Secure payment
+          </p>
+        </div>
+      )}
+
+      {/* Main bar */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '14px 20px',
+        background: 'white',
+        gap: '12px',
+      }}>
+        {/* Back */}
+        {currentStep > 1 && (
+          <button
+            onClick={onBack}
+            style={{
+              padding: '13px 18px',
+              border: '1px solid rgba(13,27,46,0.12)',
+              background: 'transparent',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              letterSpacing: '1px',
+              cursor: 'pointer',
+              color: 'rgba(74,90,106,0.7)',
+              flexShrink: 0,
+            }}
+          >
+            ← Back
+          </button>
+        )}
+
+        {/* Price tap target */}
+        <button
+          onClick={() => setExpanded(e => !e)}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+            flex: 1,
+          }}
+        >
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'rgba(74,90,106,0.5)', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            Estimate <ChevronUp size={11} style={{ transform: expanded ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }} />
+          </span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '1.15rem', color: 'var(--color-teal)' }}>
+            {hasPrice ? fmt(pricing.total) : '$0.00'}
+          </span>
+        </button>
+
+        {/* Action button */}
+        {isLastStep ? (
+          <button
+            onClick={onSubmit}
+            disabled={isSubmitting}
+            style={{
+              padding: '14px 24px',
+              background: isSubmitting ? 'rgba(23,176,171,0.5)' : 'var(--color-teal)',
+              color: 'white',
+              border: 'none',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            {isSubmitting ? 'Booking...' : 'Confirm Booking'}
+          </button>
+        ) : (
+          <button
+            onClick={onContinue}
+            style={{
+              padding: '14px 24px',
+              background: 'var(--color-navy-deep)',
+              color: 'white',
+              border: 'none',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            Continue →
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
 
 /* ── Step metadata ─────────────────────────────────────────── */
 const STEPS = [
@@ -35,10 +190,18 @@ const STEPS = [
 const TOTAL_STEPS = STEPS.length
 
 /* ── Success screen shown after booking is confirmed ─────── */
-function BookingSuccess() {
+function BookingSuccess({ confirmationCode, appointmentTime }: { confirmationCode?: string; appointmentTime?: string }) {
+  const formatDateTime = (iso: string) => {
+    try {
+      return new Date(iso).toLocaleString('en-US', {
+        weekday: 'long', month: 'long', day: 'numeric',
+        hour: 'numeric', minute: '2-digit', hour12: true,
+      })
+    } catch { return iso }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', textAlign: 'center', padding: '60px 8%' }}>
-      {/* Animated checkmark */}
       <div style={{ width: '72px', height: '72px', background: 'var(--color-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '28px', animation: 'bf-in 0.5s ease forwards' }}>
         <svg width="32" height="24" viewBox="0 0 32 24" fill="none">
           <path d="M2 12L12 22L30 2" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -47,8 +210,19 @@ function BookingSuccess() {
       <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 900, letterSpacing: '-2px', color: 'var(--color-navy-deep)', marginBottom: '16px' }}>
         Booking Confirmed!
       </h2>
+      {confirmationCode && (
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-teal)', letterSpacing: '0.1em', marginBottom: '12px' }}>
+          {confirmationCode}
+        </div>
+      )}
+      {appointmentTime && (
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'rgba(74,90,106,0.6)', marginBottom: '16px' }}>
+          {formatDateTime(appointmentTime)}
+        </p>
+      )}
       <p style={{ fontSize: '1rem', color: 'rgba(74,90,106,0.75)', maxWidth: '420px', lineHeight: 1.7, marginBottom: '36px' }}>
-        Thank you — we&apos;ve received your request. A confirmation email will be on its way shortly. Our team will reach out to finalise the details.
+        Thank you — we&apos;ve received your booking. A confirmation text/email will arrive shortly. View your booking anytime in{' '}
+        <a href="/account/bookings" style={{ color: 'var(--color-teal)' }}>My Bookings</a>.
       </p>
       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'rgba(74,90,106,0.5)', letterSpacing: '0.08em', border: '1px solid rgba(13,27,46,0.08)', padding: '12px 24px' }}>
         TOPCLEANING · EST. 2019
@@ -57,41 +231,95 @@ function BookingSuccess() {
   )
 }
 
-export function TCBookingFormClient() {
+/* ── Inner form — has access to BookingContext ───────────── */
+function BookingFormInner() {
+  const {
+    bookingData,
+    paymentNonce,
+    isSubmitting,
+    setIsSubmitting,
+    submissionError,
+    setSubmissionError,
+    idempotencyKey,
+    setIdempotencyKey,
+  } = useBooking()
+
   const [currentStep, setCurrentStep] = useState(1)
   const [submitted, setSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [confirmationCode, setConfirmationCode] = useState<string | undefined>()
+  const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
 
-  const goNext = () => setCurrentStep((s) => Math.min(s + 1, TOTAL_STEPS))
+  const goNext = () => {
+    if (currentStep === 1) {
+      const { customer } = bookingData
+      fetch('/api/ghl/lead-capture', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: customer.firstName,
+          email: customer.email,
+          phone: customer.phone,
+          countryCode: customer.countryCode,
+        }),
+      }).catch(() => {})
+    }
+    setCurrentStep((s) => Math.min(s + 1, TOTAL_STEPS))
+  }
   const goBack = () => setCurrentStep((s) => Math.max(s - 1, 1))
   const jumpTo = (step: number) => {
     if (step < currentStep) setCurrentStep(step)
   }
 
+  // Generate idempotency key when user reaches step 10
+  useEffect(() => {
+    if (currentStep === 10 && !idempotencyKey) {
+      setIdempotencyKey(generateIdempotencyKeyClient())
+    }
+  }, [currentStep, idempotencyKey, setIdempotencyKey])
+
   const handleSubmit = async () => {
+    if (!paymentNonce) {
+      setSubmissionError('Payment not confirmed. Please go back to Step 9 and verify your card.')
+      return
+    }
+
     setIsSubmitting(true)
-    // Placeholder: replace with real API call
-    await new Promise((r) => setTimeout(r, 1200))
-    setIsSubmitting(false)
-    setSubmitted(true)
+    setSubmissionError(null)
+
+    try {
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idempotencyKey: idempotencyKey ?? generateIdempotencyKeyClient(),
+          formData: bookingData,
+          paymentNonce,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setSubmissionError(data.error ?? 'Something went wrong. Please try again.')
+        return
+      }
+
+      setConfirmationCode(data.confirmationCode)
+      setAppointmentTime(data.appointmentTime)
+      setSubmitted(true)
+    } catch {
+      setSubmissionError('Network error — please check your connection and try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
-    return (
-      <>
-        <style>{`
-          @keyframes bf-in {
-            from { opacity: 0; transform: translateY(18px); }
-            to   { opacity: 1; transform: translateY(0); }
-          }
-        `}</style>
-        <BookingSuccess />
-      </>
-    )
+    return <BookingSuccess confirmationCode={confirmationCode} appointmentTime={appointmentTime} />
   }
 
   return (
-    <BookingProvider>
+    <>
       {/* Block-scoped styles */}
       <style>{`
         @keyframes bf-in {
@@ -103,6 +331,17 @@ export function TCBookingFormClient() {
         }
         .bf-step-clickable:hover .bf-step-label { color: var(--color-navy-deep) !important; }
 
+        /* Mobile bar — hidden on desktop */
+        .bf-mobile-bar {
+          display: none;
+        }
+        .bf-mobile-progress {
+          display: none;
+        }
+        .bf-desktop-nav {
+          display: flex;
+        }
+
         /* ── Responsive ── */
         @media (max-width: 1200px) {
           .bf-wrapper { grid-template-columns: 72px 1fr 320px !important; }
@@ -112,11 +351,28 @@ export function TCBookingFormClient() {
         @media (max-width: 992px) {
           .bf-wrapper { grid-template-columns: 1fr !important; }
           .bf-left-rail { display: none !important; }
-          .bf-center { border-right: none !important; }
-          .bf-right { position: static !important; height: auto !important; border-top: 1px solid rgba(13,27,46,0.08); }
+          .bf-center { border-right: none !important; padding-bottom: 100px !important; }
+          .bf-right { display: none !important; }
+          .bf-mobile-bar {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 -4px 24px rgba(13,27,46,0.10);
+            border-top: 1px solid rgba(13,27,46,0.08);
+            background: white;
+          }
+          .bf-mobile-progress {
+            display: block;
+          }
+          .bf-desktop-nav {
+            display: none !important;
+          }
         }
         @media (max-width: 600px) {
-          .bf-center { padding: 40px 6% !important; }
+          .bf-center { padding: 28px 5% 100px !important; }
           .bf-input-2col { grid-template-columns: 1fr !important; }
         }
       `}</style>
@@ -240,6 +496,28 @@ export function TCBookingFormClient() {
             borderRight: '1px solid rgba(13,27,46,0.08)',
           }}
         >
+          {/* ── Mobile-only progress indicator ── */}
+          <div className="bf-mobile-progress" style={{ marginBottom: '32px' }}>
+            {/* Progress bar */}
+            <div style={{ height: '2px', background: 'rgba(13,27,46,0.07)', marginBottom: '12px' }}>
+              <div style={{
+                height: '100%',
+                width: `${(currentStep / TOTAL_STEPS) * 100}%`,
+                background: 'var(--color-teal)',
+                transition: 'width 0.4s cubic-bezier(0.25,1,0.5,1)',
+              }} />
+            </div>
+            {/* Step label */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--color-teal)', fontWeight: 700 }}>
+                {STEPS[currentStep - 1]?.label}
+              </span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'rgba(74,90,106,0.45)', letterSpacing: '1px' }}>
+                {currentStep} / {TOTAL_STEPS}
+              </span>
+            </div>
+          </div>
+
           {/* Animated section */}
           <div key={currentStep} className="bf-section-in">
             {currentStep === 1  && <Step01Customer />}
@@ -251,12 +529,22 @@ export function TCBookingFormClient() {
             {currentStep === 7  && <Step07Access />}
             {currentStep === 8  && <Step08Address />}
             {currentStep === 9  && <Step09Payment />}
-            {currentStep === 10 && <Step10Terms onSubmit={handleSubmit} isSubmitting={isSubmitting} />}
+            {currentStep === 10 && (
+              <>
+                <Step10Terms onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+                {submissionError && (
+                  <div style={{ marginTop: '16px', padding: '14px 16px', background: '#fef2f2', border: '1px solid #fca5a5', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <AlertCircle size={16} style={{ color: '#ef4444', flexShrink: 0 }} />
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#dc2626', margin: 0 }}>{submissionError}</p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
-          {/* ── Back / Continue buttons — hidden on step 10 (Step10Terms has its own submit) ── */}
+          {/* ── Desktop nav buttons ── */}
           {currentStep < TOTAL_STEPS && (
-            <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="bf-desktop-nav" style={{ marginTop: '60px', justifyContent: 'space-between', alignItems: 'center' }}>
               <TCButton
                 variant="ghost"
                 onClick={goBack}
@@ -265,23 +553,17 @@ export function TCBookingFormClient() {
               >
                 Back
               </TCButton>
-
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(74,90,106,0.45)', letterSpacing: '1px' }}>
                 {currentStep} / {TOTAL_STEPS}
               </div>
-
               <TCButton variant="primary" onClick={goNext}>
                 Continue
               </TCButton>
             </div>
           )}
-
-          {/* On step 10: just show a Back button so the user can return to payment */}
           {currentStep === TOTAL_STEPS && (
-            <div style={{ marginTop: '28px' }}>
-              <TCButton variant="ghost" onClick={goBack}>
-                ← Back
-              </TCButton>
+            <div className="bf-desktop-nav" style={{ marginTop: '28px' }}>
+              <TCButton variant="ghost" onClick={goBack}>← Back</TCButton>
             </div>
           )}
         </main>
@@ -305,6 +587,26 @@ export function TCBookingFormClient() {
         </aside>
 
       </div>
+
+      {/* ── Mobile sticky bottom bar (hidden on desktop via CSS) ── */}
+      <MobileBottomBar
+        currentStep={currentStep}
+        totalSteps={TOTAL_STEPS}
+        stepLabel={STEPS[currentStep - 1]?.label ?? ''}
+        onContinue={goNext}
+        onBack={goBack}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+      />
+
+    </>
+  )
+}
+
+export function TCBookingFormClient() {
+  return (
+    <BookingProvider>
+      <BookingFormInner />
     </BookingProvider>
   )
 }
