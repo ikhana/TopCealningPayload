@@ -88,8 +88,15 @@ export function Step09Payment() {
       .catch(() => {/* non-critical — accept-client falls back to env vars */})
   }, [])
 
+  // Test mode: auto-confirm without real card credentials
+  const isTestMode = process.env.NEXT_PUBLIC_BOOKING_TEST_MODE === 'true'
+
   // If user navigates back to step 9, clear the nonce (force re-tokenize)
   useEffect(() => {
+    if (isTestMode) {
+      setPaymentNonce({ dataDescriptor: 'TEST_MODE', dataValue: 'TEST_MODE' })
+      return
+    }
     setPaymentNonce(null)
     setTokenizeError(null)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -201,21 +208,27 @@ export function Step09Payment() {
 
       {/* ── Card confirmed state ───────────────────────────── */}
       {paymentNonce ? (
-        <div style={{ padding: '24px', border: '1px solid rgba(23,176,171,0.3)', background: '#e8f8f7', marginBottom: '24px' }}>
+        <div style={{ padding: '24px', border: `1px solid ${isTestMode ? 'rgba(234,179,8,0.4)' : 'rgba(23,176,171,0.3)'}`, background: isTestMode ? '#fefce8' : '#e8f8f7', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <CheckCircle size={20} style={{ color: 'var(--color-teal)', flexShrink: 0 }} />
-            <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-navy-deep)' }}>Card verified</span>
+            <CheckCircle size={20} style={{ color: isTestMode ? '#ca8a04' : 'var(--color-teal)', flexShrink: 0 }} />
+            <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-navy-deep)' }}>
+              {isTestMode ? 'Test Mode — payment bypassed' : 'Card saved securely'}
+            </span>
           </div>
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(74,90,106,0.75)', margin: '0 0 12px 32px' }}>
-            {maskCardNumber(cardNumberDisplay)} — {brandDisplay || 'Card'}<br />
-            Card saved securely — you&apos;ll only be charged once your cleaning is completed.
+            {isTestMode
+              ? 'No real card required. Booking will be created in GHL without payment vaulting.'
+              : `${maskCardNumber(cardNumberDisplay)} — ${brandDisplay || 'Card'}`}
+            {!isTestMode && <><br />Card saved — you&apos;ll only be charged once your cleaning is completed.</>}
           </p>
-          <button
-            onClick={() => setPaymentNonce(null)}
-            style={{ marginLeft: '32px', background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--color-teal)', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
-          >
-            Use a different card
-          </button>
+          {!isTestMode && (
+            <button
+              onClick={() => setPaymentNonce(null)}
+              style={{ marginLeft: '32px', background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--color-teal)', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
+            >
+              Use a different card
+            </button>
+          )}
         </div>
       ) : (
         <>

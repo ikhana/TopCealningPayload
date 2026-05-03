@@ -187,11 +187,15 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     ghlContactId = ghlContact.id
 
     // Step 5: Vault card as Authorize.net Customer Profile (card on file — NOT charged yet)
-    const profile = await createCustomerProfile({
-      opaqueData: { dataDescriptor: paymentNonce.dataDescriptor, dataValue: paymentNonce.dataValue },
-      email: formData.customer.email,
-      merchantCustomerId: userId,
-    })
+    // In test mode, skip real vaulting so the full flow can be tested without payment credentials
+    const isTestMode = process.env.BOOKING_TEST_MODE === 'true' || paymentNonce.dataDescriptor === 'TEST_MODE'
+    const profile = isTestMode
+      ? { customerProfileId: 'TEST_PROFILE', paymentProfileId: 'TEST_PAYMENT' }
+      : await createCustomerProfile({
+          opaqueData: { dataDescriptor: paymentNonce.dataDescriptor, dataValue: paymentNonce.dataValue },
+          email: formData.customer.email,
+          merchantCustomerId: userId,
+        })
 
     // Step 6: Create GHL appointment (first occurrence)
     const startTime = buildIsoDateTime(formData.serviceDate, formData.serviceTime)
