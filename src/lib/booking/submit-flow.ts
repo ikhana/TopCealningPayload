@@ -5,7 +5,7 @@ import { createCustomerProfile } from '@/lib/authnet/charge'
 import { upsertContact } from '@/lib/ghl/contacts'
 import { createAppointment } from '@/lib/ghl/appointments'
 import { createOpportunity } from '@/lib/ghl/opportunities'
-import { buildCustomFields, GHL_FIELDS } from '@/lib/ghl/custom-fields'
+import { GHL_FIELDS } from '@/lib/ghl/custom-fields'
 import { rollbackAppointment } from './rollback'
 import { EXTRA_PRICES } from '@/utilities/booking-helpers'
 import { getPayload } from 'payload'
@@ -36,7 +36,7 @@ export interface SubmitBookingParams {
   formData: BookingFormData
   paymentNonce: PaymentNonce
   idempotencyKey: string
-  userId: string
+  userId?: string // undefined for guest checkouts
 }
 
 export interface SubmitBookingResult {
@@ -132,7 +132,7 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
   const pendingBooking = await payload.create({
     collection: 'bookings',
     data: {
-      user: parseInt(userId, 10),
+      ...(userId ? { user: parseInt(userId, 10) } : {}),
       confirmationCode: `TC-PENDING-${idempotencyKey.slice(0, 8).toUpperCase()}`,
       serviceType: formData.serviceType,
       frequency: formData.frequency,
@@ -160,21 +160,19 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
   const bookingId = String(pendingBooking.id)
   const bookingCtx = { bookingId, idempotencyKey, userId }
 
+  // Generate confirmation code NOW — must be on GHL contact before appointment is created
+  // so the workflow email has it available when it fires on "Appointment Confirmed"
+  const confirmationCode = generateConfirmationCode(pendingBooking.id)
+
   let ghlContactId: string | null = null
   let ghlAppointmentId: string | null = null
 
   try {
-    // Step 4: Upsert GHL contact (full data now — lead-capture only had name/email/phone)
-    const customFields = buildCustomFields({
-      squareFootage: formData.property.squareFootage,
-      bedrooms: formData.property.bedrooms,
-      bathrooms: formData.property.bathrooms,
-      serviceType: formData.serviceType,
-      frequency: formData.frequency,
-      accessMethod: formData.accessMethod,
-      hasPets: formData.hasPets ? 'Yes' : 'No',
-      referralSource: formData.referralSource,
-    })
+    // Step 4: Upsert GHL contact — booking details live in the GHL Booking custom object,
+    // so the only contact custom field we set is the confirmation code (needed by workflow emails)
+    const contactCustomFields = GHL_FIELDS.confirmationCode
+      ? [{ id: GHL_FIELDS.confirmationCode, field_value: confirmationCode }]
+      : []
 
     const ghlContact = await upsertContact({
       firstName: formData.customer.firstName,
@@ -182,19 +180,19 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       email: formData.customer.email,
       phone: formData.customer.phone,
       locationId: process.env.GHL_LOCATION_ID!,
-      customFields,
+      customFields: contactCustomFields,
     })
     ghlContactId = ghlContact.id
 
-    // Step 5: Vault card as Authorize.net Customer Profile (card on file — NOT charged yet)
-    // In test mode, skip real vaulting so the full flow can be tested without payment credentials
-    const isTestMode = process.env.BOOKING_TEST_MODE === 'true' || paymentNonce.dataDescriptor === 'TEST_MODE'
-    const profile = isTestMode
-      ? { customerProfileId: 'TEST_PROFILE', paymentProfileId: 'TEST_PAYMENT' }
+    // Step 5: Vault card (skipped when payment is disabled or in test mode)
+    const paymentDisabled = process.env.PAYMENT_ENABLED !== 'true'
+    const isTestMode = process.env.BOOKING_TEST_MODE === 'true' || paymentNonce.dataDescriptor === 'TEST_MODE' || paymentNonce.dataDescriptor === 'PAYMENT_DISABLED'
+    const profile = (paymentDisabled || isTestMode)
+      ? { customerProfileId: null, paymentProfileId: null }
       : await createCustomerProfile({
           opaqueData: { dataDescriptor: paymentNonce.dataDescriptor, dataValue: paymentNonce.dataValue },
           email: formData.customer.email,
-          merchantCustomerId: userId,
+          merchantCustomerId: userId ?? formData.customer.email,
         })
 
     // Step 6: Create GHL appointment (first occurrence)
@@ -241,8 +239,7 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     })
 
     // Step 8: Confirm booking
-    const confirmationCode = generateConfirmationCode(pendingBooking.id)
-
+    // Note: confirmationCode was generated before this block and already written to GHL contact
     await payload.update({
       collection: 'bookings',
       id: pendingBooking.id,
@@ -252,21 +249,10 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
         ghlContactId,
         ghlAppointmentId,
         ghlOpportunityId: ghlOpportunity.id,
-        authnetCustomerProfileId: profile.customerProfileId,
-        authnetPaymentProfileId: profile.paymentProfileId,
+        ...(profile.customerProfileId ? { authnetCustomerProfileId: profile.customerProfileId } : {}),
+        ...(profile.paymentProfileId ? { authnetPaymentProfileId: profile.paymentProfileId } : {}),
       },
     })
-
-    // Update GHL contact with confirmation code
-    if (GHL_FIELDS.confirmationCode) {
-      await upsertContact({
-        firstName: formData.customer.firstName,
-        email: formData.customer.email,
-        phone: formData.customer.phone,
-        locationId: process.env.GHL_LOCATION_ID!,
-        customFields: [{ id: GHL_FIELDS.confirmationCode, field_value: confirmationCode }],
-      })
-    }
 
     return { confirmationCode, bookingId, appointmentTime: startTime }
 

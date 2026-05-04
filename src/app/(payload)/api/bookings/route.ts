@@ -7,11 +7,8 @@ import { GhlApiError } from '@/lib/ghl/errors'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  // Auth check
-  const { user } = await getMeUser({})
-  if (!user) {
-    return NextResponse.json({ error: 'Authentication required', code: 'UNAUTHENTICATED' }, { status: 401 })
-  }
+  // Auth is optional — guests can book without an account
+  const { user } = await getMeUser({}).catch(() => ({ user: null, token: null }))
 
   let body: {
     idempotencyKey?: string
@@ -47,7 +44,7 @@ export async function POST(request: NextRequest) {
         dataValue: paymentNonce.dataValue,
       },
       idempotencyKey,
-      userId: String(user.id),
+      userId: user ? String(user.id) : undefined,
     })
 
     return NextResponse.json(result, { status: 200 })

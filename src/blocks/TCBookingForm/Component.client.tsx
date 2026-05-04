@@ -173,8 +173,11 @@ function MobileBottomBar({
   )
 }
 
+/* ── Feature flag — flip to true when payment credentials are ready ── */
+const PAYMENT_ENABLED = process.env.NEXT_PUBLIC_PAYMENT_ENABLED === 'true'
+
 /* ── Step metadata ─────────────────────────────────────────── */
-const STEPS = [
+const ALL_STEPS = [
   { num: '01', label: 'Identify' },
   { num: '02', label: 'Service' },
   { num: '03', label: 'Specs' },
@@ -187,7 +190,11 @@ const STEPS = [
   { num: '10', label: 'Terms' },
 ]
 
+const STEPS = PAYMENT_ENABLED ? ALL_STEPS : ALL_STEPS.filter((s) => s.num !== '09')
 const TOTAL_STEPS = STEPS.length
+
+// Maps wizard step index (1-based) to the real step number (for rendering)
+const STEP_NUM_AT = (wizardStep: number) => parseInt(STEPS[wizardStep - 1]?.num ?? '0', 10)
 
 /* ── Success screen shown after booking is confirmed ─────── */
 function BookingSuccess({ confirmationCode, appointmentTime }: { confirmationCode?: string; appointmentTime?: string }) {
@@ -266,20 +273,21 @@ function BookingFormInner() {
     setCurrentStep((s) => Math.min(s + 1, TOTAL_STEPS))
   }
   const goBack = () => setCurrentStep((s) => Math.max(s - 1, 1))
+
   const jumpTo = (step: number) => {
     if (step < currentStep) setCurrentStep(step)
   }
 
-  // Generate idempotency key when user reaches step 10
+  // Generate idempotency key when user reaches the Terms step (last step)
   useEffect(() => {
-    if (currentStep === 10 && !idempotencyKey) {
+    if (currentStep === TOTAL_STEPS && !idempotencyKey) {
       setIdempotencyKey(generateIdempotencyKeyClient())
     }
   }, [currentStep, idempotencyKey, setIdempotencyKey])
 
   const handleSubmit = async () => {
-    if (!paymentNonce) {
-      setSubmissionError('Payment not confirmed. Please go back to Step 9 and verify your card.')
+    if (PAYMENT_ENABLED && !paymentNonce) {
+      setSubmissionError('Payment not confirmed. Please go back and verify your card.')
       return
     }
 
@@ -293,7 +301,7 @@ function BookingFormInner() {
         body: JSON.stringify({
           idempotencyKey: idempotencyKey ?? generateIdempotencyKeyClient(),
           formData: bookingData,
-          paymentNonce,
+          paymentNonce: PAYMENT_ENABLED ? paymentNonce : { dataDescriptor: 'PAYMENT_DISABLED', dataValue: 'PAYMENT_DISABLED' },
         }),
       })
 
@@ -520,16 +528,16 @@ function BookingFormInner() {
 
           {/* Animated section */}
           <div key={currentStep} className="bf-section-in">
-            {currentStep === 1  && <Step01Customer />}
-            {currentStep === 2  && <Step02Service />}
-            {currentStep === 3  && <Step03Property />}
-            {currentStep === 4  && <Step04AddOns />}
-            {currentStep === 5  && <Step05Frequency />}
-            {currentStep === 6  && <Step06Schedule />}
-            {currentStep === 7  && <Step07Access />}
-            {currentStep === 8  && <Step08Address />}
-            {currentStep === 9  && <Step09Payment />}
-            {currentStep === 10 && (
+            {STEP_NUM_AT(currentStep) === 1  && <Step01Customer />}
+            {STEP_NUM_AT(currentStep) === 2  && <Step02Service />}
+            {STEP_NUM_AT(currentStep) === 3  && <Step03Property />}
+            {STEP_NUM_AT(currentStep) === 4  && <Step04AddOns />}
+            {STEP_NUM_AT(currentStep) === 5  && <Step05Frequency />}
+            {STEP_NUM_AT(currentStep) === 6  && <Step06Schedule />}
+            {STEP_NUM_AT(currentStep) === 7  && <Step07Access />}
+            {STEP_NUM_AT(currentStep) === 8  && <Step08Address />}
+            {STEP_NUM_AT(currentStep) === 9  && PAYMENT_ENABLED && <Step09Payment />}
+            {STEP_NUM_AT(currentStep) === 10 && (
               <>
                 <Step10Terms onSubmit={handleSubmit} isSubmitting={isSubmitting} />
                 {submissionError && (

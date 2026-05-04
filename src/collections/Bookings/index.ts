@@ -9,7 +9,7 @@ const isOwner = ({ req: { user } }) => {
 export const Bookings: CollectionConfig = {
   slug: 'bookings',
   access: {
-    create: ({ req: { user } }) => !!user,
+    create: () => true, // guests and logged-in users can both create bookings
     read: ({ req: { user } }) => {
       if (!user) return false
       if (user.roles?.includes('admin')) return true
@@ -28,7 +28,7 @@ export const Bookings: CollectionConfig = {
       name: 'user',
       type: 'relationship',
       relationTo: 'users',
-      required: true,
+      required: false, // optional — guest bookings have no user association
       admin: { position: 'sidebar' },
     },
     {
