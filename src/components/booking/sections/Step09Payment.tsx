@@ -88,15 +88,11 @@ export function Step09Payment() {
       .catch(() => {/* non-critical — accept-client falls back to env vars */})
   }, [])
 
-  // Test mode: auto-confirm without real card credentials
-  const isTestMode = process.env.NEXT_PUBLIC_BOOKING_TEST_MODE === 'true'
+  // Simulate mode: no real Auth.net credentials configured yet
+  const simulateMode = !process.env.NEXT_PUBLIC_AUTHNET_CLIENT_KEY
 
   // If user navigates back to step 9, clear the nonce (force re-tokenize)
   useEffect(() => {
-    if (isTestMode) {
-      setPaymentNonce({ dataDescriptor: 'TEST_MODE', dataValue: 'TEST_MODE' })
-      return
-    }
     setPaymentNonce(null)
     setTokenizeError(null)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,20 +204,20 @@ export function Step09Payment() {
 
       {/* ── Card confirmed state ───────────────────────────── */}
       {paymentNonce ? (
-        <div style={{ padding: '24px', border: `1px solid ${isTestMode ? 'rgba(234,179,8,0.4)' : 'rgba(23,176,171,0.3)'}`, background: isTestMode ? '#fefce8' : '#e8f8f7', marginBottom: '24px' }}>
+        <div style={{ padding: '24px', border: `1px solid ${simulateMode ? 'rgba(234,179,8,0.4)' : 'rgba(23,176,171,0.3)'}`, background: simulateMode ? '#fefce8' : '#e8f8f7', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <CheckCircle size={20} style={{ color: isTestMode ? '#ca8a04' : 'var(--color-teal)', flexShrink: 0 }} />
+            <CheckCircle size={20} style={{ color: simulateMode ? '#ca8a04' : 'var(--color-teal)', flexShrink: 0 }} />
             <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-navy-deep)' }}>
-              {isTestMode ? 'Test Mode — payment bypassed' : 'Card saved securely'}
+              {simulateMode ? 'Simulated — payment bypassed' : 'Card saved securely'}
             </span>
           </div>
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'rgba(74,90,106,0.75)', margin: '0 0 12px 32px' }}>
-            {isTestMode
-              ? 'No real card required. Booking will be created in GHL without payment vaulting.'
+            {simulateMode
+              ? 'No real card required. Booking will proceed without payment processing.'
               : `${maskCardNumber(cardNumberDisplay)} — ${brandDisplay || 'Card'}`}
-            {!isTestMode && <><br />Card saved — you&apos;ll only be charged once your cleaning is completed.</>}
+            {!simulateMode && <><br />Card saved — you&apos;ll only be charged once your cleaning is completed.</>}
           </p>
-          {!isTestMode && (
+          {!simulateMode && (
             <button
               onClick={() => setPaymentNonce(null)}
               style={{ marginLeft: '32px', background: 'none', border: 'none', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--color-teal)', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
@@ -229,6 +225,37 @@ export function Step09Payment() {
               Use a different card
             </button>
           )}
+        </div>
+      ) : simulateMode ? (
+        /* ── Simulate mode: no real credentials configured ── */
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ padding: '20px', background: '#fefce8', border: '1px solid rgba(234,179,8,0.3)', marginBottom: '16px' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#92400e', margin: 0, lineHeight: 1.6 }}>
+              Payment processing is not yet configured. Click below to simulate and continue booking.
+            </p>
+          </div>
+          <button
+            onClick={() => setPaymentNonce({ dataDescriptor: 'TEST_MODE', dataValue: 'TEST_MODE' })}
+            style={{
+              width: '100%',
+              padding: '14px 24px',
+              background: '#ca8a04',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+            }}
+          >
+            <CheckCircle size={14} /> Simulate Payment &amp; Continue
+          </button>
         </div>
       ) : (
         <>
