@@ -42,6 +42,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 2 | Verify the GHL handshake | `[x]` | [stages/02-verify-ghl-handshake.md](stages/02-verify-ghl-handshake.md) |
 | 2.5 | Wizard validation + UX polish | `[ ]` | [stages/02-5-wizard-validation-and-polish.md](stages/02-5-wizard-validation-and-polish.md) |
 | 2.7 | Wire GHL Booking custom object | `[x]` | [stages/02-7-wire-ghl-booking-custom-object.md](stages/02-7-wire-ghl-booking-custom-object.md) |
+| 2.8 | Contact ↔ Booking association | `[x]` | [stages/02-8-contact-booking-association.md](stages/02-8-contact-booking-association.md) |
 | 3 | Logged-in booking — create account + book | `[ ]` | |
 | 4 | Account bookings list + detail page | `[ ]` | |
 | 5 | Cancellation flow — Payload + GHL sync | `[ ]` | |

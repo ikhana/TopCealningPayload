@@ -5,7 +5,7 @@ import { createCustomerProfile } from '@/lib/authnet/charge'
 import { upsertContact } from '@/lib/ghl/contacts'
 import { createAppointment } from '@/lib/ghl/appointments'
 import { createOpportunity } from '@/lib/ghl/opportunities'
-import { createBookingRecord } from '@/lib/ghl/custom-objects'
+import { createBookingRecord, associateBookingWithContact } from '@/lib/ghl/custom-objects'
 import { GHL_FIELDS } from '@/lib/ghl/custom-fields'
 import { rollbackAppointment } from './rollback'
 import { EXTRA_PRICES } from '@/utilities/booking-helpers'
@@ -262,6 +262,27 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
         selectedExtras: selectedExtras,
       })
       ghlBookingObjectId = bookingRecord.id
+
+      // Link the booking record to the contact (so it shows under the contact's Related Records)
+      const associationId = process.env.GHL_ASSOCIATION_CONTACT_BOOKING
+      if (associationId && ghlContactId) {
+        try {
+          await associateBookingWithContact({
+            locationId: process.env.GHL_LOCATION_ID!,
+            bookingRecordId: bookingRecord.id,
+            contactId: ghlContactId,
+            associationId,
+          })
+        } catch (assocErr) {
+          console.error('[booking:custom-object] Failed to associate booking with contact', {
+            bookingId,
+            confirmationCode,
+            bookingRecordId: bookingRecord.id,
+            contactId: ghlContactId,
+            error: assocErr instanceof Error ? assocErr.message : String(assocErr),
+          })
+        }
+      }
     } catch (err) {
       console.error('[booking:custom-object] Failed to create booking record', {
         bookingId,

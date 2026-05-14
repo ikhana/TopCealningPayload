@@ -85,13 +85,19 @@ export async function createBookingRecord(
 }
 
 export async function associateBookingWithContact(params: {
+  locationId: string
   bookingRecordId: string
   contactId: string
   associationId: string  // pre-fetched association schema id between contact ↔ booking
 }): Promise<void> {
+  // NOTE: this endpoint REQUIRES `locationId` in the body (despite some docs
+  // suggesting it should not be there). The scope `associations/relation.write`
+  // must be enabled on the token; otherwise GHL returns a misleading 400
+  // "LocationId is not specified" or 422 instead of a clean 401.
   await ghlFetch('/associations/relations', {
     method: 'POST',
     body: JSON.stringify({
+      locationId: params.locationId,
       associationId: params.associationId,
       firstRecordId: params.contactId,
       secondRecordId: params.bookingRecordId,
