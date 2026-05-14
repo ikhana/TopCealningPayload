@@ -5011,7 +5011,7 @@ export interface ProductComponent {
  */
 export interface Booking {
   id: number;
-  user: number | User;
+  user?: (number | null) | User;
   /**
    * e.g. TC-2026-0042
    */

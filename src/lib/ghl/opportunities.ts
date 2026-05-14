@@ -4,9 +4,11 @@ import type { GhlCreateOpportunityPayload, GhlOpportunity } from './types'
 export async function createOpportunity(
   data: GhlCreateOpportunityPayload,
 ): Promise<GhlOpportunity> {
+  // GHL requires `status` on create — default to 'open' if caller didn't specify
+  const payload = { status: 'open' as const, ...data }
   const res = await ghlFetch('/opportunities/', {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
   const json = await res.json()
   return json.opportunity ?? json
