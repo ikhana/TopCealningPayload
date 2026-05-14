@@ -5071,6 +5071,10 @@ export interface Booking {
    */
   ghlOpportunityId?: string | null;
   /**
+   * GoHighLevel Booking custom object record ID
+   */
+  ghlBookingObjectId?: string | null;
+  /**
    * Authorize.net CIM Customer Profile ID
    */
   authnetCustomerProfileId?: string | null;
@@ -7260,6 +7264,7 @@ export interface BookingsSelect<T extends boolean = true> {
   ghlContactId?: T;
   ghlAppointmentId?: T;
   ghlOpportunityId?: T;
+  ghlBookingObjectId?: T;
   authnetCustomerProfileId?: T;
   authnetPaymentProfileId?: T;
   authnetTransactionId?: T;

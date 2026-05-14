@@ -173,6 +173,11 @@ export const Bookings: CollectionConfig = {
       admin: { position: 'sidebar', description: 'GoHighLevel Opportunity ID' },
     },
     {
+      name: 'ghlBookingObjectId',
+      type: 'text',
+      admin: { position: 'sidebar', description: 'GoHighLevel Booking custom object record ID' },
+    },
+    {
       name: 'authnetCustomerProfileId',
       type: 'text',
       admin: { position: 'sidebar', description: 'Authorize.net CIM Customer Profile ID' },

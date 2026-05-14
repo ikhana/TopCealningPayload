@@ -5,6 +5,7 @@ import { createCustomerProfile } from '@/lib/authnet/charge'
 import { upsertContact } from '@/lib/ghl/contacts'
 import { createAppointment } from '@/lib/ghl/appointments'
 import { createOpportunity } from '@/lib/ghl/opportunities'
+import { createBookingRecord } from '@/lib/ghl/custom-objects'
 import { GHL_FIELDS } from '@/lib/ghl/custom-fields'
 import { rollbackAppointment } from './rollback'
 import { EXTRA_PRICES } from '@/utilities/booking-helpers'
@@ -238,6 +239,37 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       monetaryValue: formData.pricing.total,
     })
 
+    // Step 7b: Create GHL Booking custom object record (non-blocking — log + continue on failure)
+    let ghlBookingObjectId: string | null = null
+    try {
+      const bookingRecord = await createBookingRecord({
+        locationId: process.env.GHL_LOCATION_ID!,
+        confirmationCode,
+        serviceType: formData.serviceType,
+        serviceDate: formData.serviceDate,
+        serviceTime: formData.serviceTime,
+        squareFootage: formData.property.squareFootage,
+        bedrooms: formData.property.bedrooms ?? '',
+        bathrooms: formData.property.bathrooms ?? 1,
+        accessMethod: formData.accessMethod,
+        bookingTotal: formData.pricing.total,
+        hasPets: formData.hasPets,
+        hasChildren: formData.hasChildren,
+        streetAddress: formData.address.street,
+        city: formData.address.city,
+        state: formData.address.state,
+        zipCode: formData.address.zipCode,
+        selectedExtras: selectedExtras,
+      })
+      ghlBookingObjectId = bookingRecord.id
+    } catch (err) {
+      console.error('[booking:custom-object] Failed to create booking record', {
+        bookingId,
+        confirmationCode,
+        error: err instanceof Error ? err.message : String(err),
+      })
+    }
+
     // Step 8: Confirm booking
     // Note: confirmationCode was generated before this block and already written to GHL contact
     await payload.update({
@@ -249,6 +281,7 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
         ghlContactId,
         ghlAppointmentId,
         ghlOpportunityId: ghlOpportunity.id,
+        ...(ghlBookingObjectId ? { ghlBookingObjectId } : {}),
         ...(profile.customerProfileId ? { authnetCustomerProfileId: profile.customerProfileId } : {}),
         ...(profile.paymentProfileId ? { authnetPaymentProfileId: profile.paymentProfileId } : {}),
       },
@@ -348,7 +381,12 @@ async function scheduleRecurringAppointments(params: {
   const results = await Promise.allSettled(tasks)
   results.forEach((r, i) => {
     if (r.status === 'rejected') {
-      console.error(`[booking:recurring] Appointment ${i + 2} failed`, r.reason)
+      const err = r.reason as { status?: number; body?: unknown; message?: string }
+      console.error(`[booking:recurring] Appointment ${i + 2} failed`, {
+        status: err?.status,
+        message: err?.message,
+        body: JSON.stringify(err?.body),
+      })
     }
   })
 }
