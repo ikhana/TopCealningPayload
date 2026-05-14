@@ -88,7 +88,7 @@ export default async function Account() {
         <RenderParams className="" />
       </div>
 
-      <div className="container mt-16 pb-8 flex gap-8">
+      <div className="container mt-16 pb-32 flex gap-8">
         <AccountNav className="max-w-[17.5rem] grow flex flex-col items-start gap-4" />
 
         <div className="flex flex-col gap-12">
