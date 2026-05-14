@@ -1,3 +1,8 @@
+// POST /api/bookings/submit
+// Custom endpoint for the booking wizard. Lives on /submit (not /api/bookings)
+// so it doesn't shadow Payload's auto-generated GET/PATCH/DELETE handlers
+// at /api/bookings (which the /account/bookings page and admin UI rely on).
+
 import { NextRequest, NextResponse } from 'next/server'
 import { getMeUser } from '@/utilities/getMeUser'
 import { submitBooking, BookingValidationError } from '@/lib/booking/submit-flow'
@@ -79,14 +84,14 @@ export async function POST(request: NextRequest) {
     }
 
     if (err instanceof GhlApiError) {
-      console.error('[bookings] GHL error during submit', { status: err.status, body: err.body })
+      console.error('[bookings:submit] GHL error during submit', { status: err.status, body: err.body })
       return NextResponse.json(
         { error: 'Scheduling system unavailable. Your card was not charged. Please try again.', code: 'GHL_ERROR' },
         { status: 503 },
       )
     }
 
-    console.error('[bookings] Unexpected error during submit', err)
+    console.error('[bookings:submit] Unexpected error during submit', err)
     return NextResponse.json(
       { error: 'An unexpected error occurred. Please try again or contact support.', code: 'INTERNAL_ERROR' },
       { status: 500 },

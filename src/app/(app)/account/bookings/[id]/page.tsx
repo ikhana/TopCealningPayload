@@ -87,6 +87,13 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
       })
     : '—'
 
+  // serviceTime is stored as ISO (e.g. "2026-05-21T12:00:00-04:00") — format to "12:00 PM"
+  const timeStr = booking.serviceTime
+    ? (booking.serviceTime.includes('T')
+        ? new Date(booking.serviceTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+        : booking.serviceTime)
+    : '—'
+
   const statusStyle = STATUS_COLORS[booking.status] ?? STATUS_COLORS.pending!
   const statusIdx = STATUS_STEPS.indexOf(booking.status)
   const isCancelledOrRefunded = booking.status === 'cancelled' || booking.status === 'refunded'
@@ -100,7 +107,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
           {/* Back link */}
           <Link
             href="/account/bookings"
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'rgba(74,90,106,0.6)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '24px' }}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-teal)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '24px', letterSpacing: '0.05em' }}
           >
             ← All Bookings
           </Link>
@@ -128,7 +135,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
           {/* Status timeline (only for non-cancelled) */}
           {!isCancelledOrRefunded && (
             <div style={{ border: '1px solid rgba(13,27,46,0.08)', padding: '24px', background: 'white', marginBottom: '24px' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.5)', marginBottom: '16px' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(13,27,46,0.7)', fontWeight: 700, marginBottom: '16px' }}>
                 Status Timeline
               </div>
               <div style={{ display: 'flex', gap: '0', alignItems: 'center' }}>
@@ -163,10 +170,10 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
 
             {/* Appointment */}
             <div style={{ border: '1px solid rgba(13,27,46,0.08)', padding: '20px 24px', background: 'white' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.5)', marginBottom: '14px' }}>Appointment</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(13,27,46,0.7)', fontWeight: 700, marginBottom: '14px' }}>Appointment</div>
               {[
                 ['Date', dateStr],
-                ['Time', booking.serviceTime || '—'],
+                ['Time', timeStr],
                 ['Service', SERVICE_LABELS[booking.serviceType] ?? booking.serviceType],
                 ['Frequency', FREQUENCY_LABELS[booking.frequency] ?? booking.frequency],
               ].map(([label, value]) => (
@@ -180,14 +187,14 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
             {/* Address */}
             {address && (
               <div style={{ border: '1px solid rgba(13,27,46,0.08)', padding: '20px 24px', background: 'white' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.5)', marginBottom: '14px' }}>Location</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(13,27,46,0.7)', fontWeight: 700, marginBottom: '14px' }}>Location</div>
                 <p style={{ fontSize: '0.88rem', color: 'rgba(13,27,46,0.8)', lineHeight: 1.6, margin: 0 }}>
                   {address.street}{address.apt ? `, Apt ${address.apt}` : ''}<br />
                   {address.city}, {address.state} {address.zipCode}
                 </p>
                 {booking.accessMethod && (
                   <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(13,27,46,0.06)' }}>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.5)', marginBottom: '4px' }}>Access</div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(13,27,46,0.7)', fontWeight: 700, marginBottom: '4px' }}>Access</div>
                     <span style={{ fontSize: '0.82rem', color: 'rgba(13,27,46,0.75)' }}>{booking.accessMethod}</span>
                   </div>
                 )}
@@ -197,7 +204,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
             {/* Property */}
             {property && (
               <div style={{ border: '1px solid rgba(13,27,46,0.08)', padding: '20px 24px', background: 'white' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.5)', marginBottom: '14px' }}>Property</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(13,27,46,0.7)', fontWeight: 700, marginBottom: '14px' }}>Property</div>
                 {[
                   property.squareFootage && ['Sq. Footage', `${property.squareFootage} sq ft`],
                   property.bedrooms && ['Bedrooms', property.bedrooms],
@@ -219,7 +226,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
             {/* Pricing */}
             {pricing && (
               <div style={{ border: '1px solid rgba(13,27,46,0.08)', padding: '20px 24px', background: 'white' }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.5)', marginBottom: '14px' }}>Pricing</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(13,27,46,0.7)', fontWeight: 700, marginBottom: '14px' }}>Pricing</div>
                 {[
                   ['Base Service', `$${(pricing.basePrice ?? 0).toFixed(2)}`],
                   pricing.extrasTotal ? ['Add-ons', `+$${pricing.extrasTotal.toFixed(2)}`] : null,
@@ -246,7 +253,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
           {/* Extras */}
           {booking.selectedExtras && booking.selectedExtras.length > 0 && (
             <div style={{ border: '1px solid rgba(13,27,46,0.08)', padding: '20px 24px', background: 'white', marginBottom: '16px' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.5)', marginBottom: '14px' }}>Selected Extras</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(13,27,46,0.7)', fontWeight: 700, marginBottom: '14px' }}>Selected Extras</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {booking.selectedExtras.map((extra) => (
                   <span key={extra.extraId} style={{

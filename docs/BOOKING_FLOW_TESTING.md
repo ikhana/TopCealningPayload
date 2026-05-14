@@ -133,7 +133,7 @@ Find the **Booked** stage column. Confirm:
 In the browser's developer tools console, run:
 
 ```javascript
-fetch('/api/bookings', {
+fetch('/api/bookings/submit', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({

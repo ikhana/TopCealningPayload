@@ -316,7 +316,7 @@ function BookingFormInner() {
     setSubmissionError(null)
 
     try {
-      const res = await fetch('/api/bookings', {
+      const res = await fetch('/api/bookings/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -43,8 +43,8 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 2.5 | Wizard validation + UX polish | `[ ]` | [stages/02-5-wizard-validation-and-polish.md](stages/02-5-wizard-validation-and-polish.md) |
 | 2.7 | Wire GHL Booking custom object | `[x]` | [stages/02-7-wire-ghl-booking-custom-object.md](stages/02-7-wire-ghl-booking-custom-object.md) |
 | 2.8 | Contact ↔ Booking association | `[x]` | [stages/02-8-contact-booking-association.md](stages/02-8-contact-booking-association.md) |
-| 3 | Logged-in booking — create account + book | `[ ]` | |
-| 4 | Account bookings list + detail page | `[ ]` | |
+| 3 | Logged-in booking — create account + book | `[x]` | [stages/03-logged-in-booking.md](stages/03-logged-in-booking.md) |
+| 4 | Account bookings list + detail page | `[x]` | [stages/04-account-bookings-list.md](stages/04-account-bookings-list.md) |
 | 5 | Cancellation flow — Payload + GHL sync | `[ ]` | |
 | 6 | GHL Calendar settings tour | `[ ]` | *(learn-only, no code)* |
 | 7 | GHL Calendar edge cases | `[ ]` | *(learn-only, no code)* |

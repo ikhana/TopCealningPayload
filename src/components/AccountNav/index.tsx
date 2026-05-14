@@ -40,6 +40,8 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
           </Button>
         </li>
 
+        {/* Orders hidden — Top Cleaning is service-only, no e-commerce yet.
+            Re-enable if/when a shop is added.
         <li>
           <Button
             asChild
@@ -51,6 +53,7 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
             <Link href="/orders">Orders</Link>
           </Button>
         </li>
+        */}
       </ul>
 
       <hr className="w-full border-white/5" />

@@ -142,6 +142,8 @@ export default async function Account() {
             </Button>
           </div>
 
+          {/* Recent Orders hidden — Top Cleaning is service-only, no e-commerce yet.
+              Re-enable if/when a shop is added.
           <div className=" border p-8 rounded-lg bg-primary-foreground">
             <h2 className="text-3xl font-medium mb-8">Recent Orders</h2>
 
@@ -170,6 +172,7 @@ export default async function Account() {
               <Link href="/orders">View all orders</Link>
             </Button>
           </div>
+          */}
         </div>
       </div>
     </div>
