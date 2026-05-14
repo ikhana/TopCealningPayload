@@ -59,7 +59,7 @@ export function Step07Access() {
         <label style={labelStyle}>Pets in the Home?</label>
 
         {/* Yes / No toggle */}
-        <div style={{ display: 'flex', gap: '10px', marginBottom: hasPets ? '18px' : '0' }}>
+        <div style={{ display: 'flex', gap: '10px' }}>
           {(['Yes', 'No'] as const).map((opt) => {
             const active = opt === 'Yes' ? hasPets : !hasPets
             return (
@@ -74,7 +74,7 @@ export function Step07Access() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  transition: 'all 0.3s',
+                  transition: 'border-color 0.2s, background 0.2s, color 0.2s',
                   fontWeight: 700,
                   fontSize: '0.88rem',
                   color: active ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.65)',
@@ -87,41 +87,48 @@ export function Step07Access() {
           })}
         </div>
 
-        {/* Pet type chips */}
-        {hasPets && (
-          <div>
-            <label style={{ ...labelStyle, marginBottom: '8px' }}>What kind of pets?</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {PET_TYPES.map((pet) => {
-                const sel = pets.includes(pet)
-                return (
-                  <div
-                    key={pet}
-                    onClick={() => togglePetType(pet)}
-                    style={{
-                      border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
-                      padding: '7px 18px',
-                      cursor: 'pointer',
-                      background: sel ? '#e0f5f4' : 'white',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      color: sel ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.7)',
-                      transition: 'all 0.25s',
-                    }}
-                    onMouseEnter={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-teal)' }}
-                    onMouseLeave={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,46,0.1)' }}
-                  >
-                    {pet}
-                    {sel && <span style={{ marginLeft: '6px', color: 'var(--color-teal)', fontSize: '0.7rem' }}>✓</span>}
-                  </div>
-                )
-              })}
-            </div>
-            <p style={{ marginTop: '8px', fontSize: '0.75rem', color: 'rgba(74,90,106,0.65)', lineHeight: 1.5 }}>
-              A small pet fee may apply to ensure a thorough clean.
-            </p>
+        {/* Pet type chips — always rendered, collapsed when hasPets is false */}
+        <div
+          aria-hidden={!hasPets}
+          style={{
+            maxHeight: hasPets ? '220px' : '0',
+            opacity: hasPets ? 1 : 0,
+            overflow: 'hidden',
+            marginTop: hasPets ? '18px' : '0',
+            transition: 'max-height 0.3s ease-out, opacity 0.2s ease-out, margin-top 0.3s ease-out',
+          }}
+        >
+          <label style={{ ...labelStyle, marginBottom: '8px' }}>What kind of pets?</label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {PET_TYPES.map((pet) => {
+              const sel = pets.includes(pet)
+              return (
+                <div
+                  key={pet}
+                  onClick={() => togglePetType(pet)}
+                  style={{
+                    border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
+                    padding: '7px 18px',
+                    cursor: 'pointer',
+                    background: sel ? '#e0f5f4' : 'white',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    color: sel ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.7)',
+                    transition: 'border-color 0.2s, background 0.2s, color 0.2s',
+                  }}
+                  onMouseEnter={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-teal)' }}
+                  onMouseLeave={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,46,0.1)' }}
+                >
+                  {pet}
+                  {sel && <span style={{ marginLeft: '6px', color: 'var(--color-teal)', fontSize: '0.7rem' }}>✓</span>}
+                </div>
+              )
+            })}
           </div>
-        )}
+          <p style={{ marginTop: '8px', fontSize: '0.75rem', color: 'rgba(74,90,106,0.65)', lineHeight: 1.5 }}>
+            A small pet fee may apply to ensure a thorough clean.
+          </p>
+        </div>
       </div>
 
       {/* ── Children ─────────────────────────────────────────── */}
@@ -142,7 +149,7 @@ export function Step07Access() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  transition: 'all 0.3s',
+                  transition: 'border-color 0.2s, background 0.2s, color 0.2s',
                   fontWeight: 700,
                   fontSize: '0.88rem',
                   color: active ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.65)',
@@ -179,10 +186,10 @@ export function Step07Access() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  transition: 'all 0.3s cubic-bezier(0.25,1,0.5,1)',
+                  transition: 'border-color 0.2s, background 0.2s, box-shadow 0.2s',
                 }}
-                onMouseEnter={(e) => { if (!sel) { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-teal)'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)' } }}
-                onMouseLeave={(e) => { if (!sel) { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,46,0.1)'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)' } }}
+                onMouseEnter={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-teal)' }}
+                onMouseLeave={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,46,0.1)' }}
               >
                 <Icon size={15} style={{ color: sel ? 'var(--color-teal)' : 'rgba(74,90,106,0.5)', flexShrink: 0 }} />
                 <span style={{ fontSize: '0.82rem', fontWeight: 600, color: sel ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.75)' }}>{label}</span>

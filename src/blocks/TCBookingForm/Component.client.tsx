@@ -10,6 +10,7 @@ import { BookingProvider } from '@/components/booking/BookingContext'
 import { BookingSummary } from '@/components/booking/BookingSummary'
 import { useBooking } from '@/components/booking/BookingContext'
 import { generateIdempotencyKeyClient } from '@/lib/booking/idempotency'
+import { validateStep } from '@/lib/booking/step-validation'
 import { Step01Customer } from '@/components/booking/sections/Step01Customer'
 import { Step02Service } from '@/components/booking/sections/Step02Service'
 import { Step03Property } from '@/components/booking/sections/Step03Property'
@@ -255,8 +256,28 @@ function BookingFormInner() {
   const [submitted, setSubmitted] = useState(false)
   const [confirmationCode, setConfirmationCode] = useState<string | undefined>()
   const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
+  const [stepError, setStepError] = useState<string | null>(null)
+
+  // Clear the step error when the user changes step or starts editing
+  useEffect(() => {
+    setStepError(null)
+  }, [currentStep, bookingData])
 
   const goNext = () => {
+    // Validate the current REAL step (handles Step 9 being filtered when payment disabled)
+    const realStepNum = STEP_NUM_AT(currentStep)
+    const result = validateStep(realStepNum, bookingData, {
+      paymentEnabled: PAYMENT_ENABLED,
+      paymentNonceSet: !!paymentNonce,
+      termsAccepted: true, // Step 10 self-gates via its own button — never blocks goNext
+    })
+    if (!result.valid) {
+      setStepError(`Please fill in: ${result.missingField}`)
+      // Scroll to top so the error banner is visible
+      if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
     if (currentStep === 1) {
       const { customer } = bookingData
       fetch('/api/ghl/lead-capture', {
@@ -525,6 +546,28 @@ function BookingFormInner() {
               </span>
             </div>
           </div>
+
+          {/* Inline step validation error */}
+          {stepError && (
+            <div
+              role="alert"
+              style={{
+                marginBottom: '20px',
+                padding: '12px 16px',
+                background: '#fef2f2',
+                border: '1px solid #fca5a5',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                animation: 'bf-in 0.3s ease-out forwards',
+              }}
+            >
+              <AlertCircle size={16} style={{ color: '#dc2626', flexShrink: 0 }} />
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#dc2626', margin: 0, fontWeight: 600 }}>
+                {stepError}
+              </p>
+            </div>
+          )}
 
           {/* Animated section */}
           <div key={currentStep} className="bf-section-in">

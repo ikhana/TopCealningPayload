@@ -39,7 +39,9 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | # | Stage | Status | Doc |
 |---|---|---|---|
 | 1 | Test the full booking submit | `[x]` | [stages/01-test-booking-submit.md](stages/01-test-booking-submit.md) |
-| 2 | Verify the GHL handshake | `[ ]` | [stages/02-verify-ghl-handshake.md](stages/02-verify-ghl-handshake.md) |
+| 2 | Verify the GHL handshake | `[x]` | [stages/02-verify-ghl-handshake.md](stages/02-verify-ghl-handshake.md) |
+| 2.5 | Wizard validation + UX polish | `[ ]` | [stages/02-5-wizard-validation-and-polish.md](stages/02-5-wizard-validation-and-polish.md) |
+| 2.7 | Wire GHL Booking custom object | `[x]` | [stages/02-7-wire-ghl-booking-custom-object.md](stages/02-7-wire-ghl-booking-custom-object.md) |
 | 3 | Logged-in booking — create account + book | `[ ]` | |
 | 4 | Account bookings list + detail page | `[ ]` | |
 | 5 | Cancellation flow — Payload + GHL sync | `[ ]` | |
@@ -131,6 +133,53 @@ This is a single stage covering all wizard issues found during Stage 1 testing.
 - **Fix**: (1) Reserve space for the pet type section with min-height or a CSS fade-in animation, not a hard show/hide. (2) Replace `transition: all` with explicit `transition: border-color 0.2s, background 0.2s` to skip transform.
 
 **Insertion**: Insert between current Stage 2 and Stage 3; renumber everything after.
+
+### Stage 6 — GHL Calendar settings tour (additional findings)
+
+- **Appointment times stored/returned in team-member's timezone (Pacific)** (discovered Stage 2, 2026-05-14)
+  - **Symptom**: Booking sent as `2026-05-20T13:00:00-04:00` (Eastern). GHL API returns `2026-05-20T10:00:00-07:00` (Pacific). Same UTC instant, different rendering.
+  - **Root cause**: Assigned team member `m2qNAZYlill0w0nmEjpS` has Pacific timezone in their GHL user profile.
+  - **Impact**: GHL email/SMS notifications may show Pacific time to the customer unless template formatting forces calendar timezone. Test by sending a notification and inspecting the rendered time.
+  - **Fix in Stage 6**: Change the team member's user timezone to US/Eastern in GHL → Settings → My Staff → [user] → Timezone. Or override per-email-template using GHL's date-format placeholder.
+
+### Stage 2.7 — Wire GHL Booking custom object (NEW STAGE)
+
+- **Booking custom object is configured in GHL but no code writes to it** (discovered Stage 2, 2026-05-14)
+  - **Symptom**: GHL has a custom object `custom_objects.bookings` (id `69f6725066de6bc00b0149f8`) with 16 fields defined, but the records list is empty. Confirmation codes, service details, addresses — none of it lands in this object.
+  - **Root cause**: `src/lib/booking/submit-flow.ts` creates contact + appointment + opportunity, but never calls the GHL Custom Objects API.
+  - **Fix plan**:
+    1. Add `src/lib/ghl/custom-objects.ts` with a `createBookingRecord()` function that POSTs to `/objects/custom_objects.bookings/records`.
+    2. Build the payload from the Payload booking record — map all 16 fields (table in submit-flow comment).
+    3. Call it from `submit-flow.ts` right after `createOpportunity` (or in parallel with it).
+    4. Associate the record with the contact using GHL's associations API (`POST /associations/relations/{recordId}` or via the create call's body — verify which works first).
+    5. Store the returned `customObjectRecordId` on the Payload Booking record (add a new field `ghlBookingObjectId`).
+  - **Fields and their GHL field keys**: see schema dump in the conversation that produced this finding. All keys are `custom_objects.bookings.{snake_name}`.
+  - **Map of Payload → GHL field**:
+    - `confirmationCode` → `custom_objects.bookings.confirmation_code` (required, unique)
+    - `serviceType` → `custom_objects.bookings.service_type` (map: `movein-out` → `move_inout`, `renovation` → `postrenovation`)
+    - `serviceDate` → `custom_objects.bookings.service_date`
+    - `serviceTime` → `custom_objects.bookings.service_time`
+    - `property.squareFootage` → `custom_objects.bookings.square_footage`
+    - `property.bedrooms` → `custom_objects.bookings.bedrooms` (5+ maps to `5`)
+    - `property.bathrooms` → `custom_objects.bookings.bathrooms` (cap at `5`)
+    - `accessMethod` → `custom_objects.bookings.access_method`
+    - `pricing.total` → `custom_objects.bookings.booking_total`
+    - `hasPets` → `custom_objects.bookings.has_pets` (`yes`/`no`)
+    - `hasChildren` → `custom_objects.bookings.has_children` (`yes`/`no`)
+    - `address.street` → `custom_objects.bookings.street_address`
+    - `address.city` → `custom_objects.bookings.city`
+    - `address.state` → `custom_objects.bookings.state`
+    - `address.zipCode` → `custom_objects.bookings.zip_code`
+    - `selectedExtras` → `custom_objects.bookings.selected_extras` (JSON-stringify or comma-join labels)
+
+### Stage X (to slot) — Update contact address on booking
+
+- **Booking-time address doesn't update the GHL contact's address** (discovered Stage 2, 2026-05-14)
+  - **Symptom**: Existing contact had address "Islamabad, AZ" from a prior interaction. Booking submitted "123 Test St, Phoenix, IL 44000" — the appointment got the right address, but the contact record was not updated.
+  - **Root cause**: `upsertContact` in `src/lib/ghl/contacts.ts` only sends name/email/phone/customFields. Address fields aren't included in the payload.
+  - **Decision needed**: Should every booking overwrite the contact's address? For cleaning, yes — the address IS the service location and the most recent booking is the most relevant.
+  - **Fix**: Add `address1`, `city`, `state`, `postalCode`, `country` to the `upsertContact` payload from `submit-flow.ts`.
+  - **Stage placement**: Either small dedicated stage (e.g. 2.7), or fold into Stage 2.5 (wizard polish stage).
 
 ### Stage 6 — GHL Calendar settings tour
 
