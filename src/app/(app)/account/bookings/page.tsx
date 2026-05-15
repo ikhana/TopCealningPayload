@@ -34,7 +34,7 @@ export default async function BookingsPage() {
 
   return (
     <div>
-      <div className="container mt-16 pb-32 flex gap-8">
+      <div className="container mt-16 pb-16 flex gap-8">
         <AccountNav className="max-w-[17.5rem] grow flex flex-col items-start gap-4" />
 
         <div style={{ flex: 1, minWidth: 0 }}>

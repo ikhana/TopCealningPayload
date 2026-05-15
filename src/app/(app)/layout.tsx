@@ -64,7 +64,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <LivePreviewListener />
           )}
           <Header />
-          <main className="flex-1 w-full">{children}</main>
+          {/* pb-40 reserves space for the floating Footer CTA (marginTop:-80px) so the last
+              section of every page doesn't get covered by the "Ready for a spotless space?" band */}
+          <main className="flex-1 w-full pb-40">{children}</main>
           <Footer />
         </Providers>
       </body>
