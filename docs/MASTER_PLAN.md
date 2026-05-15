@@ -146,6 +146,12 @@ This is a single stage covering all wizard issues found during Stage 1 testing.
 
 ### Stage 6 — GHL Calendar settings tour (additional findings)
 
+- **GHL offers slots based on start time only, not full duration** (discovered 2026-05-15)
+  - **Symptom**: Tuesday 5 PM slot was offered even though Crew 1's shift ends at 6 PM and the 2-hour appointment runs to 7 PM (and with 30-min post buffer, effectively to 7:30 PM)
+  - **Implication**: Crews can be assigned to appointments that run past their working hours. Operationally this means a crew may need to work late.
+  - **Discussion point with Geraldine**: Is it acceptable for crews to occasionally work past their listed end time? Or should we tighten the calendar to only offer slots where the FULL appointment fits within crew hours?
+  - **If tightening is needed**: The fix is to set each crew's working hours to end 2.5 hours earlier than their actual stop time (e.g., Crew 1 working 8 AM - 6 PM in real life would be configured as 8 AM - 3:30 PM in GHL so the latest 2-hr slot + 30-min buffer fits). Tedious; not recommended unless Geraldine insists.
+
 - **Calendar is assigned to Tashana Dees — an NBL leftover user** (discovered 2026-05-14)
   - **Symptom**: User `m2qNAZYlill0w0nmEjpS` in API = "Tashana Dees" in UI = NBL contact, not a Top Cleaning crew
   - **Root cause**: Calendar was created on a shared sub-account that already had NBL users
