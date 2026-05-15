@@ -23,9 +23,16 @@ const getTomorrow = () => {
   return d.toISOString().split('T')[0]!
 }
 
-function formatSlotLabel(iso: string): string {
+function formatSlotLabel(iso: string, timezone?: string): string {
   const d = new Date(iso)
-  return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+  return d.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    // Force display in the business timezone so customers see appointment times
+    // matching the company's local clock, not their browser's local clock.
+    timeZone: timezone || 'America/New_York',
+  })
 }
 
 export function Step06Schedule() {
@@ -33,6 +40,7 @@ export function Step06Schedule() {
   const { serviceDate, serviceTime, flexibleTimes } = bookingData
 
   const [slots, setSlots] = useState<string[]>([])
+  const [slotsTimezone, setSlotsTimezone] = useState<string | undefined>(undefined)
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [slotsError, setSlotsError] = useState(false)
 
@@ -47,6 +55,7 @@ export function Step06Schedule() {
       .then((data) => {
         const daySlots = data.slots?.find((d: { date: string; times: string[] }) => d.date === serviceDate)
         setSlots(daySlots?.times ?? [])
+        setSlotsTimezone(data.timezone)
       })
       .catch(() => setSlotsError(true))
       .finally(() => setLoadingSlots(false))
@@ -126,7 +135,7 @@ export function Step06Schedule() {
                   {serviceDate && slotsError && <option value="">Could not load slots — try again</option>}
                   {slots.length > 0 && <option value="">Select a time</option>}
                   {slots.map((iso) => (
-                    <option key={iso} value={iso}>{formatSlotLabel(iso)}</option>
+                    <option key={iso} value={iso}>{formatSlotLabel(iso, slotsTimezone)}</option>
                   ))}
                 </select>
               </>

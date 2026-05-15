@@ -204,6 +204,9 @@ function BookingSuccess({ confirmationCode, appointmentTime }: { confirmationCod
       return new Date(iso).toLocaleString('en-US', {
         weekday: 'long', month: 'long', day: 'numeric',
         hour: 'numeric', minute: '2-digit', hour12: true,
+        // Force business timezone so confirmation matches what the customer picked,
+        // regardless of where they're physically located when viewing the page.
+        timeZone: 'America/New_York',
       })
     } catch { return iso }
   }

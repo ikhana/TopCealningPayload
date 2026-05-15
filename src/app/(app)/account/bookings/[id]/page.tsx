@@ -90,7 +90,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
   // serviceTime is stored as ISO (e.g. "2026-05-21T12:00:00-04:00") — format to "12:00 PM"
   const timeStr = booking.serviceTime
     ? (booking.serviceTime.includes('T')
-        ? new Date(booking.serviceTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+        ? new Date(booking.serviceTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York' })
         : booking.serviceTime)
     : '—'
 

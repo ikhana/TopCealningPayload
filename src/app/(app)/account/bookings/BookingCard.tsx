@@ -57,7 +57,7 @@ export function BookingCard({ booking }: { booking: Booking }) {
 
   const timeStr = booking.serviceTime
     ? (booking.serviceTime.includes('T')
-        ? new Date(booking.serviceTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+        ? new Date(booking.serviceTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York' })
         : booking.serviceTime)
     : '—'
 
