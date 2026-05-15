@@ -34,12 +34,12 @@ export default async function BookingsPage() {
 
   return (
     <div>
-      <div className="container mt-16 pb-16 flex gap-8">
-        <AccountNav className="max-w-[17.5rem] grow flex flex-col items-start gap-4" />
+      <div className="container mt-8 md:mt-16 pb-16 flex flex-col md:flex-row gap-6 md:gap-8">
+        <AccountNav className="w-full md:max-w-[17.5rem] md:grow flex flex-row md:flex-col items-start gap-2 md:gap-4 overflow-x-auto md:overflow-visible pb-2 md:pb-0 border-b md:border-b-0 border-navy-deep/10" />
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-            <h1 style={{ fontSize: '1.75rem', fontWeight: 900, letterSpacing: '-1px', color: 'var(--color-navy-deep)', margin: 0 }}>
+            <h1 style={{ fontSize: 'clamp(1.25rem, 5vw, 1.75rem)', fontWeight: 900, letterSpacing: '-1px', color: 'var(--color-navy-deep)', margin: 0 }}>
               My Bookings
             </h1>
             <Link

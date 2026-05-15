@@ -14,7 +14,7 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={clsx(className)}>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-row md:flex-col gap-1 md:gap-2 w-full md:w-auto whitespace-nowrap">
         <li>
           <Button asChild variant="link">
             <Link
@@ -56,7 +56,7 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
         */}
       </ul>
 
-      <hr className="w-full border-white/5" />
+      <hr className="hidden md:block w-full border-white/5" />
 
       <Button
         asChild

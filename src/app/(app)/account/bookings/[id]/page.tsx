@@ -100,8 +100,8 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div>
-      <div className="container mt-16 pb-16 flex gap-8">
-        <AccountNav className="max-w-[17.5rem] grow flex flex-col items-start gap-4" />
+      <div className="container mt-8 md:mt-16 pb-16 flex flex-col md:flex-row gap-6 md:gap-8">
+        <AccountNav className="w-full md:max-w-[17.5rem] md:grow flex flex-row md:flex-col items-start gap-2 md:gap-4 overflow-x-auto md:overflow-visible pb-2 md:pb-0 border-b md:border-b-0 border-navy-deep/10" />
 
         <div style={{ flex: 1, minWidth: 0 }}>
           {/* Back link */}
@@ -115,7 +115,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px', flexWrap: 'wrap', gap: '12px' }}>
             <div>
-              <h1 style={{ fontSize: '1.75rem', fontWeight: 900, letterSpacing: '-1px', color: 'var(--color-navy-deep)', margin: '0 0 6px' }}>
+              <h1 style={{ fontSize: 'clamp(1.25rem, 5vw, 1.75rem)', fontWeight: 900, letterSpacing: '-1px', color: 'var(--color-navy-deep)', margin: '0 0 6px' }}>
                 {SERVICE_LABELS[booking.serviceType] ?? booking.serviceType}
               </h1>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-teal)', letterSpacing: '0.1em', fontWeight: 700 }}>
@@ -151,7 +151,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
                           border: isActive ? '2px solid var(--color-teal)' : 'none',
                           boxShadow: isActive ? '0 0 0 3px rgba(23,176,171,0.2)' : 'none',
                         }} />
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDone ? 'var(--color-teal)' : 'rgba(74,90,106,0.4)', whiteSpace: 'nowrap', fontWeight: isDone ? 700 : 400 }}>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: isDone ? 'var(--color-teal)' : 'rgba(74,90,106,0.4)', textAlign: 'center', fontWeight: isDone ? 700 : 400 }}>
                           {STATUS_LABELS[step]}
                         </span>
                       </div>
