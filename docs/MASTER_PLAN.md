@@ -45,8 +45,8 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 2.8 | Contact ↔ Booking association | `[x]` | [stages/02-8-contact-booking-association.md](stages/02-8-contact-booking-association.md) |
 | 3 | Logged-in booking — create account + book | `[x]` | [stages/03-logged-in-booking.md](stages/03-logged-in-booking.md) |
 | 4 | Account bookings list + detail page | `[x]` | [stages/04-account-bookings-list.md](stages/04-account-bookings-list.md) |
-| 5 | Cancellation flow — Payload + GHL sync | `[ ]` | |
-| 6 | GHL Calendar settings tour | `[ ]` | *(learn-only, no code)* |
+| 5 | Cancellation flow — Payload + GHL sync (basic) | `[~]` deferred | [stages/05-cancellation-flow.md](stages/05-cancellation-flow.md) |
+| 6 | GHL Calendar settings tour | `[~]` | [stages/06-ghl-calendar-tour.md](stages/06-ghl-calendar-tour.md) |
 | 7 | GHL Calendar edge cases | `[ ]` | *(learn-only, no code)* |
 | 8 | Design + build the confirmation email template | `[ ]` | |
 | 9 | Workflow setup — trigger + send action | `[ ]` | |
@@ -58,6 +58,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 15 | First recovery email (1-hour nudge) | `[ ]` | |
 | 16 | Full recovery sequence (24h + 3d) | `[ ]` | |
 | 17 | localStorage snapshot + resume in emails | `[ ]` | |
+| 18 | **Full cancellation + refund flow** (revisit Stage 5) | `[ ]` | *(needs payment credentials — depends on Stripe/Authnet integration)* |
 
 ---
 
@@ -103,11 +104,11 @@ stages. Each entry says **what we saw** and **which stage will handle it**.
 
 ### Stage 5 — Cancellation flow
 
-- **GHL Private Integration Token may lack DELETE permission for appointments** (discovered during Stage 1 test on 2026-05-12)
-  - **Symptom**: When rollback tried to cancel a successfully-created appointment after a downstream failure, GHL returned 401 Unauthorized. Token authenticates fine for `POST /opportunities/`, `POST /calendars/events/appointments`, etc., but fails for `DELETE /calendars/events/appointments/{id}`.
-  - **Where it surfaces**: `src/lib/ghl/appointments.ts:19` (`cancelAppointment`), called from rollback path AND from the customer-facing cancel endpoint `src/app/(payload)/api/bookings/[id]/cancel/route.ts`.
-  - **Fix in Stage 5**: Go to GHL → Settings → Integrations → Private Integrations → edit the token → ensure the **Calendars / Write** scope is enabled (likely needs `calendars/events.write` or similar). May need to regenerate the token.
-  - **Token ID to inspect**: `pit-84c5a264-03c5-4731-8bc4-78dd79ac5cb1`
+- **~~GHL token DELETE scope issue~~ → was actually a wrong endpoint URL** (originally noted 2026-05-12, root-caused 2026-05-15)
+  - **Symptom**: `DELETE /calendars/events/appointments/{id}` returned 401 "GHL authentication failed" or "This route is not yet supported by the IAM Service" even after PIT regeneration with full scopes
+  - **Real root cause**: GHL API path inconsistency — `POST /calendars/events/appointments` creates, but `DELETE /calendars/events/{id}` (without `/appointments/`) deletes. The DELETE path with `/appointments/` is simply not supported.
+  - **Fix applied**: Updated `cancelAppointment` in `src/lib/ghl/appointments.ts` to use the correct DELETE path. Verified via curl: `DELETE /calendars/events/bnpKsxCrfY1wPRELabJk` → `{"succeeded":true}`
+  - **Status**: ✅ Resolved — cancellation flow can now actually cancel GHL appointments. Stage 5 unblocked for proper testing (still gated by Stage 18 for the payment/refund half).
 
 ### Stage 12 — Walk through the recurring scheduler
 
@@ -135,7 +136,35 @@ This is a single stage covering all wizard issues found during Stage 1 testing.
 
 **Insertion**: Insert between current Stage 2 and Stage 3; renumber everything after.
 
+### Stage 5 — Cancellation flow (deferred decision)
+
+- **Basic cancellation logic exists but full flow needs payment integration first** (decided 2026-05-14)
+  - **What works today**: PATCH `/api/bookings/[id]/cancel` flips Payload status, deletes GHL appointment, moves opportunity to Cancelled stage. Token scopes are correct since Stage 2.8.
+  - **What's missing**: the fee/refund half. Policy logic returns `chargeRequired: true` for <24h cancellations but no charge actually fires because `PAYMENT_ENABLED=false`. The customer-facing dialog mentions a fee, but there's no card to charge it against (we haven't vaulted the card since payment is disabled).
+  - **Decision**: defer full testing of Stage 5 to **Stage 18 (Full cancellation + refund flow)** which will run after payment integration is live. Stage 5 stays `[~] deferred` in the plan as a reminder.
+  - **What this means in practice**: customers can still cancel from `/account/bookings/[id]` today — the booking flips to cancelled, GHL syncs, no money moves. That's actually the right behavior for the no-upfront-payment phase. We just don't claim end-to-end verification until refunds are real.
+
 ### Stage 6 — GHL Calendar settings tour (additional findings)
+
+- **Calendar is assigned to Tashana Dees — an NBL leftover user** (discovered 2026-05-14)
+  - **Symptom**: User `m2qNAZYlill0w0nmEjpS` in API = "Tashana Dees" in UI = NBL contact, not a Top Cleaning crew
+  - **Root cause**: Calendar was created on a shared sub-account that already had NBL users
+  - **Impact**:
+    - Her working hours flow through as the only available slots (cause of "only 4 slots showing" finding)
+    - Her Pacific timezone causes appointment times to render as `-07:00` instead of Eastern (cause of "Pacific time in API" finding)
+    - Wrong source-of-truth: jobs are assigned to her name in GHL, not to actual Top Cleaning crews
+  - **Fix prerequisites** (need decisions from Geraldine before we can act):
+    1. How many cleaning crews to model in GHL (1 placeholder or N real crews)
+    2. Names + emails for each crew (can be shared `crew1@topcleaningteam.com` etc.)
+    3. Working hours per crew (all same, or each different)
+    4. Confirm Eastern timezone for all crews
+  - **Fix plan**:
+    1. Settings → My Staff → create real Top Cleaning user(s) with Eastern timezone
+    2. Calendar settings → Staff & location → remove Tashana, add new users
+    3. Optionally remove Tashana from the sub-account entirely (Settings → My Staff → her profile)
+
+- **Calendar Meeting Location set to "Custom" with empty text** (discovered 2026-05-14)
+  - **Status**: ✅ Correct as-is. Cleaning service goes to the customer's address (collected in booking form). No fixed location to enter. Empty field is fine.
 
 - **Appointment times stored/returned in team-member's timezone (Pacific)** (discovered Stage 2, 2026-05-14)
   - **Symptom**: Booking sent as `2026-05-20T13:00:00-04:00` (Eastern). GHL API returns `2026-05-20T10:00:00-07:00` (Pacific). Same UTC instant, different rendering.

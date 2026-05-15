@@ -66,11 +66,13 @@ export function HeaderClient({ header }: Props) {
   const openMega = () => { cancelClose(); setMegaOpen(true) }
 
   const onTriggerLeave: React.MouseEventHandler = (e) => {
-    if (panelRef.current?.contains(e.relatedTarget as Node)) { cancelClose(); return }
+    const target = e.relatedTarget
+    if (target instanceof Node && panelRef.current?.contains(target)) { cancelClose(); return }
     scheduleClose()
   }
   const onPanelLeave: React.MouseEventHandler = (e) => {
-    if (triggerRef.current?.contains(e.relatedTarget as Node)) { cancelClose(); return }
+    const target = e.relatedTarget
+    if (target instanceof Node && triggerRef.current?.contains(target)) { cancelClose(); return }
     scheduleClose()
   }
 

@@ -17,7 +17,10 @@ export async function createAppointment(
 }
 
 export async function cancelAppointment(appointmentId: string): Promise<void> {
-  await ghlFetch(`/calendars/events/appointments/${appointmentId}`, {
+  // GHL API quirk: DELETE uses /calendars/events/{id}, NOT /calendars/events/appointments/{id}.
+  // The latter returns 401 "This route is not yet supported by the IAM Service" even with full scopes.
+  // POST uses /calendars/events/appointments — only the DELETE path differs.
+  await ghlFetch(`/calendars/events/${appointmentId}`, {
     method: 'DELETE',
   })
 }
