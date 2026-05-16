@@ -308,6 +308,26 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       },
     })
 
+    // Step 8b: Tag the contact `booking-confirmed`.
+    // This tag is the signal for downstream GHL workflows:
+    // - Confirmation email workflow: triggered when this tag is added
+    // - Abandoned booking workflow: GOAL condition (exits the recovery sequence)
+    // Non-blocking — if tagging fails, the booking is still complete.
+    upsertContact({
+      firstName: formData.customer.firstName,
+      lastName: formData.customer.lastName,
+      email: formData.customer.email,
+      phone: formData.customer.phone,
+      locationId: process.env.GHL_LOCATION_ID!,
+      tags: ['booking-confirmed'],
+    }).catch((err) => {
+      console.error('[booking:tag] Failed to add booking-confirmed tag', {
+        bookingId,
+        confirmationCode,
+        error: err instanceof Error ? err.message : String(err),
+      })
+    })
+
     return { confirmationCode, bookingId, appointmentTime: startTime }
 
   } catch (err) {
