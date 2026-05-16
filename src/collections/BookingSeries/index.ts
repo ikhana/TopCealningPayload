@@ -83,6 +83,19 @@ export const BookingSeries: CollectionConfig = {
       ],
     },
     {
+      // Reverse relationship — shows all Booking records that point to this series
+      // via their `series` field. Displayed inline in the admin so the series
+      // page lists its child occurrences.
+      name: 'bookings',
+      type: 'join',
+      collection: 'bookings',
+      on: 'series',
+      admin: {
+        defaultColumns: ['confirmationCode', 'seriesOccurrence', 'serviceDate', 'serviceTime', 'status'],
+        description: 'All booking occurrences in this series',
+      },
+    },
+    {
       name: 'cancelledAt',
       type: 'date',
       admin: { position: 'sidebar', description: 'When the series was cancelled' },

@@ -113,6 +113,9 @@ export interface Config {
     users: {
       orders: 'orders';
     };
+    'booking-series': {
+      bookings: 'bookings';
+    };
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
@@ -5128,6 +5131,14 @@ export interface BookingSery {
    */
   anchorTime: string;
   /**
+   * All booking occurrences in this series
+   */
+  bookings?: {
+    docs?: (number | Booking)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  /**
    * When the series was cancelled
    */
   cancelledAt?: string | null;
@@ -7327,6 +7338,7 @@ export interface BookingSeriesSelect<T extends boolean = true> {
   frequency?: T;
   anchorDayOfWeek?: T;
   anchorTime?: T;
+  bookings?: T;
   cancelledAt?: T;
   cancellationReason?: T;
   updatedAt?: T;

@@ -257,18 +257,28 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     })
     ghlAppointmentId = ghlAppointment.id
 
-    // Step 6b: Schedule recurring appointments (fire-and-forget — don't fail booking if extras fail)
-    scheduleRecurringAppointments({
-      frequency: formData.frequency,
-      firstStartTime: startTime,
-      estimatedHours,
-      calendarId: process.env.GHL_CALENDAR_ID!,
-      locationId: process.env.GHL_LOCATION_ID!,
-      contactId: ghlContactId,
-      title: appointmentTitle,
-      address: appointmentAddress,
-      notes: appointmentNotes,
-    }).catch((err) => console.error('[booking:recurring] Unexpected error', err))
+    // Step 6b: Schedule recurring appointments + create Payload records for each occurrence
+    // (fire-and-forget — don't fail booking if recurring scheduling fails)
+    if (seriesId) {
+      scheduleRecurringAppointments({
+        frequency: formData.frequency,
+        firstStartTime: startTime,
+        estimatedHours,
+        calendarId: process.env.GHL_CALENDAR_ID!,
+        locationId: process.env.GHL_LOCATION_ID!,
+        contactId: ghlContactId,
+        title: appointmentTitle,
+        address: appointmentAddress,
+        notes: appointmentNotes,
+        // Payload Booking creation context — each successful GHL appointment also gets a Payload record
+        payload,
+        seriesId,
+        userId,
+        formData,
+        selectedExtras,
+        idempotencyKey,
+      }).catch((err) => console.error('[booking:recurring] Unexpected error', err))
+    }
 
     // Step 7: Create GHL opportunity (Booked stage)
     const ghlOpportunity = await createOpportunity({
@@ -459,6 +469,13 @@ async function scheduleRecurringAppointments(params: {
   title: string
   address: string
   notes?: string
+  // Payload context — each successful GHL appointment also gets a Payload Booking record
+  payload: Awaited<ReturnType<typeof getPayload>>
+  seriesId: number
+  userId?: string
+  formData: BookingFormData
+  selectedExtras: Array<{ extraId: string; label: string; price: number }>
+  idempotencyKey: string
 }): Promise<void> {
   const rule = RECURRENCE[params.frequency]
   if (!rule) return
@@ -467,8 +484,8 @@ async function scheduleRecurringAppointments(params: {
   const nowMs = Date.now()
   const firstStartMs = new Date(params.firstStartTime).getTime()
 
-  // Build the list of occurrences we'll actually attempt — skipping any past the booking window.
-  const tasks: Array<Promise<unknown>> = []
+  // Skip occurrences past the booking window upfront
+  const occurrences: Array<{ occurrence: number; daysOut: number; startTime: string; endTime: string }> = []
   const skipped: Array<{ occurrence: number; daysOut: number; reason: string }> = []
 
   for (let i = 0; i < count; i++) {
@@ -484,31 +501,85 @@ async function scheduleRecurringAppointments(params: {
 
     const startTime = addDaysToIso(params.firstStartTime, daysOut)
     const endTime = addHours(startTime, params.estimatedHours)
-    tasks.push(createAppointment({
-      calendarId: params.calendarId,
-      locationId: params.locationId,
-      contactId: params.contactId,
-      startTime,
-      endTime,
-      title: params.title,
-      address: params.address,
-      notes: params.notes,
-    }))
+    occurrences.push({ occurrence, daysOut, startTime, endTime })
   }
 
   if (skipped.length > 0) {
     console.log('[booking:recurring] Skipped occurrences past booking window', skipped)
   }
 
-  const results = await Promise.allSettled(tasks)
-  results.forEach((r, i) => {
-    if (r.status === 'rejected') {
-      const err = r.reason as { status?: number; body?: unknown; message?: string }
-      console.error(`[booking:recurring] Appointment ${i + 2} failed`, {
+  // For each occurrence: create GHL appointment first, then Payload Booking linked to series
+  for (const occ of occurrences) {
+    try {
+      // 1. Create the GHL appointment
+      const ghlAppt = await createAppointment({
+        calendarId: params.calendarId,
+        locationId: params.locationId,
+        contactId: params.contactId,
+        startTime: occ.startTime,
+        endTime: occ.endTime,
+        title: params.title,
+        address: params.address,
+        notes: params.notes,
+      })
+
+      // 2. Create the paired Payload Booking record
+      try {
+        const serviceDate = occ.startTime.slice(0, 10) // YYYY-MM-DD
+        const occurrenceIdempotencyKey = `${params.idempotencyKey}-occ${occ.occurrence}`
+
+        const pendingOccurrence = await params.payload.create({
+          collection: 'bookings',
+          data: {
+            ...(params.userId ? { user: parseInt(params.userId, 10) } : {}),
+            series: params.seriesId,
+            seriesOccurrence: occ.occurrence,
+            confirmationCode: `TC-PENDING-${occurrenceIdempotencyKey.slice(0, 12).toUpperCase()}`,
+            serviceType: params.formData.serviceType,
+            frequency: params.formData.frequency,
+            serviceDate,
+            serviceTime: occ.startTime,
+            address: params.formData.address,
+            property: params.formData.property,
+            selectedExtras: params.selectedExtras,
+            hasChildren: params.formData.hasChildren,
+            hasPets: params.formData.hasPets,
+            accessMethod: params.formData.accessMethod,
+            customerNotes: '',
+            pricing: {
+              basePrice: params.formData.pricing.basePrice,
+              extrasTotal: params.formData.pricing.extrasTotal,
+              discount: params.formData.pricing.discount,
+              total: params.formData.pricing.total,
+              currency: 'usd',
+            },
+            status: 'confirmed',
+            ghlAppointmentId: ghlAppt.id,
+            idempotencyKey: occurrenceIdempotencyKey,
+          },
+        })
+
+        // Update with the real confirmation code (uses the new booking's id)
+        await params.payload.update({
+          collection: 'bookings',
+          id: pendingOccurrence.id,
+          data: { confirmationCode: generateConfirmationCode(pendingOccurrence.id) },
+        })
+      } catch (payloadErr) {
+        // GHL appointment exists but Payload record failed — log so we can reconcile manually
+        console.error(`[booking:recurring] Payload booking creation failed for occurrence ${occ.occurrence}`, {
+          ghlAppointmentId: ghlAppt.id,
+          seriesId: params.seriesId,
+          error: payloadErr instanceof Error ? payloadErr.message : String(payloadErr),
+        })
+      }
+    } catch (ghlErr) {
+      const err = ghlErr as { status?: number; body?: unknown; message?: string }
+      console.error(`[booking:recurring] Appointment ${occ.occurrence} failed`, {
         status: err?.status,
         message: err?.message,
         body: JSON.stringify(err?.body),
       })
     }
-  })
+  }
 }
