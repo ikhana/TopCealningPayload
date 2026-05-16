@@ -123,7 +123,47 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     }
   }
 
-  // Step 3: Create pending Booking record
+  // Step 3a: For recurring bookings, create a BookingSeries record first.
+  // This holds the series-level state (status, frequency, anchor day/time) and links
+  // all occurrences together. One-time bookings get seriesId = null.
+  const isRecurring = formData.frequency && formData.frequency !== 'one-time'
+  let seriesId: number | null = null
+
+  if (isRecurring) {
+    const anchorDate = new Date(`${formData.serviceDate}T12:00:00`)
+    const anchorDayOfWeek = anchorDate.getDay() // 0=Sunday, 6=Saturday
+
+    // Extract HH:mm from serviceTime — it can be ISO (preferred) or "09:00 AM"
+    let anchorTime = '09:00'
+    if (formData.serviceTime.includes('T')) {
+      // ISO like "2026-05-20T11:00:00-04:00" — pull the HH:mm in the ISO's own timezone
+      anchorTime = formData.serviceTime.slice(11, 16)
+    } else {
+      const ampm = formData.serviceTime.match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/i)
+      if (ampm) {
+        let h = parseInt(ampm[1]!, 10)
+        const m = ampm[2]!
+        const meridiem = ampm[3]!.toUpperCase()
+        if (meridiem === 'PM' && h !== 12) h += 12
+        if (meridiem === 'AM' && h === 12) h = 0
+        anchorTime = `${String(h).padStart(2, '0')}:${m}`
+      }
+    }
+
+    const series = await payload.create({
+      collection: 'booking-series',
+      data: {
+        ...(userId ? { user: parseInt(userId, 10) } : {}),
+        status: 'active',
+        frequency: formData.frequency as 'weekly' | 'biweekly' | '3weekly' | 'monthly' | '8weekly',
+        anchorDayOfWeek,
+        anchorTime,
+      },
+    })
+    seriesId = series.id as number
+  }
+
+  // Step 3b: Create pending Booking record (linked to series if recurring)
   const selectedExtras = formData.selectedExtras.map((id) => ({
     extraId: id,
     label: EXTRA_LABELS[id] ?? id,
@@ -134,6 +174,7 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     collection: 'bookings',
     data: {
       ...(userId ? { user: parseInt(userId, 10) } : {}),
+      ...(seriesId ? { series: seriesId, seriesOccurrence: 1 } : {}),
       confirmationCode: `TC-PENDING-${idempotencyKey.slice(0, 8).toUpperCase()}`,
       serviceType: formData.serviceType,
       frequency: formData.frequency,
@@ -340,6 +381,20 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       },
     }).catch(() => {})
 
+    // If we created a series for this booking, mark it cancelled too — the series
+    // can't exist as 'active' if its first occurrence never made it through.
+    if (seriesId) {
+      await payload.update({
+        collection: 'booking-series',
+        id: seriesId,
+        data: {
+          status: 'cancelled',
+          cancelledAt: new Date().toISOString(),
+          cancellationReason: `First occurrence failed: ${err instanceof Error ? err.message : String(err)}`,
+        },
+      }).catch(() => {})
+    }
+
     // Rollback GHL appointment if it was created (no charge to refund — card was only vaulted)
     if (ghlAppointmentId) {
       await rollbackAppointment({ appointmentId: ghlAppointmentId, bookingContext: bookingCtx })
@@ -379,14 +434,20 @@ function addDaysToIso(iso: string, days: number): string {
   return d.toISOString().slice(0, 10) + timePart
 }
 
-// How many ADDITIONAL appointments to create after the first, and at what interval
+// How many ADDITIONAL appointments to create after the first, and at what interval.
+// Note: GHL's calendar has `allowBookingFor: 60` days hard limit. Any occurrence
+// past that window is automatically skipped at runtime (see check below).
+// Example: 3weekly's 3rd future occurrence is +63 days — past the window, skipped.
 const RECURRENCE: Record<string, { intervalDays: number; count: number }> = {
-  weekly:   { intervalDays: 7,  count: 3 }, // 4 total (1 month)
-  biweekly: { intervalDays: 14, count: 3 }, // 4 total (2 months)
-  '3weekly':{ intervalDays: 21, count: 3 }, // 4 total (3 months)
-  monthly:  { intervalDays: 28, count: 2 }, // 3 total (3 months)
-  '8weekly':{ intervalDays: 56, count: 1 }, // 2 total
+  weekly:   { intervalDays: 7,  count: 3 }, // +7, +14, +21 days
+  biweekly: { intervalDays: 14, count: 3 }, // +14, +28, +42 days
+  '3weekly':{ intervalDays: 21, count: 3 }, // +21, +42, +63 (+63 silently skipped — past 60d window)
+  monthly:  { intervalDays: 28, count: 2 }, // +28, +56 days
+  '8weekly':{ intervalDays: 56, count: 1 }, // +56 days
 }
+
+// GHL calendar's allowBookingFor (set in calendar config). Keep this in sync.
+const GHL_BOOKING_WINDOW_DAYS = 60
 
 async function scheduleRecurringAppointments(params: {
   frequency: string
@@ -403,11 +464,27 @@ async function scheduleRecurringAppointments(params: {
   if (!rule) return
 
   const { intervalDays, count } = rule
+  const nowMs = Date.now()
+  const firstStartMs = new Date(params.firstStartTime).getTime()
 
-  const tasks = Array.from({ length: count }, (_, i) => {
-    const startTime = addDaysToIso(params.firstStartTime, intervalDays * (i + 1))
+  // Build the list of occurrences we'll actually attempt — skipping any past the booking window.
+  const tasks: Array<Promise<unknown>> = []
+  const skipped: Array<{ occurrence: number; daysOut: number; reason: string }> = []
+
+  for (let i = 0; i < count; i++) {
+    const occurrence = i + 2 // 1 is the main booking; recurring starts at 2
+    const daysOut = intervalDays * (i + 1)
+    const futureStartMs = firstStartMs + daysOut * 24 * 60 * 60 * 1000
+    const daysFromNow = (futureStartMs - nowMs) / (1000 * 60 * 60 * 24)
+
+    if (daysFromNow > GHL_BOOKING_WINDOW_DAYS) {
+      skipped.push({ occurrence, daysOut, reason: `${Math.round(daysFromNow)}d out exceeds ${GHL_BOOKING_WINDOW_DAYS}d window` })
+      continue
+    }
+
+    const startTime = addDaysToIso(params.firstStartTime, daysOut)
     const endTime = addHours(startTime, params.estimatedHours)
-    return createAppointment({
+    tasks.push(createAppointment({
       calendarId: params.calendarId,
       locationId: params.locationId,
       contactId: params.contactId,
@@ -416,8 +493,12 @@ async function scheduleRecurringAppointments(params: {
       title: params.title,
       address: params.address,
       notes: params.notes,
-    })
-  })
+    }))
+  }
+
+  if (skipped.length > 0) {
+    console.log('[booking:recurring] Skipped occurrences past booking window', skipped)
+  }
 
   const results = await Promise.allSettled(tasks)
   results.forEach((r, i) => {

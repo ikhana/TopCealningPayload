@@ -53,9 +53,9 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 10 | Add `booking-confirmed` tag in code | `[x]` | [stages/10-booking-confirmed-tag.md](stages/10-booking-confirmed-tag.md) |
 | 11 | Full smoke test — book → email lands | `[ ]` | |
 | 12 | Recurring booking system (broken into sub-stages below) | `[~]` | |
-| 12.1 | BookingSeries collection + series link on Bookings | `[~]` | [stages/12-1-booking-series-schema.md](stages/12-1-booking-series-schema.md) |
-| 12.2 | Submit flow creates + links series for recurring bookings | `[ ]` | |
-| 12.3 | Fix recurring scheduler 400 errors (cap by booking window, skip unavailable slots) | `[ ]` | |
+| 12.1 | BookingSeries collection + series link on Bookings | `[x]` | [stages/12-1-booking-series-schema.md](stages/12-1-booking-series-schema.md) |
+| 12.2 | Submit flow creates + links series for recurring bookings | `[~]` | [stages/12-2-submit-flow-creates-series.md](stages/12-2-submit-flow-creates-series.md) |
+| 12.3 | Fix recurring scheduler 400 errors (cap by booking window, skip unavailable slots) | `[~]` | [stages/12-3-recurring-bug-fix.md](stages/12-3-recurring-bug-fix.md) |
 | 12.4 | Show recurring schedule on success screen | `[ ]` | |
 | 12.5 | Group bookings by series on /account/bookings | `[ ]` | |
 | 12.6 | Series detail page /account/series/[id] | `[ ]` | |
