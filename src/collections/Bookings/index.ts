@@ -32,6 +32,20 @@ export const Bookings: CollectionConfig = {
       admin: { position: 'sidebar' },
     },
     {
+      name: 'series',
+      type: 'relationship',
+      relationTo: 'booking-series',
+      required: false, // null for one-time bookings
+      admin: { position: 'sidebar', description: 'Recurring series this booking belongs to (null for one-time)' },
+    },
+    {
+      name: 'seriesOccurrence',
+      type: 'number',
+      required: false,
+      min: 1,
+      admin: { position: 'sidebar', description: '1-indexed occurrence number within the series (1 = first cleaning)' },
+    },
+    {
       name: 'confirmationCode',
       type: 'text',
       required: true,

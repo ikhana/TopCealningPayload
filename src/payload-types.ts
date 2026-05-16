@@ -94,6 +94,7 @@ export interface Config {
     media: Media;
     orders: Order;
     bookings: Booking;
+    'booking-series': BookingSery;
     addons: Addon;
     'personalization-options': PersonalizationOption;
     'product-components': ProductComponent;
@@ -121,6 +122,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     bookings: BookingsSelect<false> | BookingsSelect<true>;
+    'booking-series': BookingSeriesSelect<false> | BookingSeriesSelect<true>;
     addons: AddonsSelect<false> | AddonsSelect<true>;
     'personalization-options': PersonalizationOptionsSelect<false> | PersonalizationOptionsSelect<true>;
     'product-components': ProductComponentsSelect<false> | ProductComponentsSelect<true>;
@@ -5013,6 +5015,14 @@ export interface Booking {
   id: number;
   user?: (number | null) | User;
   /**
+   * Recurring series this booking belongs to (null for one-time)
+   */
+  series?: (number | null) | BookingSery;
+  /**
+   * 1-indexed occurrence number within the series (1 = first cleaning)
+   */
+  seriesOccurrence?: number | null;
+  /**
    * e.g. TC-2026-0042
    */
   confirmationCode: string;
@@ -5094,6 +5104,34 @@ export interface Booking {
    * Error detail for cancelled/failed bookings
    */
   failureReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-series".
+ */
+export interface BookingSery {
+  id: number;
+  /**
+   * Owning customer (null for guest series)
+   */
+  user?: (number | null) | User;
+  status: 'active' | 'paused' | 'cancelled';
+  frequency: 'weekly' | 'biweekly' | '3weekly' | 'monthly' | '8weekly';
+  /**
+   * 0=Sunday, 6=Saturday
+   */
+  anchorDayOfWeek: number;
+  /**
+   * HH:mm in calendar timezone, e.g. "11:00"
+   */
+  anchorTime: string;
+  /**
+   * When the series was cancelled
+   */
+  cancelledAt?: string | null;
+  cancellationReason?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -5267,6 +5305,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'bookings';
         value: number | Booking;
+      } | null)
+    | ({
+        relationTo: 'booking-series';
+        value: number | BookingSery;
       } | null)
     | ({
         relationTo: 'addons';
@@ -7218,6 +7260,8 @@ export interface OrdersSelect<T extends boolean = true> {
  */
 export interface BookingsSelect<T extends boolean = true> {
   user?: T;
+  series?: T;
+  seriesOccurrence?: T;
   confirmationCode?: T;
   serviceType?: T;
   frequency?: T;
@@ -7270,6 +7314,21 @@ export interface BookingsSelect<T extends boolean = true> {
   authnetTransactionId?: T;
   idempotencyKey?: T;
   failureReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-series_select".
+ */
+export interface BookingSeriesSelect<T extends boolean = true> {
+  user?: T;
+  status?: T;
+  frequency?: T;
+  anchorDayOfWeek?: T;
+  anchorTime?: T;
+  cancelledAt?: T;
+  cancellationReason?: T;
   updatedAt?: T;
   createdAt?: T;
 }

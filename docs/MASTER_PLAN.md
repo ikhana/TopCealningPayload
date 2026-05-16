@@ -46,13 +46,23 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 3 | Logged-in booking — create account + book | `[x]` | [stages/03-logged-in-booking.md](stages/03-logged-in-booking.md) |
 | 4 | Account bookings list + detail page | `[x]` | [stages/04-account-bookings-list.md](stages/04-account-bookings-list.md) |
 | 5 | Cancellation flow — Payload + GHL sync (basic) | `[~]` deferred | [stages/05-cancellation-flow.md](stages/05-cancellation-flow.md) |
-| 6 | GHL Calendar settings tour | `[~]` | [stages/06-ghl-calendar-tour.md](stages/06-ghl-calendar-tour.md) |
-| 7 | GHL Calendar edge cases | `[ ]` | *(learn-only, no code)* |
-| 8 | Design + build the confirmation email template | `[ ]` | |
+| 6 | GHL Calendar settings tour | `[x]` | [stages/06-ghl-calendar-tour.md](stages/06-ghl-calendar-tour.md) |
+| 7 | GHL Calendar — multi-crew RoundRobin (rebuild as Round Robin type) | `[x]` | *(folded into Stage 6 — discovery + rebuild + verification)* |
+| 8 | Design + build the confirmation email template | `[ ]` | [stages/08-confirmation-email-template.md](stages/08-confirmation-email-template.md) |
 | 9 | Workflow setup — trigger + send action | `[ ]` | |
-| 10 | Add `booking-confirmed` tag in code | `[ ]` | |
+| 10 | Add `booking-confirmed` tag in code | `[x]` | [stages/10-booking-confirmed-tag.md](stages/10-booking-confirmed-tag.md) |
 | 11 | Full smoke test — book → email lands | `[ ]` | |
-| 12 | Walk through the recurring scheduler | `[ ]` | |
+| 12 | Recurring booking system (broken into sub-stages below) | `[~]` | |
+| 12.1 | BookingSeries collection + series link on Bookings | `[~]` | [stages/12-1-booking-series-schema.md](stages/12-1-booking-series-schema.md) |
+| 12.2 | Submit flow creates + links series for recurring bookings | `[ ]` | |
+| 12.3 | Fix recurring scheduler 400 errors (cap by booking window, skip unavailable slots) | `[ ]` | |
+| 12.4 | Show recurring schedule on success screen | `[ ]` | |
+| 12.5 | Group bookings by series on /account/bookings | `[ ]` | |
+| 12.6 | Series detail page /account/series/[id] | `[ ]` | |
+| 12.7 | Tag GHL contact `recurring-customer` on series creation | `[ ]` | |
+| 12.8 | Add series_id to GHL Booking custom object records | `[ ]` | |
+| 12.9 | Cancellation modal — single occurrence vs whole series scope | `[ ]` | |
+| 12.10 | Two-way sync: cancel booking → GHL opportunity to Cancelled stage | `[ ]` | |
 | 13 | Tag `booking-abandoned` on idle leads | `[ ]` | |
 | 14 | Test abandoned detection | `[ ]` | |
 | 15 | First recovery email (1-hour nudge) | `[ ]` | |

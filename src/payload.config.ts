@@ -25,6 +25,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { AddOns } from './collections/AddOns'
 import { Bookings } from './collections/Bookings'
+import { BookingSeries } from './collections/BookingSeries'
 import { BlogCategories } from './collections/BlogCategories'
 import { BlogPosts } from './collections/BlogPosts'
 import { BlogTags } from './collections/BlogTags'
@@ -62,6 +63,7 @@ export default buildConfig({
     Media,
     Orders,
     Bookings,
+    BookingSeries,
     AddOns,
     PersonalizationOptions,
     ProductComponents,
