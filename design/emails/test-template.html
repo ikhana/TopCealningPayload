@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<title>Your cleaning is confirmed</title>
+<!--[if !mso]><!-- Pre-header — appears in inbox preview -->
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:transparent;">
+  Booking #TC-{{appointment.id}} — see your details and what to expect next.
+</div>
+<!--<![endif]-->
+<template id="__bundler_thumbnail" data-bg-color="#f5efe0">
+  <svg viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="600" height="800" fill="#f5efe0"/>
+    <rect x="40" y="40" width="520" height="4" fill="#17b0ab"/>
+    <rect x="40" y="44" width="520" height="660" fill="#ffffff"/>
+    <text x="80" y="100" font-family="Arial" font-size="9" font-weight="900" fill="#17b0ab" letter-spacing="2.5">YOUR CLEANING IS CONFIRMED</text>
+    <text x="80" y="140" font-family="Arial" font-size="22" font-weight="700" fill="#0d1b2e">Your space is on</text>
+    <text x="80" y="166" font-family="Arial" font-size="22" font-weight="700" fill="#0d1b2e">the schedule.</text>
+    <rect x="80" y="220" width="440" height="44" fill="#0d1b2e"/>
+    <text x="100" y="248" font-family="Arial" font-size="9" font-weight="900" fill="rgba(255,255,255,0.6)" letter-spacing="2.5">BOOKING DETAILS</text>
+    <rect x="80" y="264" width="440" height="40" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="100" y="288" font-family="Arial" font-size="9" font-weight="700" fill="#94a3b8" letter-spacing="1.5">SERVICE</text>
+    <text x="500" y="288" text-anchor="end" font-family="Arial" font-size="11" font-weight="700" fill="#0d1b2e">Deep Cleaning</text>
+    <rect x="80" y="304" width="440" height="40" fill="#fafbfa" stroke="#e2e8f0"/>
+    <text x="100" y="328" font-family="Arial" font-size="9" font-weight="700" fill="#94a3b8" letter-spacing="1.5">WHEN</text>
+    <text x="500" y="328" text-anchor="end" font-family="Arial" font-size="11" font-weight="700" fill="#0d1b2e">May 15 · 10:00 AM</text>
+    <rect x="80" y="344" width="440" height="40" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="100" y="368" font-family="Arial" font-size="9" font-weight="700" fill="#94a3b8" letter-spacing="1.5">BOOKING</text>
+    <text x="500" y="368" text-anchor="end" font-family="Arial" font-size="11" font-weight="900" fill="#17b0ab">#TC-20260515</text>
+    <text x="80" y="430" font-family="Arial" font-size="9" font-weight="900" fill="#17b0ab" letter-spacing="2">WHAT'S NEXT</text>
+    <rect x="80" y="460" width="200" height="40" fill="#17b0ab"/>
+    <text x="180" y="485" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="white" letter-spacing="1">RESCHEDULE</text>
+    <rect x="40" y="640" width="520" height="64" fill="#050a12"/>
+    <text x="80" y="676" font-family="Arial" font-size="9" font-weight="900" fill="rgba(255,255,255,0.7)" letter-spacing="1.5">TOP CLEANING TEAM</text>
+    <rect x="40" y="704" width="520" height="4" fill="#17b0ab"/>
+  </svg>
+</template>
+<style>
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+  table,td{mso-table-lspace:0;mso-table-rspace:0;}
+  img{border:0;outline:none;text-decoration:none;display:block;}
+  body{margin:0;padding:0;background:#ffffff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
+  a{color:#17b0ab;}
+
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .page-bg { background:#050a12 !important; }
+    .card-bg { background:#0d1b2e !important; }
+    .text-heading { color:#ffffff !important; }
+    .text-body { color:#b6c2d1 !important; }
+    .text-muted { color:#7a8a9e !important; }
+    .row-light { background:#0d1b2e !important; }
+    .row-tint { background:#0f1f33 !important; }
+    .row-border { border-color:#1c3554 !important; }
+  }
+  /* Mobile */
+  @media only screen and (max-width:640px){
+    .wrap{width:100%!important;}
+    .pad{padding-left:24px!important;padding-right:24px!important;}
+    .h1-mobile{font-size:22px!important;}
+  }
+</style>
+</head>
+<body class="page-bg" style="margin:0;padding:0;background:#ffffff;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="page-bg" style="background:#ffffff;">
+<tr><td align="center" style="padding:40px 16px;">
+
+  <!-- Email card -->
+  <table class="wrap card-bg" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;">
+
+    <!-- ── HEADER ── -->
+    <tr><td class="pad" style="padding:24px 24px 18px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="vertical-align:middle;">
+            <img src="../assets/logo.jpg" alt="Top Cleaning Team" width="150" style="height:auto;max-width:150px;display:block;">
+          </td>
+          <td align="right" style="vertical-align:middle;">
+            <span class="text-muted" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;">
+              Booking · #TC-{{appointment.id}}
+            </span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- Header divider -->
+    <tr><td class="pad" style="padding:0 24px;">
+      <div class="row-border" style="height:1px;background:#e2e8f0;font-size:0;line-height:0;">&nbsp;</div>
+    </td></tr>
+
+    <!-- ── HERO BLOCK: kicker + H1 + intro ── -->
+    <tr><td class="pad" style="padding:36px 24px 24px;">
+      <p style="margin:0 0 14px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:#17b0ab;">
+        Your cleaning is confirmed
+      </p>
+      <h1 class="h1-mobile text-heading" style="margin:0 0 16px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:900;line-height:1.15;letter-spacing:-0.5px;color:#0d1b2e;text-transform:none;">
+        Your space is on<br>the schedule.
+      </h1>
+      <p class="text-body" style="margin:0;font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.65;color:#5a7184;">
+        Hi {{contact.first_name}}, thank you for trusting Top Cleaning. Here's everything you need to know about your upcoming appointment.
+      </p>
+    </td></tr>
+
+    <!-- ── BOOKING DETAILS TABLE ── -->
+    <tr><td class="pad" style="padding:0 24px 32px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e2e8f0;">
+
+        <!-- Dark header row -->
+        <tr><td colspan="2" style="background:#0d1b2e;padding:12px 18px;">
+          <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.7);">
+            Booking Details
+          </span>
+        </td></tr>
+
+        <!-- Row 1: Service -->
+        <tr class="row-light" style="background:#ffffff;">
+          <td class="row-border" style="padding:14px 18px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;border-bottom:1px solid #e2e8f0;width:38%;">Service</td>
+          <td class="row-border text-heading" style="padding:14px 18px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;color:#0d1b2e;text-align:right;border-bottom:1px solid #e2e8f0;">{{appointment.service_name}}</td>
+        </tr>
+
+        <!-- Row 2: When -->
+        <tr class="row-tint" style="background:#fafbfa;">
+          <td class="row-border" style="padding:14px 18px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;border-bottom:1px solid #e2e8f0;">When</td>
+          <td class="row-border text-heading" style="padding:14px 18px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;color:#0d1b2e;text-align:right;border-bottom:1px solid #e2e8f0;">{{appointment.start_date}} · {{appointment.start_time}}</td>
+        </tr>
+
+        <!-- Row 3: Where -->
+        <tr class="row-light" style="background:#ffffff;">
+          <td class="row-border" style="padding:14px 18px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;border-bottom:1px solid #e2e8f0;">Where</td>
+          <td class="row-border text-heading" style="padding:14px 18px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;color:#0d1b2e;text-align:right;border-bottom:1px solid #e2e8f0;">{{contact.address1}}, {{contact.city}}</td>
+        </tr>
+
+        <!-- Row 4: Booking # — featured in teal -->
+        <tr class="row-tint" style="background:#fafbfa;">
+          <td style="padding:14px 18px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;">Booking</td>
+          <td style="padding:14px 18px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:900;color:#17b0ab;text-align:right;letter-spacing:0.5px;">#TC-{{appointment.id}}</td>
+        </tr>
+
+      </table>
+    </td></tr>
+
+    <!-- ── WHAT'S NEXT BLOCK ── -->
+    <tr><td class="pad" style="padding:0 24px 28px;">
+      <p style="margin:0 0 14px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:#17b0ab;">
+        What's Next
+      </p>
+      <p class="text-body" style="margin:0 0 12px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.7;color:#5a7184;">
+        We'll send you a reminder <strong class="text-heading" style="color:#0d1b2e;font-weight:700;">24 hours before</strong> your appointment. Our team arrives on time with all supplies — just make sure we have access to your space.
+      </p>
+      <p class="text-body" style="margin:0;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.7;color:#5a7184;">
+        Need to reschedule? Use the button below or call <a href="tel:7543074034" style="color:#17b0ab;text-decoration:none;font-weight:700;">(754) 307-4034</a>.
+      </p>
+    </td></tr>
+
+    <!-- ── CTA ── -->
+    <tr><td class="pad" style="padding:0 24px 32px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+        <tr><td style="background:#17b0ab;">
+          <a href="{{appointment.reschedule_link}}" style="display:inline-block;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#ffffff;text-decoration:none;padding:15px 36px;">
+            Reschedule or cancel
+          </a>
+        </td></tr>
+      </table>
+    </td></tr>
+
+    <!-- ── FOOTER ── -->
+    <tr><td style="background:#050a12;padding:24px 24px 20px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+        <!-- Sign-off brand block -->
+        <tr><td style="padding-bottom:24px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="vertical-align:middle;">
+                <p style="margin:0 0 6px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:rgba(255,255,255,0.55);">See you soon,</p>
+                <p style="margin:0 0 4px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:900;color:#ffffff;letter-spacing:0.3px;">The Top Cleaning Team</p>
+                <p style="margin:0;font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:2px;text-transform:uppercase;">Florida's Trusted Cleaners</p>
+              </td>
+              <td align="right" style="vertical-align:middle;">
+                <a href="https://topcleaningteam.com" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);text-decoration:none;">topcleaningteam.com</a>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
+
+        <!-- Divider -->
+        <tr><td style="padding-bottom:18px;">
+          <div style="height:1px;background:rgba(255,255,255,0.08);font-size:0;line-height:0;">&nbsp;</div>
+        </td></tr>
+
+        <!-- Contact + Legal -->
+        <tr><td>
+          <p style="margin:0 0 6px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;line-height:1.7;color:rgba(255,255,255,0.4);">
+            Top Cleaning Team &nbsp;·&nbsp; Florida, USA &nbsp;·&nbsp; Mon–Sun · 8am to 6pm
+          </p>
+          <p style="margin:0 0 10px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;line-height:1.7;color:rgba(255,255,255,0.4);">
+            <a href="tel:7543074034" style="color:rgba(255,255,255,0.4);text-decoration:none;">(754) 307-4034</a>
+            &nbsp;·&nbsp;
+            <a href="mailto:Topcleaningfl@gmail.com" style="color:rgba(255,255,255,0.4);text-decoration:none;">Topcleaningfl@gmail.com</a>
+          </p>
+          <p style="margin:0;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;line-height:1.7;color:rgba(255,255,255,0.25);">
+            You received this because you booked a cleaning service.&nbsp;
+            <a href="{{unsubscribe_link}}" style="color:rgba(255,255,255,0.4);text-decoration:underline;">Unsubscribe</a>
+            &nbsp;·&nbsp;
+            <a href="#" style="color:rgba(255,255,255,0.4);text-decoration:underline;">Privacy Policy</a>
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html>

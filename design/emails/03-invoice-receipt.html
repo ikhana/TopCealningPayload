@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Receipt — Top Cleaning</title>
+<style>
+ body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+ img{border:0;outline:none;text-decoration:none;display:block;}
+ body{margin:0;padding:0;background:#f4f7f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
+ @media only screen and (max-width:640px){.email-wrapper{width:100%!important;}.email-body{padding:0 16px!important;}}
+</style>
+</head>
+<body style="margin:0;padding:0;background:#f4f7f6;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f7f6;">
+<tr><td align="center" style="padding:24px 16px;">
+ <table class="email-wrapper" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+
+ <!-- HEADER -->
+ <tr><td style="background:#17b0ab;padding:28px 40px;text-align:center;border-radius:8px 8px 0 0;">
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">TOP CLEANING</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.8);letter-spacing:1px;margin-top:2px;">Order and energy flow together</div>
+ </td></tr>
+
+ <!-- TITLE BAND -->
+ <tr><td style="background:#0d1b2e;padding:20px 40px;text-align:center;">
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#3dcfca;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Payment Received</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:24px;font-weight:900;color:#ffffff;line-height:1.1;">Invoice &amp; Receipt</div>
+ </td></tr>
+
+ <!-- BODY -->
+ <tr><td style="background:#ffffff;padding:32px 40px;">
+
+ <!-- Invoice header row -->
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+ <tr>
+ <td>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Invoice To</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#0d1b2e;">{{contact.first_name}} {{contact.last_name}}</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#5a7184;">{{contact.email}}</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#5a7184;">{{contact.address1}}, {{contact.city}}, {{contact.state}}</div>
+ </td>
+ <td align="right" style="vertical-align:top;">
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Invoice #</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#17b0ab;">{{invoice.number}}</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:#94a3b8;margin-top:8px;">Date</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#0d1b2e;font-weight:600;">{{invoice.date}}</div>
+ </td>
+ </tr>
+ </table>
+
+ <hr style="border:none;border-top:1px solid #f1f5f9;margin:0 0 20px;">
+
+ <!-- Line items -->
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:0;">
+ <!-- Header row -->
+ <tr style="background:#f4f7f6;">
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;">Service</td>
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;">Date</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;">Amount</td>
+ </tr>
+ <!-- Item 1 -->
+ <tr style="border-bottom:1px solid #f1f5f9;">
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:#0d1b2e;font-weight:600;padding:14px 12px;">{{appointment.service_name}}</td>
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#5a7184;padding:14px 12px;">{{appointment.start_date}}</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:#0d1b2e;font-weight:600;padding:14px 12px;">{{invoice.subtotal}}</td>
+ </tr>
+ </table>
+
+ <!-- Totals -->
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+ <tr>
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#5a7184;padding:10px 12px;">Subtotal</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#5a7184;padding:10px 12px;">{{invoice.subtotal}}</td>
+ </tr>
+ <tr>
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#5a7184;padding:6px 12px;">Discount</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#17b0ab;padding:6px 12px;">{{invoice.discount}}</td>
+ </tr>
+ <tr style="background:#f4f7f6;">
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:900;color:#0d1b2e;padding:14px 12px;border-top:2px solid #17b0ab;">Total Paid</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:18px;font-weight:900;color:#17b0ab;padding:14px 12px;border-top:2px solid #17b0ab;">{{invoice.total}}</td>
+ </tr>
+ </table>
+
+ <!-- Paid stamp -->
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+ <tr><td align="center">
+ <div style="display:inline-block;border:3px solid #17b0ab;padding:8px 24px;border-radius:4px;">
+ <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:18px;font-weight:900;color:#17b0ab;letter-spacing:4px;text-transform:uppercase;">PAID</span>
+ </div>
+ </td></tr>
+ </table>
+
+ <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:#5a7184;line-height:1.6;margin:0 0 20px;">
+ Thank you for your payment, <strong>{{contact.first_name}}</strong>! Please keep this email as your receipt. If you have any questions about this invoice, don't hesitate to reach out.
+ </p>
+
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+ <tr><td align="center">
+ <a href="mailto:Topcleaningfl@gmail.com" style="display:inline-block;background:#17b0ab;color:#ffffff;font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;text-decoration:none;padding:13px 32px;border-radius:4px;">Questions? Contact Us</a>
+ </td></tr>
+ </table>
+
+ </td></tr>
+
+ <!-- FOOTER -->
+ <tr><td style="background:#0d1b2e;padding:24px 40px;text-align:center;border-radius:0 0 8px 8px;">
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:900;color:#ffffff;margin-bottom:4px;">TOP CLEANING TEAM</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.4);line-height:1.8;">
+ <a href="tel:7543074034" style="color:#3dcfca;text-decoration:none;">(754) 307-4034</a> &nbsp;·&nbsp;
+ <a href="mailto:Topcleaningfl@gmail.com" style="color:#3dcfca;text-decoration:none;">Topcleaningfl@gmail.com</a>
+ </div>
+ <div style="margin-top:12px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.2);">
+ © 2026 Top Cleaning Team. <a href="{{unsubscribe_link}}" style="color:rgba(255,255,255,0.2);text-decoration:underline;">Unsubscribe</a>
+ </div>
+ </td></tr>
+ </table>
+</td></tr>
+</table>
+</body>
+</html>

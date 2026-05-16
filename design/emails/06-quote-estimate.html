@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cleaning Quote — Top Cleaning</title>
+<style>
+ body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+ img{border:0;outline:none;text-decoration:none;display:block;}
+ body{margin:0;padding:0;background:#f4f7f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
+ @media only screen and (max-width:640px){.email-wrapper{width:100%!important;}}
+</style>
+</head>
+<body style="margin:0;padding:0;background:#f4f7f6;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f7f6;">
+<tr><td align="center" style="padding:24px 16px;">
+ <table class="email-wrapper" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+
+ <!-- HEADER -->
+ <tr><td style="background:#17b0ab;padding:28px 40px;text-align:center;border-radius:8px 8px 0 0;">
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">TOP CLEANING</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.8);letter-spacing:1px;margin-top:2px;">Order and energy flow together</div>
+ </td></tr>
+
+ <!-- HERO BAND -->
+ <tr><td style="background:#0d1b2e;padding:22px 40px;text-align:center;">
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#3dcfca;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Your Custom Quote</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:24px;font-weight:900;color:#ffffff;line-height:1.1;">Here's Your Estimate, {{contact.first_name}}</div>
+ </td></tr>
+
+ <!-- BODY -->
+ <tr><td style="background:#ffffff;padding:32px 40px;">
+
+ <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;color:#1a2840;line-height:1.7;margin:0 0 20px;">
+ Thank you for your interest in Top Cleaning! We've prepared a custom quote based on your requirements. This estimate is valid for <strong>7 days</strong>.
+ </p>
+
+ <!-- Quote Number -->
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+ <tr>
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Quote Reference</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;color:#17b0ab;">{{quote.number}}</td>
+ </tr>
+ <tr>
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;padding-top:6px;">Valid Until</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#0d1b2e;font-weight:600;padding-top:6px;">{{quote.expiry_date}}</td>
+ </tr>
+ </table>
+
+ <hr style="border:none;border-top:1px solid #f1f5f9;margin:0 0 20px;">
+
+ <!-- Service breakdown -->
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#17b0ab;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">Services Included</div>
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:0;">
+ <tr style="background:#f4f7f6;">
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;">Description</td>
+ <td align="center" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;">Frequency</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;">Price</td>
+ </tr>
+ <tr style="border-bottom:1px solid #f1f5f9;">
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:#0d1b2e;font-weight:600;padding:14px 12px;">{{quote.service_1_name}}</td>
+ <td align="center" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#5a7184;padding:14px 12px;">{{quote.service_1_frequency}}</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:#0d1b2e;font-weight:600;padding:14px 12px;">{{quote.service_1_price}}</td>
+ </tr>
+ <tr style="border-bottom:1px solid #f1f5f9;">
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:#0d1b2e;font-weight:600;padding:14px 12px;">{{quote.service_2_name}}</td>
+ <td align="center" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#5a7184;padding:14px 12px;">{{quote.service_2_frequency}}</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:#0d1b2e;font-weight:600;padding:14px 12px;">{{quote.service_2_price}}</td>
+ </tr>
+ </table>
+
+ <!-- Total -->
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+ <tr style="background:#0d1b2e;">
+ <td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:900;color:#ffffff;padding:16px 12px;">Total Estimate</td>
+ <td align="right" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:20px;font-weight:900;color:#3dcfca;padding:16px 12px;">{{quote.total}}</td>
+ </tr>
+ </table>
+
+ <!-- What's included -->
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e0f5f4;border-radius:6px;margin-bottom:28px;">
+ <tr><td style="padding:20px 24px;">
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:700;color:#0d1b2e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Everything Included</div>
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+ <tr><td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#0d1b2e;padding:4px 0;"><span style="color:#17b0ab;font-weight:900;margin-right:8px;"></span> All professional cleaning supplies &amp; equipment</td></tr>
+ <tr><td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#0d1b2e;padding:4px 0;"><span style="color:#17b0ab;font-weight:900;margin-right:8px;"></span> Fully insured, background-checked cleaners</td></tr>
+ <tr><td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#0d1b2e;padding:4px 0;"><span style="color:#17b0ab;font-weight:900;margin-right:8px;"></span> Satisfaction guarantee — we re-clean if needed</td></tr>
+ <tr><td style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#0d1b2e;padding:4px 0;"><span style="color:#17b0ab;font-weight:900;margin-right:8px;"></span> Flexible scheduling, Mon–Sun</td></tr>
+ </table>
+ </td></tr>
+ </table>
+
+ <!-- CTA -->
+ <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+ <tr>
+ <td width="48%" style="padding-right:8px;">
+ <a href="{{quote.accept_link}}" style="display:block;text-align:center;background:#17b0ab;color:#ffffff;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;text-decoration:none;padding:14px 12px;border-radius:4px;">Accept Quote &amp; Book</a>
+ </td>
+ <td width="48%" style="padding-left:8px;">
+ <a href="tel:7543074034" style="display:block;text-align:center;background:#ffffff;color:#0d1b2e;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;text-decoration:none;padding:14px 12px;border-radius:4px;border:2px solid #0d1b2e;">Ask a Question</a>
+ </td>
+ </tr>
+ </table>
+
+ <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:#94a3b8;line-height:1.6;margin:0;text-align:center;">
+ This quote is valid for 7 days from the date of issue. Prices may vary based on property size and condition.
+ </p>
+
+ </td></tr>
+
+ <!-- FOOTER -->
+ <tr><td style="background:#0d1b2e;padding:24px 40px;text-align:center;border-radius:0 0 8px 8px;">
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:900;color:#ffffff;margin-bottom:4px;">TOP CLEANING TEAM</div>
+ <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.4);line-height:1.8;">
+ <a href="tel:7543074034" style="color:#3dcfca;text-decoration:none;">(754) 307-4034</a> &nbsp;·&nbsp;
+ <a href="mailto:Topcleaningfl@gmail.com" style="color:#3dcfca;text-decoration:none;">Topcleaningfl@gmail.com</a><br>
+ Mon – Sun: 8am to 6pm &nbsp;·&nbsp; Florida, USA
+ </div>
+ <div style="margin-top:12px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.2);">
+ © 2026 Top Cleaning Team. <a href="{{unsubscribe_link}}" style="color:rgba(255,255,255,0.2);text-decoration:underline;">Unsubscribe</a>
+ </div>
+ </td></tr>
+ </table>
+</td></tr>
+</table>
+</body>
+</html>
