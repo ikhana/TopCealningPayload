@@ -3,8 +3,47 @@ import { getMeUser } from '@/utilities/getMeUser'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { AccountNav } from '@/components/AccountNav'
 import Link from 'next/link'
-import type { Booking } from '@/payload-types'
+import type { Booking, BookingSery as BookingSeries } from '@/payload-types'
 import { BookingCard } from './BookingCard'
+import { SeriesCard } from './SeriesCard'
+
+type SeriesGroup = { kind: 'series'; series: BookingSeries; bookings: Booking[]; sortKey: number }
+type SingleGroup = { kind: 'single'; booking: Booking; sortKey: number }
+type Group = SeriesGroup | SingleGroup
+
+function groupBookings(bookings: Booking[]): Group[] {
+  const seriesGroups = new Map<number, SeriesGroup>()
+  const singles: SingleGroup[] = []
+
+  for (const booking of bookings) {
+    const series = typeof booking.series === 'object' ? booking.series : null
+    const seriesId = series?.id ?? (typeof booking.series === 'number' ? booking.series : null)
+
+    if (!seriesId || !series) {
+      singles.push({
+        kind: 'single',
+        booking,
+        sortKey: new Date(booking.createdAt).getTime(),
+      })
+      continue
+    }
+
+    let group = seriesGroups.get(seriesId)
+    if (!group) {
+      group = {
+        kind: 'series',
+        series,
+        bookings: [],
+        sortKey: new Date(series.createdAt).getTime(),
+      }
+      seriesGroups.set(seriesId, group)
+    }
+    group.bookings.push(booking)
+  }
+
+  // Combine + sort by most recent first
+  return [...seriesGroups.values(), ...singles].sort((a, b) => b.sortKey - a.sortKey)
+}
 
 export default async function BookingsPage() {
   const { user, token } = await getMeUser({
@@ -15,7 +54,7 @@ export default async function BookingsPage() {
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings?depth=0&sort=-createdAt&limit=20&where[user][equals]=${user?.id}`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings?depth=1&sort=-createdAt&limit=50&where[user][equals]=${user?.id}`,
       {
         cache: 'no-store',
         headers: {
@@ -31,6 +70,8 @@ export default async function BookingsPage() {
   } catch {
     // Render empty state rather than crashing
   }
+
+  const groups = groupBookings(bookings)
 
   return (
     <div>
@@ -60,7 +101,7 @@ export default async function BookingsPage() {
             </Link>
           </div>
 
-          {bookings.length === 0 ? (
+          {groups.length === 0 ? (
             <div style={{ border: '1px solid rgba(13,27,46,0.08)', padding: '48px 32px', textAlign: 'center', background: 'white' }}>
               <p style={{ fontSize: '1rem', color: 'rgba(74,90,106,0.6)', marginBottom: '20px' }}>
                 You have no bookings yet.
@@ -74,9 +115,12 @@ export default async function BookingsPage() {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {bookings.map((booking) => (
-                <BookingCard key={booking.id} booking={booking} />
-              ))}
+              {groups.map((group) => {
+                if (group.kind === 'series') {
+                  return <SeriesCard key={`series-${group.series.id}`} series={group.series} bookings={group.bookings} />
+                }
+                return <BookingCard key={`booking-${group.booking.id}`} booking={group.booking} />
+              })}
             </div>
           )}
         </div>
