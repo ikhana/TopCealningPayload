@@ -24,6 +24,9 @@ export interface CreateBookingRecordParams {
   state: string
   zipCode: string
   selectedExtras: Array<{ extraId: string; label: string; price: number }>
+  // Recurring series link (Stage 12.8) — null for one-time bookings
+  seriesId?: string | null
+  seriesOccurrence?: number | null
 }
 
 // Wizard service type → GHL custom object option key
@@ -73,6 +76,9 @@ export async function createBookingRecord(
       selected_extras: params.selectedExtras
         .map((e) => `${e.label} ($${e.price})`)
         .join(', '),
+      // Stage 12.8: series link — only set when this booking is part of a recurring series
+      ...(params.seriesId ? { series_id: params.seriesId } : {}),
+      ...(params.seriesOccurrence ? { series_occurrence: params.seriesOccurrence } : {}),
     },
   }
 

@@ -60,8 +60,8 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 12.4 | Show recurring schedule on success screen | `[~]` | [stages/12-4-recurring-schedule-on-success.md](stages/12-4-recurring-schedule-on-success.md) |
 | 12.5 | Group bookings by series on /account/bookings | `[~]` | [stages/12-5-account-page-series-grouping.md](stages/12-5-account-page-series-grouping.md) |
 | 12.6 | Series detail page /account/series/[id] | `[~]` | [stages/12-6-series-detail-page.md](stages/12-6-series-detail-page.md) |
-| 12.7 | Tag GHL contact `recurring-customer` on series creation | `[ ]` | |
-| 12.8 | Add series_id to GHL Booking custom object records | `[ ]` | |
+| 12.7 | Tag GHL contact `recurring-customer` on series creation | `[x]` | [stages/12-7-8-ghl-series-tags-and-fields.md](stages/12-7-8-ghl-series-tags-and-fields.md) |
+| 12.8 | Add series_id to GHL Booking custom object records | `[x]` | [stages/12-7-8-ghl-series-tags-and-fields.md](stages/12-7-8-ghl-series-tags-and-fields.md) |
 | 12.9 | Cancellation modal — single occurrence vs whole series scope | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
 | 12.10 | Forward sync: cancel in Payload → GHL appointment + opportunity | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
 | 12.11 | Reverse sync: GHL webhook → Payload (when cancelled in GHL UI) | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |

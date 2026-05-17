@@ -319,6 +319,9 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
         state: formData.address.state,
         zipCode: formData.address.zipCode,
         selectedExtras: selectedExtras,
+        // Stage 12.8: link this record to the series (null/undefined for one-time bookings)
+        seriesId: seriesId ? String(seriesId) : null,
+        seriesOccurrence: seriesId ? 1 : null,
       })
       ghlBookingObjectId = bookingRecord.id
 
@@ -367,22 +370,27 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       },
     })
 
-    // Step 8b: Tag the contact `booking-confirmed`.
-    // This tag is the signal for downstream GHL workflows:
-    // - Confirmation email workflow: triggered when this tag is added
-    // - Abandoned booking workflow: GOAL condition (exits the recovery sequence)
+    // Step 8b: Tag the contact for downstream GHL workflows.
+    // - `booking-confirmed`: triggers confirmation email; exits abandoned-recovery sequence
+    // - `recurring-customer`: marks contact as in a recurring series (Stage 12.7)
+    // - `frequency-<weekly|biweekly|...>`: lets workflows target specific cadences
     // Non-blocking — if tagging fails, the booking is still complete.
+    const contactTags = ['booking-confirmed']
+    if (formData.frequency && formData.frequency !== 'one-time') {
+      contactTags.push('recurring-customer', `frequency-${formData.frequency}`)
+    }
     upsertContact({
       firstName: formData.customer.firstName,
       lastName: formData.customer.lastName,
       email: formData.customer.email,
       phone: formData.customer.phone,
       locationId: process.env.GHL_LOCATION_ID!,
-      tags: ['booking-confirmed'],
+      tags: contactTags,
     }).catch((err) => {
-      console.error('[booking:tag] Failed to add booking-confirmed tag', {
+      console.error('[booking:tag] Failed to add post-booking tags', {
         bookingId,
         confirmationCode,
+        tags: contactTags,
         error: err instanceof Error ? err.message : String(err),
       })
     })
