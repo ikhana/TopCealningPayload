@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Booking Confirmed — Top Cleaning</title>
+<style>
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+  table,td{mso-table-lspace:0;mso-table-rspace:0;}
+  img{border:0;outline:none;text-decoration:none;display:block;}
+  body{margin:0;padding:0;background:#f4f7f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;}
+  a{color:#17b0ab;}
+  @media only screen and (max-width:640px){
+    .email-wrapper{width:100%!important;}
+    .two-col td{display:block!important;width:100%!important;padding:4px 0!important;}
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#f4f7f6;">
+<!-- Hidden pre-header (shows in inbox preview line) -->
+<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;font-family:'Helvetica Neue',Arial,sans-serif;">Booking #{{contact.confirmation_code}} — see details and what to expect</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td align="center" style="padding:32px 16px;">
+
+  <table class="email-wrapper" role="presentation" width="580" cellpadding="0" cellspacing="0" border="0" style="max-width:580px;width:100%;background:#ffffff;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+
+    <tr><td style="background:#17b0ab;height:4px;font-size:0;line-height:0;">&nbsp;</td></tr>
+
+    <tr><td style="padding:28px 40px 20px;">
+      <img src="https://assets.cdn.filesafe.space/yI9kN6pMxVVk486ciX3N/media/6a0a0aa68d08689eb292addf.png" alt="Top Cleaning" width="140" style="height:auto;max-width:140px;">
+    </td></tr>
+
+    <tr><td style="padding:0 40px;"><div style="height:1px;background:#f1f5f9;"></div></td></tr>
+
+    <tr><td style="padding:32px 40px;">
+
+      <div style="margin-bottom:20px;">
+        <span style="display:inline-block;background:#e0f5f4;color:#17b0ab;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:20px;">Booking Confirmed</span>
+      </div>
+
+      <h1 style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:22px;font-weight:700;color:#0d1b2e;margin:0 0 8px;line-height:1.2;">Hi {{contact.first_name}}, you're all set.</h1>
+      <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;color:#5a7184;line-height:1.6;margin:0 0 28px;">Your cleaning has been confirmed. Here are the details for your upcoming appointment.</p>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;width:40%;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Service</span>
+          </td>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:600;color:#0d1b2e;">{{contact.service}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Date</span>
+          </td>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:600;color:#0d1b2e;">{{contact.service_date}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Time</span>
+          </td>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:600;color:#0d1b2e;">{{contact.service_time}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Address</span>
+          </td>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:600;color:#0d1b2e;">{{contact.address1}}, {{contact.city}}, {{contact.state}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Total</span>
+          </td>
+          <td style="padding:12px 0;border-bottom:1px solid #f1f5f9;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:600;color:#0d1b2e;">{{contact.service_total}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 0;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">Booking #</span>
+          </td>
+          <td style="padding:12px 0;">
+            <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;color:#17b0ab;">{{contact.confirmation_code}}</span>
+          </td>
+        </tr>
+      </table>
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+        <tr>
+          <td style="border-radius:4px;background:#17b0ab;">
+            <a href="https://topcleaningteam.com/account/bookings" style="display:inline-block;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:700;color:#ffffff;text-decoration:none;padding:13px 28px;border-radius:4px;letter-spacing:0.5px;">Manage Booking</a>
+          </td>
+        </tr>
+      </table>
+
+      <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:#94a3b8;line-height:1.6;margin:0;">
+        Questions? Call <a href="tel:7543074034" style="color:#17b0ab;text-decoration:none;font-weight:600;">(754) 307-4034</a> or reply to this email. We're here Mon–Sun, 8am–6pm.
+      </p>
+
+    </td></tr>
+
+    <tr><td style="padding:0 40px;"><div style="height:1px;background:#f1f5f9;"></div></td></tr>
+
+    <tr><td style="padding:20px 40px;text-align:left;">
+      <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:#94a3b8;line-height:1.7;margin:0;">
+        Top Cleaning Team &nbsp;·&nbsp; Florida, USA<br>
+        <a href="tel:7543074034" style="color:#94a3b8;text-decoration:none;">(754) 307-4034</a> &nbsp;·&nbsp;
+        <a href="mailto:Topcleaningfl@gmail.com" style="color:#94a3b8;text-decoration:none;">Topcleaningfl@gmail.com</a><br><br>
+        <a href="{{unsubscribe_link}}" style="color:#c4c9d4;text-decoration:underline;">Unsubscribe</a>
+      </p>
+    </td></tr>
+
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html>

@@ -48,7 +48,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 5 | Cancellation flow — Payload + GHL sync (basic) | `[~]` deferred | [stages/05-cancellation-flow.md](stages/05-cancellation-flow.md) |
 | 6 | GHL Calendar settings tour | `[x]` | [stages/06-ghl-calendar-tour.md](stages/06-ghl-calendar-tour.md) |
 | 7 | GHL Calendar — multi-crew RoundRobin (rebuild as Round Robin type) | `[x]` | *(folded into Stage 6 — discovery + rebuild + verification)* |
-| 8 | Design + build the confirmation email template | `[ ]` | [stages/08-confirmation-email-template.md](stages/08-confirmation-email-template.md) |
+| 8 | Design + build the confirmation email template | `[x]` | [stages/08-confirmation-email-template.md](stages/08-confirmation-email-template.md), [stages/08-1-and-8-2-contact-snapshot-fields.md](stages/08-1-and-8-2-contact-snapshot-fields.md), [stages/08-3-push-confirmation-email.md](stages/08-3-push-confirmation-email.md) |
 | 9 | Workflow setup — trigger + send action | `[ ]` | |
 | 10 | Add `booking-confirmed` tag in code | `[x]` | [stages/10-booking-confirmed-tag.md](stages/10-booking-confirmed-tag.md) |
 | 11 | Full smoke test — book → email lands | `[ ]` | |

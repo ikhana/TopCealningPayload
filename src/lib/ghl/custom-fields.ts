@@ -1,9 +1,14 @@
 // Contact-level GHL custom field UUIDs.
-// Booking details (sqft, bedrooms, service type, frequency, etc.) live in the GHL Booking
-// custom object — they do NOT need to be contact custom fields.
-// Only the confirmation code is written to the contact so workflow emails can include it.
+// Most booking details live in the GHL Booking custom object — these contact fields
+// are a denormalized "latest booking" snapshot for use in email templates that are
+// triggered by contact-tag events (where appointment placeholders aren't available).
 export const GHL_FIELDS = {
   confirmationCode: process.env.GHL_FIELD_CONFIRMATION_CODE ?? '',
+  // Stage 8 — booking snapshot for email merge variables
+  service: process.env.GHL_FIELD_SERVICE ?? '',
+  serviceDate: process.env.GHL_FIELD_SERVICE_DATE ?? '',
+  serviceTime: process.env.GHL_FIELD_SERVICE_TIME ?? '',
+  serviceTotal: process.env.GHL_FIELD_SERVICE_TOTAL ?? '',
 } as const
 
 export type GhlFieldKey = keyof typeof GHL_FIELDS

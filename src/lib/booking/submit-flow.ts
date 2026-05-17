@@ -88,17 +88,39 @@ function formatAddress(address: BookingFormData['address']): string {
   return parts.join(', ')
 }
 
+const SERVICE_LABELS: Record<string, string> = {
+  residential: 'Residential Cleaning',
+  'movein-out': 'Move In/Out Cleaning',
+  airbnb: 'Airbnb Cleaning',
+  commercial: 'Commercial Cleaning',
+  renovation: 'Post-Renovation Cleaning',
+  hoarding: 'Hoarding Cleanup',
+  custom: 'Custom Cleaning',
+}
+
 function buildServiceTitle(data: BookingFormData): string {
-  const serviceLabels: Record<string, string> = {
-    residential: 'Residential Cleaning',
-    'movein-out': 'Move In/Out Cleaning',
-    airbnb: 'Airbnb Cleaning',
-    commercial: 'Commercial Cleaning',
-    renovation: 'Post-Renovation Cleaning',
-    hoarding: 'Hoarding Cleanup',
-    custom: 'Custom Cleaning',
-  }
-  return `${serviceLabels[data.serviceType] ?? 'Cleaning Service'} — ${data.customer.firstName} ${data.customer.lastName ?? ''}`.trim()
+  return `${SERVICE_LABELS[data.serviceType] ?? 'Cleaning Service'} — ${data.customer.firstName} ${data.customer.lastName ?? ''}`.trim()
+}
+
+// Format a YYYY-MM-DD date string into "Thursday, May 21, 2026" (US/Eastern)
+function formatServiceDate(serviceDate: string): string {
+  try {
+    return new Date(`${serviceDate}T12:00:00Z`).toLocaleDateString('en-US', {
+      weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+      timeZone: 'America/New_York',
+    })
+  } catch { return serviceDate }
+}
+
+// Format a serviceTime (ISO or "09:00 AM") into "9:00 AM" (US/Eastern)
+function formatServiceTime(serviceTime: string): string {
+  if (!serviceTime.includes('T')) return serviceTime // already display format like "9:00 AM"
+  try {
+    return new Date(serviceTime).toLocaleTimeString('en-US', {
+      hour: 'numeric', minute: '2-digit', hour12: true,
+      timeZone: 'America/New_York',
+    })
+  } catch { return serviceTime }
 }
 
 export async function submitBooking(params: SubmitBookingParams): Promise<SubmitBookingResult> {
@@ -218,11 +240,23 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
   let ghlAppointmentId: string | null = null
 
   try {
-    // Step 4: Upsert GHL contact — booking details live in the GHL Booking custom object,
-    // so the only contact custom field we set is the confirmation code (needed by workflow emails)
-    const contactCustomFields = GHL_FIELDS.confirmationCode
-      ? [{ id: GHL_FIELDS.confirmationCode, field_value: confirmationCode }]
-      : []
+    // Step 4: Upsert GHL contact.
+    // Most booking details live in the GHL Booking custom object, but we ALSO denormalize
+    // a "latest booking" snapshot onto the contact's custom fields. This is so the
+    // tag-triggered confirmation email workflow can read everything via `{{contact.*}}`
+    // without complex custom-object lookups.
+    const serviceName = SERVICE_LABELS[formData.serviceType] ?? 'Cleaning Service'
+    const serviceDateFmt = formatServiceDate(formData.serviceDate)
+    const serviceTimeFmt = formatServiceTime(formData.serviceTime)
+    const serviceTotalFmt = `$${(formData.pricing.total ?? 0).toFixed(2)}`
+
+    const contactCustomFields = [
+      GHL_FIELDS.confirmationCode && { id: GHL_FIELDS.confirmationCode, field_value: confirmationCode },
+      GHL_FIELDS.service && { id: GHL_FIELDS.service, field_value: serviceName },
+      GHL_FIELDS.serviceDate && { id: GHL_FIELDS.serviceDate, field_value: serviceDateFmt },
+      GHL_FIELDS.serviceTime && { id: GHL_FIELDS.serviceTime, field_value: serviceTimeFmt },
+      GHL_FIELDS.serviceTotal && { id: GHL_FIELDS.serviceTotal, field_value: serviceTotalFmt },
+    ].filter(Boolean) as Array<{ id: string; field_value: string }>
 
     const ghlContact = await upsertContact({
       firstName: formData.customer.firstName,
