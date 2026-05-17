@@ -19,13 +19,18 @@ export function CancelButton({
   bookingId,
   serviceDate,
   serviceTime,
+  hasSeries,
+  totalInSeries,
 }: {
   bookingId: string
   serviceDate: string
   serviceTime: string
+  hasSeries?: boolean
+  totalInSeries?: number
 }) {
   const router = useRouter()
   const [confirming, setConfirming] = useState(false)
+  const [scope, setScope] = useState<'single' | 'series'>('single')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -37,7 +42,8 @@ export function CancelButton({
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`/api/bookings/${bookingId}/cancel`, { method: 'PATCH' })
+      const url = `/api/bookings/${bookingId}/cancel${scope === 'series' ? '?scope=series' : ''}`
+      const res = await fetch(url, { method: 'PATCH' })
       if (!res.ok) {
         const data = await res.json()
         setError(data.error ?? 'Cancellation failed. Please try again.')
@@ -95,6 +101,31 @@ export function CancelButton({
         </div>
       </div>
 
+      {/* Scope selector — only shown if this booking is part of a series */}
+      {hasSeries && (
+        <div style={{ marginBottom: '18px', paddingTop: '14px', borderTop: '1px solid rgba(13,27,46,0.06)' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', fontWeight: 700, color: 'rgba(13,27,46,0.7)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px' }}>
+            What to cancel?
+          </div>
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 12px', border: `1px solid ${scope === 'single' ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`, marginBottom: '8px', cursor: 'pointer', background: scope === 'single' ? '#e0f5f4' : 'white' }}>
+            <input type="radio" name="cancel-scope" checked={scope === 'single'} onChange={() => setScope('single')} style={{ marginTop: '3px' }} />
+            <div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-navy-deep)' }}>Just this cleaning</div>
+              <div style={{ fontSize: '0.72rem', color: 'rgba(74,90,106,0.7)', marginTop: '2px' }}>Other cleanings in your recurring series stay scheduled.</div>
+            </div>
+          </label>
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 12px', border: `1px solid ${scope === 'series' ? '#dc2626' : 'rgba(13,27,46,0.1)'}`, cursor: 'pointer', background: scope === 'series' ? '#fef2f2' : 'white' }}>
+            <input type="radio" name="cancel-scope" checked={scope === 'series'} onChange={() => setScope('series')} style={{ marginTop: '3px' }} />
+            <div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-navy-deep)' }}>Cancel the entire series</div>
+              <div style={{ fontSize: '0.72rem', color: 'rgba(74,90,106,0.7)', marginTop: '2px' }}>
+                All {totalInSeries ?? 'remaining'} cleanings in this series will be cancelled.
+              </div>
+            </div>
+          </label>
+        </div>
+      )}
+
       {error && (
         <div style={{ marginBottom: '12px', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#dc2626' }}>
           {error}
@@ -140,7 +171,7 @@ export function CancelButton({
           }}
         >
           {loading && <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} />}
-          {loading ? 'Cancelling...' : 'Yes, Cancel'}
+          {loading ? 'Cancelling...' : scope === 'series' ? 'Yes, Cancel Series' : 'Yes, Cancel'}
         </button>
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

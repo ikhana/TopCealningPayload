@@ -57,7 +57,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings/${id}?depth=0`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings/${id}?depth=1`,
       {
         cache: 'no-store',
         headers: {
@@ -76,6 +76,30 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
   }
 
   if (!booking) notFound()
+
+  // If part of a series, count siblings so the cancel modal can offer the series-cancel option
+  let seriesId: number | null = null
+  let totalInSeries = 0
+  if (booking.series) {
+    seriesId = typeof booking.series === 'object' ? booking.series.id : booking.series
+    if (seriesId) {
+      try {
+        const siblingsRes = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings?depth=0&limit=100&where[series][equals]=${seriesId}&where[status][not_equals]=cancelled`,
+          {
+            cache: 'no-store',
+            headers: { Authorization: `JWT ${token}`, 'Content-Type': 'application/json' },
+          },
+        )
+        if (siblingsRes.ok) {
+          const json = await siblingsRes.json()
+          totalInSeries = json.totalDocs ?? json.docs?.length ?? 0
+        }
+      } catch {
+        // non-fatal — modal just won't show the count
+      }
+    }
+  }
 
   const address = booking.address
   const property = booking.property
@@ -300,6 +324,8 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
               bookingId={String(booking.id)}
               serviceDate={booking.serviceDate}
               serviceTime={booking.serviceTime}
+              hasSeries={!!seriesId && totalInSeries > 1}
+              totalInSeries={totalInSeries}
             />
           )}
         </div>

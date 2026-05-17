@@ -57,13 +57,14 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 12.2 | Submit flow creates + links series for recurring bookings | `[~]` | [stages/12-2-submit-flow-creates-series.md](stages/12-2-submit-flow-creates-series.md) |
 | 12.3 | Fix recurring scheduler 400 errors (cap by booking window, skip unavailable slots) | `[x]` | [stages/12-3-recurring-bug-fix.md](stages/12-3-recurring-bug-fix.md) |
 | 12.3b | Create Payload Booking records for each future occurrence | `[x]` | [stages/12-3b-payload-records-for-future-occurrences.md](stages/12-3b-payload-records-for-future-occurrences.md) |
-| 12.4 | Show recurring schedule on success screen | `[ ]` | |
-| 12.5 | Group bookings by series on /account/bookings | `[ ]` | |
+| 12.4 | Show recurring schedule on success screen | `[~]` | [stages/12-4-recurring-schedule-on-success.md](stages/12-4-recurring-schedule-on-success.md) |
+| 12.5 | Group bookings by series on /account/bookings | `[~]` | [stages/12-5-account-page-series-grouping.md](stages/12-5-account-page-series-grouping.md) |
 | 12.6 | Series detail page /account/series/[id] | `[ ]` | |
 | 12.7 | Tag GHL contact `recurring-customer` on series creation | `[ ]` | |
 | 12.8 | Add series_id to GHL Booking custom object records | `[ ]` | |
-| 12.9 | Cancellation modal — single occurrence vs whole series scope | `[ ]` | |
-| 12.10 | Two-way sync: cancel booking → GHL opportunity to Cancelled stage | `[ ]` | |
+| 12.9 | Cancellation modal — single occurrence vs whole series scope | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
+| 12.10 | Forward sync: cancel in Payload → GHL appointment + opportunity | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
+| 12.11 | Reverse sync: GHL webhook → Payload (when cancelled in GHL UI) | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
 | 13 | Tag `booking-abandoned` on idle leads | `[ ]` | |
 | 14 | Test abandoned detection | `[ ]` | |
 | 15 | First recovery email (1-hour nudge) | `[ ]` | |
