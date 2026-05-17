@@ -198,18 +198,35 @@ const TOTAL_STEPS = STEPS.length
 const STEP_NUM_AT = (wizardStep: number) => parseInt(STEPS[wizardStep - 1]?.num ?? '0', 10)
 
 /* ── Success screen shown after booking is confirmed ─────── */
-function BookingSuccess({ confirmationCode, appointmentTime }: { confirmationCode?: string; appointmentTime?: string }) {
+function BookingSuccess({
+  confirmationCode,
+  appointmentTime,
+  futureOccurrences,
+}: {
+  confirmationCode?: string
+  appointmentTime?: string
+  futureOccurrences?: Array<{ occurrence: number; startTime: string }>
+}) {
   const formatDateTime = (iso: string) => {
     try {
       return new Date(iso).toLocaleString('en-US', {
         weekday: 'long', month: 'long', day: 'numeric',
         hour: 'numeric', minute: '2-digit', hour12: true,
-        // Force business timezone so confirmation matches what the customer picked,
-        // regardless of where they're physically located when viewing the page.
         timeZone: 'America/New_York',
       })
     } catch { return iso }
   }
+  const formatShort = (iso: string) => {
+    try {
+      return new Date(iso).toLocaleString('en-US', {
+        weekday: 'short', month: 'short', day: 'numeric',
+        hour: 'numeric', minute: '2-digit', hour12: true,
+        timeZone: 'America/New_York',
+      })
+    } catch { return iso }
+  }
+
+  const hasFutureOccurrences = futureOccurrences && futureOccurrences.length > 0
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', textAlign: 'center', padding: '60px 8%' }}>
@@ -227,10 +244,30 @@ function BookingSuccess({ confirmationCode, appointmentTime }: { confirmationCod
         </div>
       )}
       {appointmentTime && (
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'rgba(74,90,106,0.6)', marginBottom: '16px' }}>
-          {formatDateTime(appointmentTime)}
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'rgba(74,90,106,0.6)', marginBottom: hasFutureOccurrences ? '24px' : '16px' }}>
+          {hasFutureOccurrences ? `Your first cleaning: ${formatDateTime(appointmentTime)}` : formatDateTime(appointmentTime)}
         </p>
       )}
+
+      {hasFutureOccurrences && (
+        <div style={{ border: '1px solid rgba(13,27,46,0.08)', background: '#fafbfc', padding: '20px 28px', marginBottom: '28px', maxWidth: '460px', width: '100%' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', fontWeight: 700, color: 'var(--color-teal)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '12px' }}>
+            Your upcoming cleanings
+          </div>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, textAlign: 'left' }}>
+            {futureOccurrences.map((occ) => (
+              <li key={occ.occurrence} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 0', fontSize: '0.92rem', color: 'rgba(13,27,46,0.85)', borderBottom: '1px solid rgba(13,27,46,0.05)' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-teal)', flexShrink: 0 }} />
+                <span style={{ fontWeight: 600 }}>{formatShort(occ.startTime)}</span>
+              </li>
+            ))}
+          </ul>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'rgba(74,90,106,0.55)', margin: '12px 0 0', lineHeight: 1.5, textAlign: 'left' }}>
+            Each cleaning can be rescheduled or skipped individually from your account.
+          </p>
+        </div>
+      )}
+
       <p style={{ fontSize: '1rem', color: 'rgba(74,90,106,0.75)', maxWidth: '420px', lineHeight: 1.7, marginBottom: '36px' }}>
         Thank you — we&apos;ve received your booking. A confirmation text/email will arrive shortly. View your booking anytime in{' '}
         <a href="/account/bookings" style={{ color: 'var(--color-teal)' }}>My Bookings</a>.
@@ -259,6 +296,7 @@ function BookingFormInner() {
   const [submitted, setSubmitted] = useState(false)
   const [confirmationCode, setConfirmationCode] = useState<string | undefined>()
   const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
+  const [futureOccurrences, setFutureOccurrences] = useState<Array<{ occurrence: number; startTime: string }> | undefined>(undefined)
   const [stepError, setStepError] = useState<string | null>(null)
 
   // Clear the step error when the user changes step or starts editing
@@ -338,6 +376,7 @@ function BookingFormInner() {
 
       setConfirmationCode(data.confirmationCode)
       setAppointmentTime(data.appointmentTime)
+      setFutureOccurrences(data.futureOccurrences)
       setSubmitted(true)
     } catch {
       setSubmissionError('Network error — please check your connection and try again.')
@@ -347,7 +386,7 @@ function BookingFormInner() {
   }
 
   if (submitted) {
-    return <BookingSuccess confirmationCode={confirmationCode} appointmentTime={appointmentTime} />
+    return <BookingSuccess confirmationCode={confirmationCode} appointmentTime={appointmentTime} futureOccurrences={futureOccurrences} />
   }
 
   return (

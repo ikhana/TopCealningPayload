@@ -44,6 +44,9 @@ export interface SubmitBookingResult {
   confirmationCode: string
   bookingId: string
   appointmentTime: string
+  // If the booking is recurring, list of future occurrence start times (ISO).
+  // Empty array for one-time bookings or if the frequency has no future occurrences.
+  futureOccurrences: Array<{ occurrence: number; startTime: string }>
 }
 
 export class BookingValidationError extends Error {
@@ -115,10 +118,15 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
   if (existing.docs.length > 0) {
     const prev = existing.docs[0] as Booking
     if (prev.status === 'confirmed' || prev.status === 'pending') {
+      // Idempotent re-submit — re-compute the schedule so the success screen still gets it
+      const prevStart = prev.serviceTime?.includes('T') ? prev.serviceTime : `${prev.serviceDate}T${prev.serviceTime}`
+      const prevFutureOccurrences = computeOccurrenceSchedule(prev.frequency, prevStart)
+        .map(({ occurrence, startTime: occStartTime }) => ({ occurrence, startTime: occStartTime }))
       return {
         confirmationCode: prev.confirmationCode,
         bookingId: String(prev.id),
-        appointmentTime: `${prev.serviceDate}T${prev.serviceTime}`,
+        appointmentTime: prevStart,
+        futureOccurrences: prevFutureOccurrences,
       }
     }
   }
@@ -379,7 +387,11 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       })
     })
 
-    return { confirmationCode, bookingId, appointmentTime: startTime }
+    // Compute the future occurrence schedule for the success screen (deterministic, no API calls)
+    const futureOccurrences = computeOccurrenceSchedule(formData.frequency, startTime)
+      .map(({ occurrence, startTime: occStartTime }) => ({ occurrence, startTime: occStartTime }))
+
+    return { confirmationCode, bookingId, appointmentTime: startTime, futureOccurrences }
 
   } catch (err) {
     await payload.update({
@@ -459,6 +471,36 @@ const RECURRENCE: Record<string, { intervalDays: number; count: number }> = {
 // GHL calendar's allowBookingFor (set in calendar config). Keep this in sync.
 const GHL_BOOKING_WINDOW_DAYS = 60
 
+/**
+ * Pure function: compute which future occurrences WOULD be scheduled for a given
+ * frequency + first start time. Window-caps to GHL_BOOKING_WINDOW_DAYS.
+ * No API calls — used by both the recurring scheduler AND the success screen.
+ */
+function computeOccurrenceSchedule(
+  frequency: string,
+  firstStartTime: string,
+): Array<{ occurrence: number; startTime: string; daysOut: number }> {
+  const rule = RECURRENCE[frequency]
+  if (!rule) return []
+
+  const nowMs = Date.now()
+  const firstStartMs = new Date(firstStartTime).getTime()
+  const result: Array<{ occurrence: number; startTime: string; daysOut: number }> = []
+
+  for (let i = 0; i < rule.count; i++) {
+    const occurrence = i + 2 // 1 is the main booking
+    const daysOut = rule.intervalDays * (i + 1)
+    const futureStartMs = firstStartMs + daysOut * 24 * 60 * 60 * 1000
+    const daysFromNow = (futureStartMs - nowMs) / (1000 * 60 * 60 * 24)
+
+    if (daysFromNow > GHL_BOOKING_WINDOW_DAYS) continue
+
+    result.push({ occurrence, startTime: addDaysToIso(firstStartTime, daysOut), daysOut })
+  }
+
+  return result
+}
+
 async function scheduleRecurringAppointments(params: {
   frequency: string
   firstStartTime: string
@@ -477,35 +519,19 @@ async function scheduleRecurringAppointments(params: {
   selectedExtras: Array<{ extraId: string; label: string; price: number }>
   idempotencyKey: string
 }): Promise<void> {
+  // Shared helper computes which occurrences are in-window (DRY with computeOccurrenceSchedule)
+  const inWindow = computeOccurrenceSchedule(params.frequency, params.firstStartTime)
+  const occurrences = inWindow.map(({ occurrence, startTime, daysOut }) => ({
+    occurrence,
+    daysOut,
+    startTime,
+    endTime: addHours(startTime, params.estimatedHours),
+  }))
+
+  // Diagnostic log — how many were window-capped
   const rule = RECURRENCE[params.frequency]
-  if (!rule) return
-
-  const { intervalDays, count } = rule
-  const nowMs = Date.now()
-  const firstStartMs = new Date(params.firstStartTime).getTime()
-
-  // Skip occurrences past the booking window upfront
-  const occurrences: Array<{ occurrence: number; daysOut: number; startTime: string; endTime: string }> = []
-  const skipped: Array<{ occurrence: number; daysOut: number; reason: string }> = []
-
-  for (let i = 0; i < count; i++) {
-    const occurrence = i + 2 // 1 is the main booking; recurring starts at 2
-    const daysOut = intervalDays * (i + 1)
-    const futureStartMs = firstStartMs + daysOut * 24 * 60 * 60 * 1000
-    const daysFromNow = (futureStartMs - nowMs) / (1000 * 60 * 60 * 24)
-
-    if (daysFromNow > GHL_BOOKING_WINDOW_DAYS) {
-      skipped.push({ occurrence, daysOut, reason: `${Math.round(daysFromNow)}d out exceeds ${GHL_BOOKING_WINDOW_DAYS}d window` })
-      continue
-    }
-
-    const startTime = addDaysToIso(params.firstStartTime, daysOut)
-    const endTime = addHours(startTime, params.estimatedHours)
-    occurrences.push({ occurrence, daysOut, startTime, endTime })
-  }
-
-  if (skipped.length > 0) {
-    console.log('[booking:recurring] Skipped occurrences past booking window', skipped)
+  if (rule && occurrences.length < rule.count) {
+    console.log(`[booking:recurring] ${rule.count - occurrences.length} occurrence(s) skipped (past ${GHL_BOOKING_WINDOW_DAYS}d window)`)
   }
 
   // For each occurrence: create GHL appointment first, then Payload Booking linked to series
