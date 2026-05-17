@@ -59,7 +59,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 12.3b | Create Payload Booking records for each future occurrence | `[x]` | [stages/12-3b-payload-records-for-future-occurrences.md](stages/12-3b-payload-records-for-future-occurrences.md) |
 | 12.4 | Show recurring schedule on success screen | `[~]` | [stages/12-4-recurring-schedule-on-success.md](stages/12-4-recurring-schedule-on-success.md) |
 | 12.5 | Group bookings by series on /account/bookings | `[~]` | [stages/12-5-account-page-series-grouping.md](stages/12-5-account-page-series-grouping.md) |
-| 12.6 | Series detail page /account/series/[id] | `[ ]` | |
+| 12.6 | Series detail page /account/series/[id] | `[~]` | [stages/12-6-series-detail-page.md](stages/12-6-series-detail-page.md) |
 | 12.7 | Tag GHL contact `recurring-customer` on series creation | `[ ]` | |
 | 12.8 | Add series_id to GHL Booking custom object records | `[ ]` | |
 | 12.9 | Cancellation modal — single occurrence vs whole series scope | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |

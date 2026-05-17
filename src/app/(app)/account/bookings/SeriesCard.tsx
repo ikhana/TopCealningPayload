@@ -94,6 +94,23 @@ export function SeriesCard({
             )}
           </div>
         </div>
+        <Link
+          href={`/account/series/${series.id}`}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.65rem',
+            fontWeight: 700,
+            color: 'var(--color-teal)',
+            textDecoration: 'none',
+            letterSpacing: '0.05em',
+            padding: '6px 10px',
+            border: '1px solid rgba(23,176,171,0.3)',
+            flexShrink: 0,
+          }}
+        >
+          Manage →
+        </Link>
         {expanded ? (
           <ChevronUp size={18} style={{ color: 'rgba(74,90,106,0.5)', flexShrink: 0 }} />
         ) : (
