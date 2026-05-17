@@ -80,7 +80,7 @@ This lets future GHL workflows do:
 
 1. Make a fresh **weekly** booking
 2. In GHL → Contacts → find your contact
-3. Tags panel should show: `website-lead`, `booking-confirmed`, `recurring-customer`, `frequency-weekly`
+3. Tags panel should show: `website-lead`, `booking-confirmed`, `recurring-customer`, and the **specific cadence tag** for what you picked (`frequency-weekly` / `frequency-biweekly` / `frequency-3weekly` / `frequency-monthly` / `frequency-8weekly`)
 4. Custom Objects → Bookings → find the new record
 5. `Series ID` field shows the Payload series id (e.g. "6")
 6. `Series Occurrence` shows `1`
