@@ -94,6 +94,7 @@ export interface Config {
     media: Media;
     orders: Order;
     bookings: Booking;
+    'booking-drafts': BookingDraft;
     'booking-series': BookingSery;
     addons: Addon;
     'personalization-options': PersonalizationOption;
@@ -125,6 +126,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     bookings: BookingsSelect<false> | BookingsSelect<true>;
+    'booking-drafts': BookingDraftsSelect<false> | BookingDraftsSelect<true>;
     'booking-series': BookingSeriesSelect<false> | BookingSeriesSelect<true>;
     addons: AddonsSelect<false> | AddonsSelect<true>;
     'personalization-options': PersonalizationOptionsSelect<false> | PersonalizationOptionsSelect<true>;
@@ -5148,6 +5150,51 @@ export interface BookingSery {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-drafts".
+ */
+export interface BookingDraft {
+  id: number;
+  /**
+   * Opaque resume token (UUID v4)
+   */
+  token: string;
+  /**
+   * Customer email — present once Step 1 is filled
+   */
+  email?: string | null;
+  /**
+   * GHL contact ID once upserted
+   */
+  ghlContactId?: string | null;
+  /**
+   * 1-10, highest step the customer reached
+   */
+  stepReached?: number | null;
+  /**
+   * Full BookingFormData blob
+   */
+  wizardState?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * When this draft can be purged (90 days from last update)
+   */
+  expiresAt?: string | null;
+  /**
+   * Set when the draft becomes a real booking
+   */
+  convertedToBookingId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -5316,6 +5363,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'bookings';
         value: number | Booking;
+      } | null)
+    | ({
+        relationTo: 'booking-drafts';
+        value: number | BookingDraft;
       } | null)
     | ({
         relationTo: 'booking-series';
@@ -7325,6 +7376,21 @@ export interface BookingsSelect<T extends boolean = true> {
   authnetTransactionId?: T;
   idempotencyKey?: T;
   failureReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-drafts_select".
+ */
+export interface BookingDraftsSelect<T extends boolean = true> {
+  token?: T;
+  email?: T;
+  ghlContactId?: T;
+  stepReached?: T;
+  wizardState?: T;
+  expiresAt?: T;
+  convertedToBookingId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
