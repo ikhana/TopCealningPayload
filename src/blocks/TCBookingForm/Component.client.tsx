@@ -11,6 +11,7 @@ import { BookingSummary } from '@/components/booking/BookingSummary'
 import { useBooking } from '@/components/booking/BookingContext'
 import { generateIdempotencyKeyClient } from '@/lib/booking/idempotency'
 import { validateStep } from '@/lib/booking/step-validation'
+import { useDraftSync } from '@/hooks/useDraftSync'
 import { Step01Customer } from '@/components/booking/sections/Step01Customer'
 import { Step02Service } from '@/components/booking/sections/Step02Service'
 import { Step03Property } from '@/components/booking/sections/Step03Property'
@@ -290,6 +291,7 @@ function BookingFormInner() {
     setSubmissionError,
     idempotencyKey,
     setIdempotencyKey,
+    setBookingDataAll,
   } = useBooking()
 
   const [currentStep, setCurrentStep] = useState(1)
@@ -298,6 +300,31 @@ function BookingFormInner() {
   const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
   const [futureOccurrences, setFutureOccurrences] = useState<Array<{ occurrence: number; startTime: string }> | undefined>(undefined)
   const [stepError, setStepError] = useState<string | null>(null)
+  const [isHydrating, setIsHydrating] = useState(true)
+
+  const { forceSaveDraft, clearDraft, hydrateFromResume } = useDraftSync(bookingData, currentStep)
+
+  // Resume hydration — runs once on mount. If the page was opened with
+  // ?resume=<token>, fetch the draft and rehydrate wizard state + step.
+  useEffect(() => {
+    let cancelled = false
+    hydrateFromResume()
+      .then((draft) => {
+        if (cancelled) return
+        if (draft) {
+          setBookingDataAll(draft.wizardState)
+          setCurrentStep(Math.max(1, Math.min(draft.stepReached, TOTAL_STEPS)))
+        }
+        setIsHydrating(false)
+      })
+      .catch(() => {
+        if (!cancelled) setIsHydrating(false)
+      })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Clear the step error when the user changes step or starts editing
   useEffect(() => {
@@ -332,7 +359,10 @@ function BookingFormInner() {
         }),
       }).catch(() => {})
     }
-    setCurrentStep((s) => Math.min(s + 1, TOTAL_STEPS))
+
+    const nextStep = Math.min(currentStep + 1, TOTAL_STEPS)
+    forceSaveDraft(nextStep)
+    setCurrentStep(nextStep)
   }
   const goBack = () => setCurrentStep((s) => Math.max(s - 1, 1))
 
@@ -378,6 +408,7 @@ function BookingFormInner() {
       setAppointmentTime(data.appointmentTime)
       setFutureOccurrences(data.futureOccurrences)
       setSubmitted(true)
+      clearDraft()
     } catch {
       setSubmissionError('Network error — please check your connection and try again.')
     } finally {
