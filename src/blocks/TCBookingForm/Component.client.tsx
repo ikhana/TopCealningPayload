@@ -300,7 +300,6 @@ function BookingFormInner() {
   const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
   const [futureOccurrences, setFutureOccurrences] = useState<Array<{ occurrence: number; startTime: string }> | undefined>(undefined)
   const [stepError, setStepError] = useState<string | null>(null)
-  const [isHydrating, setIsHydrating] = useState(true)
 
   const { forceSaveDraft, clearDraft, hydrateFromResume } = useDraftSync(bookingData, currentStep)
 
@@ -308,18 +307,11 @@ function BookingFormInner() {
   // ?resume=<token>, fetch the draft and rehydrate wizard state + step.
   useEffect(() => {
     let cancelled = false
-    hydrateFromResume()
-      .then((draft) => {
-        if (cancelled) return
-        if (draft) {
-          setBookingDataAll(draft.wizardState)
-          setCurrentStep(Math.max(1, Math.min(draft.stepReached, TOTAL_STEPS)))
-        }
-        setIsHydrating(false)
-      })
-      .catch(() => {
-        if (!cancelled) setIsHydrating(false)
-      })
+    hydrateFromResume().then((draft) => {
+      if (cancelled || !draft) return
+      setBookingDataAll(draft.wizardState)
+      setCurrentStep(Math.max(1, Math.min(draft.stepReached, TOTAL_STEPS)))
+    })
     return () => {
       cancelled = true
     }

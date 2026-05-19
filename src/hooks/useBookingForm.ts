@@ -138,6 +138,11 @@ export const useBookingForm = () => {
     setBookingData((prev) => ({ ...prev, referralSource: source }))
   }
 
+  // Bulk replace — used by resume URL hydration in Stage 9.7.3
+  const setBookingDataAll = (data: BookingFormData) => {
+    setBookingData(data)
+  }
+
   // Recalculate pricing whenever relevant fields change
   useEffect(() => {
     const { serviceType, property, hasChildren, hasPets, frequency, isFirstTimeClient, selectedExtras } =
@@ -183,6 +188,7 @@ export const useBookingForm = () => {
     toggleFlexibleTime,
     togglePetType,
     updateReferralSource,
+    setBookingDataAll,
     // Payment + submission state
     paymentNonce,
     setPaymentNonce,
