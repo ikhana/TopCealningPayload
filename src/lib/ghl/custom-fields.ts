@@ -9,6 +9,8 @@ export const GHL_FIELDS = {
   serviceDate: process.env.GHL_FIELD_SERVICE_DATE ?? '',
   serviceTime: process.env.GHL_FIELD_SERVICE_TIME ?? '',
   serviceTotal: process.env.GHL_FIELD_SERVICE_TOTAL ?? '',
+  // Stage 9.7.4 — resume URL for abandoned booking recovery emails
+  cartResumeUrl: process.env.GHL_FIELD_CART_RESUME_URL ?? '',
 } as const
 
 export type GhlFieldKey = keyof typeof GHL_FIELDS

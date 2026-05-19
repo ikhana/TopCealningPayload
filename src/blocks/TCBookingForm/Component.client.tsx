@@ -301,7 +301,7 @@ function BookingFormInner() {
   const [futureOccurrences, setFutureOccurrences] = useState<Array<{ occurrence: number; startTime: string }> | undefined>(undefined)
   const [stepError, setStepError] = useState<string | null>(null)
 
-  const { forceSaveDraft, clearDraft, hydrateFromResume } = useDraftSync(bookingData, currentStep)
+  const { forceSaveDraft, clearDraft, hydrateFromResume, getToken } = useDraftSync(bookingData, currentStep)
 
   // Resume hydration — runs once on mount. If the page was opened with
   // ?resume=<token>, fetch the draft and rehydrate wizard state + step.
@@ -338,8 +338,15 @@ function BookingFormInner() {
       return
     }
 
+    const nextStep = Math.min(currentStep + 1, TOTAL_STEPS)
+
     if (currentStep === 1) {
       const { customer } = bookingData
+      // Save the draft FIRST so the row exists in the DB before lead-capture
+      // builds the resume URL referencing this token. The lead-capture call
+      // populates the GHL contact's cart_resume_url custom field which powers
+      // abandoned-booking recovery emails.
+      forceSaveDraft(nextStep)
       fetch('/api/ghl/lead-capture', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -348,12 +355,13 @@ function BookingFormInner() {
           email: customer.email,
           phone: customer.phone,
           countryCode: customer.countryCode,
+          draftToken: getToken(),
         }),
       }).catch(() => {})
+    } else {
+      forceSaveDraft(nextStep)
     }
 
-    const nextStep = Math.min(currentStep + 1, TOTAL_STEPS)
-    forceSaveDraft(nextStep)
     setCurrentStep(nextStep)
   }
   const goBack = () => setCurrentStep((s) => Math.max(s - 1, 1))
