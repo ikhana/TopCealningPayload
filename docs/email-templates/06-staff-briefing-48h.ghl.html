@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="x-apple-disable-message-reformatting">
+<title>Service in 48 hours — staff briefing</title>
+<style type="text/css">
+  body,table,td,p,a{ -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+  table,td{ mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse; }
+  img{ border:0; outline:none; text-decoration:none; display:block; -ms-interpolation-mode:bicubic; }
+  body{ margin:0!important; padding:0!important; width:100%!important; background-color:#f4f7f6; }
+  @media only screen and (max-width:640px){
+    .email-wrapper{ width:100%!important; }
+    .px-mobile{ padding-left:20px!important; padding-right:20px!important; }
+  }
+</style>
+</head>
+<body bgcolor="#f4f7f6" style="margin:0;padding:0;background-color:#f4f7f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+
+<!-- Hidden pre-header -->
+<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;color:transparent;height:0;width:0;">
+  Service in 48 hours — confirm crew, supplies, and access.
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f7f6" style="background-color:#f4f7f6;">
+  <tr>
+    <td align="center" valign="top" style="padding:32px 16px;">
+
+      <table class="email-wrapper" role="presentation" width="580" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="max-width:580px;width:100%;background-color:#ffffff;border-radius:6px;">
+
+        <!-- Top accent — navy for internal -->
+        <tr><td bgcolor="#0d1b2e" height="4" style="background-color:#0d1b2e;height:4px;line-height:4px;font-size:0;">&nbsp;</td></tr>
+
+        <!-- Logo -->
+        <tr>
+          <td class="px-mobile" style="padding:28px 40px 20px;">
+            <img src="https://assets.cdn.filesafe.space/yI9kN6pMxVVk486ciX3N/media/6a0a0aa68d08689eb292addf.png" alt="Top Cleaning" width="140" height="auto" style="display:block;width:140px;max-width:140px;height:auto;border:0;">
+          </td>
+        </tr>
+
+        <!-- Divider -->
+        <tr><td class="px-mobile" style="padding:0 40px;"><div style="border-top:1px solid #f1f5f9;line-height:1px;font-size:0;">&nbsp;</div></td></tr>
+
+        <!-- Body -->
+        <tr>
+          <td class="px-mobile" align="left" style="padding:32px 40px;">
+
+            <!-- Status pill — internal -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px;">
+              <tr>
+                <td bgcolor="#f1f5f9" style="background-color:#f1f5f9;padding:5px 12px;border-radius:20px;">
+                  <span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:#0d1b2e;letter-spacing:1.5px;text-transform:uppercase;"><font color="#0d1b2e" style="color:#0d1b2e;">Internal &middot; 48h Briefing</font></span>
+                </td>
+              </tr>
+            </table>
+
+            <h1 style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:#0d1b2e;margin:0 0 8px;line-height:1.2;">Service in 48 hours &mdash; {{contact.first_name}} {{contact.last_name}}.</h1>
+            <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;color:#5a7184;line-height:1.6;margin:0 0 28px;">Time to confirm crew assignment, prep supplies, and handle any last-minute customer contact.</p>
+
+            <!-- Service block -->
+            <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">Service</p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;width:40%;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;color:#94a3b8;">Type</span></td>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#0d1b2e;">{{appointment.title}}</span></td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;color:#94a3b8;">When</span></td>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#0d1b2e;">{{appointment.start_time}}</span></td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;color:#94a3b8;">Booking #</span></td>
+                <td style="padding:10px 0;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:700;color:#17b0ab;">{{contact.confirmation_code}}</span></td>
+              </tr>
+            </table>
+
+            <!-- Customer block -->
+            <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">Customer</p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;width:40%;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;color:#94a3b8;">Name</span></td>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#0d1b2e;">{{contact.first_name}} {{contact.last_name}}</span></td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;color:#94a3b8;">Phone</span></td>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;"><a href="tel:{{contact.phone}}" style="text-decoration:none;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;"><font color="#17b0ab" style="color:#17b0ab;">{{contact.phone}}</font></a></td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;color:#94a3b8;">Email</span></td>
+                <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;"><a href="mailto:{{contact.email}}" style="text-decoration:none;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;"><font color="#17b0ab" style="color:#17b0ab;">{{contact.email}}</font></a></td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;"><span style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;color:#94a3b8;">Address</span></td>
+                <td style="padding:10px 0;"><a href="https://www.google.com/maps/search/?api=1&query={{contact.address1}},{{contact.city}},{{contact.state}}" target="_blank" style="text-decoration:none;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;line-height:1.5;"><font color="#0d1b2e" style="color:#0d1b2e;">{{contact.address1}}<br>{{contact.city}}, {{contact.state}} {{contact.postal_code}}</font><br><span style="font-size:12px;font-weight:500;"><font color="#17b0ab" style="color:#17b0ab;">View on map &rarr;</font></span></a></td>
+              </tr>
+            </table>
+
+            <!-- Pre-service checklist -->
+            <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;">Before crew dispatches</p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
+              <tr><td style="padding:4px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:#5a7184;line-height:1.6;"><font color="#0d1b2e" style="color:#0d1b2e;font-weight:700;">&middot;</font>&nbsp;&nbsp;Confirm crew assignment and route</td></tr>
+              <tr><td style="padding:4px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:#5a7184;line-height:1.6;"><font color="#0d1b2e" style="color:#0d1b2e;font-weight:700;">&middot;</font>&nbsp;&nbsp;Check supplies and equipment for the service type</td></tr>
+              <tr><td style="padding:4px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:#5a7184;line-height:1.6;"><font color="#0d1b2e" style="color:#0d1b2e;font-weight:700;">&middot;</font>&nbsp;&nbsp;Review customer notes and access method (in contact record)</td></tr>
+              <tr><td style="padding:4px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:#5a7184;line-height:1.6;"><font color="#0d1b2e" style="color:#0d1b2e;font-weight:700;">&middot;</font>&nbsp;&nbsp;Call customer if anything needs clarification</td></tr>
+            </table>
+
+            <!-- CTA button -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px;">
+              <tr>
+                <td align="center" bgcolor="#0d1b2e" height="44" style="background-color:#0d1b2e;border-radius:4px;padding:0 28px;">
+                  <a href="https://app.gohighlevel.com/v2/location/yI9kN6pMxVVk486ciX3N/contacts/detail/{{contact.id}}" target="_blank" style="display:block;line-height:44px;text-decoration:none;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:0.5px;color:#ffffff;"><font color="#ffffff" style="color:#ffffff;"><span style="color:#ffffff;">Open Contact in GHL</span></font></a>
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <!-- Footer divider -->
+        <tr><td class="px-mobile" style="padding:0 40px;"><div style="border-top:1px solid #f1f5f9;line-height:1px;font-size:0;">&nbsp;</div></td></tr>
+
+        <!-- Footer -->
+        <tr>
+          <td class="px-mobile" align="left" style="padding:20px 40px;">
+            <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;color:#94a3b8;line-height:1.7;margin:0;">
+              <font color="#94a3b8" style="color:#94a3b8;">Top Cleaning Team &nbsp;&middot;&nbsp; Internal Briefing</font><br>
+              <font color="#c4c9d4" style="color:#c4c9d4;">Automated alert &middot; Do not reply</font>
+            </p>
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+</body>
+</html>
