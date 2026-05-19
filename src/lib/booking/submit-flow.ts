@@ -38,6 +38,7 @@ export interface SubmitBookingParams {
   paymentNonce: PaymentNonce
   idempotencyKey: string
   userId?: string // undefined for guest checkouts
+  draftToken?: string // present when the wizard had a saved draft (Stage 9.7.5)
 }
 
 export interface SubmitBookingResult {
@@ -124,7 +125,7 @@ function formatServiceTime(serviceTime: string): string {
 }
 
 export async function submitBooking(params: SubmitBookingParams): Promise<SubmitBookingResult> {
-  const { formData, paymentNonce, idempotencyKey, userId } = params
+  const { formData, paymentNonce, idempotencyKey, userId, draftToken } = params
 
   // Step 1: Validate
   validateBookingData(formData)
@@ -432,6 +433,34 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     // Compute the future occurrence schedule for the success screen (deterministic, no API calls)
     const futureOccurrences = computeOccurrenceSchedule(formData.frequency, startTime)
       .map(({ occurrence, startTime: occStartTime }) => ({ occurrence, startTime: occStartTime }))
+
+    // Stage 9.7.5 — mark the draft as converted so it won't be hydrated again
+    // and the abandonment workflow exits via the booking-confirmed goal condition.
+    // Best-effort — a failed update never fails the booking.
+    if (draftToken) {
+      payload
+        .find({
+          collection: 'booking-drafts',
+          where: { token: { equals: draftToken } },
+          limit: 1,
+          depth: 0,
+        })
+        .then((res) => {
+          if (res.docs.length === 0) return
+          return payload.update({
+            collection: 'booking-drafts',
+            id: res.docs[0].id,
+            data: { convertedToBookingId: bookingId },
+          })
+        })
+        .catch((err) => {
+          console.error('[booking:draft] Failed to mark draft converted', {
+            draftToken,
+            bookingId,
+            error: err instanceof Error ? err.message : String(err),
+          })
+        })
+    }
 
     return { confirmationCode, bookingId, appointmentTime: startTime, futureOccurrences }
 

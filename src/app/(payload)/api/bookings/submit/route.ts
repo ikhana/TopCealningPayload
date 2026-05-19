@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     idempotencyKey?: string
     formData?: unknown
     paymentNonce?: { dataDescriptor?: string; dataValue?: string }
+    draftToken?: string
   }
 
   try {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body', code: 'INVALID_BODY' }, { status: 400 })
   }
 
-  const { idempotencyKey, formData, paymentNonce } = body
+  const { idempotencyKey, formData, paymentNonce, draftToken } = body
 
   if (!idempotencyKey || typeof idempotencyKey !== 'string') {
     return NextResponse.json({ error: 'idempotencyKey required', code: 'MISSING_KEY' }, { status: 400 })
@@ -50,6 +51,7 @@ export async function POST(request: NextRequest) {
       },
       idempotencyKey,
       userId: user ? String(user.id) : undefined,
+      draftToken: typeof draftToken === 'string' ? draftToken : undefined,
     })
 
     return NextResponse.json(result, { status: 200 })

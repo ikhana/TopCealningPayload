@@ -394,6 +394,7 @@ function BookingFormInner() {
           idempotencyKey: idempotencyKey ?? generateIdempotencyKeyClient(),
           formData: bookingData,
           paymentNonce: PAYMENT_ENABLED ? paymentNonce : { dataDescriptor: 'PAYMENT_DISABLED', dataValue: 'PAYMENT_DISABLED' },
+          draftToken: getToken() || undefined,
         }),
       })
 
