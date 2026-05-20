@@ -17,10 +17,23 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
 }
 
-const getTomorrow = () => {
+// Earliest bookable date is computed from the GHL calendar's
+// "Minimum scheduling notice" setting. We fetch that live via
+// /api/calendar-config so a single source of truth (GHL) controls
+// both the available time slots and the date picker's `min` attribute.
+//
+// Fallback to "tomorrow" if the API call fails — fail open, never
+// fully block bookings due to a transient config fetch error.
+function getDateOffsetDays(daysAhead: number): string {
   const d = new Date()
-  d.setDate(d.getDate() + 1)
+  d.setDate(d.getDate() + Math.max(daysAhead, 1))
   return d.toISOString().split('T')[0]!
+}
+
+function labelForOffset(daysAhead: number): string {
+  if (daysAhead <= 1) return 'tomorrow'
+  if (daysAhead === 2) return 'the day after tomorrow'
+  return `${daysAhead} days from today`
 }
 
 function formatSlotLabel(iso: string, timezone?: string): string {
@@ -43,6 +56,28 @@ export function Step06Schedule() {
   const [slotsTimezone, setSlotsTimezone] = useState<string | undefined>(undefined)
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [slotsError, setSlotsError] = useState(false)
+
+  // Live-fetched from GHL — defaults to 1 day (tomorrow) until the
+  // config endpoint resolves, then bumps up to the real minimum.
+  const [minDaysAhead, setMinDaysAhead] = useState<number>(1)
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/calendar-config')
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return
+        if (typeof data?.minScheduleNoticeDays === 'number' && data.minScheduleNoticeDays > 0) {
+          setMinDaysAhead(data.minScheduleNoticeDays)
+        }
+      })
+      .catch(() => {
+        // Silent fallback to default — never block the wizard on a config fetch
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     if (!serviceDate) { setSlots([]); return }
@@ -95,7 +130,7 @@ export function Step06Schedule() {
             <input
               type="date"
               value={serviceDate}
-              min={getTomorrow()}
+              min={getDateOffsetDays(minDaysAhead)}
               onChange={(e) => updateServiceDateTime(e.target.value, '')}
               onFocus={onFocus}
               onBlur={onBlur}
@@ -104,7 +139,7 @@ export function Step06Schedule() {
             />
           </div>
           <p style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '6px', fontSize: '0.72rem', color: 'rgba(74,90,106,0.65)' }}>
-            <Info size={11} /> Earliest available date is tomorrow
+            <Info size={11} /> Earliest available date is {labelForOffset(minDaysAhead)}
           </p>
         </div>
 

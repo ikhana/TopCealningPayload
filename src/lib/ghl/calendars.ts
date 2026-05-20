@@ -6,6 +6,71 @@ export interface DaySlots {
   times: string[] // ISO 8601 strings
 }
 
+export interface CalendarConfig {
+  /** Minimum scheduling notice in milliseconds (0 if not configured or unknown shape) */
+  minScheduleNoticeMs: number
+  /** Convenience: same value rounded UP to whole days */
+  minScheduleNoticeDays: number
+  /** Raw GHL response (for debugging field-shape detection) */
+  raw?: unknown
+}
+
+const UNIT_TO_MS: Record<string, number> = {
+  minute: 60 * 1000,
+  minutes: 60 * 1000,
+  hour: 60 * 60 * 1000,
+  hours: 60 * 60 * 1000,
+  day: 24 * 60 * 60 * 1000,
+  days: 24 * 60 * 60 * 1000,
+  week: 7 * 24 * 60 * 60 * 1000,
+  weeks: 7 * 24 * 60 * 60 * 1000,
+}
+
+/**
+ * Fetch the calendar configuration from GHL and extract the minimum
+ * scheduling notice. GHL stores the value + unit as a pair — we try
+ * several known field shapes. Defaults to 0 (no minimum) if we can't
+ * find anything — fail open, never block customers on a config probe.
+ */
+export async function getCalendarConfig(
+  calendarId: string,
+  opts: { includeRaw?: boolean } = {},
+): Promise<CalendarConfig> {
+  const res = await ghlFetch(`/calendars/${calendarId}`)
+  const json = await res.json()
+  const cal = json.calendar ?? json
+
+  // GHL has multiple possible field shapes — each combines value + unit.
+  // Try paired fields first (value AND unit at the same path).
+  const candidates: Array<{ value: unknown; unit: unknown }> = [
+    { value: cal?.notice?.minScheduleNotice, unit: cal?.notice?.minScheduleNoticeUnit },
+    { value: cal?.notice?.allowBookingAfter, unit: cal?.notice?.allowBookingAfterUnit },
+    { value: cal?.minScheduleNotice, unit: cal?.minScheduleNoticeUnit },
+    { value: cal?.allowBookingAfter, unit: cal?.allowBookingAfterUnit },
+    { value: cal?.bookingRules?.minScheduleNotice, unit: cal?.bookingRules?.minScheduleNoticeUnit },
+    { value: cal?.bookingRules?.allowBookingAfter, unit: cal?.bookingRules?.allowBookingAfterUnit },
+  ]
+
+  let minScheduleNoticeMs = 0
+  for (const { value, unit } of candidates) {
+    if (typeof value !== 'number' || value < 0) continue
+    const unitStr = (typeof unit === 'string' ? unit : '').toLowerCase()
+    const multiplier = UNIT_TO_MS[unitStr]
+    if (multiplier) {
+      minScheduleNoticeMs = value * multiplier
+      break
+    }
+  }
+
+  const minScheduleNoticeDays = Math.ceil(minScheduleNoticeMs / (24 * 60 * 60 * 1000))
+
+  return {
+    minScheduleNoticeMs,
+    minScheduleNoticeDays,
+    ...(opts.includeRaw ? { raw: cal } : {}),
+  }
+}
+
 export async function getFreeSlots(params: {
   calendarId: string
   startDate: string  // YYYY-MM-DD
