@@ -1,6 +1,6 @@
 // src/hooks/useDraftSync.ts
-// Persists wizard state to /api/booking-drafts so customers can resume
-// after closing the tab. Two save paths:
+// Persists wizard state to /api/booking-drafts/save so customers can
+// resume after closing the tab. Two save paths:
 //   - Debounced (1.5s) — fires on any bookingData change once email is set
 //   - Forced — called on step transitions for an immediate write
 //
@@ -31,7 +31,7 @@ async function saveDraft(
   bookingData: BookingFormData,
 ): Promise<void> {
   try {
-    await fetch('/api/booking-drafts', {
+    await fetch('/api/booking-drafts/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -105,7 +105,7 @@ export function useDraftSync(bookingData: BookingFormData, currentStep: number) 
     if (!token || token.length < 8 || token.length > 128) return null
 
     try {
-      const res = await fetch(`/api/booking-drafts/${encodeURIComponent(token)}`)
+      const res = await fetch(`/api/booking-drafts/by-token/${encodeURIComponent(token)}`)
       if (!res.ok) return null
 
       const json = await res.json()

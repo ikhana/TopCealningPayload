@@ -1,6 +1,7 @@
-// POST /api/booking-drafts
-// Upsert a booking draft by token. The token is generated client-side
-// (crypto.randomUUID()) and acts as the opaque resume key.
+// POST /api/booking-drafts/save
+// Upsert a booking draft by token. Lives at /save (not /) so it doesn't
+// shadow Payload's auto-generated REST endpoints at /api/booking-drafts
+// (which the admin UI needs for list/edit/delete to work).
 //
 // The route bypasses Payload's collection access rules by going through
 // the local API — that's intentional. Possessing the token is the auth.
@@ -35,7 +36,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'token required' }, { status: 400 })
   }
 
-  // Loose validation — token is opaque, just needs to be a reasonable string
   if (token.length < 8 || token.length > 128) {
     return NextResponse.json({ error: 'token invalid length' }, { status: 400 })
   }
@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
   if (existing.docs.length > 0) {
     const draft = existing.docs[0]
 
-    // Don't regress a converted draft — once it's a real booking, freeze it
     if (draft.convertedToBookingId) {
       return NextResponse.json({ ok: true, draft, frozen: true }, { status: 200 })
     }

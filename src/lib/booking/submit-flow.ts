@@ -435,31 +435,34 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       .map(({ occurrence, startTime: occStartTime }) => ({ occurrence, startTime: occStartTime }))
 
     // Stage 9.7.5 — mark the draft as converted so it won't be hydrated again
-    // and the abandonment workflow exits via the booking-confirmed goal condition.
-    // Best-effort — a failed update never fails the booking.
+    // and the abandonment workflow exits via the booking-confirmed goal.
+    // Awaited (not fire-and-forget) so the update reliably completes before
+    // the response returns. A failed update is logged but never fails the
+    // booking — best-effort with visibility.
     if (draftToken) {
-      payload
-        .find({
+      try {
+        const draftRes = await payload.find({
           collection: 'booking-drafts',
           where: { token: { equals: draftToken } },
           limit: 1,
           depth: 0,
         })
-        .then((res) => {
-          if (res.docs.length === 0) return
-          return payload.update({
+        if (draftRes.docs.length > 0) {
+          await payload.update({
             collection: 'booking-drafts',
-            id: res.docs[0].id,
+            id: draftRes.docs[0].id,
             data: { convertedToBookingId: bookingId },
           })
+        } else {
+          console.warn('[booking:draft] No draft found for token', { draftToken, bookingId })
+        }
+      } catch (err) {
+        console.error('[booking:draft] Failed to mark draft converted', {
+          draftToken,
+          bookingId,
+          error: err instanceof Error ? err.message : String(err),
         })
-        .catch((err) => {
-          console.error('[booking:draft] Failed to mark draft converted', {
-            draftToken,
-            bookingId,
-            error: err instanceof Error ? err.message : String(err),
-          })
-        })
+      }
     }
 
     return { confirmationCode, bookingId, appointmentTime: startTime, futureOccurrences }

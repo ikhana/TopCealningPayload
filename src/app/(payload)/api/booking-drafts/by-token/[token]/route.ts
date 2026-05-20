@@ -1,7 +1,10 @@
-// GET /api/booking-drafts/[token]
-// Fetch a single draft by its resume token. Returns the wizardState and
-// stepReached for client hydration. The token is the auth — anyone with it
-// can read; we don't list drafts by any other key here.
+// GET /api/booking-drafts/by-token/[token]
+// Fetch a draft by its opaque resume token (UUID v4). Used by the wizard's
+// resume hydration when a customer clicks a recovery email link.
+//
+// Lives at /by-token/[token] (not /[token]) so it doesn't shadow Payload's
+// auto-generated /api/booking-drafts/[id] endpoint used by the admin UI for
+// single-record CRUD.
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
@@ -15,7 +18,7 @@ export async function GET(
 ) {
   const { token } = await params
 
-  if (!token || token.length < 8 || token.length > 128) {
+  if (!token || token.length < 1 || token.length > 128) {
     return NextResponse.json({ error: 'invalid token' }, { status: 400 })
   }
 
@@ -34,12 +37,10 @@ export async function GET(
 
   const draft = result.docs[0]
 
-  // Refuse to hydrate a converted draft — the booking is done
   if (draft.convertedToBookingId) {
     return NextResponse.json({ error: 'already converted', code: 'CONVERTED' }, { status: 410 })
   }
 
-  // Refuse expired drafts
   if (draft.expiresAt && new Date(draft.expiresAt).getTime() < Date.now()) {
     return NextResponse.json({ error: 'expired', code: 'EXPIRED' }, { status: 410 })
   }
