@@ -254,23 +254,46 @@ For each workflow we build, verify:
 
 ---
 
-## Build order (Stage 9 sub-stages)
+## Build order (Stage 9 sub-stages) — final status
 
-| Sub-stage | Workflow | Tier |
-|---|---|---|
-| 9.1 | W1 Booking Confirmation | 1 |
-| 9.2 | W2 24h Reminder | 1 |
-| 9.3 | W3 Cancellation Confirmation | 1 |
-| 9.4 | W6 New Booking Internal Alert (instant) | 2 |
-| 9.4b | W6b 48h Pre-Service Staff Briefing | 2 |
-| 9.5 | W4 Post-Clean Thank You / Review | 2 |
-| 9.6 | W10 Welcome New Client | 3 |
-| 9.7 | W7+W8+W9 Abandoned Booking sequence | 3 |
-| 9.8 | W11 Mid-Service Review Reminder | 3 |
-| 9.9 | W14 Series Paused / Cancelled | 4 |
-| Deferred | W5 Invoice, W12 Pre-auth Failed, W13 Auto-Skip, W15 Stale, W16 Dispatch | (depend on Stage 18 payment) |
+Phase 9 wrapped 2026-05-21. 7 production workflows shipped + tested.
 
-Each sub-stage is its own doc with click-by-click setup in GHL UI.
+| Sub-stage | Workflow | Status | Notes |
+|---|---|---|---|
+| 9.1 | W1 Booking Confirmation | ✅ Shipped + tested | Gmail-bulletproof template (font-color wraps to defeat Gmail link-color override) |
+| 9.2 | W2 24h Reminder | ✅ Shipped + tested | Appointment-triggered, fires per occurrence for recurring |
+| 9.3 | W3 Cancellation Confirmation | ✅ Shipped + tested | Per-appointment; series cancellation fires N times (known v1 limitation) |
+| 9.4 | W6 New Booking Internal Alert | ✅ Shipped + tested | Push (Internal Notification) + Email (Send Internal Email); Particular User → Geraldine |
+| ~~9.4b~~ | ~~W6b 48h Pre-Service Briefing~~ | ❌ **Skipped** | Redundant with 9.4 given 48h minimum lead time. Geraldine already has 48h+ notice from instant 9.4 alert. |
+| 9.5 | W4 Post-Clean Review Ask | ✅ Shipped + tested | Trigger: Appointment Status = Showed. Two-CTA deflection (Google review + reply-to-fix). |
+| ~~9.6~~ | ~~W10 Welcome New Client~~ | ❌ **Skipped** | Confirmation email already covers expectations. Revisit if customer support load grows. |
+| 9.7 | W7+W8+W9 Abandoned Booking Recovery | ✅ Shipped + tested | Single workflow with 3 emails (1h / 24h / 72h). Resume URL via custom GHL field `cart_resume_url` + Payload BookingDrafts collection. Replaced original Stages 13-17 in MASTER_PLAN. |
+| 9.8 | W11 Review Follow-up Reminder | ✅ Shipped + tested | Combined with 9.5 in same workflow. Fires 5 days after Email 1 if no `reviewed` tag. |
+| ~~9.9~~ | ~~W14 Series Paused / Cancelled~~ | ❌ **Skipped** | Low-frequency event. Existing 9.3 fires per-appointment for series cancels (annoying but not broken). Defer until customer complains. |
+| Deferred | W5 Invoice, W12 Pre-auth Failed, W13 Auto-Skip, W15 Stale, W16 Dispatch | ⏸️ Phase 18 | All depend on payment integration |
+
+## Phase 9 decisions (record of "why we built it this way")
+
+- **Email reputation isolation**: subdomain `mail.topcleaningteam.com` (not root domain) so spam complaints don't contaminate the main domain.
+- **Sender split**: customer emails use `bookings@mail.topcleaningteam.com`; internal alerts use `alerts@mail.topcleaningteam.com` for inbox visual separation.
+- **Two-CTA deflection on review email** (not star-gate): routes unhappy customers to private feedback BEFORE they go nuclear on Google. Star-gate violates Google's review-gating policy; two side-by-side CTAs do not.
+- **48h minimum scheduling notice**: enforced via GHL calendar's `allowBookingAfter: 2 days`. Fetched live by the wizard via `/api/calendar-config` (single source of truth, no env-var drift). Drop to 24h via the GHL setting only when Geraldine is comfortable.
+- **Drafts as separate collection** (not Bookings status:draft): keeps Bookings schema clean, isolates retention policy, prevents GHL sync collisions.
+- **Token = auth for drafts**: same pattern as Stripe Checkout Sessions. Anyone with the token can read/write that specific draft. Token is opaque UUID v4.
+- **No SMS in Phase 9**: A2P 10DLC registration not done yet. All v1 channels are email + GHL Mobile push for staff. SMS variants of recovery/reminder workflows added when A2P approves.
+- **Status state machine** = tags, NOT a single "state" field on the contact. Tags are additive (`website-lead`, `booking-confirmed`, `recurring-customer`, `reviewed`, etc.). Industry standard for CRMs.
+- **Recurring customer review re-ask**: single ask via `reviewed` tag. Long-term customers won't be re-asked. Acceptable tradeoff for v1; add time-based re-ask logic later when review volume grows.
+
+## Phase 9 deferred items (revisit triggers)
+
+- **Custom calendar widget** (Step 6 date picker): replace native `<input type="date">` with a calendar that visibly grays out unavailable days. Revisit when first customer complains about confusing UX, or before mobile booking traffic > 50%.
+- **`reviewed` tag time-based re-ask**: currently single-ask. Add 6-month re-ask logic when review volume > 30 reviews OR when first recurring customer hits 12 months without re-ask.
+- **Series-cancelled single email**: 9.9 deferred. Build when a customer complains about getting N cancellation emails for one series cancel action.
+- **W12 / W13 / W15 / W16**: all require Stage 18 (payments) or operational maturity. Don't touch until then.
+- **GHL Reputation Management integration**: auto-detects new Google reviews, auto-tags contacts with `reviewed`. Replace manual Geraldine-tagging. Worth it once review volume > 20/month.
+- **Backend cron to auto-mark `Showed`**: defensive fallback if crew forgets. Add if Stage 9.5 starts missing too many cleanings.
+
+Each shipped sub-stage's click-by-click history is in commit messages and the email template files under `docs/email-templates/`.
 
 ---
 

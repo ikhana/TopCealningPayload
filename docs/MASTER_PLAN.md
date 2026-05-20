@@ -19,16 +19,25 @@ We've already shipped the booking system (wizard, GHL contact + appointment +
 opportunity, guest checkout, payment-step feature flag, confirmation code race
 fix). What's left is:
 
-1. **Prove the booking flow works end-to-end** — Stages 1–2
-2. **Prove the customer self-service flow works** (account, view, cancel) — Stages 3–5
-3. **Understand the calendar system we built on** — Stages 6–7
-4. **Close the customer loop with a confirmation email** — Stages 8–11
-5. **Handle returning / recurring customers** — Stage 12
-6. **Catch the customers who almost booked** — Stages 13–16
-7. **Polish: let them resume where they left off** — Stage 17
+1. **Prove the booking flow works end-to-end** — Stages 1–2 ✅
+2. **Prove the customer self-service flow works** (account, view, cancel) — Stages 3–5 ✅ (Stage 5 deferred to Stage 18)
+3. **Understand the calendar system we built on** — Stages 6–7 ✅
+4. **Close the customer loop with the full email lifecycle** — Phase 9 ✅ (confirmation, reminder, cancellation, staff alert, review, abandoned recovery)
+5. **Handle returning / recurring customers** — Stage 12 ✅
+6. **~~Catch customers who almost booked~~ + Polish: resume where they left off** — folded into Stage 9.7 ✅
+7. **Operational maturity + revenue** — Phases 10, 11, 18 ⏳ (decision pending after Geraldine meeting)
 
 Each stage points forward (what it unlocks) and backward (what it builds on),
 but does NOT edit earlier stages. Refinements become new stages.
+
+### Phase 9 wrap-up (2026-05-21)
+
+7 production workflows shipped + tested. 3 deferred as redundant or low-frequency.
+Detailed status, decisions, and revisit triggers in [GHL_WORKFLOWS_PLAN.md](GHL_WORKFLOWS_PLAN.md).
+
+What unlocked: full customer email lifecycle is live. Anything we ship next
+inherits the templates, the From-address split, the sender domain isolation,
+and the abandoned recovery architecture.
 
 ---
 
@@ -49,9 +58,9 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 6 | GHL Calendar settings tour | `[x]` | [stages/06-ghl-calendar-tour.md](stages/06-ghl-calendar-tour.md) |
 | 7 | GHL Calendar — multi-crew RoundRobin (rebuild as Round Robin type) | `[x]` | *(folded into Stage 6 — discovery + rebuild + verification)* |
 | 8 | Design + build the confirmation email template | `[x]` | [stages/08-confirmation-email-template.md](stages/08-confirmation-email-template.md), [stages/08-1-and-8-2-contact-snapshot-fields.md](stages/08-1-and-8-2-contact-snapshot-fields.md), [stages/08-3-push-confirmation-email.md](stages/08-3-push-confirmation-email.md) |
-| 9 | Workflow setup — trigger + send action | `[ ]` | |
+| 9 | **Phase 9 — Email workflows** (7 shipped, 3 skipped) | `[x]` | [GHL_WORKFLOWS_PLAN.md](GHL_WORKFLOWS_PLAN.md) |
 | 10 | Add `booking-confirmed` tag in code | `[x]` | [stages/10-booking-confirmed-tag.md](stages/10-booking-confirmed-tag.md) |
-| 11 | Full smoke test — book → email lands | `[ ]` | |
+| 11 | Full smoke test — book → email lands | `[x]` | *(folded into Phase 9 testing — every shipped workflow was tested end-to-end)* |
 | 12 | Recurring booking system (broken into sub-stages below) | `[~]` | |
 | 12.1 | BookingSeries collection + series link on Bookings | `[x]` | [stages/12-1-booking-series-schema.md](stages/12-1-booking-series-schema.md) |
 | 12.2 | Submit flow creates + links series for recurring bookings | `[~]` | [stages/12-2-submit-flow-creates-series.md](stages/12-2-submit-flow-creates-series.md) |
@@ -65,11 +74,7 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 | 12.9 | Cancellation modal — single occurrence vs whole series scope | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
 | 12.10 | Forward sync: cancel in Payload → GHL appointment + opportunity | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
 | 12.11 | Reverse sync: GHL webhook → Payload (when cancelled in GHL UI) | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
-| 13 | Tag `booking-abandoned` on idle leads | `[ ]` | |
-| 14 | Test abandoned detection | `[ ]` | |
-| 15 | First recovery email (1-hour nudge) | `[ ]` | |
-| 16 | Full recovery sequence (24h + 3d) | `[ ]` | |
-| 17 | localStorage snapshot + resume in emails | `[ ]` | |
+| 13–17 | ~~Original Stages 13-17 (abandoned recovery + resume)~~ | `[x]` consolidated | **Folded into Phase 9.7** — built as a single workflow with 3 emails, server-side BookingDrafts collection, resume URL via GHL custom field. See [GHL_WORKFLOWS_PLAN.md](GHL_WORKFLOWS_PLAN.md) Section 9.7. |
 | 18 | **Full cancellation + refund flow** (revisit Stage 5) | `[ ]` | *(needs payment credentials — depends on Stripe/Authnet integration)* |
 
 ---
