@@ -47,33 +47,33 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done & committed
 
 | # | Stage | Status | Doc |
 |---|---|---|---|
-| 1 | Test the full booking submit | `[x]` | [stages/01-test-booking-submit.md](stages/01-test-booking-submit.md) |
-| 2 | Verify the GHL handshake | `[x]` | [stages/02-verify-ghl-handshake.md](stages/02-verify-ghl-handshake.md) |
-| 2.5 | Wizard validation + UX polish | `[ ]` | [stages/02-5-wizard-validation-and-polish.md](stages/02-5-wizard-validation-and-polish.md) |
-| 2.7 | Wire GHL Booking custom object | `[x]` | [stages/02-7-wire-ghl-booking-custom-object.md](stages/02-7-wire-ghl-booking-custom-object.md) |
-| 2.8 | Contact ↔ Booking association | `[x]` | [stages/02-8-contact-booking-association.md](stages/02-8-contact-booking-association.md) |
-| 3 | Logged-in booking — create account + book | `[x]` | [stages/03-logged-in-booking.md](stages/03-logged-in-booking.md) |
-| 4 | Account bookings list + detail page | `[x]` | [stages/04-account-bookings-list.md](stages/04-account-bookings-list.md) |
-| 5 | Cancellation flow — Payload + GHL sync (basic) | `[~]` deferred | [stages/05-cancellation-flow.md](stages/05-cancellation-flow.md) |
-| 6 | GHL Calendar settings tour | `[x]` | [stages/06-ghl-calendar-tour.md](stages/06-ghl-calendar-tour.md) |
+| 1 | Test the full booking submit | `[x]` | [stages/platform/01-test-booking-submit.md](stages/platform/01-test-booking-submit.md) |
+| 2 | Verify the GHL handshake | `[x]` | [stages/platform/02-verify-ghl-handshake.md](stages/platform/02-verify-ghl-handshake.md) |
+| 2.5 | Wizard validation + UX polish | `[ ]` | [stages/platform/02-5-wizard-validation-and-polish.md](stages/platform/02-5-wizard-validation-and-polish.md) |
+| 2.7 | Wire GHL Booking custom object | `[x]` | [stages/platform/02-7-wire-ghl-booking-custom-object.md](stages/platform/02-7-wire-ghl-booking-custom-object.md) |
+| 2.8 | Contact ↔ Booking association | `[x]` | [stages/platform/02-8-contact-booking-association.md](stages/platform/02-8-contact-booking-association.md) |
+| 3 | Logged-in booking — create account + book | `[x]` | [stages/platform/03-logged-in-booking.md](stages/platform/03-logged-in-booking.md) |
+| 4 | Account bookings list + detail page | `[x]` | [stages/platform/04-account-bookings-list.md](stages/platform/04-account-bookings-list.md) |
+| 5 | Cancellation flow — Payload + GHL sync (basic) | `[~]` deferred | [stages/platform/05-cancellation-flow.md](stages/platform/05-cancellation-flow.md) |
+| 6 | GHL Calendar settings tour | `[x]` | [stages/platform/06-ghl-calendar-tour.md](stages/platform/06-ghl-calendar-tour.md) |
 | 7 | GHL Calendar — multi-crew RoundRobin (rebuild as Round Robin type) | `[x]` | *(folded into Stage 6 — discovery + rebuild + verification)* |
-| 8 | Design + build the confirmation email template | `[x]` | [stages/08-confirmation-email-template.md](stages/08-confirmation-email-template.md), [stages/08-1-and-8-2-contact-snapshot-fields.md](stages/08-1-and-8-2-contact-snapshot-fields.md), [stages/08-3-push-confirmation-email.md](stages/08-3-push-confirmation-email.md) |
+| 8 | Design + build the confirmation email template | `[x]` | [stages/platform/08-confirmation-email-template.md](stages/platform/08-confirmation-email-template.md), [stages/platform/08-1-and-8-2-contact-snapshot-fields.md](stages/platform/08-1-and-8-2-contact-snapshot-fields.md), [stages/platform/08-3-push-confirmation-email.md](stages/platform/08-3-push-confirmation-email.md) |
 | 9 | **Phase 9 — Email workflows** (7 shipped, 3 skipped) | `[x]` | [GHL_WORKFLOWS_PLAN.md](GHL_WORKFLOWS_PLAN.md) |
-| 10 | Add `booking-confirmed` tag in code | `[x]` | [stages/10-booking-confirmed-tag.md](stages/10-booking-confirmed-tag.md) |
+| 10 | Add `booking-confirmed` tag in code | `[x]` | [stages/platform/10-booking-confirmed-tag.md](stages/platform/10-booking-confirmed-tag.md) |
 | 11 | Full smoke test — book → email lands | `[x]` | *(folded into Phase 9 testing — every shipped workflow was tested end-to-end)* |
 | 12 | Recurring booking system (broken into sub-stages below) | `[~]` | |
-| 12.1 | BookingSeries collection + series link on Bookings | `[x]` | [stages/12-1-booking-series-schema.md](stages/12-1-booking-series-schema.md) |
-| 12.2 | Submit flow creates + links series for recurring bookings | `[~]` | [stages/12-2-submit-flow-creates-series.md](stages/12-2-submit-flow-creates-series.md) |
-| 12.3 | Fix recurring scheduler 400 errors (cap by booking window, skip unavailable slots) | `[x]` | [stages/12-3-recurring-bug-fix.md](stages/12-3-recurring-bug-fix.md) |
-| 12.3b | Create Payload Booking records for each future occurrence | `[x]` | [stages/12-3b-payload-records-for-future-occurrences.md](stages/12-3b-payload-records-for-future-occurrences.md) |
-| 12.4 | Show recurring schedule on success screen | `[~]` | [stages/12-4-recurring-schedule-on-success.md](stages/12-4-recurring-schedule-on-success.md) |
-| 12.5 | Group bookings by series on /account/bookings | `[~]` | [stages/12-5-account-page-series-grouping.md](stages/12-5-account-page-series-grouping.md) |
-| 12.6 | Series detail page /account/series/[id] | `[~]` | [stages/12-6-series-detail-page.md](stages/12-6-series-detail-page.md) |
-| 12.7 | Tag GHL contact `recurring-customer` on series creation | `[x]` | [stages/12-7-8-ghl-series-tags-and-fields.md](stages/12-7-8-ghl-series-tags-and-fields.md) |
-| 12.8 | Add series_id to GHL Booking custom object records | `[x]` | [stages/12-7-8-ghl-series-tags-and-fields.md](stages/12-7-8-ghl-series-tags-and-fields.md) |
-| 12.9 | Cancellation modal — single occurrence vs whole series scope | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
-| 12.10 | Forward sync: cancel in Payload → GHL appointment + opportunity | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
-| 12.11 | Reverse sync: GHL webhook → Payload (when cancelled in GHL UI) | `[~]` | [stages/12-9-10-11-cancellation-two-way-sync.md](stages/12-9-10-11-cancellation-two-way-sync.md) |
+| 12.1 | BookingSeries collection + series link on Bookings | `[x]` | [stages/platform/12-1-booking-series-schema.md](stages/platform/12-1-booking-series-schema.md) |
+| 12.2 | Submit flow creates + links series for recurring bookings | `[~]` | [stages/platform/12-2-submit-flow-creates-series.md](stages/platform/12-2-submit-flow-creates-series.md) |
+| 12.3 | Fix recurring scheduler 400 errors (cap by booking window, skip unavailable slots) | `[x]` | [stages/platform/12-3-recurring-bug-fix.md](stages/platform/12-3-recurring-bug-fix.md) |
+| 12.3b | Create Payload Booking records for each future occurrence | `[x]` | [stages/platform/12-3b-payload-records-for-future-occurrences.md](stages/platform/12-3b-payload-records-for-future-occurrences.md) |
+| 12.4 | Show recurring schedule on success screen | `[~]` | [stages/platform/12-4-recurring-schedule-on-success.md](stages/platform/12-4-recurring-schedule-on-success.md) |
+| 12.5 | Group bookings by series on /account/bookings | `[~]` | [stages/platform/12-5-account-page-series-grouping.md](stages/platform/12-5-account-page-series-grouping.md) |
+| 12.6 | Series detail page /account/series/[id] | `[~]` | [stages/platform/12-6-series-detail-page.md](stages/platform/12-6-series-detail-page.md) |
+| 12.7 | Tag GHL contact `recurring-customer` on series creation | `[x]` | [stages/platform/12-7-8-ghl-series-tags-and-fields.md](stages/platform/12-7-8-ghl-series-tags-and-fields.md) |
+| 12.8 | Add series_id to GHL Booking custom object records | `[x]` | [stages/platform/12-7-8-ghl-series-tags-and-fields.md](stages/platform/12-7-8-ghl-series-tags-and-fields.md) |
+| 12.9 | Cancellation modal — single occurrence vs whole series scope | `[~]` | [stages/platform/12-9-10-11-cancellation-two-way-sync.md](stages/platform/12-9-10-11-cancellation-two-way-sync.md) |
+| 12.10 | Forward sync: cancel in Payload → GHL appointment + opportunity | `[~]` | [stages/platform/12-9-10-11-cancellation-two-way-sync.md](stages/platform/12-9-10-11-cancellation-two-way-sync.md) |
+| 12.11 | Reverse sync: GHL webhook → Payload (when cancelled in GHL UI) | `[~]` | [stages/platform/12-9-10-11-cancellation-two-way-sync.md](stages/platform/12-9-10-11-cancellation-two-way-sync.md) |
 | 13–17 | ~~Original Stages 13-17 (abandoned recovery + resume)~~ | `[x]` consolidated | **Folded into Phase 9.7** — built as a single workflow with 3 emails, server-side BookingDrafts collection, resume URL via GHL custom field. See [GHL_WORKFLOWS_PLAN.md](GHL_WORKFLOWS_PLAN.md) Section 9.7. |
 | 18 | **Full cancellation + refund flow** (revisit Stage 5) | `[ ]` | *(needs payment credentials — depends on Stripe/Authnet integration)* |
 
