@@ -25,11 +25,30 @@ export async function GET(request: NextRequest) {
   // Used for inspecting field shapes during initial wiring.
   const debug = request.nextUrl.searchParams.get('debug') === '1'
 
+  const timezone = process.env.GHL_CALENDAR_TIMEZONE ?? 'America/New_York'
+
   try {
     const config = await getCalendarConfig(calendarId, { includeRaw: debug })
-    const response = NextResponse.json(config, { status: 200 })
+
+    // Compute earliest bookable date in the CALENDAR's timezone so the
+    // client doesn't have to know about timezone math. Returns YYYY-MM-DD.
+    const nowInTz = new Date().toLocaleString('en-US', { timeZone: timezone })
+    const nowMs = new Date(nowInTz).getTime() + config.minScheduleNoticeMs
+    const targetYmd = new Intl.DateTimeFormat('en-CA', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(new Date(nowMs))
+
+    const responseBody = {
+      ...config,
+      earliestBookableDate: targetYmd, // YYYY-MM-DD in calendar timezone
+      timezone,
+    }
+    const response = NextResponse.json(responseBody, { status: 200 })
     if (!debug) {
-      response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=300')
+      response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30')
     }
     return response
   } catch (err) {

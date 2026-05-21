@@ -57,8 +57,10 @@ export function Step06Schedule() {
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [slotsError, setSlotsError] = useState(false)
 
-  // Live-fetched from GHL — defaults to 1 day (tomorrow) until the
-  // config endpoint resolves, then bumps up to the real minimum.
+  // Server computes the earliest bookable date in the GHL calendar's
+  // timezone so we don't have to do timezone math on the client.
+  // Defaults to tomorrow if the fetch fails — fail open.
+  const [earliestDate, setEarliestDate] = useState<string>(() => getDateOffsetDays(1))
   const [minDaysAhead, setMinDaysAhead] = useState<number>(1)
 
   useEffect(() => {
@@ -67,6 +69,9 @@ export function Step06Schedule() {
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return
+        if (typeof data?.earliestBookableDate === 'string') {
+          setEarliestDate(data.earliestBookableDate)
+        }
         if (typeof data?.minScheduleNoticeDays === 'number' && data.minScheduleNoticeDays > 0) {
           setMinDaysAhead(data.minScheduleNoticeDays)
         }
@@ -130,7 +135,7 @@ export function Step06Schedule() {
             <input
               type="date"
               value={serviceDate}
-              min={getDateOffsetDays(minDaysAhead)}
+              min={earliestDate}
               onChange={(e) => updateServiceDateTime(e.target.value, '')}
               onFocus={onFocus}
               onBlur={onBlur}
