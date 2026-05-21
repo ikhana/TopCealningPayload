@@ -69,7 +69,10 @@ export const CheckoutForm: React.FC = () => {
               query.append('depth', '0')
               query.append('where[stripePaymentIntentID][equals]', `${paymentIntent.id}`)
 
-              const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders?${query.toString()}`
+              // Relative URL — fetch must stay same-origin to avoid CORS preflight
+              // failures on www vs apex domain. (Stripe's return_url at line 49
+              // stays absolute since Stripe redirects the browser externally.)
+              const url = `/api/orders?${query.toString()}`
 
               setTimeout(() => {
                 fetch(url, {

@@ -31,7 +31,7 @@ export const ResetPasswordForm: React.FC = () => {
   const onSubmit = useCallback(
     async (data: FormData) => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/reset-password`,
+        `/api/users/reset-password`,
         {
           body: JSON.stringify(data),
           headers: {

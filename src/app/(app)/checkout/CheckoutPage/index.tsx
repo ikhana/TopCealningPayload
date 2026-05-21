@@ -55,7 +55,7 @@ export const CheckoutPage: React.FC = () => {
               }
 
           const paymentReq = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/create-payment-intent`,
+            `/api/create-payment-intent`,
             {
               ...(body
                 ? {
