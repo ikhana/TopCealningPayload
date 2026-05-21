@@ -167,7 +167,7 @@ export const CartProvider = (props: { children: React.ReactNode }) => {
 
       try {
         const syncCartToPayload = async () => {
-          const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`, {
+          const req = await fetch(`/api/users/${user.id}`, {
             // Make sure to include cookies with fetch
             body: JSON.stringify({
               cart: flattenedCart,

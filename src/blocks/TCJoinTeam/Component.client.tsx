@@ -17,6 +17,7 @@
 'use client'
 
 import { TCHeadingStack } from '@/components/ui/TCHeading'
+import { TCButton } from '@/components/ui/TCButton'
 import React, { useRef, useState } from 'react'
 
 type Props = {
