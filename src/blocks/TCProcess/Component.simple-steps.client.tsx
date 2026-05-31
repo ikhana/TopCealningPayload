@@ -129,23 +129,38 @@ export function TCProcessSimpleSteps(_props: Props) {
           </p>
         </motion.div>
 
-        {/* ── Mobile-only stepper nav (compact pills at top) ──── */}
-        <div className="md:hidden flex justify-center gap-3 mb-8">
+        {/* ── Header stepper — circles + labels, always visible (all screens) ────
+            Matches Geraldine's PDF slide 13 visual: active = solid teal w/ white,
+            inactive = soft teal-tinted w/ teal number. Clickable to jump steps. */}
+        <div className="flex items-start justify-center gap-6 sm:gap-10 lg:gap-16 mb-12 lg:mb-16">
           {STEPS.map((step) => {
             const isActive = step.id === activeStep
             return (
               <button
                 key={step.id}
                 onClick={() => setActiveStep(step.id)}
-                className={
-                  'flex items-center gap-2 px-3 py-2 transition-all duration-300 ' +
-                  (isActive
-                    ? 'bg-teal text-white shadow-[0_6px_18px_-6px_rgba(23,176,171,0.5)]'
-                    : 'bg-white text-navy-deep/55 border border-slate-200')
-                }
+                className="group flex flex-col items-center text-center"
               >
-                <span className="font-mono font-black text-[0.85rem]">{step.id}</span>
-                <span className="text-[0.78rem] font-semibold">{step.title}</span>
+                <div
+                  className={
+                    'rounded-full flex items-center justify-center font-mono font-black mb-3 transition-all duration-400 ' +
+                    'w-[60px] h-[60px] sm:w-[68px] sm:h-[68px] lg:w-[80px] lg:h-[80px] ' +
+                    'text-[1.4rem] sm:text-[1.6rem] lg:text-[1.85rem] ' +
+                    (isActive
+                      ? 'bg-teal text-white shadow-[0_10px_28px_-12px_rgba(23,176,171,0.55)] scale-100'
+                      : 'bg-teal/[0.12] text-teal/75 group-hover:bg-teal/[0.18]')
+                  }
+                >
+                  {step.id}
+                </div>
+                <span
+                  className={
+                    'text-[0.85rem] sm:text-[0.92rem] lg:text-[1rem] font-bold transition-colors duration-400 ' +
+                    (isActive ? 'text-teal' : 'text-navy-deep/55 group-hover:text-navy-deep/80')
+                  }
+                >
+                  {step.title}
+                </span>
               </button>
             )
           })}
