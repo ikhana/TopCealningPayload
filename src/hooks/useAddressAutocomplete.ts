@@ -15,7 +15,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Loader } from '@googlemaps/js-api-loader'
+import { setOptions, importLibrary } from '@googlemaps/js-api-loader'
 
 export type ParsedAddress = {
   street: string
@@ -26,18 +26,17 @@ export type ParsedAddress = {
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''
 
-// Single loader instance shared across all callers — Google's loader is
-// idempotent but reusing one keeps the script tag count at one.
-let sharedLoader: Loader | null = null
-function getLoader(): Loader {
-  if (!sharedLoader) {
-    sharedLoader = new Loader({
-      apiKey: API_KEY,
-      version: 'weekly',
-      libraries: ['places'],
-    })
-  }
-  return sharedLoader
+// setOptions must be called exactly once, BEFORE any importLibrary call.
+// Idempotent guard so multiple hook instances don't re-init.
+let initialized = false
+function ensureInitialized(): void {
+  if (initialized) return
+  setOptions({
+    key: API_KEY,
+    v: 'weekly',
+    libraries: ['places'],
+  })
+  initialized = true
 }
 
 // Broward County rough bounding box (SW corner → NE corner).
@@ -97,12 +96,13 @@ export function useAddressAutocomplete(
     let listener: google.maps.MapsEventListener | null = null
     let cancelled = false
 
-    getLoader()
-      .importLibrary('places')
+    ensureInitialized()
+
+    importLibrary('places')
       .then((places) => {
         if (cancelled || !inputEl) return
 
-        autocomplete = new places.Autocomplete(inputEl, {
+        autocomplete = new (places as google.maps.PlacesLibrary).Autocomplete(inputEl, {
           componentRestrictions: { country: 'us' },
           fields: ['address_components', 'formatted_address'],
           types: ['address'],

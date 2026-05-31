@@ -8026,6 +8026,7 @@ export interface Header {
   socialLinks?: {
     facebook?: string | null;
     instagram?: string | null;
+    tiktok?: string | null;
     twitter?: string | null;
     pinterest?: string | null;
   };
@@ -8242,6 +8243,7 @@ export interface HeaderSelect<T extends boolean = true> {
     | {
         facebook?: T;
         instagram?: T;
+        tiktok?: T;
         twitter?: T;
         pinterest?: T;
       };
