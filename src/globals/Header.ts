@@ -67,6 +67,11 @@ export const Header: GlobalConfig = {
           label: 'Instagram URL',
         },
         {
+          name: 'tiktok',
+          type: 'text',
+          label: 'TikTok URL',
+        },
+        {
           name: 'twitter',
           type: 'text',
           label: 'Twitter/X URL',

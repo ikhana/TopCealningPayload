@@ -108,6 +108,7 @@ export function HeaderClient({ header }: Props) {
         socialLinks={{
           facebook:  socials.facebook  || undefined,
           instagram: socials.instagram || undefined,
+          tiktok:    socials.tiktok    || undefined,
           twitter:   socials.twitter   || undefined,
         }}
       />
