@@ -5,30 +5,23 @@ import React from 'react'
 import { Home, PackageOpen, Bed, Sparkles, Building2, Wrench, Package } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import type { ServiceCategory } from '@/types/booking'
-import { calculateEstimatedTime } from '@/utilities/booking-helpers'
 
+// All services share the same 3-hour minimum per Geraldine's PDF slide 16.
+// (Was per-service before: 3h/4h/5h/6h variants.) Booking-summary still
+// computes a longer estimate when square footage warrants it on Step 3+.
 const SERVICES = [
-  { id: 'residential' as ServiceCategory, label: 'Residential Cleaning', icon: Home, recommended: '3h' },
-  { id: 'movein-out' as ServiceCategory, label: 'Move In / Out', icon: PackageOpen, recommended: '4h' },
-  { id: 'airbnb' as ServiceCategory, label: 'AirBnB Special', icon: Bed, recommended: '3h' },
-  { id: 'custom' as ServiceCategory, label: 'Custom Cleaning', icon: Sparkles, recommended: '3h' },
-  { id: 'commercial' as ServiceCategory, label: 'Commercial Office', icon: Building2, recommended: '4h' },
-  { id: 'renovation' as ServiceCategory, label: 'Post Renovation', icon: Wrench, recommended: '5h' },
-  { id: 'hoarding' as ServiceCategory, label: 'Hoarding Cleanup', icon: Package, recommended: '6h' },
+  { id: 'residential' as ServiceCategory, label: 'Residential Cleaning', icon: Home },
+  { id: 'movein-out' as ServiceCategory, label: 'Move In / Out', icon: PackageOpen },
+  { id: 'airbnb' as ServiceCategory, label: 'AirBnB Special', icon: Bed },
+  { id: 'custom' as ServiceCategory, label: 'Custom Cleaning', icon: Sparkles },
+  { id: 'commercial' as ServiceCategory, label: 'Commercial Office', icon: Building2 },
+  { id: 'renovation' as ServiceCategory, label: 'Post Renovation', icon: Wrench },
+  { id: 'hoarding' as ServiceCategory, label: 'Hoarding Cleanup', icon: Package },
 ]
 
 export function Step02Service() {
   const { bookingData, updateServiceType } = useBooking()
-  const { serviceType, property } = bookingData
-
-  const getEstimatedTime = (svc: (typeof SERVICES)[0]) => {
-    if (property.squareFootage > 0) {
-      const calc = calculateEstimatedTime(property.squareFootage, [])
-      const min = parseInt(svc.recommended.replace('h', ''))
-      return `${Math.max(calc, min)}h`
-    }
-    return svc.recommended
-  }
+  const { serviceType } = bookingData
 
   return (
     <div>
@@ -78,7 +71,7 @@ export function Step02Service() {
                   {svc.label}
                 </div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', opacity: 0.65 }}>
-                  Recommended: {getEstimatedTime(svc)}
+                  Recommended minimum: 3 hours
                 </div>
               </div>
               {isSelected && (
