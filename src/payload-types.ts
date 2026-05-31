@@ -4691,7 +4691,7 @@ export interface TCWhyTopBlock {
  */
 export interface TCProcessBlock {
   /**
-   * Monolith: 3 large hover-expand cards with photos (rich, current default). Simple Steps: compact numbered stepper matching the old-site / PDF slide 13 design.
+   * Monolith: 3 large hover-expand cards with photo backgrounds (rich). Simple Steps: 2-column layout — clickable step cards on the left, active step image on the right, auto-rotates (matches the old-site design).
    */
   variant: 'monolith' | 'simple-steps';
   id?: string | null;
