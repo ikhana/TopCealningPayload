@@ -2,9 +2,8 @@
 'use client'
 
 import React from 'react'
-import { User, Mail, Phone, Info, MapPin, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { User, Mail, Phone, Info } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
-import { isBrowardZip } from '@/lib/booking/broward-zips'
 
 const COUNTRY_CODES = [
   { value: 'US', label: 'US +1' },
@@ -138,101 +137,6 @@ export function Step01Customer() {
         </div>
 
       </div>
-
-      {/* ── Service area gate (Geraldine's PDF slide 15) ───────────────
-          Broward County only. The wizard step-validation refuses to
-          advance unless this zip is in BROWARD_ZIPS. */}
-      {(() => {
-        const zip = (customer.serviceAreaZip ?? '').trim()
-        const digits = zip.replace(/\D/g, '').slice(0, 5)
-        const fullyTyped = digits.length === 5
-        const valid = fullyTyped && isBrowardZip(digits)
-        const invalid = fullyTyped && !valid
-
-        return (
-          <div style={{
-            marginTop: '40px',
-            paddingTop: '32px',
-            borderTop: '1px solid rgba(13,27,46,0.08)',
-          }}>
-            <h3 style={{
-              fontSize: '1.1rem',
-              fontWeight: 800,
-              color: 'var(--color-navy-deep)',
-              marginBottom: '6px',
-              letterSpacing: '-0.5px',
-            }}>
-              Where Will The Service Be Taking Place?
-            </h3>
-            <p style={{
-              fontSize: '0.85rem',
-              color: 'rgba(74,90,106,0.75)',
-              marginBottom: '18px',
-              lineHeight: 1.5,
-            }}>
-              We currently serve <strong>Broward County, Florida</strong> only.
-            </p>
-
-            <div style={{ maxWidth: '320px' }}>
-              <label style={labelStyle}>
-                Enter Zip Code For Pricing <span style={{ color: 'var(--color-teal)' }}>*</span>
-              </label>
-              <div style={{ position: 'relative' }}>
-                <MapPin size={15} style={{
-                  position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
-                  color: 'rgba(74,90,106,0.5)', pointerEvents: 'none',
-                }} />
-                <input
-                  type="text"
-                  name="serviceAreaZip"
-                  inputMode="numeric"
-                  maxLength={5}
-                  value={digits}
-                  onChange={(e) => updateCustomerInfo({ serviceAreaZip: e.target.value.replace(/\D/g, '').slice(0, 5) })}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                  placeholder="e.g. 33305"
-                  style={{
-                    ...inputStyle,
-                    borderColor: invalid
-                      ? '#fca5a5'
-                      : valid
-                        ? 'var(--color-teal)'
-                        : 'rgba(13,27,46,0.1)',
-                  }}
-                  required
-                />
-                {valid && (
-                  <CheckCircle2
-                    size={16}
-                    style={{
-                      position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
-                      color: 'var(--color-teal)', pointerEvents: 'none',
-                    }}
-                  />
-                )}
-              </div>
-
-              {invalid && (
-                <p style={{
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                  marginTop: '8px', fontSize: '0.78rem', color: '#dc2626', fontWeight: 600,
-                }}>
-                  <AlertCircle size={13} /> We don&apos;t service this area yet.
-                </p>
-              )}
-              {!fullyTyped && (
-                <p style={{
-                  display: 'flex', alignItems: 'center', gap: '5px',
-                  marginTop: '6px', fontSize: '0.75rem', color: 'rgba(74,90,106,0.7)',
-                }}>
-                  <Info size={12} /> 5-digit Broward County zip required to continue.
-                </p>
-              )}
-            </div>
-          </div>
-        )
-      })()}
     </div>
   )
 }

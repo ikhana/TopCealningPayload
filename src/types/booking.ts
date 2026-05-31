@@ -32,10 +32,6 @@ export interface CustomerInfo {
   email: string
   phone: string
   countryCode: string
-  // Service-area zip — gated against BROWARD_ZIPS in step 1.
-  // The customer's actual service address (Step 8) may use a different
-  // zip in edge cases, but typically matches this.
-  serviceAreaZip: string
 }
 
 export interface AddressInfo {

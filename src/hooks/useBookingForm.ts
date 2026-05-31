@@ -20,7 +20,6 @@ const initialBookingData: BookingFormData = {
     email: '',
     phone: '',
     countryCode: 'US',
-    serviceAreaZip: '',
   },
   property: {
     squareFootage: 0,
@@ -35,7 +34,9 @@ const initialBookingData: BookingFormData = {
   address: {
     street: '',
     city: '',
-    state: '',
+    // Always Florida — service area gated to Broward County in Step 1.
+    // State field removed from Step 8 UI; set here so submit-flow validation passes.
+    state: 'FL',
     zipCode: '',
   },
   serviceDate: '',

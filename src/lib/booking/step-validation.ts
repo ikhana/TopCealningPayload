@@ -35,12 +35,6 @@ export function validateStep(
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) {
         return { valid: false, missingField: 'a valid Email' }
       }
-      // Service-area gate (Geraldine's PDF slide 15) — Broward only
-      const zip = (customer.serviceAreaZip ?? '').trim()
-      if (!zip) return { valid: false, missingField: 'Service Area Zip Code' }
-      if (!isBrowardZip(zip)) {
-        return { valid: false, missingField: 'a Broward County zip code (we don\'t service this area yet)' }
-      }
       return ok
     }
     case 2: {
@@ -81,6 +75,10 @@ export function validateStep(
       if (!address.city?.trim()) return { valid: false, missingField: 'City' }
       if (!address.state?.trim()) return { valid: false, missingField: 'State' }
       if (!address.zipCode?.trim()) return { valid: false, missingField: 'ZIP Code' }
+      // Service-area gate — Broward County only (Geraldine's PDF slide 15)
+      if (!isBrowardZip(address.zipCode)) {
+        return { valid: false, missingField: 'a Broward County zip code (we don\'t service this area yet)' }
+      }
       return ok
     }
     case 9: {
