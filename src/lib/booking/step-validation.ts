@@ -7,6 +7,7 @@
 // whether or not Step 9 (Payment) is filtered out by the feature flag.
 
 import type { BookingFormData } from '@/types/booking'
+import { isBrowardZip } from './broward-zips'
 
 export interface StepValidationResult {
   valid: boolean
@@ -33,6 +34,12 @@ export function validateStep(
       // Light email format check — bad email is the #1 cause of unreachable leads
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) {
         return { valid: false, missingField: 'a valid Email' }
+      }
+      // Service-area gate (Geraldine's PDF slide 15) — Broward only
+      const zip = (customer.serviceAreaZip ?? '').trim()
+      if (!zip) return { valid: false, missingField: 'Service Area Zip Code' }
+      if (!isBrowardZip(zip)) {
+        return { valid: false, missingField: 'a Broward County zip code (we don\'t service this area yet)' }
       }
       return ok
     }

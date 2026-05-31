@@ -20,6 +20,7 @@ const initialBookingData: BookingFormData = {
     email: '',
     phone: '',
     countryCode: 'US',
+    serviceAreaZip: '',
   },
   property: {
     squareFootage: 0,
