@@ -11,13 +11,14 @@ import styles from './TCButton.module.css'
  * Button style variants:
  *
  * primary  → Tectonic Shift — teal solid, angled clip-path, obsidian fill + coral shadow on hover
+ * light    → Inverse Primary — white solid + teal text, for use ON solid teal cards/sections
  * ghost    → Refractive     — navy outline on light bgs, teal fill slides in + offset shadow
  * dark     → Dark Neon      — for dark/obsidian sections, teal inset flood-fill on hover
  * filter   → Depth Diffusion — utility tag, subtle tint, letter-spacing expands on hover
  * submit   → Hydraulic Press — split white-text + teal-icon panel, presses down on hover
  * inline   → Surface Tension — text + morphing circle arrow, for learn-more / inline CTAs
  */
-export type TCButtonVariant = 'primary' | 'ghost' | 'dark' | 'filter' | 'submit' | 'inline'
+export type TCButtonVariant = 'primary' | 'light' | 'ghost' | 'dark' | 'filter' | 'submit' | 'inline'
 
 export type TCButtonSize = 'sm' | 'md' | 'lg'
 
@@ -190,6 +191,44 @@ export const TCButton: React.FC<TCButtonProps> = ({
     }
     const content = (
       <span className={styles.primaryContent}>
+        {children}
+        <ArrowRight className={styles.primaryArrow} />
+      </span>
+    )
+    if (href) {
+      return (
+        <Link href={href} className={cls} style={innerStyle} onClick={onClick as any}>
+          {content}
+        </Link>
+      )
+    }
+    return (
+      <button type={type} className={cls} style={innerStyle} onClick={onClick as any} disabled={disabled}>
+        {content}
+      </button>
+    )
+  }
+
+  // ── Light: Inverse Primary (white on teal/dark surfaces) ──────
+  // Reuses the `primary` CSS module class for the clip-path + hover
+  // animation; overrides bg + text colour via inline styles.
+  if (variant === 'light') {
+    const sz = PRIMARY_SIZE[size]
+    const cls = cn(
+      styles.primary,
+      'inline-flex items-center font-mono font-black uppercase',
+      className,
+    )
+    const innerStyle: React.CSSProperties = {
+      padding: sz.padding,
+      fontSize: sz.fontSize,
+      letterSpacing: sz.letterSpacing,
+      textDecoration: 'none',
+      background: '#ffffff',
+      color: '#17b0ab',
+    }
+    const content = (
+      <span className={styles.primaryContent} style={{ color: '#17b0ab' }}>
         {children}
         <ArrowRight className={styles.primaryArrow} />
       </span>

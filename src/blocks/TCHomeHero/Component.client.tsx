@@ -27,7 +27,9 @@ const HERO_CARDS = [
     id: 'residential',
     eyebrow: 'Residential',
     heading: 'Residential homes, done properly.',
-    cta: { label: 'BOOK IN 60 SECONDS', href: '/booking', variant: 'primary' as const },
+    // Card bg is solid teal — use `light` (white bg + teal text) so the
+    // button visually separates from the card.
+    cta: { label: 'BOOK IN 60 SECONDS', href: '/booking', variant: 'light' as const },
     badge: { save: 'Save', pct: '15%', sub: 'First Book' },
   },
   {
@@ -173,9 +175,9 @@ export function TCHomeHeroClient(_props: Props) {
             }}
           >
             {HERO_CARDS.map((card) => {
-              // Old design's two-card pattern: primary = solid teal w/ white text,
-              // other = white w/ dark navy text.
-              const isPrimary = card.cta.variant === 'primary'
+              // Old design's two-card pattern: teal-solid card uses the `light`
+              // (white) button; white card uses the `dark` (teal-outline) button.
+              const isTealCard = card.cta.variant === 'light'
               return (
                 <div
                   key={card.id}
@@ -184,12 +186,12 @@ export function TCHomeHeroClient(_props: Props) {
                     'p-8 lg:p-14',
                     'transition-all duration-500',
                     'hover:-translate-y-2',
-                    isPrimary
+                    isTealCard
                       ? 'bg-teal border border-teal/30'
                       : 'bg-white border border-slate-200',
                   )}
                   style={{
-                    boxShadow: isPrimary
+                    boxShadow: isTealCard
                       ? '0 18px 40px -14px rgba(23,176,171,0.45)'
                       : '0 14px 36px -16px rgba(13,27,46,0.18)',
                   }}
@@ -214,7 +216,7 @@ export function TCHomeHeroClient(_props: Props) {
                   <h3
                     className={cn(
                       'text-[1.3rem] lg:text-[1.7rem] font-extrabold tracking-[-1px] mb-5 lg:mb-8 leading-tight',
-                      isPrimary ? 'text-white' : 'text-navy-deep',
+                      isTealCard ? 'text-white' : 'text-navy-deep',
                     )}
                   >
                     {card.heading}
