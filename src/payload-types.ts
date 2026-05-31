@@ -4690,6 +4690,10 @@ export interface TCWhyTopBlock {
  * via the `definition` "TCProcessBlock".
  */
 export interface TCProcessBlock {
+  /**
+   * Monolith: 3 large hover-expand cards with photos (rich, current default). Simple Steps: compact numbered stepper matching the old-site / PDF slide 13 design.
+   */
+  variant: 'monolith' | 'simple-steps';
   id?: string | null;
   blockName?: string | null;
   blockType: 'tcProcess';
@@ -7209,6 +7213,7 @@ export interface TCWhyTopBlockSelect<T extends boolean = true> {
  * via the `definition` "TCProcessBlock_select".
  */
 export interface TCProcessBlockSelect<T extends boolean = true> {
+  variant?: T;
   id?: T;
   blockName?: T;
 }
