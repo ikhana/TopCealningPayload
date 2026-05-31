@@ -1,15 +1,19 @@
 // src/blocks/TCProcess/Component.simple-steps.client.tsx
-// "Our Process Is Simple" — Simple Steps variant.
-// Compact numbered stepper matching Geraldine's PDF slide 13:
-//   3 numbered circles in a row, small labels below.
+// "Our Process Is Simple" — Split Layout variant.
 //
-// Lighter, less visual weight than the Monolith variant. Suited for pages
-// where the process is one of several elements and shouldn't dominate.
+// Mirrors the old TopCleaning site's process design:
+//   • Left column: 3 step cards stacked vertically (clickable, with details)
+//   • Right column: active step's image, swaps with fade transition
+//   • Auto-advance every 8 seconds when in view
+//   • Click any step card to switch instantly
+//
+// Light palette throughout — no dark backgrounds (Geraldine's direction).
 
 'use client'
 
-import React, { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import React, { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useInView } from 'framer-motion'
+import { Calendar, Sparkles, Home, CheckCircle2 } from 'lucide-react'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 
 type Props = {
@@ -19,23 +23,90 @@ type Props = {
 }
 
 const STEPS = [
-  { num: 1, title: 'Book Online' },
-  { num: 2, title: 'We Clean' },
-  { num: 3, title: 'You Relax' },
+  {
+    id: 1,
+    icon: Calendar,
+    title: 'Book Online',
+    description: 'Easy online booking — pick a time, tell us what you need, and you’re set.',
+    details: [
+      'Choose your preferred date and time',
+      'Specify your cleaning needs',
+      'Get an instant price quote',
+      'Secure online payment',
+    ],
+    image: '/images/process/booking.jpg',
+  },
+  {
+    id: 2,
+    icon: Sparkles,
+    title: 'We Clean',
+    description: 'Trained professionals arrive on schedule and clean every corner.',
+    details: [
+      'Background-checked, insured professionals',
+      'Eco-friendly products on every visit',
+      'Attention to every detail',
+      'Quality check before we leave',
+    ],
+    image: '/images/process/cleaning.jpg',
+  },
+  {
+    id: 3,
+    icon: Home,
+    title: 'You Relax',
+    description: 'Sit back and enjoy your clean, fresh space.',
+    details: [
+      'Enjoy your spotless environment',
+      '100% satisfaction guaranteed',
+      'Book recurring service if you love it',
+      'Leave us your feedback',
+    ],
+    image: '/images/process/relax.jpg',
+  },
 ]
+
+const AUTO_ADVANCE_MS = 8000
 
 export function TCProcessSimpleSteps(_props: Props) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const [activeStep, setActiveStep] = useState(1)
+
+  // Auto-rotate when section is in view
+  useEffect(() => {
+    if (!isInView) return
+    const timer = setInterval(() => {
+      setActiveStep((n) => (n % STEPS.length) + 1)
+    }, AUTO_ADVANCE_MS)
+    return () => clearInterval(timer)
+  }, [isInView])
+
+  const active = STEPS.find((s) => s.id === activeStep) ?? STEPS[0]
 
   return (
     <section
       ref={ref}
-      className="relative bg-[#eef2f1] px-[5%] py-[80px] lg:py-[110px]"
+      className="relative bg-[#eef2f1] px-[5%] py-[80px] lg:py-[110px] overflow-hidden"
     >
-      <div className="max-w-[1100px] mx-auto">
+      {/* Ghost watermark — matches the Monolith variant for visual continuity */}
+      <div
+        aria-hidden
+        className="absolute right-[-8%] top-1/2 pointer-events-none select-none whitespace-nowrap"
+        style={{
+          transform: 'translateY(-50%) rotate(90deg)',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '15vw',
+          fontWeight: 900,
+          color: 'rgba(23,176,171,0.04)',
+          lineHeight: 1,
+          zIndex: 0,
+        }}
+      >
+        PROCESS
+      </div>
 
-        {/* Heading — same TCHeadingStack as Monolith for visual continuity */}
+      <div className="max-w-[1400px] mx-auto relative z-[1]">
+
+        {/* ── Section heading ──────────────────────────────── */}
         <motion.div
           className="text-center mb-12 lg:mb-16"
           initial={{ opacity: 0, y: 18 }}
@@ -49,53 +120,190 @@ export function TCProcessSimpleSteps(_props: Props) {
               secondaryLine="Is Simple"
               level="h2"
               theme="light"
-              size="md"
+              size="lg"
             />
           </div>
-          <p className="mt-5 text-[1rem] lg:text-[1.05rem] leading-[1.7] text-navy-deep/65 max-w-[560px] mx-auto">
+          <p className="mt-5 text-[1rem] lg:text-[1.05rem] leading-[1.7] text-navy-deep/65 max-w-[600px] mx-auto">
             We&apos;ve streamlined our cleaning process to make it as easy as
             possible for you. Just three simple steps to a spotless space.
           </p>
         </motion.div>
 
-        {/* 3 numbered circles + labels */}
-        <div className="relative flex flex-col md:flex-row items-center justify-between gap-10 md:gap-0">
-
-          {/* Horizontal connector line (desktop only) — sits behind the circles */}
-          <div
-            aria-hidden
-            className="hidden md:block absolute top-[42px] left-[10%] right-[10%] h-[2px]"
-            style={{ background: 'rgba(23,176,171,0.20)' }}
-          />
-
-          {STEPS.map((step, i) => (
-            <motion.div
-              key={step.num}
-              className="relative flex flex-col items-center text-center flex-1 z-[1]"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.45,
-                delay: 0.2 + i * 0.15,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
-              {/* Numbered circle */}
-              <div
-                className="w-[84px] h-[84px] rounded-full flex items-center justify-center font-mono font-black text-[2rem] mb-5 bg-teal text-white shadow-[0_10px_28px_-12px_rgba(23,176,171,0.55)]"
+        {/* ── Mobile-only stepper nav (compact pills at top) ──── */}
+        <div className="md:hidden flex justify-center gap-3 mb-8">
+          {STEPS.map((step) => {
+            const isActive = step.id === activeStep
+            return (
+              <button
+                key={step.id}
+                onClick={() => setActiveStep(step.id)}
+                className={
+                  'flex items-center gap-2 px-3 py-2 transition-all duration-300 ' +
+                  (isActive
+                    ? 'bg-teal text-white shadow-[0_6px_18px_-6px_rgba(23,176,171,0.5)]'
+                    : 'bg-white text-navy-deep/55 border border-slate-200')
+                }
               >
-                {step.num}
-              </div>
+                <span className="font-mono font-black text-[0.85rem]">{step.id}</span>
+                <span className="text-[0.78rem] font-semibold">{step.title}</span>
+              </button>
+            )
+          })}
+        </div>
 
-              {/* Label */}
-              <span className="font-mono text-[0.72rem] font-bold uppercase tracking-[2px] text-teal mb-1">
-                Step {String(step.num).padStart(2, '0')}
-              </span>
-              <h3 className="text-[1.15rem] lg:text-[1.25rem] font-extrabold text-navy-deep tracking-[-0.3px]">
-                {step.title}
-              </h3>
-            </motion.div>
-          ))}
+        {/* ── 2-col grid: steps left, image right ────────────── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
+
+          {/* LEFT — Step cards (stacked) */}
+          <div className="flex flex-col gap-4">
+            {STEPS.map((step, i) => {
+              const isActive = step.id === activeStep
+              const Icon = step.icon
+              return (
+                <motion.button
+                  key={step.id}
+                  onClick={() => setActiveStep(step.id)}
+                  className={
+                    'group relative text-left bg-white border border-slate-200 overflow-hidden ' +
+                    'transition-all duration-400 cursor-pointer ' +
+                    (isActive
+                      ? 'shadow-[0_18px_40px_-22px_rgba(23,176,171,0.45)]'
+                      : 'hover:shadow-[0_12px_28px_-22px_rgba(13,27,46,0.18)]')
+                  }
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.2 + i * 0.12,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                >
+                  {/* Left accent bar — fills with teal when active */}
+                  <div
+                    aria-hidden
+                    className={
+                      'absolute left-0 top-0 bottom-0 w-[3px] transition-all duration-500 ' +
+                      (isActive ? 'bg-teal' : 'bg-slate-200')
+                    }
+                  />
+
+                  <div className="flex items-start gap-5 p-6 lg:p-7">
+                    {/* Icon + number column */}
+                    <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                      <div
+                        className={
+                          'w-12 h-12 flex items-center justify-center transition-colors duration-400 ' +
+                          (isActive
+                            ? 'bg-teal text-white'
+                            : 'bg-teal/[0.08] text-teal')
+                        }
+                      >
+                        <Icon className="w-5 h-5" strokeWidth={2} />
+                      </div>
+                      <span
+                        className={
+                          'font-mono font-black text-[0.85rem] transition-colors duration-400 ' +
+                          (isActive ? 'text-teal' : 'text-navy-deep/30')
+                        }
+                      >
+                        {String(step.id).padStart(2, '0')}
+                      </span>
+                    </div>
+
+                    {/* Text content */}
+                    <div className="flex-1">
+                      <h3 className="text-[1.15rem] lg:text-[1.25rem] font-extrabold text-navy-deep tracking-[-0.3px] mb-1">
+                        {step.title}
+                      </h3>
+                      <p className="text-[0.9rem] leading-[1.6] text-navy-deep/65">
+                        {step.description}
+                      </p>
+
+                      {/* Details — expand when active */}
+                      <AnimatePresence initial={false}>
+                        {isActive && (
+                          <motion.ul
+                            className="mt-4 space-y-2 overflow-hidden"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                          >
+                            {step.details.map((detail, idx) => (
+                              <motion.li
+                                key={detail}
+                                className="flex items-start gap-2 text-[0.85rem] text-navy-deep/75 leading-[1.5]"
+                                initial={{ opacity: 0, x: -8 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: idx * 0.06 }}
+                              >
+                                <CheckCircle2 className="w-4 h-4 text-teal flex-shrink-0 mt-[2px]" />
+                                <span>{detail}</span>
+                              </motion.li>
+                            ))}
+                          </motion.ul>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </motion.button>
+              )
+            })}
+          </div>
+
+          {/* RIGHT — Active step image with overlay */}
+          <motion.div
+            className="relative w-full md:sticky md:top-[120px] bg-white border border-slate-200 overflow-hidden"
+            style={{ aspectRatio: '4 / 5', boxShadow: '0 24px 60px -24px rgba(13,27,46,0.18)' }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active.id}
+                className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.55, ease: 'easeInOut' }}
+              >
+                <img
+                  src={active.image}
+                  alt={active.title}
+                  className="w-full h-full object-cover"
+                />
+
+                {/* Bottom gradient overlay for legibility */}
+                <div
+                  className="absolute inset-x-0 bottom-0 h-[55%] pointer-events-none"
+                  style={{
+                    background:
+                      'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 75%, rgba(255,255,255,1) 100%)',
+                  }}
+                />
+
+                {/* Info bar at bottom */}
+                <div className="absolute inset-x-0 bottom-0 p-6 lg:p-8">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-teal text-white flex items-center justify-center font-mono font-black text-[1rem]">
+                      {active.id}
+                    </div>
+                    <span className="font-mono text-teal text-[0.7rem] font-bold uppercase tracking-[2px]">
+                      Step {String(active.id).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <h3 className="text-[1.4rem] lg:text-[1.6rem] font-extrabold text-navy-deep tracking-[-0.5px] mb-1">
+                    {active.title}
+                  </h3>
+                  <p className="text-[0.9rem] text-navy-deep/70 leading-[1.5] max-w-[420px]">
+                    {active.description}
+                  </p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+
         </div>
 
       </div>

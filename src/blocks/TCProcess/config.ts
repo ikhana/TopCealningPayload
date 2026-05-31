@@ -13,7 +13,7 @@ export const TCProcess: Block = {
       required: true,
       admin: {
         description:
-          'Monolith: 3 large hover-expand cards with photos (rich, current default). Simple Steps: compact numbered stepper matching the old-site / PDF slide 13 design.',
+          'Monolith: 3 large hover-expand cards with photo backgrounds (rich). Simple Steps: 2-column layout — clickable step cards on the left, active step image on the right, auto-rotates (matches the old-site design).',
       },
       options: [
         {
@@ -21,7 +21,7 @@ export const TCProcess: Block = {
           value: 'monolith',
         },
         {
-          label: 'Simple Steps — Compact numbered stepper',
+          label: 'Simple Steps — Step list left, image right (auto-rotates)',
           value: 'simple-steps',
         },
       ],
