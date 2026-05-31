@@ -129,25 +129,35 @@ export function TCProcessSimpleSteps(_props: Props) {
           </p>
         </motion.div>
 
-        {/* ── Header stepper — circles + labels, always visible (all screens) ────
-            Matches Geraldine's PDF slide 13 visual: active = solid teal w/ white,
-            inactive = soft teal-tinted w/ teal number. Clickable to jump steps. */}
-        <div className="flex items-start justify-center gap-6 sm:gap-10 lg:gap-16 mb-12 lg:mb-16">
+        {/* ── Header stepper — circles connected by a line, normalized sizes ──── */}
+        <div className="relative flex items-start justify-center gap-14 sm:gap-20 lg:gap-28 mb-12 lg:mb-16">
+          {/* Horizontal connector line — sits behind the circles at their vertical center */}
+          <div
+            aria-hidden
+            className="hidden sm:block absolute h-[2px]"
+            style={{
+              top: '34px',
+              left: '16%',
+              right: '16%',
+              background: 'rgba(23,176,171,0.22)',
+            }}
+          />
+
           {STEPS.map((step) => {
             const isActive = step.id === activeStep
             return (
               <button
                 key={step.id}
                 onClick={() => setActiveStep(step.id)}
-                className="group flex flex-col items-center text-center"
+                className="group relative z-[1] flex flex-col items-center text-center"
               >
                 <div
                   className={
                     'rounded-full flex items-center justify-center font-mono font-black mb-3 transition-all duration-400 ' +
-                    'w-[60px] h-[60px] sm:w-[68px] sm:h-[68px] lg:w-[80px] lg:h-[80px] ' +
-                    'text-[1.4rem] sm:text-[1.6rem] lg:text-[1.85rem] ' +
+                    'w-[64px] h-[64px] sm:w-[68px] sm:h-[68px] lg:w-[72px] lg:h-[72px] ' +
+                    'text-[1.4rem] sm:text-[1.55rem] lg:text-[1.7rem] ' +
                     (isActive
-                      ? 'bg-teal text-white shadow-[0_10px_28px_-12px_rgba(23,176,171,0.55)] scale-100'
+                      ? 'bg-teal text-white shadow-[0_10px_28px_-12px_rgba(23,176,171,0.55)]'
                       : 'bg-teal/[0.12] text-teal/75 group-hover:bg-teal/[0.18]')
                   }
                 >
