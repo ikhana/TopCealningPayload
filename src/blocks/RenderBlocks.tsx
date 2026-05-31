@@ -49,6 +49,7 @@ import { ScheduleCallCTABlock } from './ScheduleCallCTA';
 import { TCHomeHeroBlock } from './TCHomeHero';
 import { TCAboutSectionBlock } from './TCAboutSection';
 import { TCServiceCommitmentBlock } from './TCServiceCommitment';
+import { TCBenefitsBlock } from './TCBenefits';
 import { TCServicesSectionBlock } from './TCServicesSection';
 import { TCWhyTopSectionBlock } from './TCWhyTop';
 import { TCProcessBlock } from './TCProcess'
@@ -113,6 +114,7 @@ scheduleCallCTA: ScheduleCallCTABlock,
 tcHomeHero: TCHomeHeroBlock,
 tcAboutSection: TCAboutSectionBlock,
 tcServiceCommitment: TCServiceCommitmentBlock,
+tcBenefits: TCBenefitsBlock,
 tcServicesSection: TCServicesSectionBlock,
 tcWhyTop: TCWhyTopSectionBlock,
 tcProcess: TCProcessBlock,

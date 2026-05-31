@@ -62,6 +62,7 @@ import { ScheduleCallCTA } from '@/blocks/ScheduleCallCTA/config'
 import { TCHomeHero } from '@/blocks/TCHomeHero/config'
 import { TCAboutSection } from '@/blocks/TCAboutSection/config'
 import { TCServiceCommitment } from '@/blocks/TCServiceCommitment/config'
+import { TCBenefits } from '@/blocks/TCBenefits/config'
 import { TCServicesSection } from '@/blocks/TCServicesSection/config'
 import { TCWhyTopSection } from '@/blocks/TCWhyTop/config'
 import { TCProcess } from '@/blocks/TCProcess/config'
@@ -214,6 +215,7 @@ export const Pages: CollectionConfig = {
                  TCHomeHero,
                  TCAboutSection,
                  TCServiceCommitment,
+                 TCBenefits,
                  TCServicesSection,
                  TCWhyTopSection,
                  TCProcess,
