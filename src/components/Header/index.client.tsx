@@ -121,7 +121,9 @@ export function HeaderClient({ header }: Props) {
           'w-full h-[56px] md:h-[76px] backdrop-blur-md',
           isDark
             ? 'bg-[#0d1b2e]/[0.90] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-b border-white/[0.08]'
-            : 'bg-white/[0.95] shadow-[0_2px_12px_rgba(13,27,46,0.08)] border-b border-slate-200/60',
+            // Subtle teal-tinted top → clean white at bottom. Old design's
+            // soft teal feel, but professional rather than heavy.
+            : 'bg-gradient-to-b from-[#d6efed] via-[#eaf7f6] to-white shadow-[0_2px_12px_rgba(13,27,46,0.08)] border-b border-slate-200/60',
         )}
       >
         <div className="flex items-center justify-between h-full px-[5%]">
@@ -183,7 +185,7 @@ export function HeaderClient({ header }: Props) {
                       aria-expanded={megaOpen}
                       className={cn(
                         'flex items-center gap-[5px] h-full px-[1.4rem]',
-                        'font-mono text-[0.8rem] font-semibold uppercase tracking-[0.5px]',
+                        'font-mono text-[0.88rem] font-semibold uppercase tracking-[0.5px]',
                         navLinkClass,
                         'transition-colors duration-200',
                         'bg-transparent border-none cursor-pointer',
@@ -218,7 +220,7 @@ export function HeaderClient({ header }: Props) {
                       link={item.link}
                       className={cn(
                         'flex items-center h-full px-[1.4rem]',
-                        'font-mono text-[0.8rem] font-semibold uppercase tracking-[0.5px]',
+                        'font-mono text-[0.88rem] font-semibold uppercase tracking-[0.5px]',
                         navLinkClass,
                         'transition-colors duration-200 no-underline',
                       )}
