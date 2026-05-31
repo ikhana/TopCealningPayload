@@ -31,7 +31,9 @@ export function HeaderClient({ header }: Props) {
   const menu     = header.navItems || []
   const pathname = usePathname()
 
-  const isDark = true // always dark for now
+  // Light header per Geraldine's corrections PDF (slide 2 + 6 + 7):
+  // "stick to light colors, no dark colors." Was hardcoded dark before.
+  const isDark = false
 
   const [megaOpen,    setMegaOpen]    = useState(false)
   const [mobileOpen,  setMobileOpen]  = useState(false)
@@ -116,8 +118,10 @@ export function HeaderClient({ header }: Props) {
       {/* ── Main Header ──────────────────────────────────────*/}
       <header
         className={cn(
-          'w-full',
-          'h-[56px] md:h-[76px] bg-[#0d1b2e]/[0.90] backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-b border-white/[0.08]',
+          'w-full h-[56px] md:h-[76px] backdrop-blur-md',
+          isDark
+            ? 'bg-[#0d1b2e]/[0.90] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-b border-white/[0.08]'
+            : 'bg-white/[0.95] shadow-[0_2px_12px_rgba(13,27,46,0.08)] border-b border-slate-200/60',
         )}
       >
         <div className="flex items-center justify-between h-full px-[5%]">
@@ -301,7 +305,12 @@ export function HeaderClient({ header }: Props) {
             )}
           >
             <div
-              className="bg-[#0d1b2e]/[0.97] backdrop-blur-md border border-teal/20 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]"
+              className={cn(
+                'backdrop-blur-md',
+                isDark
+                  ? 'bg-[#0d1b2e]/[0.97] border border-teal/20 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]'
+                  : 'bg-white border border-slate-200 shadow-[0_25px_50px_-12px_rgba(13,27,46,0.18)]',
+              )}
               style={{ borderTop: '3px solid var(--color-teal)' }}
             >
               <div className="grid grid-cols-2 p-6 gap-1">
@@ -313,9 +322,10 @@ export function HeaderClient({ header }: Props) {
                       link={item.link}
                       className={cn(
                         'flex items-center px-4 py-[0.65rem] no-underline',
-                        'text-[0.85rem] font-medium text-white/80',
+                        'text-[0.85rem] font-medium',
+                        isDark ? 'text-white/80 hover:text-white' : 'text-navy-deep/85 hover:text-navy-deep',
                         'border-l-[3px] border-l-transparent',
-                        'hover:bg-teal/[0.12] hover:text-white hover:border-l-teal hover:pl-[1.3rem]',
+                        'hover:bg-teal/[0.12] hover:border-l-teal hover:pl-[1.3rem]',
                         'transition-all duration-200',
                       )}
                     >
@@ -333,7 +343,10 @@ export function HeaderClient({ header }: Props) {
           id="mobile-menu"
           className={cn(
             'md:hidden absolute inset-x-0 top-full z-[1001]',
-            'bg-[#0d1b2e]/[0.97] backdrop-blur-md border-b border-teal/20',
+            'backdrop-blur-md',
+            isDark
+              ? 'bg-[#0d1b2e]/[0.97] border-b border-teal/20'
+              : 'bg-white border-b border-slate-200 shadow-[0_10px_24px_-12px_rgba(13,27,46,0.15)]',
             'transition-all duration-300 overflow-hidden',
             mobileOpen
               ? 'opacity-100 pointer-events-auto max-h-[600px]'
@@ -353,8 +366,11 @@ export function HeaderClient({ header }: Props) {
                     className={cn(
                       'px-4 py-3 no-underline',
                       'font-mono text-[0.8rem] font-semibold uppercase',
-                      'text-white/80 border-l-[3px] border-l-transparent',
-                      'hover:text-white hover:border-l-teal hover:bg-teal/[0.12] hover:pl-5',
+                      isDark
+                        ? 'text-white/80 hover:text-white'
+                        : 'text-navy-deep/85 hover:text-navy-deep',
+                      'border-l-[3px] border-l-transparent',
+                      'hover:border-l-teal hover:bg-teal/[0.12] hover:pl-5',
                       'transition-all duration-200',
                     )}
                   >
@@ -367,7 +383,10 @@ export function HeaderClient({ header }: Props) {
               if (item.type === 'dropdown' && item.dropdown) {
                 return (
                   <div key={index}>
-                    <div className="px-4 py-2 font-mono text-[0.8rem] font-semibold uppercase text-white/40">
+                    <div className={cn(
+                      'px-4 py-2 font-mono text-[0.8rem] font-semibold uppercase',
+                      isDark ? 'text-white/40' : 'text-navy-deep/45',
+                    )}>
                       {item.dropdown.label}
                     </div>
                     {item.dropdown.items?.map((dropItem: any, idx: number) => {
@@ -378,9 +397,12 @@ export function HeaderClient({ header }: Props) {
                           link={dropItem.link}
                           className={cn(
                             'block pl-8 pr-4 py-2 no-underline',
-                            'text-[0.85rem] font-medium text-white/70',
+                            'text-[0.85rem] font-medium',
+                            isDark
+                              ? 'text-white/70 hover:text-white'
+                              : 'text-navy-deep/75 hover:text-navy-deep',
                             'border-l-[3px] border-l-transparent',
-                            'hover:text-white hover:border-l-teal hover:bg-teal/[0.12]',
+                            'hover:border-l-teal hover:bg-teal/[0.12]',
                             'transition-all duration-200',
                           )}
                         >
