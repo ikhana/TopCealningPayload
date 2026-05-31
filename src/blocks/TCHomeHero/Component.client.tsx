@@ -66,9 +66,9 @@ export function TCHomeHeroClient(_props: Props) {
         }
       `}</style>
 
-      <section data-dark-hero="true" className="relative min-h-screen w-full flex flex-col -mt-20 lg:-mt-24 bg-[#0d1b2e]">
+      <section className="relative min-h-screen w-full flex flex-col -mt-20 lg:-mt-24 bg-gradient-to-b from-[#eaf7f6] via-white to-white">
 
-        {/* ── Background image + dark left-to-right overlay ── */}
+        {/* ── Background image + LIGHT left-to-right overlay (Geraldine: light colors, not dark) ── */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
           <picture className="w-full h-full">
             <source media="(max-width: 768px)" srcSet="/images/backgrounds/herotopmobile.png" />
@@ -77,26 +77,26 @@ export function TCHomeHeroClient(_props: Props) {
               alt="Pristine cleaned interior"
               className="w-full h-full object-cover object-center"
               style={{
-                filter: 'brightness(0.85) contrast(1.1)',
+                filter: 'brightness(1.06) contrast(0.96) saturate(0.95)',
                 transform: 'scale(1.05)',
                 animation: 'tc-hero-zoom 20s infinite alternate linear',
               }}
             />
           </picture>
-          {/* Dark gradient: solid navy-obsidian left → transparent right */}
+          {/* Light gradient: white-frosted left → near-transparent right so text reads clean over the photo */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(90deg, rgba(13,27,46,0.97) 0%, rgba(13,27,46,0.78) 45%, rgba(13,27,46,0.15) 100%)',
+                'linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0.15) 100%)',
             }}
           />
-          {/* Radial teal glow accent — top-right */}
+          {/* Radial teal glow accent — softer on light bg */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                'radial-gradient(circle at 72% 28%, rgba(23,176,171,0.13) 0%, transparent 48%)',
+                'radial-gradient(circle at 72% 28%, rgba(23,176,171,0.12) 0%, transparent 50%)',
             }}
           />
         </div>
@@ -112,41 +112,42 @@ export function TCHomeHeroClient(_props: Props) {
               opacity: 0,
             }}
           >
-            {/* Headline — TCHeadingStack dark theme, teal accent line */}
+            {/* Headline — light theme over light photo */}
             <TCHeadingStack
               mainLine="Cleaning Service"
-              secondaryLine="Now servicing YOUR area!"
+              secondaryLine="Now servicing Broward County!"
               level="h1"
-              theme="dark"
+              theme="light"
               size="lg"
               accentColor="#17b0ab"
               className="mb-5 lg:mb-8"
             />
 
-            {/* Description */}
+            {/* Description (Geraldine's corrections PDF slide 7) */}
             <p
               className="max-w-[520px] text-[1.1rem] leading-[1.7] mb-8 lg:mb-12"
-              style={{ color: 'rgba(245,239,224,0.72)' }}
+              style={{ color: 'rgba(13,27,46,0.78)' }}
             >
-              Top Cleaning is your trusted cleaning service provider. We have a team of experienced
-              and qualified cleaners who are dedicated to providing the best possible service to our
-              customers.
+              At Top Cleaning, we create clean and comfortable spaces so you can focus on what
+              matters most. Our team delivers reliable, detailed, and high-quality cleaning services
+              you can trust.
             </p>
 
-            {/* Review strip — navy-glass with left teal border */}
+            {/* Review strip — white glass with left teal border */}
             <div
-              className="tc-review-strip inline-flex items-center gap-8 font-mono text-[0.75rem] text-white px-10 py-5"
+              className="tc-review-strip inline-flex items-center gap-8 font-mono text-[0.75rem] px-10 py-5"
               style={{
-                background: 'rgba(13,27,46,0.82)',
+                background: 'rgba(255,255,255,0.88)',
                 backdropFilter: 'blur(12px)',
                 borderLeft: '4px solid #17b0ab',
-                boxShadow: '20px 20px 0px rgba(23,176,171,0.2)',
+                boxShadow: '20px 20px 0px rgba(23,176,171,0.18)',
+                color: '#0d1b2e',
               }}
             >
               <div>
                 <span className="text-[1rem]" style={{ color: '#f7b500' }}>★★★★★</span>
               </div>
-              <div className="tc-review-divider border-l border-white/20 pl-8">
+              <div className="tc-review-divider border-l border-navy-deep/15 pl-8">
                 See our 275+ 4.7-Star Reviews on{' '}
                 <span className="text-teal ml-1 inline-flex items-center gap-1">
                   {/* Official Google logo colours — brand requirement */}
@@ -171,43 +172,59 @@ export function TCHomeHeroClient(_props: Props) {
               opacity: 0,
             }}
           >
-            {HERO_CARDS.map((card) => (
-              <div
-                key={card.id}
-                className={cn(
-                  'group relative overflow-hidden backdrop-blur-[20px]',
-                  'bg-teal/[0.08] border border-teal/[0.22]',
-                  'p-8 lg:p-14',
-                  'transition-all duration-500',
-                  'hover:-translate-y-2 hover:bg-white/[0.06]',
-                )}
-                style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
-              >
-{/* Offer badge — coral circle, floating (optional per card) */}
-                {card.badge && (
-                  <div
-                    aria-hidden
-                    className="absolute bottom-[-20px] right-[-20px] w-[120px] h-[120px] bg-coral rounded-full flex flex-col items-center justify-center text-white font-mono font-black leading-none border-2 border-white/35 z-[15]"
-                    style={{
-                      transform: 'rotate(12deg)',
-                      boxShadow: '0 15px 35px rgba(252,129,129,0.45)',
-                      animation: 'tc-badge-float 5s infinite ease-in-out',
-                    }}
-                  >
-                    <small className="text-[0.55rem] uppercase">{card.badge.save}</small>
-                    <span className="text-[1.8rem]">{card.badge.pct}</span>
-                    <small className="text-[0.55rem] uppercase">{card.badge.sub}</small>
-                  </div>
-                )}
+            {HERO_CARDS.map((card) => {
+              // Old design's two-card pattern: primary = solid teal w/ white text,
+              // other = white w/ dark navy text.
+              const isPrimary = card.cta.variant === 'primary'
+              return (
+                <div
+                  key={card.id}
+                  className={cn(
+                    'group relative overflow-hidden',
+                    'p-8 lg:p-14',
+                    'transition-all duration-500',
+                    'hover:-translate-y-2',
+                    isPrimary
+                      ? 'bg-teal border border-teal/30'
+                      : 'bg-white border border-slate-200',
+                  )}
+                  style={{
+                    boxShadow: isPrimary
+                      ? '0 18px 40px -14px rgba(23,176,171,0.45)'
+                      : '0 14px 36px -16px rgba(13,27,46,0.18)',
+                  }}
+                >
+                  {/* Offer badge — coral circle, floating (optional per card) */}
+                  {card.badge && (
+                    <div
+                      aria-hidden
+                      className="absolute bottom-[-20px] right-[-20px] w-[120px] h-[120px] bg-coral rounded-full flex flex-col items-center justify-center text-white font-mono font-black leading-none border-2 border-white/35 z-[15]"
+                      style={{
+                        transform: 'rotate(12deg)',
+                        boxShadow: '0 15px 35px rgba(252,129,129,0.45)',
+                        animation: 'tc-badge-float 5s infinite ease-in-out',
+                      }}
+                    >
+                      <small className="text-[0.55rem] uppercase">{card.badge.save}</small>
+                      <span className="text-[1.8rem]">{card.badge.pct}</span>
+                      <small className="text-[0.55rem] uppercase">{card.badge.sub}</small>
+                    </div>
+                  )}
 
-                <h3 className="text-[1.3rem] lg:text-[1.7rem] font-extrabold tracking-[-1px] text-white mb-5 lg:mb-8 leading-tight">
-                  {card.heading}
-                </h3>
-                <TCButton variant={card.cta.variant} href={card.cta.href}>
-                  {card.cta.label}
-                </TCButton>
-              </div>
-            ))}
+                  <h3
+                    className={cn(
+                      'text-[1.3rem] lg:text-[1.7rem] font-extrabold tracking-[-1px] mb-5 lg:mb-8 leading-tight',
+                      isPrimary ? 'text-white' : 'text-navy-deep',
+                    )}
+                  >
+                    {card.heading}
+                  </h3>
+                  <TCButton variant={card.cta.variant} href={card.cta.href}>
+                    {card.cta.label}
+                  </TCButton>
+                </div>
+              )
+            })}
           </div>
 
         </div>
