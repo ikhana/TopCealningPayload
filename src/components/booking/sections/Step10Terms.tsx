@@ -2,7 +2,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { CheckSquare, Square, ShieldCheck, RefreshCcw, AlertCircle, Sparkles } from 'lucide-react'
+import { CheckSquare, Square, ShieldCheck, RefreshCcw, AlertCircle } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 
 interface Step10TermsProps {
@@ -10,35 +10,27 @@ interface Step10TermsProps {
   isSubmitting?: boolean
 }
 
+// Geraldine's PDF slides 19 + 20 — replaces the old 3-card layout
+// (Cancellation Policy / Re-clean Guarantee / Our Commitment).
 const POLICIES = [
   {
     icon: AlertCircle,
     color: '#fc8181',
-    title: 'Cancellation Policy',
+    title: 'Terms & Conditions',
     points: [
-      'Cancel or reschedule at least 24 hours before your appointment at no charge.',
-      'Cancellations within 24 hours are subject to a 50% service fee.',
-      'Same-day no-shows are charged in full.',
+      'The service will be charged in full if it is not cancelled prior to the completion of the cleaning service.',
+      'Prices are subject to change based on the condition, size, and level of cleanliness of the property.',
+      'Cleaners reserve the right to decline or stop services if the property presents any health, safety, or hazardous risks.',
+      'Top Cleaning is not responsible for any damage to items that are improperly installed, unsecured, or were already damaged prior to the service.',
+      'By booking our services, the client agrees to all terms and conditions listed above.',
     ],
   },
   {
     icon: RefreshCcw,
     color: 'var(--color-teal)',
-    title: 'Re-clean Guarantee',
+    title: 'Satisfaction Guarantee',
     points: [
-      'Not satisfied? Contact us within 24 hours and we will return to fix it — free of charge.',
-      'Applies to the same surfaces cleaned during the original visit.',
-      'Up to one re-clean per booking.',
-    ],
-  },
-  {
-    icon: Sparkles,
-    color: 'var(--color-navy-deep)',
-    title: 'Our Commitment',
-    points: [
-      'Fully insured, background-checked cleaning professionals.',
-      'Eco-friendly, pet- and child-safe products on every visit.',
-      'Pricing is fixed — no hidden charges after booking.',
+      'At Top Cleaning, your satisfaction is our priority. If you are not completely satisfied with your cleaning service due to missed areas, we will gladly return to re-clean them. Please send photos of the missed areas to topcleaningservicefl@gmail.com within 24 hours of your cleaning appointment so we can resolve the issue promptly.',
     ],
   },
 ]
@@ -102,7 +94,7 @@ export function Step10Terms({ onSubmit, isSubmitting = false }: Step10TermsProps
           : <Square size={20} style={{ color: 'rgba(13,27,46,0.25)', flexShrink: 0, marginTop: '1px' }} />
         }
         <p style={{ fontSize: '0.85rem', color: 'rgba(74,90,106,0.8)', margin: 0, lineHeight: 1.6 }}>
-          I have read and agree to the cancellation policy, re-clean guarantee, and service terms outlined above.
+          I have read and agree to the Terms &amp; Conditions and Satisfaction Guarantee outlined above.
           I understand that my booking will be confirmed after payment is processed.
         </p>
       </div>
