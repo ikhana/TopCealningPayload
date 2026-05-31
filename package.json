@@ -19,6 +19,7 @@
     "stripe-webhooks": "stripe listen --forward-to localhost:3000/api/stripe/webhooks"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.2",
     "@payloadcms/admin-bar": "3.39.1",
     "@payloadcms/db-mongodb": "3.39.1",
     "@payloadcms/db-postgres": "3.39.1",

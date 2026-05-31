@@ -1,10 +1,11 @@
 // src/components/booking/sections/Step08Address.tsx
 'use client'
 
-import React from 'react'
+import React, { useRef } from 'react'
 import { MapPin, Home, Building2, Hash, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import { isBrowardZip } from '@/lib/booking/broward-zips'
+import { useAddressAutocomplete } from '@/hooks/useAddressAutocomplete'
 
 // State selector removed — service-location state is always Florida.
 // Service area gate (Broward County) lives on this step now (was Step 1).
@@ -35,6 +36,18 @@ const inputStyle: React.CSSProperties = {
 export function Step08Address() {
   const { bookingData, updateAddress } = useBooking()
   const { address } = bookingData
+
+  // Google Places Autocomplete on the Street input. When the customer picks
+  // a suggestion, Street + City + State + Zip all populate at once.
+  const streetInputRef = useRef<HTMLInputElement>(null)
+  useAddressAutocomplete(streetInputRef, (parsed) => {
+    updateAddress({
+      street: parsed.street || address.street,
+      city: parsed.city || address.city,
+      state: parsed.state || address.state,
+      zipCode: parsed.zipCode || address.zipCode,
+    })
+  })
 
   const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
     e.target.style.borderColor = 'var(--color-teal)'
@@ -80,13 +93,15 @@ export function Step08Address() {
           <div style={{ position: 'relative' }}>
             <MapPin size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
             <input
+              ref={streetInputRef}
               type="text"
               value={address.street}
               onChange={(e) => updateAddress({ street: e.target.value })}
               onFocus={onFocus}
               onBlur={onBlur}
-              placeholder="123 Main Street"
+              placeholder="Start typing your address…"
               style={inputStyle}
+              autoComplete="off"
               required
             />
           </div>
@@ -122,7 +137,7 @@ export function Step08Address() {
               onChange={(e) => updateAddress({ city: e.target.value })}
               onFocus={onFocus}
               onBlur={onBlur}
-              placeholder="e.g. New York"
+              placeholder="e.g. Fort Lauderdale"
               style={inputStyle}
               required
             />
