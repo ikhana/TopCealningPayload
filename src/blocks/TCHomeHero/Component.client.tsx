@@ -73,13 +73,11 @@ export function TCHomeHeroClient(_props: Props) {
         {/* ── Background image + LIGHT left-to-right overlay (Geraldine: light colors, not dark) ── */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
           <picture className="w-full h-full">
-            <source media="(max-width: 768px)" srcSet="/images/backgrounds/herotopmobile.png" />
             <img
-              src="/images/backgrounds/herotop1.png"
-              alt="Pristine cleaned interior"
+              src="/images/hero/herotopcleaning.jpg"
+              alt="Top Cleaning team member ready to clean your home"
               className="w-full h-full object-cover object-center"
               style={{
-                filter: 'brightness(1.06) contrast(0.96) saturate(0.95)',
                 transform: 'scale(1.05)',
                 animation: 'tc-hero-zoom 20s infinite alternate linear',
               }}
