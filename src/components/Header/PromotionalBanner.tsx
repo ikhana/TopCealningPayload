@@ -149,7 +149,7 @@ export function PromotionalBanner({
 
         {/* Centre: pulsing status badge */}
         {showStatus && statusText && (
-          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 px-[10px] py-[4px] font-bold text-[12px] text-white whitespace-nowrap border border-white/40 bg-white/[0.15]">
+          <div className="absolute left-[62%] -translate-x-1/2 flex items-center gap-2 px-[10px] py-[4px] font-bold text-[12px] text-white whitespace-nowrap border border-white/40 bg-white/[0.15]">
             <span
               className="w-[6px] h-[6px] rounded-full flex-shrink-0 animate-pulse bg-white"
               style={{ boxShadow: '0 0 8px rgba(255,255,255,0.6)' }}

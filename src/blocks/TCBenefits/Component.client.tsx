@@ -89,12 +89,12 @@ export function TCBenefitsClient(_props: Props) {
                 {/* Teal top accent — brand line on every card */}
                 <div className="h-[3px] bg-teal" />
 
-                {/* Watermark number — subtle, large, low-opacity teal in top-right */}
+                {/* Watermark number — visible enough to anchor the card, soft enough not to fight the title */}
                 <span
                   className="absolute top-[18px] right-[22px] font-mono font-black leading-none select-none pointer-events-none"
                   style={{
-                    fontSize: '2.4rem',
-                    color: 'rgba(23,176,171,0.12)',
+                    fontSize: '2.6rem',
+                    color: 'rgba(23,176,171,0.32)',
                     letterSpacing: '-2px',
                   }}
                   aria-hidden="true"

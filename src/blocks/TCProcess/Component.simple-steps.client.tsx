@@ -254,7 +254,7 @@ export function TCProcessSimpleSteps(_props: Props) {
           {/* RIGHT — Active step image with overlay */}
           <motion.div
             className="relative w-full md:sticky md:top-[120px] bg-white border border-slate-200 overflow-hidden"
-            style={{ aspectRatio: '4 / 5', boxShadow: '0 24px 60px -24px rgba(13,27,46,0.18)' }}
+            style={{ aspectRatio: '4 / 3', boxShadow: '0 24px 60px -24px rgba(13,27,46,0.18)' }}
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
