@@ -55,7 +55,7 @@ export function Step01Customer() {
   return (
     <div>
       <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '40px' }}>
-        Who are you?
+        Contact Information
       </h2>
 
       {/* 2-col grid */}
