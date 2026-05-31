@@ -192,13 +192,13 @@ export function TCProcessSimpleSteps(_props: Props) {
                     <div className="flex flex-col items-center gap-2 flex-shrink-0">
                       <div
                         className={
-                          'w-12 h-12 flex items-center justify-center transition-colors duration-400 ' +
+                          'w-14 h-14 flex items-center justify-center transition-colors duration-400 ' +
                           (isActive
                             ? 'bg-teal text-white'
                             : 'bg-teal/[0.08] text-teal')
                         }
                       >
-                        <Icon className="w-5 h-5" strokeWidth={2} />
+                        <Icon className="w-7 h-7" strokeWidth={2.5} />
                       </div>
                       <span
                         className={

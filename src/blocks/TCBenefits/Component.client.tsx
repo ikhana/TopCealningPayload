@@ -107,10 +107,10 @@ export function TCBenefitsClient(_props: Props) {
 
                   {/* Icon tile */}
                   <div
-                    className="w-12 h-12 flex items-center justify-center mb-6 flex-shrink-0 transition-colors duration-300 group-hover:bg-teal/15"
+                    className="w-14 h-14 flex items-center justify-center mb-6 flex-shrink-0 transition-colors duration-300 group-hover:bg-teal/15"
                     style={{ background: 'rgba(23,176,171,0.10)' }}
                   >
-                    <Icon className="w-5 h-5 text-teal" strokeWidth={2} />
+                    <Icon className="w-7 h-7 text-teal" strokeWidth={2.5} />
                   </div>
 
                   {/* Mono kicker — matches TCWhyTop / TCAboutSection pattern */}
