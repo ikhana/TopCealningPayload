@@ -1121,6 +1121,8 @@ export interface Page {
     | TCHomeHeroBlock
     | TCAboutSectionBlock
     | TCServiceCommitmentBlock
+    | TCBenefitsBlock
+    | TCCtaBannerBlock
     | TCServicesSectionBlock
     | TCWhyTopBlock
     | TCProcessBlock
@@ -4641,6 +4643,28 @@ export interface TCServiceCommitmentBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCBenefitsBlock".
+ */
+export interface TCBenefitsBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcBenefits';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCCtaBannerBlock".
+ */
+export interface TCCtaBannerBlock {
+  /**
+   * Visual style. Teal Spotlight = solid teal w/ diagonal edges (recommended, light direction). Navy Statement = dark navy banner (matches the original PDF slide 13 design).
+   */
+  variant: 'teal' | 'navy';
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tcCtaBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TCServicesSectionBlock".
  */
 export interface TCServicesSectionBlock {
@@ -5940,6 +5964,8 @@ export interface PagesSelect<T extends boolean = true> {
         tcHomeHero?: T | TCHomeHeroBlockSelect<T>;
         tcAboutSection?: T | TCAboutSectionBlockSelect<T>;
         tcServiceCommitment?: T | TCServiceCommitmentBlockSelect<T>;
+        tcBenefits?: T | TCBenefitsBlockSelect<T>;
+        tcCtaBanner?: T | TCCtaBannerBlockSelect<T>;
         tcServicesSection?: T | TCServicesSectionBlockSelect<T>;
         tcWhyTop?: T | TCWhyTopBlockSelect<T>;
         tcProcess?: T | TCProcessBlockSelect<T>;
@@ -7141,6 +7167,23 @@ export interface TCAboutSectionBlockSelect<T extends boolean = true> {
  * via the `definition` "TCServiceCommitmentBlock_select".
  */
 export interface TCServiceCommitmentBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCBenefitsBlock_select".
+ */
+export interface TCBenefitsBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TCCtaBannerBlock_select".
+ */
+export interface TCCtaBannerBlockSelect<T extends boolean = true> {
+  variant?: T;
   id?: T;
   blockName?: T;
 }
