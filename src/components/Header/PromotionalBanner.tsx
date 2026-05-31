@@ -88,7 +88,7 @@ export function PromotionalBanner({
   )
 
   return (
-    <div className="w-full h-[46px] overflow-hidden font-mono text-[12.5px] tracking-[0.04em] relative bg-teal border-b border-white/[0.15]">
+    <div className="w-full h-[50px] overflow-hidden font-mono text-[14px] tracking-[0.04em] relative bg-teal border-b border-white/[0.15]">
 
       {/* ── MOBILE: infinite horizontal ticker (hidden sm+) ── */}
       <div className="flex sm:hidden items-center h-full w-full overflow-hidden">
@@ -149,7 +149,7 @@ export function PromotionalBanner({
 
         {/* Centre: pulsing status badge */}
         {showStatus && statusText && (
-          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 px-[10px] py-[4px] font-bold text-[11px] text-white whitespace-nowrap border border-white/40 bg-white/[0.15]">
+          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 px-[10px] py-[4px] font-bold text-[12px] text-white whitespace-nowrap border border-white/40 bg-white/[0.15]">
             <span
               className="w-[6px] h-[6px] rounded-full flex-shrink-0 animate-pulse bg-white"
               style={{ boxShadow: '0 0 8px rgba(255,255,255,0.6)' }}

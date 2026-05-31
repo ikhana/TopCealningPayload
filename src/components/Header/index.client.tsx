@@ -185,7 +185,7 @@ export function HeaderClient({ header }: Props) {
                       aria-expanded={megaOpen}
                       className={cn(
                         'flex items-center gap-[5px] h-full px-[1.4rem]',
-                        'font-mono text-[0.88rem] font-semibold uppercase tracking-[0.5px]',
+                        'font-mono text-[0.95rem] font-semibold uppercase tracking-[0.5px]',
                         navLinkClass,
                         'transition-colors duration-200',
                         'bg-transparent border-none cursor-pointer',
@@ -220,7 +220,7 @@ export function HeaderClient({ header }: Props) {
                       link={item.link}
                       className={cn(
                         'flex items-center h-full px-[1.4rem]',
-                        'font-mono text-[0.88rem] font-semibold uppercase tracking-[0.5px]',
+                        'font-mono text-[0.95rem] font-semibold uppercase tracking-[0.5px]',
                         navLinkClass,
                         'transition-colors duration-200 no-underline',
                       )}
