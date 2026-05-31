@@ -50,6 +50,7 @@ import { TCHomeHeroBlock } from './TCHomeHero';
 import { TCAboutSectionBlock } from './TCAboutSection';
 import { TCServiceCommitmentBlock } from './TCServiceCommitment';
 import { TCBenefitsBlock } from './TCBenefits';
+import { TCCtaBannerBlock } from './TCCtaBanner';
 import { TCServicesSectionBlock } from './TCServicesSection';
 import { TCWhyTopSectionBlock } from './TCWhyTop';
 import { TCProcessBlock } from './TCProcess'
@@ -115,6 +116,7 @@ tcHomeHero: TCHomeHeroBlock,
 tcAboutSection: TCAboutSectionBlock,
 tcServiceCommitment: TCServiceCommitmentBlock,
 tcBenefits: TCBenefitsBlock,
+tcCtaBanner: TCCtaBannerBlock,
 tcServicesSection: TCServicesSectionBlock,
 tcWhyTop: TCWhyTopSectionBlock,
 tcProcess: TCProcessBlock,
