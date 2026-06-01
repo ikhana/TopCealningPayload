@@ -37,7 +37,7 @@ export function AboutSplitClient(props: AboutSplitBlock) {
           to   { transform: translateX(0)     skewX(-5deg); opacity: 1; }
         }
 
-        /* ── Blade ── */
+        /* ── Blade ── light theme per Geraldine's "no dark colors" */
         .sh-blade {
           position: relative;
           width: 100%;
@@ -46,7 +46,7 @@ export function AboutSplitClient(props: AboutSplitBlock) {
           display: flex;
           align-items: center;
           overflow: hidden;
-          background: #0d1b2e;
+          background: #f4f7f6;
         }
 
         /* ── Background image — left diagonal clip ── */
@@ -57,16 +57,16 @@ export function AboutSplitClient(props: AboutSplitBlock) {
           height: 100%;
           object-fit: cover;
           z-index: 1;
-          filter: saturate(1.2) contrast(1.1);
+          filter: saturate(1.05) contrast(0.98);
           clip-path: polygon(0 0, 45% 0, 35% 100%, 0% 100%);
         }
 
-        /* ── Gradient: image fades into navy ── */
+        /* ── Gradient: image fades into light section bg ── */
         .sh-img-fade {
           position: absolute;
           inset: 0;
           z-index: 2;
-          background: linear-gradient(90deg, transparent 20%, #0d1b2e 40%);
+          background: linear-gradient(90deg, transparent 20%, #f4f7f6 40%);
         }
 
         /* ── Subtle teal tint overlay ── */
@@ -74,7 +74,7 @@ export function AboutSplitClient(props: AboutSplitBlock) {
           position: absolute;
           inset: 0;
           z-index: 3;
-          background: linear-gradient(135deg, rgba(23,176,171,0.1) 0%, transparent 50%);
+          background: linear-gradient(135deg, rgba(23,176,171,0.06) 0%, transparent 50%);
         }
 
         /* ── Content wrapper — pins text to the right ── */
@@ -89,13 +89,14 @@ export function AboutSplitClient(props: AboutSplitBlock) {
           justify-content: flex-end;
         }
 
-        /* ── Text block — skewed panel ── */
+        /* ── Text block — skewed panel, light frosted glass ── */
         .sh-text-block {
           width: 55%;
           padding: 40px;
-          background: rgba(13, 27, 46, 0.85);
+          background: rgba(255, 255, 255, 0.88);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(13,27,46,0.06);
           transform: skewX(-5deg);
           animation: sh-slide-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
@@ -119,10 +120,10 @@ export function AboutSplitClient(props: AboutSplitBlock) {
           font-style: normal;
         }
 
-        /* Headings */
+        /* Headings — dark navy on light bg */
         .sh-text-block .prose h1,
         .sh-text-block .prose h2 {
-          color: #ffffff;
+          color: #0d1b2e;
           font-size: clamp(1.8rem, 4vw, 3rem);
           font-weight: 900;
           line-height: 1.1;
@@ -133,7 +134,7 @@ export function AboutSplitClient(props: AboutSplitBlock) {
 
         /* Body */
         .sh-text-block .prose p {
-          color: rgba(255, 255, 255, 0.7);
+          color: rgba(13, 27, 46, 0.7);
           font-size: 1rem;
           line-height: 1.6;
           max-width: 500px;
@@ -156,8 +157,8 @@ export function AboutSplitClient(props: AboutSplitBlock) {
           transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
         }
         .sh-text-block .prose a:hover {
-          background: #ffffff;
-          color: #0d1b2e !important;
+          background: #0d1b2e;
+          color: #ffffff !important;
           transform: translateY(-3px);
         }
 
