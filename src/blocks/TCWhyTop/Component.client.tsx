@@ -64,9 +64,9 @@ export function TCWhyTopSectionClient(_props: Props) {
   return (
     <>
       <style>{`
-        /* Node hover on dark bg — teal tint instead of teal-light */
+        /* Node hover on light bg — soft teal tint */
         .wt-node:hover {
-          background: rgba(23,176,171,0.12) !important;
+          background: rgba(23,176,171,0.07) !important;
         }
         .wt-node:hover .wt-node-title {
           margin-bottom: 20px !important;
@@ -103,13 +103,13 @@ export function TCWhyTopSectionClient(_props: Props) {
         }
       `}</style>
 
-      {/* background1 rhythm: obsidian dark section */}
-      <section className="wt-section" style={{ background: '#050a12', padding: '100px 5%' }}>
+      {/* Light section — was obsidian dark before. Per Geraldine's "no dark colors" direction. */}
+      <section className="wt-section" style={{ background: '#f4f7f6', padding: '100px 5%' }}>
         <div
           className="wt-outer max-w-[1400px] mx-auto grid gap-[60px]"
           style={{
             gridTemplateColumns: 'clamp(260px, 350px, 30%) 1fr',
-            borderTop: '1px solid rgba(255,255,255,0.08)',
+            borderTop: '1px solid rgba(13,27,46,0.08)',
             paddingTop: '60px',
           }}
         >
@@ -121,20 +121,20 @@ export function TCWhyTopSectionClient(_props: Props) {
               ghostKicker="Why Top"
               mainLine="Our"
               secondaryLine="Advantages"
-              theme="dark"
+              theme="light"
               size="md"
               className="mb-[30px]"
             />
             <p
               className="wt-sidebar-text text-[0.9rem] leading-[1.7] mb-[40px]"
               style={{
-                color: 'rgba(255,255,255,0.55)',
+                color: 'rgba(13,27,46,0.6)',
               }}
             >
               Top Cleaning combines expertise, reliability, and attention to detail to exceed
               your expectations in every workspace.
             </p>
-            <TCButton variant="dark" href="/booking">Book Your Cleaning</TCButton>
+            <TCButton variant="primary" href="/booking">Book Your Cleaning</TCButton>
           </aside>
 
           {/* ── 2-col node grid ─────────────────────────────── */}
@@ -143,15 +143,15 @@ export function TCWhyTopSectionClient(_props: Props) {
             style={{
               gridTemplateColumns: '1fr 1fr',
               gap: '1px',
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.06)',
+              background: 'rgba(13,27,46,0.08)',
+              border: '1px solid rgba(13,27,46,0.08)',
             }}
           >
             {NODES.map((node) => (
               <div
                 key={node.category}
                 className="wt-node relative"
-                style={{ background: '#0d1b2e', padding: '50px', transition: 'background 0.3s ease' }}
+                style={{ background: '#ffffff', padding: '50px', transition: 'background 0.3s ease' }}
               >
                 {/* Category label */}
                 <h5
@@ -163,8 +163,8 @@ export function TCWhyTopSectionClient(_props: Props) {
 
                 {/* Title */}
                 <h4
-                  className="wt-node-title text-[1.4rem] font-extrabold text-white"
-                  style={{ marginBottom: '0', transition: 'margin-bottom 0.3s ease' }}
+                  className="wt-node-title text-[1.4rem] font-extrabold"
+                  style={{ marginBottom: '0', color: 'var(--color-navy-deep)', transition: 'margin-bottom 0.3s ease' }}
                 >
                   {node.title}
                 </h4>
@@ -178,7 +178,7 @@ export function TCWhyTopSectionClient(_props: Props) {
                     transition: 'max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease',
                   }}
                 >
-                  <p className="text-[0.9rem] leading-[1.6] mt-0" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                  <p className="text-[0.9rem] leading-[1.6] mt-0" style={{ color: 'rgba(13,27,46,0.65)' }}>
                     {node.body}
                   </p>
                 </div>
@@ -190,7 +190,7 @@ export function TCWhyTopSectionClient(_props: Props) {
               className="wt-stats flex justify-around items-center"
               style={{
                 gridColumn: 'span 2',
-                background: '#000a12',
+                background: '#eaf7f6',
                 padding: '40px',
               }}
             >
@@ -202,7 +202,7 @@ export function TCWhyTopSectionClient(_props: Props) {
                   >
                     {stat.value}
                   </span>
-                  <span className="text-[0.9rem]" style={{ color: 'rgba(255,255,255,0.5)' }}>{stat.label}</span>
+                  <span className="text-[0.9rem]" style={{ color: 'rgba(13,27,46,0.55)' }}>{stat.label}</span>
                 </div>
               ))}
             </div>
