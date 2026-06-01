@@ -52,13 +52,13 @@ const SERVICES = [
     delay: 0.24,
   },
   {
-    badge: 'Same Day Available',
-    title: 'After Party Cleaning',
+    badge: 'Specialized',
+    title: 'Post Construction Cleaning',
     description:
-      'Fast, thorough cleanup after events so you can enjoy the memories, not the mess.',
-    specs: ['Quick turnaround', 'Stain removal', 'Trash disposal', 'Surface sanitization'],
+      'Detailed cleanup after renovations or new builds — dust, debris, and residue gone for good.',
+    specs: ['Dust + debris removal', 'Window + frame detail', 'Fixture polishing', 'Paint splatter cleanup'],
     image: '/images/services/party-cleaning.jpg',
-    href: '/services/after-party',
+    href: '/services/post-construction',
     delay: 0.32,
   },
   {
