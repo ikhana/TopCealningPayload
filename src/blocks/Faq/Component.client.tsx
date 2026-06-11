@@ -1,5 +1,5 @@
 // blocks/Faq/Component.client.tsx
-// TopCleaning theme — deep navy bg, teal accents, glass accordion rows.
+// TopCleaning light theme — brand sand bg, teal accents, white accordion rows.
 // Left sticky panel (heading + contact) | Right scrollable accordion.
 // Config and payload-types unchanged — only presentation updated.
 
@@ -47,10 +47,10 @@ function FaqRow({
   return (
     <div
       className={cn(
-        'rounded-lg border transition-all duration-300',
+        'border transition-all duration-300',
         open
-          ? 'border-teal/40 bg-teal/[0.06]'
-          : 'border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15]',
+          ? 'border-teal/40 bg-teal/[0.05]'
+          : 'border-slate-200 bg-white hover:border-teal/25',
       )}
     >
       {/* sr-only heading for accessibility */}
@@ -60,11 +60,11 @@ function FaqRow({
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex w-full items-center gap-4 px-5 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 rounded-lg"
+        className="flex w-full items-center gap-4 px-5 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
         onClick={() => onToggle(index)}
       >
         <PlusToX open={open} />
-        <span className="text-base lg:text-lg font-semibold text-white leading-snug font-heading">
+        <span className="text-base lg:text-lg font-semibold text-navy-deep leading-snug font-heading">
           {item.question}
         </span>
       </button>
@@ -80,10 +80,10 @@ function FaqRow({
       >
         <div className="px-5 pb-6 pl-[4.25rem]">
           <div className="prose prose-base max-w-none
-            prose-p:text-white/65 prose-p:leading-relaxed prose-p:my-2
-            prose-strong:text-white prose-strong:font-semibold
+            prose-p:text-navy-deep/70 prose-p:leading-relaxed prose-p:my-2
+            prose-strong:text-navy-deep prose-strong:font-semibold
             prose-a:text-teal prose-a:no-underline hover:prose-a:underline
-            prose-ul:my-2 prose-li:text-white/65
+            prose-ul:my-2 prose-li:text-navy-deep/70
           ">
             <RichText data={item.answer} enableGutter={false} enableProse={true} />
           </div>
@@ -114,7 +114,7 @@ export function FaqClient(props: FaqBlock) {
 
   return (
     <BlockWrapper sectionId={sectionId}>
-      <section className="bg-[#080d1a] py-20 lg:py-28">
+      <section className="bg-[#f5efe0] py-20 lg:py-28">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
 
@@ -125,7 +125,7 @@ export function FaqClient(props: FaqBlock) {
                 mainLine={title ?? 'Frequently Asked'}
                 secondaryLine="Questions"
                 level="h2"
-                theme="dark"
+                theme="light"
                 size="md"
                 accentColor="#17b0ab"
                 className="mb-6"
@@ -133,14 +133,14 @@ export function FaqClient(props: FaqBlock) {
 
               {description && (
                 <div className="prose prose-base max-w-none mb-8
-                  prose-p:text-white/60 prose-p:leading-relaxed
+                  prose-p:text-navy-deep/65 prose-p:leading-relaxed
                 ">
                   <RichText data={description} enableGutter={false} enableProse={true} />
                 </div>
               )}
 
               {contactItems && contactItems.length > 0 && (
-                <div className="mt-6 pt-6 border-t border-white/[0.08] space-y-4">
+                <div className="mt-6 pt-6 border-t border-navy-deep/[0.10] space-y-4">
                   {contactItems.map((item, idx) => (
                     <div key={idx} className="flex flex-col gap-0.5">
                       <span className="font-mono text-[0.6rem] uppercase tracking-[2.5px] text-teal">
@@ -148,7 +148,7 @@ export function FaqClient(props: FaqBlock) {
                       </span>
                       <a
                         href={item.link}
-                        className="text-white/75 hover:text-teal transition-colors text-sm"
+                        className="text-navy-deep/75 hover:text-teal transition-colors text-sm"
                       >
                         {item.value}
                       </a>
@@ -176,18 +176,18 @@ export function FaqClient(props: FaqBlock) {
               {/* CTA card */}
               {(ctaHeading || cta?.link) && (
                 <div
-                  className="mt-10 rounded-lg border border-teal/25 bg-teal/[0.04] backdrop-blur-sm px-8 py-8 text-center"
-                  style={{ boxShadow: '0 0 40px rgba(23,176,171,0.06)' }}
+                  className="mt-10 border border-teal/25 bg-white px-8 py-8 text-center"
+                  style={{ boxShadow: '0 18px 40px -22px rgba(13,27,46,0.18)' }}
                 >
                   {ctaHeading && (
-                    <p className="font-heading font-bold text-xl text-white mb-2">
+                    <p className="font-heading font-bold text-xl text-navy-deep mb-2">
                       {ctaHeading}
                     </p>
                   )}
 
                   {ctaDescription && (
                     <div className="prose prose-base max-w-none mb-6
-                      prose-p:text-white/60 prose-p:leading-relaxed
+                      prose-p:text-navy-deep/65 prose-p:leading-relaxed
                     ">
                       <RichText data={ctaDescription} enableGutter={false} enableProse={true} />
                     </div>
@@ -195,14 +195,14 @@ export function FaqClient(props: FaqBlock) {
 
                   {cta?.link && (
                     <CMSLink link={cta.link}>
-                      <span className="inline-flex items-center justify-center bg-teal text-[#080d1a] font-mono font-black uppercase tracking-[2px] text-xs px-8 py-3 hover:bg-teal/85 transition-colors cursor-pointer">
+                      <span className="inline-flex items-center justify-center bg-teal text-white font-mono font-black uppercase tracking-[2px] text-xs px-8 py-3 hover:bg-navy-deep transition-colors cursor-pointer">
                         {cta.link.label ?? 'Contact Us'}
                       </span>
                     </CMSLink>
                   )}
 
                   {disclaimer && (
-                    <p className="mt-4 text-xs text-white/35">{disclaimer}</p>
+                    <p className="mt-4 text-xs text-navy-deep/45">{disclaimer}</p>
                   )}
                 </div>
               )}
