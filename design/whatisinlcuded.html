@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Cleaning - What's Included</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Poppins:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #17b0ab;
+            --teal-glow: #3dcfca;
+            --teal-tint: #eaf7f6;
+            --navy-deep: #0d1b2e;
+            --navy-mid: #2a4365;
+            --sand: #f5efe0;
+            --grey-green: #f4f7f6;
+            --white: #ffffff;
+            --coral: #fc8181;
+            
+            --font-main: 'Poppins', sans-serif;
+            --font-heading: 'Poppins', sans-serif; /* Fallback for Soleil */
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --shadow-soft: 0 22px 48px -22px rgba(13, 27, 46, 0.18);
+            --border-ui: 1px solid rgba(13, 27, 46, 0.08);
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--navy-deep);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+        }
+
+        /* The Grain Overlay */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.32;
+            mix-blend-mode: multiply;
+        }
+
+        /* Section Layout */
+        .included-block {
+            position: relative;
+            padding: 140px 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Editorial Heading Stack */
+        .header-stack {
+            position: relative;
+            margin-bottom: 100px;
+            max-width: 800px;
+        }
+
+        .ghost-kicker {
+            position: absolute;
+            top: -60px;
+            left: -5px;
+            font-size: clamp(4rem, 10vw, 8rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1;
+            z-index: -1;
+            -webkit-text-stroke: 1px rgba(13, 27, 46, 0.06);
+            color: transparent;
+            white-space: nowrap;
+            font-family: var(--font-heading);
+        }
+
+        .main-line {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            color: var(--navy-deep);
+            line-height: 1.1;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .secondary-line {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--navy-deep);
+            display: block;
+            margin-top: -5px;
+        }
+
+        .intro-paragraph {
+            margin-top: 32px;
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--navy-mid);
+            max-width: 540px;
+            border-left: 2px solid var(--teal);
+            padding-left: 24px;
+        }
+
+        /* The Ceramic Grid */
+        .ceramic-sequence {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px; /* Fine "grout" line */
+            background-color: rgba(13, 27, 46, 0.05); /* The grout color */
+            border: 1px solid rgba(13, 27, 46, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .tile {
+            background-color: var(--white);
+            padding: 48px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .tile:hover {
+            z-index: 2;
+            box-shadow: var(--shadow-soft);
+            transform: translateY(-4px);
+            background-color: var(--teal-tint);
+        }
+
+        /* Span logic for hierarchy */
+        .tile-large { grid-column: span 7; }
+        .tile-medium { grid-column: span 5; }
+        .tile-standard { grid-column: span 4; }
+
+        @media (max-width: 1024px) {
+            .tile-large, .tile-medium, .tile-standard { grid-column: span 6; }
+        }
+        @media (max-width: 768px) {
+            .tile-large, .tile-medium, .tile-standard { grid-column: span 12; }
+            .included-block { padding: 80px 20px; }
+        }
+
+        .category-kicker {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--teal);
+            display: block;
+            margin-bottom: 24px;
+        }
+
+        .tile-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy-deep);
+            margin-bottom: 32px;
+            line-height: 1.3;
+        }
+
+        /* The Checklist */
+        .checklist {
+            list-style: none;
+        }
+
+        .check-item {
+            display: grid;
+            grid-template-columns: 24px 1fr;
+            gap: 16px;
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--navy-mid);
+            align-items: start;
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .check-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--teal);
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Flourish elements */
+        .accent-dot {
+            position: absolute;
+            top: 48px;
+            right: 48px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--sand);
+            border-radius: 50%;
+        }
+
+        .tile:hover .accent-dot {
+            background-color: var(--coral);
+            transform: scale(1.5);
+            transition: var(--transition);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- SVG Grain Filter -->
+    <svg class="grain-overlay" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noise)" />
+    </svg>
+
+    <section class="included-block">
+        <!-- Editorial Heading -->
+        <header class="header-stack">
+            <span class="ghost-kicker">Included</span>
+            <h2 class="main-line">Every Surface</h2>
+            <span class="secondary-line">meticulously covered.</span>
+            <p class="intro-paragraph">
+                Our post-construction protocol isn't just a cleaning—it's a restoration. We eliminate the microscopic dust that others leave behind, ensuring your project is move-in ready.
+            </p>
+        </header>
+
+        <!-- Ceramic Sequence Grid -->
+        <div class="ceramic-sequence">
+            
+            <!-- Tile 1: Hierarchy emphasized -->
+            <article class="tile tile-large">
+                <span class="accent-dot"></span>
+                <span class="category-kicker">Deep Clean Phase</span>
+                <h3 class="tile-title">Dust & Debris Removal</h3>
+                <ul class="checklist">
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Full removal of fine construction dust from all vertical and horizontal surfaces</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>HEPA-vacuuming and damp-mopping all flooring with specialty solutions for edges</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Detailed cleaning of light fixtures, toggles, vents, and recessed areas</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Sanitization of all high-touch points and hardware throughout the site</span>
+                    </li>
+                </ul>
+            </article>
+
+            <!-- Tile 2 -->
+            <article class="tile tile-medium">
+                <span class="accent-dot"></span>
+                <span class="category-kicker">Detail Oriented</span>
+                <h3 class="tile-title">Polishing & Prep</h3>
+                <ul class="checklist">
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Removal of paint splatter, stickers, adhesive residue, and construction marks</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Inside and outside of all cabinetry, drawers, and shelving units</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Mirror and glass polishing for a streak-free, brilliant finish</span>
+                    </li>
+                </ul>
+            </article>
+
+            <!-- Tile 3 -->
+            <article class="tile tile-standard">
+                <span class="accent-dot"></span>
+                <span class="category-kicker">Sanitary Zones</span>
+                <h3 class="tile-title">Kitchen & Bath</h3>
+                <ul class="checklist">
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Deep scrub of tile grout and bathroom fixtures</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Interior/exterior appliance detailing</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Threshold and baseboard hand-wiping</span>
+                    </li>
+                </ul>
+            </article>
+
+            <!-- Tile 4 -->
+            <article class="tile tile-standard">
+                <span class="accent-dot"></span>
+                <span class="category-kicker">Window Care</span>
+                <h3 class="tile-title">Glass & Tracks</h3>
+                <ul class="checklist">
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Cleaning of window tracks and sills</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Interior glass washing and buffing</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Removal of protective films/tape</span>
+                    </li>
+                </ul>
+            </article>
+
+            <!-- Tile 5 -->
+            <article class="tile tile-standard">
+                <span class="accent-dot"></span>
+                <span class="category-kicker">Final Touch</span>
+                <h3 class="tile-title">Final Inspection</h3>
+                <ul class="checklist">
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Room-by-room quality audit</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Airborne particle settling sweep</span>
+                    </li>
+                    <li class="check-item">
+                        <div class="check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <span>Fragrance-neutral deodorizing</span>
+                    </li>
+                </ul>
+            </article>
+
+        </div>
+    </section>
+
+    <script>
+        // Subtle reveal animation logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const tiles = document.querySelectorAll('.tile');
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    }
+                });
+            }, observerOptions);
+
+            tiles.forEach(tile => {
+                tile.style.opacity = '0';
+                tile.style.transform = 'translateY(20px)';
+                tile.style.transition = 'all 0.8s cubic-bezier(0.23, 1, 0.32, 1)';
+                observer.observe(tile);
+            });
+        });
+    </script>
+</body>
+</html>
