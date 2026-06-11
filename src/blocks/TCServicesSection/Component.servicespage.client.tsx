@@ -41,14 +41,14 @@ const SERVICES = [
   {
     badge: '',
     category: 'Specialized',
-    title: 'After Party Cleaning',
-    subtitle: 'Post-event cleanup specialists',
+    title: 'Post Construction Cleaning',
+    subtitle: 'Cleanup after the build is done',
     description:
-      'Swift and thorough cleanup after events so you can enjoy the memories, not the mess.',
-    specs: ['Quick turnaround', 'Stain removal', 'Trash disposal', 'Surface sanitization'],
-    image: '/images/services/party-cleaning.jpg',
-    href: '/services/after-party',
-    meta: { label1: 'Starting From', value1: 'Custom / event', label2: 'Availability', value2: 'Weekend Priority' },
+      'A detailed, top-to-bottom service that transforms newly built or renovated spaces into pristine, move-in ready properties.',
+    specs: ['Dust + debris removal', 'Window + frame detail', 'Fixture polishing', 'Paint splatter cleanup'],
+    image: '/images/services/post-construction-cleaning.jpg',
+    href: '/services/post-construction',
+    meta: { label1: 'Starting From', value1: 'Custom / project', label2: 'Best For', value2: 'New Builds + Renos' },
   },
   {
     badge: '',
@@ -233,7 +233,7 @@ export function TCServicesSectionServicesPage() {
         }
         .sp-meta-label { font-family:var(--font-mono,monospace); font-size:0.58rem; text-transform:uppercase; color:#5a6a84; margin-bottom:3px; display:block; }
         .sp-meta-value { font-weight:700; font-size:0.85rem; color:#0d1b2e; }
-        .sp-card-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+        .sp-card-actions { display:flex; gap:22px; align-items:center; flex-wrap:wrap; }
 
         /* ── Background streak ── */
         @keyframes sp-streak {
@@ -337,7 +337,7 @@ export function TCServicesSectionServicesPage() {
 
                   {/* Buttons */}
                   <div className="sp-card-actions">
-                    <TCButton variant="inline" size="sm" href={service.href}>Learn More</TCButton>
+                    <TCButton variant="inline" size="sm" href={service.href}>See What&apos;s Included</TCButton>
                     <TCButton variant="primary" size="sm" href="/booking">Book Now</TCButton>
                   </div>
                 </div>

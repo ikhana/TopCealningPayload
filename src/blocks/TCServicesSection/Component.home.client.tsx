@@ -213,7 +213,7 @@ export function TCServicesSectionHome() {
                         ))}
                       </ul>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-7">
                       <TCButton variant="inline" size="sm" href={service.href}>See What&apos;s Included</TCButton>
                       <TCButton variant="primary" size="sm" href="/booking">Get a Quote</TCButton>
                     </div>
