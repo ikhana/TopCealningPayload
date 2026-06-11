@@ -139,7 +139,7 @@ export function HeaderClient({ header }: Props) {
                 alt={logoImage.alt || 'Top Cleaning'}
                 width={300}
                 height={110}
-                className="h-[52px] md:h-[82px] w-auto -mt-2 md:-mt-5"
+                className="h-[46px] md:h-[74px] w-auto -mt-3 md:-mt-7"
                 priority
               />
             ) : (
