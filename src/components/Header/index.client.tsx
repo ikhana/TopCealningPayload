@@ -128,7 +128,7 @@ export function HeaderClient({ header }: Props) {
       >
         <div className="flex items-center justify-between h-full px-[5%]">
 
-          {/* ── Logo — oversized, overflows below header border ── */}
+          {/* ── Logo — sized to sit within the header bar per Geraldine's request ── */}
           <Link
             href="/"
             className="tc-header-logo flex items-center gap-3 flex-shrink-0 no-underline relative z-[10]"
@@ -139,7 +139,7 @@ export function HeaderClient({ header }: Props) {
                 alt={logoImage.alt || 'Top Cleaning'}
                 width={300}
                 height={110}
-                className="h-[75px] md:h-[110px] w-auto"
+                className="h-[44px] md:h-[60px] w-auto"
                 priority
               />
             ) : (
