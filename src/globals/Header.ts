@@ -242,7 +242,7 @@ export const Header: GlobalConfig = {
               type: 'array',
               label: 'Dropdown Items',
               minRows: 1,
-              maxRows: 8,
+              maxRows: 10,
               fields: [
                 linkWithAnchor({
                   appearances: false,
