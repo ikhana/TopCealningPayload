@@ -57,7 +57,7 @@ const SERVICES = [
     description:
       'Detailed cleanup after renovations or new builds — dust, debris, and residue gone for good.',
     specs: ['Dust + debris removal', 'Window + frame detail', 'Fixture polishing', 'Paint splatter cleanup'],
-    image: '/images/services/party-cleaning.jpg',
+    image: '/images/services/post-construction-cleaning.jpg',
     href: '/services/post-construction',
     delay: 0.32,
   },
