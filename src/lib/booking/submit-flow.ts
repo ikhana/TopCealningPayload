@@ -323,11 +323,12 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       }).catch((err) => console.error('[booking:recurring] Unexpected error', err))
     }
 
-    // Step 7: Create GHL opportunity (Booked stage)
+    // Step 7: Create GHL opportunity in the Cleaning Booked stage —
+    // website bookings represent a confirmed appointment, not a lead-in-funnel.
     const ghlOpportunity = await createOpportunity({
       pipelineId: process.env.GHL_PIPELINE_ID!,
       locationId: process.env.GHL_LOCATION_ID!,
-      pipelineStageId: process.env.GHL_PIPELINE_STAGE_BOOKED!,
+      pipelineStageId: process.env.GHL_PIPELINE_STAGE_CLEANING_BOOKED!,
       contactId: ghlContactId,
       name: appointmentTitle,
       monetaryValue: formData.pricing.total,

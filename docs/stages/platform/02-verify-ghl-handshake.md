@@ -111,7 +111,7 @@ In GHL → **Opportunities** (or **Pipeline**) → find the Top Cleaning pipelin
 | Contact not found | Phone normalization issue at lead-capture step; or the booking actually used a different email than you remember. Re-check the email in the Payload record. |
 | Confirmation code missing on contact | The race fix didn't apply, or `GHL_FIELD_CONFIRMATION_CODE` env var is wrong. Check it's `ODqjmoT5Ts00Uv2yboZV` in `.env`. |
 | Appointment at wrong time | Timezone bug. Compare the stored ISO (`-04:00`) vs what GHL shows. If GHL shows it 4 hours off, the calendar timezone in GHL settings doesn't match what we send. |
-| Opportunity not in Booked stage | `GHL_PIPELINE_STAGE_BOOKED` env var is wrong, or the pipeline structure in GHL changed. Compare env value against GHL → Settings → Pipelines. |
+| Opportunity not in Cleaning Booked stage | `GHL_PIPELINE_STAGE_CLEANING_BOOKED` env var is wrong, or the pipeline structure in GHL changed. Compare env value against GHL → Settings → Pipelines (or run a quick `curl` against `/opportunities/pipelines?locationId=...` to inspect live stage IDs). |
 
 ---
 

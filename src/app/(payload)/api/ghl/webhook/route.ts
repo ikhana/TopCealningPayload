@@ -96,10 +96,15 @@ async function processWebhookEvent(event: {
     const { opportunityId, pipelineStageId } = event
     if (!opportunityId || !pipelineStageId) return
 
+    // Maps live Top Cleaning Bookings pipeline stages to Booking.status values.
+    // Pre-booking stages (New Inquiry / Consultation / Proposal sent) are not
+    // mapped — they represent funnel motion, not a booking commitment.
+    // Payment Collected collapses into 'completed' since the customer-facing
+    // booking lifecycle ends when the job is done.
     const stageStatusMap: Record<string, string> = {
-      [process.env.GHL_PIPELINE_STAGE_CONFIRMED ?? '']: 'confirmed',
-      [process.env.GHL_PIPELINE_STAGE_IN_PROGRESS ?? '']: 'in-progress',
-      [process.env.GHL_PIPELINE_STAGE_COMPLETED ?? '']: 'completed',
+      [process.env.GHL_PIPELINE_STAGE_CLEANING_BOOKED ?? '']: 'confirmed',
+      [process.env.GHL_PIPELINE_STAGE_CLEANING_COMPLETED ?? '']: 'completed',
+      [process.env.GHL_PIPELINE_STAGE_PAYMENT_COLLECTED ?? '']: 'completed',
     }
 
     const mappedStatus = stageStatusMap[pipelineStageId]
