@@ -4,7 +4,7 @@
 'use client'
 
 import React from 'react'
-import { ShieldCheck } from 'lucide-react'
+import { Info } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 
 const SERVICE_LABELS: Record<string, string> = {
@@ -24,6 +24,20 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+
+      {/* Request-only disclaimer — top of the summary panel */}
+      <div style={{
+        marginBottom: '24px',
+        padding: '14px 16px',
+        background: 'rgba(23,176,171,0.06)',
+        borderLeft: '4px solid var(--color-teal)',
+        display: 'flex', alignItems: 'flex-start', gap: '8px',
+      }}>
+        <Info size={15} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '1px' }} />
+        <p style={{ fontSize: '0.8rem', color: 'var(--color-navy-deep)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
+          This is a request form only. Final pricing will be provided after reviewing your information.
+        </p>
+      </div>
 
       {/* Header */}
       <div style={{
@@ -64,13 +78,7 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
         </div>
       )}
 
-      {/* Request note (replaces the price total + payment note) */}
-      <p style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.7rem', color: 'rgba(74,90,106,0.6)', marginTop: 'auto', paddingTop: '22px', lineHeight: 1.55 }}>
-        <ShieldCheck size={12} style={{ flexShrink: 0, marginTop: '1px', color: 'var(--color-teal)' }} />
-        This is a request form only. Final pricing will be provided after reviewing your information.
-      </p>
-
-      {/* Submit button */}
+      {/* Submit button — pinned to the bottom */}
       <button
         type="button"
         onClick={onBook}
@@ -86,7 +94,7 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
           letterSpacing: '2px',
           textTransform: 'uppercase',
           cursor: 'pointer',
-          marginTop: '18px',
+          marginTop: 'auto',
           clipPath: 'polygon(0 0, 100% 0, 95% 100%, 0% 100%)',
           transition: 'all 0.35s cubic-bezier(0.25,1,0.5,1)',
         }}

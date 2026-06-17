@@ -416,6 +416,10 @@ function BookingFormInner() {
         .bf-desktop-nav {
           display: flex;
         }
+        /* Request-only disclaimer in the form — desktop hides it (summary shows it) */
+        .bf-req-note-mobile {
+          display: none;
+        }
 
         /* ── Responsive ── */
         @media (max-width: 1200px) {
@@ -428,6 +432,7 @@ function BookingFormInner() {
           .bf-left-rail { display: none !important; }
           .bf-center { border-right: none !important; padding-bottom: 100px !important; }
           .bf-right { display: none !important; }
+          .bf-req-note-mobile { display: flex; align-items: flex-start; gap: 8px; }
           .bf-mobile-bar {
             display: block;
             position: fixed;
@@ -615,15 +620,12 @@ function BookingFormInner() {
             </div>
           )}
 
-          {/* Request-only disclaimer — persistent across all steps/services */}
-          <div style={{
+          {/* Request-only disclaimer — mobile only; desktop shows it in the summary panel */}
+          <div className="bf-req-note-mobile" style={{
             marginBottom: '20px',
             padding: '12px 16px',
             background: 'rgba(23,176,171,0.06)',
             borderLeft: '4px solid var(--color-teal)',
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '8px',
           }}>
             <Info size={15} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '1px' }} />
             <p style={{ fontSize: '0.8rem', color: 'var(--color-navy-deep)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
