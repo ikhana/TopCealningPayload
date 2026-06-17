@@ -28,6 +28,7 @@ const initialBookingData: BookingFormData = {
     bathrooms: 1,
   },
   serviceExtras: {},
+  specialInstructions: '',
   // Empty until the user picks on Step 2 — keeps the summary from showing a
   // service prematurely and forces an explicit choice (Step 2 validation requires it).
   serviceType: '' as ServiceCategory,
@@ -116,6 +117,10 @@ export const useBookingForm = () => {
 
   const updateServiceExtras = (data: Partial<ServiceExtras>) => {
     setBookingData((prev) => ({ ...prev, serviceExtras: { ...prev.serviceExtras, ...data } }))
+  }
+
+  const updateSpecialInstructions = (value: string) => {
+    setBookingData((prev) => ({ ...prev, specialInstructions: value }))
   }
 
   const updateServiceType = (serviceType: ServiceCategory) => {
@@ -220,6 +225,7 @@ export const useBookingForm = () => {
     updateCustomerInfo,
     updatePropertySize,
     updateServiceExtras,
+    updateSpecialInstructions,
     updateServiceType,
     updateFrequency,
     toggleChildren,

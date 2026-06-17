@@ -54,11 +54,12 @@ const selectStyle: React.CSSProperties = {
   appearance: 'none',
 }
 
-const onFieldFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+type FieldEl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+const onFieldFocus = (e: React.FocusEvent<FieldEl>) => {
   e.target.style.borderColor = 'var(--color-teal)'
   e.target.style.boxShadow = '0 0 0 4px rgba(23,176,171,0.05)'
 }
-const onFieldBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+const onFieldBlur = (e: React.FocusEvent<FieldEl>) => {
   e.target.style.borderColor = 'rgba(13,27,46,0.1)'
   e.target.style.boxShadow = 'none'
 }
@@ -90,12 +91,13 @@ function SpecSelect({
   )
 }
 
-const WITH_BEDROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding', 'handyman']
-const WITH_BATHROOMS: ServiceCategory[] = ['residential', 'movein-out', 'custom', 'hoarding', 'handyman']
+// Handyman intentionally excluded — its Details step is just photos + special instructions.
+const WITH_BEDROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
+const WITH_BATHROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 
 export function Step03Property() {
-  const { bookingData, updatePropertySize, updateServiceExtras, mediaFiles, addMediaFiles, removeMediaFile } = useBooking()
-  const { property, serviceType, serviceExtras } = bookingData
+  const { bookingData, updatePropertySize, updateServiceExtras, updateSpecialInstructions, mediaFiles, addMediaFiles, removeMediaFile } = useBooking()
+  const { property, serviceType, serviceExtras, specialInstructions } = bookingData
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
@@ -179,7 +181,8 @@ export function Step03Property() {
             options={['1', '2-5', '6-10', '10+']} />
         )}
 
-        {/* ── Approx. size (optional, all services) ───────────── */}
+        {/* ── Approx. size (optional; not shown for Handyman) ─── */}
+        {serviceType !== 'handyman' && (
         <div style={{ gridColumn: 'span 2' }}>
           <label style={labelStyle}>
             Approx. Size <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(sq ft — optional)</span>
@@ -198,7 +201,24 @@ export function Step03Property() {
             />
           </div>
         </div>
+        )}
 
+      </div>
+
+      {/* ── Special instructions (all services) ───────────────── */}
+      <div style={{ marginTop: '32px' }}>
+        <label style={labelStyle}>
+          Special Instructions <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+        </label>
+        <textarea
+          value={specialInstructions}
+          onChange={(e) => updateSpecialInstructions(e.target.value)}
+          onFocus={onFieldFocus}
+          onBlur={onFieldBlur}
+          placeholder="Anything we should know? Questions, priority areas, parking, pets…"
+          rows={4}
+          style={{ ...inputStyle, paddingLeft: '16px', resize: 'vertical', fontFamily: 'inherit' }}
+        />
       </div>
 
       {/* ── Optional photos ───────────────────────────────────── */}

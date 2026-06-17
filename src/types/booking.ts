@@ -80,6 +80,7 @@ export interface BookingFormData {
   customer: CustomerInfo
   property: PropertySize
   serviceExtras: ServiceExtras
+  specialInstructions: string
   serviceType: ServiceCategory
   frequency: FrequencyOption
   hasChildren: boolean

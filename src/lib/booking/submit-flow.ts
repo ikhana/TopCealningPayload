@@ -267,6 +267,7 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       GHL_FIELDS.propertiesManaged && extras.propertiesManaged && { id: GHL_FIELDS.propertiesManaged, field_value: extras.propertiesManaged },
       GHL_FIELDS.propertyType && extras.propertyType && { id: GHL_FIELDS.propertyType, field_value: extras.propertyType },
       GHL_FIELDS.completionStatus && extras.completionStatus && { id: GHL_FIELDS.completionStatus, field_value: extras.completionStatus },
+      GHL_FIELDS.notes && formData.specialInstructions?.trim() && { id: GHL_FIELDS.notes, field_value: formData.specialInstructions.trim() },
     ].filter(Boolean) as Array<{ id: string; field_value: string }>
 
     const ghlContact = await upsertContact({

@@ -17,6 +17,8 @@ export const GHL_FIELDS = {
   propertiesManaged: process.env.GHL_FIELD_PROPERTIES_MANAGED ?? '',
   propertyType: process.env.GHL_FIELD_PROPERTY_TYPE ?? '',
   completionStatus: process.env.GHL_FIELD_COMPLETION_STATUS ?? '',
+  // Special Instructions (all services) → GHL "NOTES" large-text field
+  notes: process.env.GHL_FIELD_NOTES ?? '',
 } as const
 
 export type GhlFieldKey = keyof typeof GHL_FIELDS

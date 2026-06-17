@@ -54,8 +54,9 @@ export function validateStep(
       // Service-aware specs. Square footage is now optional (approx size) for
       // all services. Required fields differ per service.
       const { property, serviceType, serviceExtras } = data
-      const needsBedrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding', 'handyman'].includes(serviceType)
-      const needsBathrooms = ['residential', 'movein-out', 'custom', 'hoarding', 'handyman'].includes(serviceType)
+      // Handyman excluded — its Details step is just photos + special instructions.
+      const needsBedrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding'].includes(serviceType)
+      const needsBathrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding'].includes(serviceType)
 
       if (serviceType === 'residential' && !serviceExtras.cleaningType) {
         return { valid: false, missingField: 'Type of Cleaning' }
