@@ -35,11 +35,6 @@ export function Step04AddOns() {
   const { selectedExtras } = bookingData
   const [infoOpen, setInfoOpen] = useState(false)
 
-  const addonsTotal = selectedExtras.reduce((sum, id) => {
-    const a = ADD_ONS.find((x) => x.id === id)
-    return sum + (a ? a.price : 0)
-  }, 0)
-
   return (
     <div>
       <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '28px' }}>
@@ -62,14 +57,14 @@ export function Step04AddOns() {
         {infoOpen && (
           <div style={{ padding: '0 16px 14px', fontSize: '0.8rem', lineHeight: 1.7, color: 'rgba(74,90,106,0.85)', borderTop: '1px dashed rgba(13,27,46,0.08)' }}>
             <p style={{ marginTop: '12px' }}>Interior appliances (oven, fridge, cabinets, windows, baseboards, walls) are not included in regular cleaning — they must be selected below.</p>
-            <p style={{ marginTop: '8px' }}><strong>Same Day Bookings:</strong> a $40 fee applies if not selected when booked.</p>
+            <p style={{ marginTop: '8px' }}><strong>Same Day Bookings:</strong> an additional fee applies if not selected when booked.</p>
           </div>
         )}
       </div>
 
       {/* Add-ons grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(175px, 1fr))', gap: '10px' }}>
-        {ADD_ONS.map(({ id, label, icon: Icon, price }) => {
+        {ADD_ONS.map(({ id, label, icon: Icon }) => {
           const sel = selectedExtras.includes(id)
           return (
             <div
@@ -96,7 +91,6 @@ export function Step04AddOns() {
               </div>
               <div>
                 <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-navy-deep)', lineHeight: 1.3 }}>{label}</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-teal)', fontWeight: 700, marginTop: '3px' }}>+${price}</div>
               </div>
             </div>
           )
@@ -105,12 +99,9 @@ export function Step04AddOns() {
 
       {/* Selected tally */}
       {selectedExtras.length > 0 && (
-        <div style={{ marginTop: '20px', padding: '14px 16px', border: '1px solid rgba(23,176,171,0.2)', background: '#e0f5f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ marginTop: '20px', padding: '14px 16px', border: '1px solid rgba(23,176,171,0.2)', background: '#e0f5f4', display: 'flex', alignItems: 'center' }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--color-navy-deep)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
             {selectedExtras.length} add-on{selectedExtras.length > 1 ? 's' : ''} selected
-          </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-teal)' }}>
-            +${addonsTotal}
           </span>
         </div>
       )}

@@ -4,7 +4,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ChevronUp, ShieldCheck, AlertCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import { TCButton } from '@/components/ui/TCButton'
 import { BookingProvider } from '@/components/booking/BookingContext'
 import { BookingSummary } from '@/components/booking/BookingSummary'
@@ -21,8 +21,6 @@ import { Step06Schedule } from '@/components/booking/sections/Step06Schedule'
 import { Step07Access } from '@/components/booking/sections/Step07Access'
 import { Step09Payment } from '@/components/booking/sections/Step09Payment'
 import { Step10Terms } from '@/components/booking/sections/Step10Terms'
-
-const fmt = (n: number) => `$${n.toFixed(2)}`
 
 /* ── Mobile sticky bottom bar ───────────────────────────────── */
 function MobileBottomBar({
@@ -42,40 +40,10 @@ function MobileBottomBar({
   onSubmit: () => void
   isSubmitting: boolean
 }) {
-  const [expanded, setExpanded] = useState(false)
-  const { bookingData } = useBooking()
-  const { pricing, property } = bookingData
-  const hasPrice = property.squareFootage > 0
   const isLastStep = currentStep === totalSteps
 
   return (
     <div className="bf-mobile-bar">
-      {/* Expandable summary sheet */}
-      {expanded && (
-        <div style={{
-          padding: '24px 20px 0',
-          borderBottom: '1px solid rgba(13,27,46,0.08)',
-          background: 'white',
-        }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
-            {[
-              ['Base Service', hasPrice ? fmt(pricing.basePrice) : '—'],
-              ['Add-ons', pricing.extrasTotal > 0 ? `+${fmt(pricing.extrasTotal)}` : '$0.00'],
-              ['Discount', pricing.discount > 0 ? `-${fmt(pricing.discount)}` : '-$0.00'],
-            ].map(([label, value]) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                <span style={{ color: 'rgba(74,90,106,0.7)' }}>{label}</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{value}</span>
-              </div>
-            ))}
-          </div>
-          <p style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.65rem', color: 'rgba(74,90,106,0.5)', marginBottom: '16px' }}>
-            <ShieldCheck size={11} style={{ color: 'var(--color-teal)', flexShrink: 0 }} />
-            256-bit SSL encrypted · Secure payment
-          </p>
-        </div>
-      )}
-
       {/* Main bar */}
       <div style={{
         display: 'flex',
@@ -106,27 +74,15 @@ function MobileBottomBar({
           </button>
         )}
 
-        {/* Price tap target */}
-        <button
-          onClick={() => setExpanded(e => !e)}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 0,
-            flex: 1,
-          }}
-        >
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'rgba(74,90,106,0.5)', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            Estimate <ChevronUp size={11} style={{ transform: expanded ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }} />
+        {/* Step indicator (replaces the price/estimate readout) */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', flex: 1 }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'rgba(74,90,106,0.5)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            Step {currentStep} of {totalSteps}
           </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '1.15rem', color: 'var(--color-teal)' }}>
-            {hasPrice ? fmt(pricing.total) : '$0.00'}
+          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '0.95rem', color: 'var(--color-navy-deep)' }}>
+            {stepLabel}
           </span>
-        </button>
+        </div>
 
         {/* Action button */}
         {isLastStep ? (
@@ -147,7 +103,7 @@ function MobileBottomBar({
               flexShrink: 0,
             }}
           >
-            {isSubmitting ? 'Booking...' : 'Confirm Booking'}
+            {isSubmitting ? 'Submitting...' : 'Submit Request'}
           </button>
         ) : (
           <button
