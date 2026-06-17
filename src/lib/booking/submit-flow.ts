@@ -293,7 +293,10 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
 
     // Step 6: Create GHL appointment (first occurrence)
     const startTime = buildIsoDateTime(formData.serviceDate, formData.serviceTime)
-    const estimatedHours = (formData.pricing as { estimatedTime?: number }).estimatedTime ?? 2
+    // Min 2h — square footage is optional now, so estimatedTime is often 0.
+    // Using `||` (not `??`) so 0/NaN fall back to the default; a zero-duration
+    // appointment makes GHL reject with "Invalid slot range".
+    const estimatedHours = (formData.pricing as { estimatedTime?: number }).estimatedTime || 2
     const endTime = addHours(startTime, estimatedHours)
     const appointmentTitle = buildServiceTitle(formData)
     const appointmentAddress = formatAddress(formData.address)
