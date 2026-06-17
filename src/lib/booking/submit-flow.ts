@@ -62,12 +62,13 @@ export class BookingValidationError extends Error {
 }
 
 export function validateBookingData(data: BookingFormData): void {
-  const { customer, property, serviceDate, serviceTime, address, paymentConfirmed } = data as BookingFormData & { paymentConfirmed?: boolean }
+  const { customer, serviceDate, serviceTime, address, paymentConfirmed } = data as BookingFormData & { paymentConfirmed?: boolean }
 
   if (!customer.firstName?.trim()) throw new BookingValidationError('First name required', 1, 'firstName')
   if (!customer.email?.trim()) throw new BookingValidationError('Email required', 1, 'email')
   if (!customer.phone?.trim()) throw new BookingValidationError('Phone required', 1, 'phone')
-  if (!property.squareFootage || property.squareFootage <= 0) throw new BookingValidationError('Square footage required', 3, 'squareFootage')
+  // Square footage is optional now (approx size). Per-service Step 3 fields are
+  // enforced client-side in step-validation.ts.
   if (!serviceDate) throw new BookingValidationError('Service date required', 6, 'serviceDate')
   if (!serviceTime) throw new BookingValidationError('Service time required', 6, 'serviceTime')
   if (!address.street?.trim()) throw new BookingValidationError('Street address required', 8, 'street')
@@ -252,12 +253,20 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     const serviceTimeFmt = formatServiceTime(formData.serviceTime)
     const serviceTotalFmt = `$${(formData.pricing.total ?? 0).toFixed(2)}`
 
+    // Per-service extras (Step 3) — only push the ones the chosen service uses.
+    const extras = formData.serviceExtras ?? {}
+
     const contactCustomFields = [
       GHL_FIELDS.confirmationCode && { id: GHL_FIELDS.confirmationCode, field_value: confirmationCode },
       GHL_FIELDS.service && { id: GHL_FIELDS.service, field_value: serviceName },
       GHL_FIELDS.serviceDate && { id: GHL_FIELDS.serviceDate, field_value: serviceDateFmt },
       GHL_FIELDS.serviceTime && { id: GHL_FIELDS.serviceTime, field_value: serviceTimeFmt },
       GHL_FIELDS.serviceTotal && { id: GHL_FIELDS.serviceTotal, field_value: serviceTotalFmt },
+      GHL_FIELDS.cleaningType && extras.cleaningType && { id: GHL_FIELDS.cleaningType, field_value: extras.cleaningType },
+      GHL_FIELDS.typeOfSpace && extras.typeOfSpace && { id: GHL_FIELDS.typeOfSpace, field_value: extras.typeOfSpace },
+      GHL_FIELDS.propertiesManaged && extras.propertiesManaged && { id: GHL_FIELDS.propertiesManaged, field_value: extras.propertiesManaged },
+      GHL_FIELDS.propertyType && extras.propertyType && { id: GHL_FIELDS.propertyType, field_value: extras.propertyType },
+      GHL_FIELDS.completionStatus && extras.completionStatus && { id: GHL_FIELDS.completionStatus, field_value: extras.completionStatus },
     ].filter(Boolean) as Array<{ id: string; field_value: string }>
 
     const ghlContact = await upsertContact({

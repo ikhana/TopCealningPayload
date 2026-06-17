@@ -51,12 +51,29 @@ export function validateStep(
       return ok
     }
     case 3: {
-      const { property } = data
-      if (!property.squareFootage || property.squareFootage <= 0) {
-        return { valid: false, missingField: 'Square Footage' }
+      // Service-aware specs. Square footage is now optional (approx size) for
+      // all services. Required fields differ per service.
+      const { property, serviceType, serviceExtras } = data
+      const needsBedrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding', 'handyman'].includes(serviceType)
+      const needsBathrooms = ['residential', 'movein-out', 'custom', 'hoarding', 'handyman'].includes(serviceType)
+
+      if (serviceType === 'residential' && !serviceExtras.cleaningType) {
+        return { valid: false, missingField: 'Type of Cleaning' }
       }
-      if (!property.bedrooms?.toString().trim()) return { valid: false, missingField: 'Bedrooms' }
-      if (!property.bathrooms || property.bathrooms <= 0) {
+      if (serviceType === 'commercial' && !serviceExtras.typeOfSpace) {
+        return { valid: false, missingField: 'Type of Space' }
+      }
+      if (serviceType === 'airbnb' && !serviceExtras.propertiesManaged) {
+        return { valid: false, missingField: 'how many properties you manage' }
+      }
+      if (serviceType === 'renovation') {
+        if (!serviceExtras.propertyType) return { valid: false, missingField: 'Property Type' }
+        if (!serviceExtras.completionStatus) return { valid: false, missingField: 'Completion Status' }
+      }
+      if (needsBedrooms && !property.bedrooms?.toString().trim()) {
+        return { valid: false, missingField: 'Bedrooms' }
+      }
+      if (needsBathrooms && (!property.bathrooms || property.bathrooms <= 0)) {
         return { valid: false, missingField: 'Bathrooms' }
       }
       return ok

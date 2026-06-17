@@ -11,6 +11,12 @@ export const GHL_FIELDS = {
   serviceTotal: process.env.GHL_FIELD_SERVICE_TOTAL ?? '',
   // Stage 9.7.4 — resume URL for abandoned booking recovery emails
   cartResumeUrl: process.env.GHL_FIELD_CART_RESUME_URL ?? '',
+  // Per-service extras (SINGLE_OPTIONS) — pushed from Step 3 based on serviceType
+  cleaningType: process.env.GHL_FIELD_CLEANING_TYPE ?? '',
+  typeOfSpace: process.env.GHL_FIELD_TYPE_OF_SPACE ?? '',
+  propertiesManaged: process.env.GHL_FIELD_PROPERTIES_MANAGED ?? '',
+  propertyType: process.env.GHL_FIELD_PROPERTY_TYPE ?? '',
+  completionStatus: process.env.GHL_FIELD_COMPLETION_STATUS ?? '',
 } as const
 
 export type GhlFieldKey = keyof typeof GHL_FIELDS

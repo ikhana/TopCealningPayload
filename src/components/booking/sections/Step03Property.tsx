@@ -1,10 +1,18 @@
 // src/components/booking/sections/Step03Property.tsx
+// Step 3 — Specs. Service-aware: shows different fields per serviceType.
+//   Residential        → Type of Cleaning, Bedrooms, Bathrooms
+//   Commercial         → Type of Space
+//   Airbnb             → Bedrooms, Properties Managed
+//   Post-Construction  → Property Type, Completion Status
+//   (Approx. Size + photos shown for all; size is optional.)
+
 'use client'
 
 import React, { useRef, useState } from 'react'
-import { Ruler, Building2, Bath, ImagePlus, X } from 'lucide-react'
+import { Ruler, Building2, Bath, Sparkles, Layers, Home, Wrench, ImagePlus, X } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import { MAX_MEDIA_FILES } from '@/hooks/useBookingForm'
+import type { ServiceCategory, ServiceExtras } from '@/types/booking'
 
 const BEDROOM_OPTIONS = [
   { value: 'studio', label: 'Studio' },
@@ -41,21 +49,53 @@ const inputStyle: React.CSSProperties = {
 }
 
 const selectStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '12px 16px 12px 42px',
-  border: '1px solid rgba(13,27,46,0.1)',
-  background: 'white',
-  fontSize: '0.95rem',
-  outline: 'none',
-  transition: 'border-color 0.3s',
-  borderRadius: 0,
+  ...inputStyle,
   cursor: 'pointer',
   appearance: 'none',
 }
 
+const onFieldFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+  e.target.style.borderColor = 'var(--color-teal)'
+  e.target.style.boxShadow = '0 0 0 4px rgba(23,176,171,0.05)'
+}
+const onFieldBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+  e.target.style.borderColor = 'rgba(13,27,46,0.1)'
+  e.target.style.boxShadow = 'none'
+}
+
+// Reusable labeled <select> for the per-service single-option questions.
+function SpecSelect({
+  label, icon: Icon, value, onChange, options, required,
+}: {
+  label: string
+  icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
+  value: string
+  onChange: (v: string) => void
+  options: string[]
+  required?: boolean
+}) {
+  return (
+    <div style={{ gridColumn: 'span 2' }}>
+      <label style={labelStyle}>
+        {label} {required && <span style={{ color: 'var(--color-teal)' }}>*</span>}
+      </label>
+      <div style={{ position: 'relative' }}>
+        <Icon size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
+        <select value={value} onChange={(e) => onChange(e.target.value)} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required={required}>
+          <option value="">Select…</option>
+          {options.map((o) => <option key={o} value={o}>{o}</option>)}
+        </select>
+      </div>
+    </div>
+  )
+}
+
+const WITH_BEDROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding', 'handyman']
+const WITH_BATHROOMS: ServiceCategory[] = ['residential', 'movein-out', 'custom', 'hoarding', 'handyman']
+
 export function Step03Property() {
-  const { bookingData, updatePropertySize, mediaFiles, addMediaFiles, removeMediaFile } = useBooking()
-  const { property } = bookingData
+  const { bookingData, updatePropertySize, updateServiceExtras, mediaFiles, addMediaFiles, removeMediaFile } = useBooking()
+  const { property, serviceType, serviceExtras } = bookingData
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
@@ -63,31 +103,86 @@ export function Step03Property() {
 
   const handleFiles = (files: FileList | null) => {
     if (!files || files.length === 0) return
-    const reason = addMediaFiles(Array.from(files))
-    setMediaError(reason)
+    setMediaError(addMediaFiles(Array.from(files)))
   }
 
-  const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.target.style.borderColor = 'var(--color-teal)'
-    e.target.style.boxShadow = '0 0 0 4px rgba(23,176,171,0.05)'
-  }
-  const onBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.target.style.borderColor = 'rgba(13,27,46,0.1)'
-    e.target.style.boxShadow = 'none'
-  }
+  const setExtra = (key: keyof ServiceExtras) => (v: string) => updateServiceExtras({ [key]: v })
+
+  const showBedrooms = WITH_BEDROOMS.includes(serviceType)
+  const showBathrooms = WITH_BATHROOMS.includes(serviceType)
 
   return (
     <div>
       <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '40px' }}>
-        Property Details.
+        Service Details.
       </h2>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
 
-        {/* Square Footage — full width */}
+        {/* ── Per-service extra questions ─────────────────────── */}
+        {serviceType === 'residential' && (
+          <SpecSelect label="Type of Cleaning" icon={Sparkles} required
+            value={serviceExtras.cleaningType ?? ''} onChange={setExtra('cleaningType')}
+            options={['Regular', 'Deep', 'Move-in/Move-out']} />
+        )}
+
+        {serviceType === 'commercial' && (
+          <SpecSelect label="Type of Space" icon={Building2} required
+            value={serviceExtras.typeOfSpace ?? ''} onChange={setExtra('typeOfSpace')}
+            options={['Office', 'Store', 'Other']} />
+        )}
+
+        {serviceType === 'renovation' && (
+          <>
+            <SpecSelect label="Property Type" icon={Home} required
+              value={serviceExtras.propertyType ?? ''} onChange={setExtra('propertyType')}
+              options={['House', 'Apartment', 'Commercial']} />
+            <SpecSelect label="Completion Status" icon={Wrench} required
+              value={serviceExtras.completionStatus ?? ''} onChange={setExtra('completionStatus')}
+              options={['New build', 'Renovation']} />
+          </>
+        )}
+
+        {/* ── Bedrooms / Bathrooms (conditional) ──────────────── */}
+        {showBedrooms && (
+          <div>
+            <label style={labelStyle}>
+              Bedrooms <span style={{ color: 'var(--color-teal)' }}>*</span>
+            </label>
+            <div style={{ position: 'relative' }}>
+              <Building2 size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
+              <select value={property.bedrooms} onChange={(e) => updatePropertySize({ bedrooms: e.target.value })} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required>
+                <option value="">Select bedrooms</option>
+                {BEDROOM_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {showBathrooms && (
+          <div>
+            <label style={labelStyle}>
+              Bathrooms <span style={{ color: 'var(--color-teal)' }}>*</span>
+            </label>
+            <div style={{ position: 'relative' }}>
+              <Bath size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
+              <select value={property.bathrooms} onChange={(e) => updatePropertySize({ bathrooms: parseInt(e.target.value) })} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required>
+                {BATHROOM_OPTIONS.map((n) => <option key={n} value={n}>{n} {n === 1 ? 'Bathroom' : 'Bathrooms'}</option>)}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {serviceType === 'airbnb' && (
+          <SpecSelect label="How many properties do you manage?" icon={Layers} required
+            value={serviceExtras.propertiesManaged ?? ''} onChange={setExtra('propertiesManaged')}
+            options={['1', '2-5', '6-10', '10+']} />
+        )}
+
+        {/* ── Approx. size (optional, all services) ───────────── */}
         <div style={{ gridColumn: 'span 2' }}>
           <label style={labelStyle}>
-            Square Footage <span style={{ color: 'var(--color-teal)' }}>*</span>
+            Approx. Size <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(sq ft — optional)</span>
           </label>
           <div style={{ position: 'relative' }}>
             <Ruler size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
@@ -95,61 +190,12 @@ export function Step03Property() {
               type="number"
               value={property.squareFootage || ''}
               onChange={(e) => updatePropertySize({ squareFootage: parseInt(e.target.value) || 0 })}
-              onFocus={onFocus}
-              onBlur={onBlur}
+              onFocus={onFieldFocus}
+              onBlur={onFieldBlur}
               min="0"
-              placeholder="Enter sq. ft."
+              placeholder="e.g. 1500"
               style={inputStyle}
-              required
             />
-          </div>
-          <p style={{ marginTop: '6px', fontSize: '0.75rem', color: 'rgba(74,90,106,0.7)' }}>
-            Enter the total square footage of your property
-          </p>
-        </div>
-
-        {/* Bedrooms */}
-        <div>
-          <label style={labelStyle}>
-            Bedrooms <span style={{ color: 'var(--color-teal)' }}>*</span>
-          </label>
-          <div style={{ position: 'relative' }}>
-            <Building2 size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
-            <select
-              value={property.bedrooms}
-              onChange={(e) => updatePropertySize({ bedrooms: e.target.value })}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              style={selectStyle}
-              required
-            >
-              <option value="">Select bedrooms</option>
-              {BEDROOM_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Bathrooms */}
-        <div>
-          <label style={labelStyle}>
-            Bathrooms <span style={{ color: 'var(--color-teal)' }}>*</span>
-          </label>
-          <div style={{ position: 'relative' }}>
-            <Bath size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
-            <select
-              value={property.bathrooms}
-              onChange={(e) => updatePropertySize({ bathrooms: parseInt(e.target.value) })}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              style={selectStyle}
-              required
-            >
-              {BATHROOM_OPTIONS.map((n) => (
-                <option key={n} value={n}>{n} {n === 1 ? 'Bathroom' : 'Bathrooms'}</option>
-              ))}
-            </select>
           </div>
         </div>
 
@@ -164,7 +210,6 @@ export function Step03Property() {
           Share photos of the space so we can give you a more accurate estimate. Up to {MAX_MEDIA_FILES} images.
         </p>
 
-        {/* Drop zone */}
         <div
           role="button"
           tabIndex={0}
@@ -211,7 +256,6 @@ export function Step03Property() {
           </p>
         )}
 
-        {/* Thumbnails */}
         {mediaFiles.length > 0 && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(88px, 1fr))', gap: '10px', marginTop: '14px' }}>
             {mediaFiles.map((file, i) => {
