@@ -25,20 +25,6 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
-      {/* Request-only disclaimer — top of the summary panel */}
-      <div style={{
-        marginBottom: '24px',
-        padding: '14px 16px',
-        background: 'rgba(23,176,171,0.06)',
-        borderLeft: '4px solid var(--color-teal)',
-        display: 'flex', alignItems: 'flex-start', gap: '8px',
-      }}>
-        <Info size={15} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '1px' }} />
-        <p style={{ fontSize: '0.8rem', color: 'var(--color-navy-deep)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
-          This is a request form only. Final pricing will be provided after reviewing your information.
-        </p>
-      </div>
-
       {/* Header */}
       <div style={{
         fontFamily: 'var(--font-mono)', fontSize: '0.75rem', textTransform: 'uppercase',
@@ -78,7 +64,21 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
         </div>
       )}
 
-      {/* Submit button — pinned to the bottom */}
+      {/* Request-only disclaimer — bottom of the summary, above the button */}
+      <div style={{
+        marginTop: 'auto',
+        padding: '14px 16px',
+        background: 'rgba(23,176,171,0.06)',
+        borderLeft: '4px solid var(--color-teal)',
+        display: 'flex', alignItems: 'flex-start', gap: '8px',
+      }}>
+        <Info size={15} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '1px' }} />
+        <p style={{ fontSize: '0.8rem', color: 'var(--color-navy-deep)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
+          This is a request form only. Final pricing will be provided after reviewing your information.
+        </p>
+      </div>
+
+      {/* Submit button */}
       <button
         type="button"
         onClick={onBook}
@@ -94,7 +94,7 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
           letterSpacing: '2px',
           textTransform: 'uppercase',
           cursor: 'pointer',
-          marginTop: 'auto',
+          marginTop: '14px',
           clipPath: 'polygon(0 0, 100% 0, 95% 100%, 0% 100%)',
           transition: 'all 0.35s cubic-bezier(0.25,1,0.5,1)',
         }}
