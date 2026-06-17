@@ -292,6 +292,8 @@ function BookingFormInner() {
     idempotencyKey,
     setIdempotencyKey,
     setBookingDataAll,
+    mediaFiles,
+    clearMediaFiles,
   } = useBooking()
 
   const [currentStep, setCurrentStep] = useState(1)
@@ -403,6 +405,21 @@ function BookingFormInner() {
       if (!res.ok) {
         setSubmissionError(data.error ?? 'Something went wrong. Please try again.')
         return
+      }
+
+      // Upload service photos (if any) to the GHL contact. Best-effort —
+      // a failure here must never block a completed booking, so we swallow
+      // errors and still show the success screen.
+      if (mediaFiles.length > 0 && data.bookingId && data.confirmationCode) {
+        try {
+          const fd = new FormData()
+          fd.append('confirmationCode', data.confirmationCode)
+          mediaFiles.forEach((file) => fd.append('files', file))
+          await fetch(`/api/bookings/${data.bookingId}/media`, { method: 'POST', body: fd })
+        } catch {
+          /* non-blocking — booking is already complete */
+        }
+        clearMediaFiles()
       }
 
       setConfirmationCode(data.confirmationCode)

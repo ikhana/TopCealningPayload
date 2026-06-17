@@ -62,12 +62,45 @@ export interface PaymentNonce {
   dataValue: string
 }
 
+// Photo upload constraints (GHL "Top Cleaning Service Media" field allows
+// up to 6 files; we cap size client-side to keep uploads quick).
+export const MAX_MEDIA_FILES = 6
+export const MAX_MEDIA_BYTES = 10 * 1024 * 1024 // 10 MB per file
+
 export const useBookingForm = () => {
   const [bookingData, setBookingData] = useState<BookingFormData>(initialBookingData)
   const [paymentNonce, setPaymentNonce] = useState<PaymentNonce | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submissionError, setSubmissionError] = useState<string | null>(null)
   const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null)
+
+  // Service photos — kept OUT of bookingData so the JSON submit body stays
+  // serializable. Uploaded to GHL after the booking is created (needs a contactId).
+  const [mediaFiles, setMediaFiles] = useState<File[]>([])
+
+  // Adds image files, de-duping by name+size and enforcing count/size/type limits.
+  // Returns a human-readable reason if anything was rejected (for inline UI feedback).
+  const addMediaFiles = (incoming: File[]): string | null => {
+    let rejected: string | null = null
+    setMediaFiles((prev) => {
+      const next = [...prev]
+      for (const file of incoming) {
+        if (next.length >= MAX_MEDIA_FILES) { rejected = `Up to ${MAX_MEDIA_FILES} photos.`; break }
+        if (!file.type.startsWith('image/')) { rejected = 'Images only (JPG, PNG, GIF).'; continue }
+        if (file.size > MAX_MEDIA_BYTES) { rejected = 'Each photo must be under 10 MB.'; continue }
+        if (next.some((f) => f.name === file.name && f.size === file.size)) continue
+        next.push(file)
+      }
+      return next
+    })
+    return rejected
+  }
+
+  const removeMediaFile = (index: number) => {
+    setMediaFiles((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const clearMediaFiles = () => setMediaFiles([])
 
   const updateCustomerInfo = (data: Partial<CustomerInfo>) => {
     setBookingData((prev) => ({ ...prev, customer: { ...prev.customer, ...data } }))
@@ -191,6 +224,11 @@ export const useBookingForm = () => {
     togglePetType,
     updateReferralSource,
     setBookingDataAll,
+    // Service photos
+    mediaFiles,
+    addMediaFiles,
+    removeMediaFile,
+    clearMediaFiles,
     // Payment + submission state
     paymentNonce,
     setPaymentNonce,
