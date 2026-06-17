@@ -1,22 +1,38 @@
 // src/lib/ghl/files.ts
-// Upload files into a GHL FILE_UPLOAD contact custom field.
+// Populate a GHL FILE_UPLOAD contact custom field so it renders in the
+// contact UI (downloadable file rows).
 //
-// GHL requires a two-step flow (verified empirically 2026-06-17 — the public
-// docs are incomplete):
+// Verified working flow (2026-06-17). The public /customFields/upload
+// endpoint does NOT work for UI rendering — it stores files in a private
+// bucket with no documentId, and the contact widget never shows them.
+// The widget renders entries from this exact shape, which we build from
+// the Media Library upload instead:
 //
-//   1. POST /locations/{locationId}/customFields/upload   (multipart)
-//        form fields:
-//          - id        = contactId
-//          - maxFiles  = string (must be >= file count; field is capped at 6)
-//          - {fieldId}_{uuid} = the file Blob (one part per file)
-//        → 201, returns { meta: [{ url, originalname, mimetype, ... }] }
+//   1. POST /medias/upload-file   (multipart: file, locationId)
+//        → { fileId, url }   where url is a PUBLIC CDN link
+//          (https://assets.cdn.filesafe.space/<loc>/media/<uuid>.<ext>)
 //
 //   2. PUT /contacts/{contactId}
-//        { customFields: [{ id: fieldId, value: [{ url, name, mimetype }] }] }
-//        → 200, value now resolves via {{contact.<fieldKey>}}
+//        {
+//          customFields: [{
+//            id: <fieldId>,
+//            value: {
+//              "<uuid>": {
+//                meta: { fieldname, originalname, encoding, mimetype, size, uuid },
+//                url:  <public CDN url from step 1>,
+//                documentId: <fileId from step 1>,
+//              },
+//              ...one entry per file
+//            }
+//          }]
+//        }
 //
-// Step 1 only parks the file in GHL storage; step 2 is what actually binds it
-// to the contact record so it shows in the UI and merge fields.
+// NOTE: the field value is an OBJECT keyed by uuid (not an array). A PUT
+// replaces the whole value, so callers that need to append must merge with
+// the existing value first. For the booking flow we set all photos at once,
+// so replace is correct.
+
+import { randomUUID } from 'node:crypto'
 
 const BASE_URL = process.env.GHL_API_BASE ?? 'https://services.leadconnectorhq.com'
 const API_VERSION = process.env.GHL_API_VERSION ?? '2021-07-28'
@@ -26,10 +42,10 @@ export type UploadFile = {
   filename: string
 }
 
-type UploadedFileMeta = {
+export type UploadedFileMeta = {
   url: string
   name: string
-  mimetype: string
+  fileId: string
 }
 
 function authHeaders(): Record<string, string> {
@@ -40,57 +56,70 @@ function authHeaders(): Record<string, string> {
   }
 }
 
-/**
- * Uploads one or more files to a contact's FILE_UPLOAD custom field and binds
- * them to the contact record. Returns the stored file metadata.
- *
- * @param contactId  GHL contact id (must already exist)
- * @param fieldId    custom field id (e.g. GHL_FIELD_SERVICE_MEDIA)
- * @param files      files to upload
- * @param maxFiles   field's configured max (defaults to '6')
- */
-export async function uploadFilesToContactField(
-  contactId: string,
-  fieldId: string,
-  files: UploadFile[],
-  maxFiles = '6',
-): Promise<UploadedFileMeta[]> {
-  if (files.length === 0) return []
-
-  const locationId = process.env.GHL_LOCATION_ID!
-
-  // ── Step 1: multipart upload to GHL storage ──────────────────
+// Uploads a single file to the GHL Media Library, returning its public URL + id.
+async function uploadToMediaLibrary(file: UploadFile, locationId: string): Promise<{ url: string; fileId: string }> {
   const fd = new FormData()
-  fd.append('id', contactId)
-  fd.append('maxFiles', maxFiles)
-  for (const f of files) {
-    const fileId = crypto.randomUUID()
-    fd.append(`${fieldId}_${fileId}`, f.blob, f.filename)
-  }
+  fd.append('file', file.blob, file.filename)
+  fd.append('locationId', locationId)
 
-  const upRes = await fetch(`${BASE_URL}/locations/${locationId}/customFields/upload`, {
+  const res = await fetch(`${BASE_URL}/medias/upload-file`, {
     method: 'POST',
     headers: authHeaders(), // no Content-Type — runtime sets the multipart boundary
     body: fd,
   })
 
-  if (!upRes.ok) {
-    const body = await upRes.text().catch(() => '')
-    throw new Error(`GHL file upload failed: ${upRes.status} ${body.slice(0, 300)}`)
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`GHL media upload failed: ${res.status} ${body.slice(0, 300)}`)
   }
 
-  const upJson = (await upRes.json()) as {
-    meta?: Array<{ url: string; originalname: string; mimetype: string }>
+  const json = (await res.json()) as { fileId?: string; url?: string }
+  if (!json.url || !json.fileId) {
+    throw new Error(`GHL media upload returned no url/fileId: ${JSON.stringify(json).slice(0, 200)}`)
   }
-  const value: UploadedFileMeta[] = (upJson.meta ?? []).map((m) => ({
-    url: m.url,
-    name: m.originalname,
-    mimetype: m.mimetype,
-  }))
+  return { url: json.url, fileId: json.fileId }
+}
 
-  if (value.length === 0) return []
+/**
+ * Uploads files and binds them to a contact's FILE_UPLOAD custom field so
+ * they appear (downloadable) in the contact UI. Replaces any existing value.
+ *
+ * @param contactId  GHL contact id (must already exist)
+ * @param fieldId    FILE_UPLOAD custom field id (e.g. GHL_FIELD_SERVICE_MEDIA)
+ * @param files      files to upload
+ */
+export async function uploadFilesToContactField(
+  contactId: string,
+  fieldId: string,
+  files: UploadFile[],
+): Promise<UploadedFileMeta[]> {
+  if (files.length === 0) return []
 
-  // ── Step 2: bind the uploaded files to the contact field ─────
+  const locationId = process.env.GHL_LOCATION_ID!
+
+  // ── Step 1: upload each file to the Media Library (public URLs) ──
+  const value: Record<string, unknown> = {}
+  const uploaded: UploadedFileMeta[] = []
+
+  for (const file of files) {
+    const { url, fileId } = await uploadToMediaLibrary(file, locationId)
+    const uuid = randomUUID()
+    value[uuid] = {
+      meta: {
+        fieldname: fieldId,
+        originalname: file.filename,
+        encoding: '7bit',
+        mimetype: file.blob.type || 'application/octet-stream',
+        size: file.blob.size,
+        uuid,
+      },
+      url,
+      documentId: fileId,
+    }
+    uploaded.push({ url, name: file.filename, fileId })
+  }
+
+  // ── Step 2: bind the uploaded files to the contact field ─────────
   const putRes = await fetch(`${BASE_URL}/contacts/${contactId}`, {
     method: 'PUT',
     headers: { ...authHeaders(), 'Content-Type': 'application/json' },
@@ -102,5 +131,5 @@ export async function uploadFilesToContactField(
     throw new Error(`GHL contact field bind failed: ${putRes.status} ${body.slice(0, 300)}`)
   }
 
-  return value
+  return uploaded
 }
