@@ -26,7 +26,9 @@ const initialBookingData: BookingFormData = {
     bedrooms: '',
     bathrooms: 1,
   },
-  serviceType: 'residential',
+  // Empty until the user picks on Step 2 — keeps the summary from showing a
+  // service prematurely and forces an explicit choice (Step 2 validation requires it).
+  serviceType: '' as ServiceCategory,
   frequency: 'one-time',
   hasChildren: false,
   hasPets: false,
