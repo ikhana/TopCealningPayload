@@ -5,13 +5,6 @@ import React from 'react'
 import { User, Mail, Phone, Info } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 
-const COUNTRY_CODES = [
-  { value: 'US', label: 'US +1' },
-  { value: 'CA', label: 'CA +1' },
-  { value: 'MX', label: 'MX +52' },
-  { value: 'UK', label: 'UK +44' },
-]
-
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '12px 16px 12px 42px',
@@ -102,33 +95,20 @@ export function Step01Customer() {
         {/* Phone */}
         <div>
           <label style={labelStyle}>Phone Number <span style={{ color: 'var(--color-teal)' }}>*</span></label>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            {/* Country code */}
-            <select
-              name="countryCode"
-              value={customer.countryCode}
+          {/* US-only — country code fixed to US, dropdown removed */}
+          <div style={{ position: 'relative' }}>
+            <Phone size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
+            <input
+              type="tel"
+              name="phone"
+              value={customer.phone}
               onChange={handleChange}
-              style={{ padding: '12px 10px', border: '1px solid rgba(13,27,46,0.1)', background: 'white', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', flexShrink: 0, borderRadius: 0, outline: 'none', cursor: 'pointer' }}
-            >
-              {COUNTRY_CODES.map((c) => (
-                <option key={c.value} value={c.value}>{c.label}</option>
-              ))}
-            </select>
-            {/* Phone input */}
-            <div style={{ position: 'relative', flex: 1 }}>
-              <Phone size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
-              <input
-                type="tel"
-                name="phone"
-                value={customer.phone}
-                onChange={handleChange}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                placeholder="+1 (555) 000-0000"
-                style={{ ...inputStyle, flex: 1 }}
-                required
-              />
-            </div>
+              onFocus={onFocus}
+              onBlur={onBlur}
+              placeholder="+1 (555) 000-0000"
+              style={inputStyle}
+              required
+            />
           </div>
           <p style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '6px', fontSize: '0.75rem', color: 'rgba(74,90,106,0.7)' }}>
             <Info size={12} />
