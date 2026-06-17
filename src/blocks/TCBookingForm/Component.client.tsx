@@ -3,7 +3,7 @@
 // Design: design/form.html — no background grid, compact fields
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { AlertCircle, Info } from 'lucide-react'
 import { TCButton } from '@/components/ui/TCButton'
 import { BookingProvider } from '@/components/booking/BookingContext'
@@ -12,6 +12,7 @@ import { useBooking } from '@/components/booking/BookingContext'
 import { generateIdempotencyKeyClient } from '@/lib/booking/idempotency'
 import { validateStep } from '@/lib/booking/step-validation'
 import { useDraftSync } from '@/hooks/useDraftSync'
+import type { ServiceCategory } from '@/types/booking'
 import { Step01Customer } from '@/components/booking/sections/Step01Customer'
 import { Step02Service } from '@/components/booking/sections/Step02Service'
 import { Step03Property } from '@/components/booking/sections/Step03Property'
@@ -147,11 +148,22 @@ const ALL_STEPS = [
   { num: '10', label: 'Terms' },
 ]
 
-const STEPS = PAYMENT_ENABLED ? ALL_STEPS : ALL_STEPS.filter((s) => s.num !== '09')
-const TOTAL_STEPS = STEPS.length
+// Per-service step flows — which real step numbers each service includes.
+// Services not listed here use the full default flow. Step 02 (Service) is the
+// selector, so the flow resolves the moment a service is chosen.
+const SERVICE_STEP_NUMS: Partial<Record<ServiceCategory, string[]>> = {
+  // Handyman is a minimal request: Contact, Service, Details (photos +
+  // special instructions), Schedule (preferred date), Terms.
+  handyman: ['01', '02', '03', '06', '10'],
+}
 
-// Maps wizard step index (1-based) to the real step number (for rendering)
-const STEP_NUM_AT = (wizardStep: number) => parseInt(STEPS[wizardStep - 1]?.num ?? '0', 10)
+// Builds the visible step list for a service, applying the payment-flag filter.
+function buildSteps(serviceType: ServiceCategory | '') {
+  const allowed = SERVICE_STEP_NUMS[serviceType as ServiceCategory]
+  let steps = allowed ? ALL_STEPS.filter((s) => allowed.includes(s.num)) : ALL_STEPS
+  if (!PAYMENT_ENABLED) steps = steps.filter((s) => s.num !== '09')
+  return steps
+}
 
 /* ── Success screen shown after booking is confirmed ─────── */
 function BookingSuccess({
@@ -257,6 +269,15 @@ function BookingFormInner() {
   const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
   const [futureOccurrences, setFutureOccurrences] = useState<Array<{ occurrence: number; startTime: string }> | undefined>(undefined)
   const [stepError, setStepError] = useState<string | null>(null)
+
+  // Step list is service-driven (e.g. Handyman shows fewer steps). serviceType
+  // only changes on Step 2, so currentStep stays valid; the clamp below is a guard.
+  const STEPS = useMemo(() => buildSteps(bookingData.serviceType), [bookingData.serviceType])
+  const TOTAL_STEPS = STEPS.length
+  const STEP_NUM_AT = (wizardStep: number) => parseInt(STEPS[wizardStep - 1]?.num ?? '0', 10)
+  useEffect(() => {
+    setCurrentStep((s) => Math.min(s, TOTAL_STEPS))
+  }, [TOTAL_STEPS])
 
   const { forceSaveDraft, clearDraft, hydrateFromResume, getToken } = useDraftSync(bookingData, currentStep)
 
