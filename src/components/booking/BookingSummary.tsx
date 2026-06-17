@@ -67,7 +67,7 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
       {/* Request note (replaces the price total + payment note) */}
       <p style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '0.7rem', color: 'rgba(74,90,106,0.6)', marginTop: 'auto', paddingTop: '22px', lineHeight: 1.55 }}>
         <ShieldCheck size={12} style={{ flexShrink: 0, marginTop: '1px', color: 'var(--color-teal)' }} />
-        This is a request only. We&apos;ll review your details and confirm final pricing before anything is scheduled.
+        This is a request form only. Final pricing will be provided after reviewing your information.
       </p>
 
       {/* Submit button */}

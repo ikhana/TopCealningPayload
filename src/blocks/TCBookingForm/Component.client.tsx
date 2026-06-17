@@ -4,7 +4,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, Info } from 'lucide-react'
 import { TCButton } from '@/components/ui/TCButton'
 import { BookingProvider } from '@/components/booking/BookingContext'
 import { BookingSummary } from '@/components/booking/BookingSummary'
@@ -614,6 +614,22 @@ function BookingFormInner() {
               </p>
             </div>
           )}
+
+          {/* Request-only disclaimer — persistent across all steps/services */}
+          <div style={{
+            marginBottom: '20px',
+            padding: '12px 16px',
+            background: 'rgba(23,176,171,0.06)',
+            borderLeft: '4px solid var(--color-teal)',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px',
+          }}>
+            <Info size={15} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '1px' }} />
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-navy-deep)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
+              This is a request form only. Final pricing will be provided after reviewing your information.
+            </p>
+          </div>
 
           {/* Animated section */}
           <div key={currentStep} className="bf-section-in">
