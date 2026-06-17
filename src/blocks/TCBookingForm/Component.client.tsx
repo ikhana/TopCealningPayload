@@ -19,7 +19,6 @@ import { Step04AddOns } from '@/components/booking/sections/Step04AddOns'
 import { Step05Frequency } from '@/components/booking/sections/Step05Frequency'
 import { Step06Schedule } from '@/components/booking/sections/Step06Schedule'
 import { Step07Access } from '@/components/booking/sections/Step07Access'
-import { Step08Address } from '@/components/booking/sections/Step08Address'
 import { Step09Payment } from '@/components/booking/sections/Step09Payment'
 import { Step10Terms } from '@/components/booking/sections/Step10Terms'
 
@@ -180,14 +179,14 @@ const PAYMENT_ENABLED = process.env.NEXT_PUBLIC_PAYMENT_ENABLED === 'true'
 
 /* ── Step metadata ─────────────────────────────────────────── */
 const ALL_STEPS = [
-  { num: '01', label: 'Identify' },
+  { num: '01', label: 'Contact' },
   { num: '02', label: 'Service' },
   { num: '03', label: 'Specs' },
   { num: '04', label: 'Add-ons' },
   { num: '05', label: 'Frequency' },
   { num: '06', label: 'Schedule' },
   { num: '07', label: 'Access' },
-  { num: '08', label: 'Address' },
+  // Address (was '08') merged into Step 1 (Contact & Address).
   { num: '09', label: 'Payment' },
   { num: '10', label: 'Terms' },
 ]
@@ -669,7 +668,6 @@ function BookingFormInner() {
             {STEP_NUM_AT(currentStep) === 5  && <Step05Frequency />}
             {STEP_NUM_AT(currentStep) === 6  && <Step06Schedule />}
             {STEP_NUM_AT(currentStep) === 7  && <Step07Access />}
-            {STEP_NUM_AT(currentStep) === 8  && <Step08Address />}
             {STEP_NUM_AT(currentStep) === 9  && PAYMENT_ENABLED && <Step09Payment />}
             {STEP_NUM_AT(currentStep) === 10 && (
               <>

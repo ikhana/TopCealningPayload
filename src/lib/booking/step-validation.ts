@@ -27,13 +27,22 @@ export function validateStep(
 ): StepValidationResult {
   switch (realStepNum) {
     case 1: {
-      const { customer } = data
+      const { customer, address } = data
       if (!customer.firstName?.trim()) return { valid: false, missingField: 'First Name' }
       if (!customer.email?.trim()) return { valid: false, missingField: 'Email' }
       if (!customer.phone?.trim()) return { valid: false, missingField: 'Phone' }
       // Light email format check — bad email is the #1 cause of unreachable leads
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) {
         return { valid: false, missingField: 'a valid Email' }
+      }
+      // Address merged into this step (was Step 8).
+      if (!address.street?.trim()) return { valid: false, missingField: 'Street Address' }
+      if (!address.city?.trim()) return { valid: false, missingField: 'City' }
+      if (!address.state?.trim()) return { valid: false, missingField: 'State' }
+      if (!address.zipCode?.trim()) return { valid: false, missingField: 'ZIP Code' }
+      // Service-area gate — Broward County only (Geraldine's PDF slide 15)
+      if (!isBrowardZip(address.zipCode)) {
+        return { valid: false, missingField: 'a Broward County zip code (we don\'t service this area yet)' }
       }
       return ok
     }
@@ -69,18 +78,7 @@ export function validateStep(
       if (!data.accessMethod) return { valid: false, missingField: 'Access Method' }
       return ok
     }
-    case 8: {
-      const { address } = data
-      if (!address.street?.trim()) return { valid: false, missingField: 'Street Address' }
-      if (!address.city?.trim()) return { valid: false, missingField: 'City' }
-      if (!address.state?.trim()) return { valid: false, missingField: 'State' }
-      if (!address.zipCode?.trim()) return { valid: false, missingField: 'ZIP Code' }
-      // Service-area gate — Broward County only (Geraldine's PDF slide 15)
-      if (!isBrowardZip(address.zipCode)) {
-        return { valid: false, missingField: 'a Broward County zip code (we don\'t service this area yet)' }
-      }
-      return ok
-    }
+    // case 8 (Address) removed — merged into Step 1 (Contact & Address).
     case 9: {
       if (options.paymentEnabled && !options.paymentNonceSet) {
         return { valid: false, missingField: 'Payment Method' }
