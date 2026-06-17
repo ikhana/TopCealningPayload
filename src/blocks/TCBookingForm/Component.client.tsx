@@ -536,13 +536,18 @@ function BookingFormInner() {
                     background: isDone
                       ? 'var(--color-navy-deep)'
                       : isActive
-                        ? 'var(--color-teal)'
+                        ? '#e0f5f4'
                         : 'white',
-                    color: isDone || isActive ? 'white' : 'rgba(74,90,106,0.6)',
+                    // Active number is navy on light-teal (readable); done is the white ✓ on navy.
+                    color: isDone
+                      ? 'white'
+                      : isActive
+                        ? 'var(--color-navy-deep)'
+                        : 'rgba(74,90,106,0.6)',
                     boxShadow: isActive ? '0 0 14px rgba(23,176,171,0.3)' : 'none',
                   }}
                 >
-                  {isDone ? '✓' : step.num}
+                  {isDone ? '✓' : String(stepNum).padStart(2, '0')}
                 </div>
 
                 {/* Step label */}
