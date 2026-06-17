@@ -9,6 +9,7 @@ export type ServiceCategory =
   | 'commercial'
   | 'renovation'
   | 'hoarding'
+  | 'handyman'
 
 export type FrequencyOption =
   | 'one-time'

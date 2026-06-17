@@ -14,6 +14,7 @@ const SERVICE_LABELS: Record<string, string> = {
   commercial:   'Commercial Office',
   renovation:   'Post Renovation',
   hoarding:     'Hoarding Cleanup',
+  handyman:     'Handyman Services',
 }
 
 const fmt = (n: number) => `$${n.toFixed(2)}`

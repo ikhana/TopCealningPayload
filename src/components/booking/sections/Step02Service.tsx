@@ -2,7 +2,7 @@
 'use client'
 
 import React from 'react'
-import { Home, PackageOpen, Bed, Sparkles, Building2, Wrench, Package } from 'lucide-react'
+import { Home, PackageOpen, Bed, Sparkles, Building2, Wrench, Package, Hammer } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import type { ServiceCategory } from '@/types/booking'
 
@@ -17,6 +17,7 @@ const SERVICES = [
   { id: 'commercial' as ServiceCategory, label: 'Commercial Office', icon: Building2 },
   { id: 'renovation' as ServiceCategory, label: 'Post Renovation', icon: Wrench },
   { id: 'hoarding' as ServiceCategory, label: 'Hoarding Cleanup', icon: Package },
+  { id: 'handyman' as ServiceCategory, label: 'Handyman Services', icon: Hammer },
 ]
 
 export function Step02Service() {

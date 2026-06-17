@@ -15,6 +15,7 @@ export const SERVICE_PERCENTAGES: Record<ServiceCategory, number | { min: number
   commercial: 0.02,
   renovation: 0.02,
   hoarding: { min: 0.02, max: 0.06 }, // 2–6%
+  handyman: 0.02,
 }
 
 /** Price modifiers for different frequency options (per sq ft) */
@@ -62,6 +63,7 @@ export const BASE_PRICES: Record<string, number> = {
   commercial: 200,
   renovation: 220,
   hoarding: 250,
+  handyman: 150,
 }
 
 /** Calculate price per square foot */

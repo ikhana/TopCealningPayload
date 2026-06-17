@@ -96,6 +96,7 @@ const SERVICE_LABELS: Record<string, string> = {
   commercial: 'Commercial Cleaning',
   renovation: 'Post-Renovation Cleaning',
   hoarding: 'Hoarding Cleanup',
+  handyman: 'Handyman Services',
   custom: 'Custom Cleaning',
 }
 

@@ -5059,7 +5059,15 @@ export interface Booking {
    * e.g. TC-2026-0042
    */
   confirmationCode: string;
-  serviceType: 'residential' | 'movein-out' | 'airbnb' | 'commercial' | 'renovation' | 'hoarding' | 'custom';
+  serviceType:
+    | 'residential'
+    | 'movein-out'
+    | 'airbnb'
+    | 'commercial'
+    | 'renovation'
+    | 'hoarding'
+    | 'handyman'
+    | 'custom';
   frequency: 'one-time' | 'weekly' | 'biweekly' | '3weekly' | 'monthly' | '8weekly';
   /**
    * YYYY-MM-DD
