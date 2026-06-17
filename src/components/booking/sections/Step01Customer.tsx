@@ -162,40 +162,43 @@ export function Step01Customer() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
 
-          {/* Street — full width, autocomplete */}
-          <div style={{ gridColumn: 'span 2' }}>
-            <label style={labelStyle}>Street Address <span style={{ color: 'var(--color-teal)' }}>*</span></label>
-            <div style={{ position: 'relative' }}>
-              <MapPin size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
-              <input
-                ref={streetInputRef}
-                type="text"
-                value={address.street}
-                onChange={(e) => updateAddress({ street: e.target.value })}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                placeholder="Start typing your address…"
-                style={inputStyle}
-                autoComplete="off"
-                required
-              />
+          {/* Street + Apt — same row (street wider) to save vertical space */}
+          <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+            {/* Street — autocomplete */}
+            <div>
+              <label style={labelStyle}>Street Address <span style={{ color: 'var(--color-teal)' }}>*</span></label>
+              <div style={{ position: 'relative' }}>
+                <MapPin size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
+                <input
+                  ref={streetInputRef}
+                  type="text"
+                  value={address.street}
+                  onChange={(e) => updateAddress({ street: e.target.value })}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  placeholder="Start typing your address…"
+                  style={inputStyle}
+                  autoComplete="off"
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Apt / Unit — full width */}
-          <div style={{ gridColumn: 'span 2' }}>
-            <label style={labelStyle}>Apt / Suite / Unit</label>
-            <div style={{ position: 'relative' }}>
-              <Home size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
-              <input
-                type="text"
-                value={address.apt ?? ''}
-                onChange={(e) => updateAddress({ apt: e.target.value })}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                placeholder="Apt 4B (optional)"
-                style={inputStyle}
-              />
+            {/* Apt / Unit */}
+            <div>
+              <label style={labelStyle}>Apt / Suite / Unit</label>
+              <div style={{ position: 'relative' }}>
+                <Home size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
+                <input
+                  type="text"
+                  value={address.apt ?? ''}
+                  onChange={(e) => updateAddress({ apt: e.target.value })}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  placeholder="Apt 4B (optional)"
+                  style={inputStyle}
+                />
+              </div>
             </div>
           </div>
 
