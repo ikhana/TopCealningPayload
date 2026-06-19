@@ -88,7 +88,7 @@ export function PromotionalBanner({
   )
 
   return (
-    <div className="w-full h-[50px] overflow-hidden font-mono text-[14px] tracking-[0.04em] relative bg-teal border-b border-white/[0.15]">
+    <div className="w-full h-[50px] overflow-hidden font-body text-[14px] tracking-[0.02em] relative bg-teal border-b border-white/[0.15]">
 
       {/* ── MOBILE: infinite horizontal ticker (hidden sm+) ── */}
       <div className="flex sm:hidden items-center h-full w-full overflow-hidden">
