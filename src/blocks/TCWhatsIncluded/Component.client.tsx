@@ -52,17 +52,32 @@ function getTileSpans(count: number): number[] {
   }
 }
 
-const Check = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
-    <path
-      d="M20 6L9 17l-5-5"
-      stroke="var(--color-teal, #17b0ab)"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
-  </svg>
+// Checked-checkbox tick — teal square with a white check (per Geraldine:
+// "What's Included" reads as a checkbox checklist).
+const CheckBox = () => (
+  <span
+    style={{
+      width: '20px',
+      height: '20px',
+      flexShrink: 0,
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'var(--color-teal, #17b0ab)',
+      borderRadius: '4px',
+    }}
+  >
+    <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden>
+      <path
+        d="M20 6L9 17l-5-5"
+        stroke="#ffffff"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
+  </span>
 )
 
 export function TCWhatsIncludedClient({
@@ -178,11 +193,8 @@ export function TCWhatsIncludedClient({
                       color: 'var(--color-navy-mid, #2a4365)',
                     }}
                   >
-                    <span
-                      className="flex items-center justify-center mt-[2px]"
-                      style={{ width: '20px', height: '20px' }}
-                    >
-                      <Check />
+                    <span className="flex mt-[2px]">
+                      <CheckBox />
                     </span>
                     <span>{item}</span>
                   </li>
