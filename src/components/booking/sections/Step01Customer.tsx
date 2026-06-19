@@ -146,7 +146,7 @@ export function Step01Customer() {
 
       {/* ── Service address ─────────────────────────────────── */}
       <div style={{ marginTop: '36px' }}>
-        <span style={sectionLabelStyle}>Service Address</span>
+        <span style={sectionLabelStyle}>Address</span>
 
         {/* Service-area notice — Broward County */}
         <div style={{
@@ -156,7 +156,7 @@ export function Step01Customer() {
           borderLeft: '4px solid var(--color-teal)',
         }}>
           <p style={{ fontSize: '0.92rem', color: 'var(--color-navy-deep)', lineHeight: 1.55, margin: 0, fontWeight: 500 }}>
-            We currently serve the <strong>greater metropolitan area</strong>. Enter your address and we&apos;ll confirm availability in your zone.
+            Enter your address and we&apos;ll confirm availability in your area.
           </p>
         </div>
 
