@@ -95,9 +95,54 @@ function SpecSelect({
 const WITH_BEDROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 const WITH_BATHROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 
+const HANDYMAN_SERVICES = ['TV mounting', 'Plumbing minor repairs', 'Drywall repair', 'Door/lock fixing', 'Furniture assembly', 'Painting touch-ups', 'Other']
+const JOB_CONDITIONS = ['Urgent / same-day', 'Attempted before by someone else', 'Visible damage or safety risk']
+
+// Multi-select chip group (handyman service types + job conditions).
+function MultiChips({ label, options, selected, onToggle, required }: {
+  label: string
+  options: string[]
+  selected: string[]
+  onToggle: (v: string) => void
+  required?: boolean
+}) {
+  return (
+    <div style={{ gridColumn: 'span 2' }}>
+      <label style={labelStyle}>
+        {label} {required && <span style={{ color: 'var(--color-teal)' }}>*</span>}
+      </label>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        {options.map((opt) => {
+          const sel = selected.includes(opt)
+          return (
+            <button
+              type="button"
+              key={opt}
+              onClick={() => onToggle(opt)}
+              style={{
+                padding: '9px 14px',
+                border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.12)'}`,
+                background: sel ? '#e0f5f4' : 'white',
+                color: sel ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.8)',
+                fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', borderRadius: 0,
+                display: 'flex', alignItems: 'center', gap: '6px',
+                transition: 'all 0.25s ease',
+              }}
+            >
+              {sel && <span style={{ color: 'var(--color-teal)', fontSize: '0.7rem' }}>✓</span>}
+              {opt}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export function Step03Property() {
-  const { bookingData, updatePropertySize, updateServiceExtras, updateSpecialInstructions, mediaFiles, addMediaFiles, removeMediaFile } = useBooking()
-  const { property, serviceType, serviceExtras, specialInstructions } = bookingData
+  const { bookingData, updatePropertySize, updateServiceExtras, updateHandyman, toggleHandymanMulti, updateSpecialInstructions, mediaFiles, addMediaFiles, removeMediaFile } = useBooking()
+  const { property, serviceType, serviceExtras, handyman, specialInstructions } = bookingData
+  const isHandyman = serviceType === 'handyman'
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
@@ -120,6 +165,64 @@ export function Step03Property() {
       </h2>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+
+        {/* ── Handyman-specific questions ─────────────────────── */}
+        {isHandyman && (
+          <>
+            <MultiChips
+              label="What type of handyman service is needed?"
+              options={HANDYMAN_SERVICES}
+              selected={handyman.serviceTypes ?? []}
+              onToggle={(v) => toggleHandymanMulti('serviceTypes', v)}
+              required
+            />
+
+            {(handyman.serviceTypes ?? []).includes('Other') && (
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={labelStyle}>Please describe</label>
+                <input
+                  type="text"
+                  value={handyman.otherDetail ?? ''}
+                  onChange={(e) => updateHandyman({ otherDetail: e.target.value })}
+                  onFocus={onFieldFocus}
+                  onBlur={onFieldBlur}
+                  placeholder="Describe the service needed"
+                  style={{ ...inputStyle, paddingLeft: '16px' }}
+                />
+              </div>
+            )}
+
+            <MultiChips
+              label="Condition — check all that apply"
+              options={JOB_CONDITIONS}
+              selected={handyman.jobConditions ?? []}
+              onToggle={(v) => toggleHandymanMulti('jobConditions', v)}
+            />
+
+            <SpecSelect
+              label="Do you have tools & materials, or should we bring them?"
+              icon={Wrench}
+              value={handyman.toolsMaterials ?? ''}
+              onChange={(v) => updateHandyman({ toolsMaterials: v })}
+              options={['I have them', 'Please bring them']}
+            />
+
+            <div style={{ gridColumn: 'span 2' }}>
+              <label style={labelStyle}>
+                Specific parts needed <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={handyman.partsNeeded ?? ''}
+                onChange={(e) => updateHandyman({ partsNeeded: e.target.value })}
+                onFocus={onFieldFocus}
+                onBlur={onFieldBlur}
+                placeholder='e.g. 55" TV bracket, white paint'
+                style={{ ...inputStyle, paddingLeft: '16px' }}
+              />
+            </div>
+          </>
+        )}
 
         {/* ── Per-service extra questions ─────────────────────── */}
         {serviceType === 'residential' && (
@@ -224,10 +327,14 @@ export function Step03Property() {
       {/* ── Optional photos ───────────────────────────────────── */}
       <div style={{ marginTop: '32px' }}>
         <label style={labelStyle}>
-          Add Photos <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+          Add Photos {isHandyman
+            ? <span style={{ color: 'var(--color-teal)' }}>*</span>
+            : <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>}
         </label>
         <p style={{ marginTop: '-2px', marginBottom: '12px', fontSize: '0.75rem', color: 'rgba(74,90,106,0.7)' }}>
-          Share photos of the space so we can give you a more accurate estimate. Up to {MAX_MEDIA_FILES} images.
+          {isHandyman
+            ? `Please upload clear photos of the area for an accurate quote (required). Up to ${MAX_MEDIA_FILES} images.`
+            : `Share photos of the space so we can give you a more accurate estimate. Up to ${MAX_MEDIA_FILES} images.`}
         </p>
 
         <div

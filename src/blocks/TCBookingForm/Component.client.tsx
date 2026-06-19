@@ -152,9 +152,10 @@ const ALL_STEPS = [
 // Services not listed here use the full default flow. Step 02 (Service) is the
 // selector, so the flow resolves the moment a service is chosen.
 const SERVICE_STEP_NUMS: Partial<Record<ServiceCategory, string[]>> = {
-  // Handyman is a minimal request: Contact, Service, Details (photos +
-  // special instructions), Schedule (preferred date), Terms.
-  handyman: ['01', '02', '03', '06', '10'],
+  // Handyman: Contact, Service, Details (handyman questions + mandatory
+  // photos), Schedule (preferred date), Access (pets/children/access), Terms.
+  // No add-ons or frequency.
+  handyman: ['01', '02', '03', '06', '07', '10'],
 }
 
 // Builds the visible step list for a service, applying the payment-flag filter.
@@ -308,6 +309,7 @@ function BookingFormInner() {
       paymentEnabled: PAYMENT_ENABLED,
       paymentNonceSet: !!paymentNonce,
       termsAccepted: true, // Step 10 self-gates via its own button — never blocks goNext
+      mediaCount: mediaFiles.length, // handyman requires ≥1 photo on Step 3
     })
     if (!result.valid) {
       setStepError(`Please fill in: ${result.missingField}`)

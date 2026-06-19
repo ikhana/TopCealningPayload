@@ -38,6 +38,16 @@ export interface ServiceExtras {
   completionStatus?: string   // Post-Construction: New build | Renovation
 }
 
+// Handyman-specific questions (Step 3, handyman only). serviceTypes and
+// jobConditions are multi-select → arrays.
+export interface HandymanDetails {
+  serviceTypes?: string[]     // TV mounting | Plumbing… | Other  (MULTIPLE_OPTIONS)
+  otherDetail?: string        // free text when "Other" is selected
+  jobConditions?: string[]    // Urgent | Attempted before | Damage risk  (CHECKBOX)
+  toolsMaterials?: string     // I have them | Please bring them
+  partsNeeded?: string        // e.g. TV bracket, paint color
+}
+
 export interface CustomerInfo {
   firstName: string
   lastName?: string
@@ -80,6 +90,7 @@ export interface BookingFormData {
   customer: CustomerInfo
   property: PropertySize
   serviceExtras: ServiceExtras
+  handyman: HandymanDetails
   specialInstructions: string
   serviceType: ServiceCategory
   frequency: FrequencyOption

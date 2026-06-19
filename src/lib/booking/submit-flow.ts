@@ -255,6 +255,7 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
 
     // Per-service extras (Step 3) — only push the ones the chosen service uses.
     const extras = formData.serviceExtras ?? {}
+    const hman = formData.handyman ?? {}
 
     const contactCustomFields = [
       GHL_FIELDS.confirmationCode && { id: GHL_FIELDS.confirmationCode, field_value: confirmationCode },
@@ -268,7 +269,13 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       GHL_FIELDS.propertyType && extras.propertyType && { id: GHL_FIELDS.propertyType, field_value: extras.propertyType },
       GHL_FIELDS.completionStatus && extras.completionStatus && { id: GHL_FIELDS.completionStatus, field_value: extras.completionStatus },
       GHL_FIELDS.notes && formData.specialInstructions?.trim() && { id: GHL_FIELDS.notes, field_value: formData.specialInstructions.trim() },
-    ].filter(Boolean) as Array<{ id: string; field_value: string }>
+      // Handyman-specific (serviceTypes + jobConditions are multi-select → arrays)
+      GHL_FIELDS.handymanServiceType && hman.serviceTypes?.length && { id: GHL_FIELDS.handymanServiceType, field_value: hman.serviceTypes },
+      GHL_FIELDS.handymanOtherDetail && hman.otherDetail?.trim() && { id: GHL_FIELDS.handymanOtherDetail, field_value: hman.otherDetail.trim() },
+      GHL_FIELDS.jobConditions && hman.jobConditions?.length && { id: GHL_FIELDS.jobConditions, field_value: hman.jobConditions },
+      GHL_FIELDS.toolsMaterials && hman.toolsMaterials && { id: GHL_FIELDS.toolsMaterials, field_value: hman.toolsMaterials },
+      GHL_FIELDS.partsNeeded && hman.partsNeeded?.trim() && { id: GHL_FIELDS.partsNeeded, field_value: hman.partsNeeded.trim() },
+    ].filter(Boolean) as Array<{ id: string; field_value: string | string[] }>
 
     const ghlContact = await upsertContact({
       firstName: formData.customer.firstName,

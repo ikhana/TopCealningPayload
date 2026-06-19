@@ -8,6 +8,7 @@ import type {
   CustomerInfo,
   PropertySize,
   ServiceExtras,
+  HandymanDetails,
   AddressInfo,
   ServiceCategory,
   FrequencyOption,
@@ -28,6 +29,7 @@ const initialBookingData: BookingFormData = {
     bathrooms: 1,
   },
   serviceExtras: {},
+  handyman: {},
   specialInstructions: '',
   // Empty until the user picks on Step 2 — keeps the summary from showing a
   // service prematurely and forces an explicit choice (Step 2 validation requires it).
@@ -117,6 +119,19 @@ export const useBookingForm = () => {
 
   const updateServiceExtras = (data: Partial<ServiceExtras>) => {
     setBookingData((prev) => ({ ...prev, serviceExtras: { ...prev.serviceExtras, ...data } }))
+  }
+
+  const updateHandyman = (data: Partial<HandymanDetails>) => {
+    setBookingData((prev) => ({ ...prev, handyman: { ...prev.handyman, ...data } }))
+  }
+
+  // Toggle a value in one of the handyman multi-select arrays.
+  const toggleHandymanMulti = (key: 'serviceTypes' | 'jobConditions', value: string) => {
+    setBookingData((prev) => {
+      const cur = prev.handyman[key] ?? []
+      const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value]
+      return { ...prev, handyman: { ...prev.handyman, [key]: next } }
+    })
   }
 
   const updateSpecialInstructions = (value: string) => {
@@ -225,6 +240,8 @@ export const useBookingForm = () => {
     updateCustomerInfo,
     updatePropertySize,
     updateServiceExtras,
+    updateHandyman,
+    toggleHandymanMulti,
     updateSpecialInstructions,
     updateServiceType,
     updateFrequency,

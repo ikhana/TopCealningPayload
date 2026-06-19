@@ -19,7 +19,7 @@ const ok: StepValidationResult = { valid: true }
 export function validateStep(
   realStepNum: number,
   data: BookingFormData,
-  options: { paymentEnabled: boolean; paymentNonceSet: boolean; termsAccepted: boolean } = {
+  options: { paymentEnabled: boolean; paymentNonceSet: boolean; termsAccepted: boolean; mediaCount?: number } = {
     paymentEnabled: false,
     paymentNonceSet: false,
     termsAccepted: false,
@@ -54,9 +54,19 @@ export function validateStep(
       // Service-aware specs. Square footage is now optional (approx size) for
       // all services. Required fields differ per service.
       const { property, serviceType, serviceExtras } = data
-      // Handyman excluded — its Details step is just photos + special instructions.
       const needsBedrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding'].includes(serviceType)
       const needsBathrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding'].includes(serviceType)
+
+      // Handyman has its own question set + mandatory photos.
+      if (serviceType === 'handyman') {
+        if (!data.handyman?.serviceTypes?.length) {
+          return { valid: false, missingField: 'the type of handyman service' }
+        }
+        if ((options.mediaCount ?? 0) < 1) {
+          return { valid: false, missingField: 'at least one photo of the area' }
+        }
+        return ok
+      }
 
       if (serviceType === 'residential' && !serviceExtras.cleaningType) {
         return { valid: false, missingField: 'Type of Cleaning' }

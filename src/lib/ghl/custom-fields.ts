@@ -19,6 +19,12 @@ export const GHL_FIELDS = {
   completionStatus: process.env.GHL_FIELD_COMPLETION_STATUS ?? '',
   // Special Instructions (all services) → GHL "NOTES" large-text field
   notes: process.env.GHL_FIELD_NOTES ?? '',
+  // Handyman-specific extras (Step 3, handyman only)
+  handymanServiceType: process.env.GHL_FIELD_HANDYMAN_SERVICE_TYPE ?? '', // MULTIPLE_OPTIONS (array)
+  handymanOtherDetail: process.env.GHL_FIELD_HANDYMAN_OTHER_DETAIL ?? '',
+  jobConditions: process.env.GHL_FIELD_JOB_CONDITIONS ?? '',              // CHECKBOX (array)
+  toolsMaterials: process.env.GHL_FIELD_TOOLS_MATERIALS ?? '',
+  partsNeeded: process.env.GHL_FIELD_PARTS_NEEDED ?? '',
 } as const
 
 export type GhlFieldKey = keyof typeof GHL_FIELDS
