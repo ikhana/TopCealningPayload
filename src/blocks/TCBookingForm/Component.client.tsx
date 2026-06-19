@@ -136,16 +136,16 @@ const PAYMENT_ENABLED = process.env.NEXT_PUBLIC_PAYMENT_ENABLED === 'true'
 
 /* ── Step metadata ─────────────────────────────────────────── */
 const ALL_STEPS = [
-  { num: '01', label: 'Contact' },
-  { num: '02', label: 'Service' },
-  { num: '03', label: 'Specs' },
-  { num: '04', label: 'Add-ons' },
-  { num: '05', label: 'Frequency' },
-  { num: '06', label: 'Schedule' },
-  { num: '07', label: 'Access' },
+  { num: '01', label: 'Contact', desc: 'Your information' },
+  { num: '02', label: 'Service', desc: 'Select your service' },
+  { num: '03', label: 'Specs', desc: 'Customize details' },
+  { num: '04', label: 'Add-ons', desc: 'Enhance your clean' },
+  { num: '05', label: 'Frequency', desc: 'Choose a schedule' },
+  { num: '06', label: 'Schedule', desc: 'Pick your date' },
+  { num: '07', label: 'Access', desc: 'Property access' },
   // Address (was '08') merged into Step 1 (Contact & Address).
-  { num: '09', label: 'Payment' },
-  { num: '10', label: 'Terms' },
+  { num: '09', label: 'Payment', desc: 'Secure checkout' },
+  { num: '10', label: 'Terms', desc: 'Review & confirm' },
 ]
 
 // Per-service step flows — which real step numbers each service includes.
@@ -573,22 +573,33 @@ function BookingFormInner() {
                   {isDone ? '✓' : String(stepNum).padStart(2, '0')}
                 </div>
 
-                {/* Step label */}
-                <span
-                  className="bf-step-label"
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.68rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1.5px',
-                    fontWeight: 700,
-                    lineHeight: '24px',
-                    color: isActive ? 'var(--color-navy-deep)' : isDone ? 'rgba(13,27,46,0.5)' : 'rgba(74,90,106,0.55)',
-                    transition: 'color 0.3s',
-                  }}
-                >
-                  {step.label}
-                </span>
+                {/* Step label + sub-label */}
+                <div className="bf-step-label">
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.68rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1.5px',
+                      fontWeight: 700,
+                      lineHeight: 1.2,
+                      color: isActive ? 'var(--color-navy-deep)' : isDone ? 'rgba(13,27,46,0.5)' : 'rgba(74,90,106,0.55)',
+                      transition: 'color 0.3s',
+                    }}
+                  >
+                    {step.label}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '0.7rem',
+                      color: 'rgba(74,90,106,0.55)',
+                      marginTop: '3px',
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {step.desc}
+                  </div>
+                </div>
               </div>
             )
           })}
