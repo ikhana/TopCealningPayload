@@ -1,10 +1,11 @@
 // src/components/booking/BookingSummary.tsx
-// Right-column panel — selection recap (no pricing). Prices/estimate removed
-// per the request-only model: final pricing is provided after review.
+// Right-column panel — reassurance design (illustration + tagline + trust
+// badges) per Geraldine's reference, plus a compact selection recap and the
+// request-only disclaimer. No pricing (request-only model).
 'use client'
 
 import React from 'react'
-import { Info } from 'lucide-react'
+import { Gem, Leaf, BadgeCheck, ClipboardCheck } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 
 const SERVICE_LABELS: Record<string, string> = {
@@ -18,6 +19,12 @@ const SERVICE_LABELS: Record<string, string> = {
   handyman:     'Handyman Services',
 }
 
+const TRUST = [
+  { icon: Gem,        title: 'Premium Quality',        desc: 'Top-tier service & attention to detail' },
+  { icon: Leaf,       title: 'Eco-Friendly',           desc: 'Safe products for your home and the planet' },
+  { icon: BadgeCheck, title: 'Satisfaction Guaranteed', desc: "We're not happy until you are" },
+]
+
 export function BookingSummary({ onBook }: { onBook?: () => void }) {
   const { bookingData } = useBooking()
   const { serviceType, selectedExtras, property } = bookingData
@@ -28,16 +35,38 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
       {/* Header */}
       <div style={{
         fontFamily: 'var(--font-mono)', fontSize: '0.75rem', textTransform: 'uppercase',
-        letterSpacing: '2px', color: 'rgba(74,90,106,0.6)', marginBottom: '28px',
+        letterSpacing: '2px', color: 'rgba(74,90,106,0.6)', marginBottom: '24px',
         display: 'flex', alignItems: 'center', gap: '10px',
       }}>
         Request Summary
         <div style={{ flex: 1, height: '1px', background: 'rgba(13,27,46,0.08)' }} />
       </div>
 
-      {/* Service label + specs */}
+      {/* Illustration */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '18px' }}>
+        <div style={{
+          width: '64px', height: '64px', borderRadius: '50%',
+          background: 'rgba(23,176,171,0.08)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <ClipboardCheck size={30} style={{ color: 'var(--color-teal)' }} />
+        </div>
+      </div>
+
+      {/* Tagline */}
+      <p style={{
+        textAlign: 'center', fontFamily: 'var(--font-heading)', fontSize: '1.3rem',
+        fontWeight: 800, color: 'var(--color-navy-deep)', lineHeight: 1.3,
+        margin: '0 0 22px', letterSpacing: '-0.5px',
+      }}>
+        You&apos;re one step closer to a{' '}
+        <em style={{ fontWeight: 400, fontStyle: 'italic', color: 'var(--color-teal)' }}>beautifully</em>{' '}
+        clean space.
+      </p>
+
+      {/* Compact selection recap */}
       {serviceType && (
-        <div style={{ marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid rgba(13,27,46,0.06)' }}>
+        <div style={{ marginBottom: '20px', padding: '14px 16px', background: 'rgba(13,27,46,0.02)', border: '1px solid rgba(13,27,46,0.06)' }}>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.5)', marginBottom: '4px' }}>
             Service
           </div>
@@ -51,34 +80,43 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
               {` · ${property.bathrooms} bath`}
             </div>
           )}
+          {selectedExtras.length > 0 && (
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--color-teal)', marginTop: '3px' }}>
+              {selectedExtras.length} add-on{selectedExtras.length > 1 ? 's' : ''} selected
+            </div>
+          )}
         </div>
       )}
 
-      {/* Add-ons recap (count only — no pricing) */}
-      {selectedExtras.length > 0 && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
-          <span style={{ color: 'rgba(74,90,106,0.7)' }}>Add-ons</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--color-navy-deep)' }}>
-            {selectedExtras.length} selected
-          </span>
-        </div>
-      )}
-
-      {/* Request-only disclaimer — bottom of the summary, above the button */}
+      {/* Request-only disclaimer */}
       <div style={{
-        marginTop: 'auto',
-        padding: '14px 16px',
-        background: 'rgba(23,176,171,0.06)',
-        borderLeft: '4px solid var(--color-teal)',
-        display: 'flex', alignItems: 'flex-start', gap: '8px',
+        padding: '16px', marginBottom: '26px',
+        background: 'rgba(23,176,171,0.06)', border: '1px solid rgba(23,176,171,0.15)',
+        textAlign: 'center',
       }}>
-        <Info size={15} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '1px' }} />
-        <p style={{ fontSize: '0.8rem', color: 'var(--color-navy-deep)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
-          This is a request form only. Final pricing will be provided after reviewing your information.
+        <p style={{ fontSize: '0.82rem', color: 'var(--color-navy-deep)', margin: 0, lineHeight: 1.55, fontWeight: 500 }}>
+          This is a request form only. We&apos;ll review your details and confirm final pricing before your appointment.
         </p>
       </div>
 
-      {/* Submit button */}
+      {/* Trust badges */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        {TRUST.map(({ icon: Icon, title, desc }) => (
+          <div key={title} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+            <Icon size={22} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '2px' }} />
+            <div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--color-navy-deep)' }}>
+                {title}
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'rgba(74,90,106,0.75)', lineHeight: 1.4, marginTop: '2px' }}>
+                {desc}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Submit button — pinned to the bottom */}
       <button
         type="button"
         onClick={onBook}
@@ -94,7 +132,7 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
           letterSpacing: '2px',
           textTransform: 'uppercase',
           cursor: 'pointer',
-          marginTop: '14px',
+          marginTop: 'auto',
           clipPath: 'polygon(0 0, 100% 0, 95% 100%, 0% 100%)',
           transition: 'all 0.35s cubic-bezier(0.25,1,0.5,1)',
         }}
