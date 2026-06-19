@@ -556,17 +556,14 @@ function BookingFormInner() {
                     flexShrink: 0,
                     zIndex: 1,
                     transition: 'all 0.35s',
-                    background: isDone
+                    background: (isDone || isActive)
                       ? 'var(--color-navy-deep)'
-                      : isActive
-                        ? '#e0f5f4'
-                        : 'white',
-                    // Active number is navy on light-teal (readable); done is the white ✓ on navy.
-                    color: isDone
+                      : 'white',
+                    // White number on navy for active + done (matches the design);
+                    // upcoming steps are muted on white.
+                    color: (isDone || isActive)
                       ? 'white'
-                      : isActive
-                        ? 'var(--color-navy-deep)'
-                        : 'rgba(74,90,106,0.6)',
+                      : 'rgba(74,90,106,0.6)',
                     boxShadow: isActive ? '0 0 14px rgba(23,176,171,0.3)' : 'none',
                   }}
                 >
