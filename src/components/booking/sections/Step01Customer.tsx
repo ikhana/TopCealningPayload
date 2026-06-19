@@ -32,17 +32,6 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
 }
 
-const sectionLabelStyle: React.CSSProperties = {
-  fontFamily: 'var(--font-mono)',
-  fontSize: '0.7rem',
-  textTransform: 'uppercase',
-  letterSpacing: '2px',
-  fontWeight: 700,
-  color: 'var(--color-teal)',
-  marginBottom: '16px',
-  display: 'block',
-}
-
 export function Step01Customer() {
   const { bookingData, updateCustomerInfo, updateAddress } = useBooking()
   const { customer, address } = bookingData
@@ -146,8 +135,6 @@ export function Step01Customer() {
 
       {/* ── Service address ─────────────────────────────────── */}
       <div style={{ marginTop: '36px' }}>
-        <span style={sectionLabelStyle}>Address</span>
-
         {/* Service-area notice — Broward County */}
         <div style={{
           marginBottom: '24px',
