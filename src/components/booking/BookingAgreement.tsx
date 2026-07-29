@@ -28,7 +28,7 @@ export function BookingAgreement({ accepted, onChange, onSubmit, isSubmitting = 
         style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', cursor: 'pointer', marginBottom: '20px', userSelect: 'none' }}
       >
         {accepted
-          ? <CheckSquare size={20} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '1px' }} />
+          ? <CheckSquare size={20} style={{ color: '#17b0ab', flexShrink: 0, marginTop: '1px' }} />
           : <Square size={20} style={{ color: 'rgba(13,27,46,0.25)', flexShrink: 0, marginTop: '1px' }} />
         }
         <p style={{ fontSize: '0.88rem', color: 'rgba(74,90,106,0.85)', margin: 0, lineHeight: 1.6 }}>
@@ -37,7 +37,7 @@ export function BookingAgreement({ accepted, onChange, onSubmit, isSubmitting = 
             href="/terms"
             target="_blank"
             onClick={(e) => e.stopPropagation()}
-            style={{ color: 'var(--color-teal)', fontWeight: 600, textDecoration: 'underline' }}
+            style={{ color: '#17b0ab', fontWeight: 600, textDecoration: 'underline' }}
           >
             Terms &amp; Conditions and Satisfaction Guarantee
           </Link>.
@@ -46,7 +46,7 @@ export function BookingAgreement({ accepted, onChange, onSubmit, isSubmitting = 
 
       {/* Trust line */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '11px 15px', background: 'rgba(23,176,171,0.05)', border: '1px solid rgba(23,176,171,0.15)', marginBottom: '24px' }}>
-        <ShieldCheck size={15} style={{ color: 'var(--color-teal)', flexShrink: 0 }} />
+        <ShieldCheck size={15} style={{ color: '#17b0ab', flexShrink: 0 }} />
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'rgba(74,90,106,0.7)', margin: 0, lineHeight: 1.5 }}>
           Fully insured team · This is a request — we&apos;ll confirm pricing before your appointment
         </p>
@@ -58,7 +58,7 @@ export function BookingAgreement({ accepted, onChange, onSubmit, isSubmitting = 
         .tc-agree-submit {
           width: 100%;
           padding: 18px;
-          background: var(--color-teal);
+          background: #17b0ab;
           color: #ffffff;
           border: none;
           font-family: var(--font-mono);
@@ -67,10 +67,14 @@ export function BookingAgreement({ accepted, onChange, onSubmit, isSubmitting = 
           letter-spacing: 2px;
           text-transform: uppercase;
           cursor: pointer;
-          clip-path: polygon(0 0, 100% 0, 97% 100%, 0% 100%);
+          /* No clip-path here: inside the animated .bf-section-in container a
+             clipped button fails to repaint when :disabled flips, so it looked
+             like the button vanished until you hovered it. */
+          position: relative;
+          z-index: 1;
           transition: background-color 0.35s cubic-bezier(0.25,1,0.5,1);
         }
-        .tc-agree-submit:hover:not(:disabled) { background: var(--color-navy-deep); }
+        .tc-agree-submit:hover:not(:disabled) { background: #0d1b2e; }
         .tc-agree-submit:disabled {
           background: #b9e3e1;
           color: #ffffff;

@@ -686,25 +686,29 @@ function BookingFormInner() {
             {STEP_NUM_AT(currentStep) === 6  && <Step06Schedule />}
             {STEP_NUM_AT(currentStep) === 7  && <Step07Access />}
             {STEP_NUM_AT(currentStep) === 9  && PAYMENT_ENABLED && <Step09Payment />}
-
-            {/* Final step — agreement checkbox + submit (Terms is no longer its own step) */}
-            {currentStep === TOTAL_STEPS && (
-              <>
-                <BookingAgreement
-                  accepted={termsAccepted}
-                  onChange={setTermsAccepted}
-                  onSubmit={handleSubmit}
-                  isSubmitting={isSubmitting}
-                />
-                {submissionError && (
-                  <div style={{ marginTop: '16px', padding: '14px 16px', background: '#fef2f2', border: '1px solid #fca5a5', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <AlertCircle size={16} style={{ color: '#ef4444', flexShrink: 0 }} />
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#dc2626', margin: 0 }}>{submissionError}</p>
-                  </div>
-                )}
-              </>
-            )}
           </div>
+
+          {/* Final step — agreement checkbox + submit (Terms is no longer its own
+              step). Deliberately OUTSIDE .bf-section-in: that container keeps a
+              persisted transform from its `forwards` animation, which created a
+              stacking context that stopped the button repainting when its
+              disabled state flipped. */}
+          {currentStep === TOTAL_STEPS && (
+            <>
+              <BookingAgreement
+                accepted={termsAccepted}
+                onChange={setTermsAccepted}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+              />
+              {submissionError && (
+                <div style={{ marginTop: '16px', padding: '14px 16px', background: '#fef2f2', border: '1px solid #fca5a5', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <AlertCircle size={16} style={{ color: '#ef4444', flexShrink: 0 }} />
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#dc2626', margin: 0 }}>{submissionError}</p>
+                </div>
+              )}
+            </>
+          )}
 
           {/* ── Desktop nav buttons ── */}
           {currentStep < TOTAL_STEPS && (
