@@ -52,32 +52,36 @@ export function BookingAgreement({ accepted, onChange, onSubmit, isSubmitting = 
         </p>
       </div>
 
-      {/* Submit */}
+      {/* Submit — hover handled in CSS (imperative style writes desynced from
+          React's inline-style diffing and made the button vanish on re-render) */}
+      <style>{`
+        .tc-agree-submit {
+          width: 100%;
+          padding: 18px;
+          background: var(--color-teal);
+          color: #ffffff;
+          border: none;
+          font-family: var(--font-mono);
+          font-weight: 700;
+          font-size: 0.85rem;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          cursor: pointer;
+          clip-path: polygon(0 0, 100% 0, 97% 100%, 0% 100%);
+          transition: background-color 0.35s cubic-bezier(0.25,1,0.5,1);
+        }
+        .tc-agree-submit:hover:not(:disabled) { background: var(--color-navy-deep); }
+        .tc-agree-submit:disabled {
+          background: #b9e3e1;
+          color: #ffffff;
+          cursor: not-allowed;
+        }
+      `}</style>
       <button
         type="button"
+        className="tc-agree-submit"
         onClick={() => { if (canSubmit) onSubmit() }}
         disabled={!canSubmit}
-        style={{
-          width: '100%',
-          padding: '18px',
-          background: canSubmit ? 'var(--color-teal)' : 'rgba(23,176,171,0.35)',
-          color: 'white',
-          border: 'none',
-          fontFamily: 'var(--font-mono)',
-          fontWeight: 700,
-          fontSize: '0.85rem',
-          letterSpacing: '2px',
-          textTransform: 'uppercase',
-          cursor: canSubmit ? 'pointer' : 'not-allowed',
-          clipPath: 'polygon(0 0, 100% 0, 97% 100%, 0% 100%)',
-          transition: 'all 0.35s cubic-bezier(0.25,1,0.5,1)',
-        }}
-        onMouseEnter={(e) => {
-          if (canSubmit) (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-navy-deep)'
-        }}
-        onMouseLeave={(e) => {
-          if (canSubmit) (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-teal)'
-        }}
       >
         {isSubmitting ? 'Submitting…' : 'Submit Request'}
       </button>
