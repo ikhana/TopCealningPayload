@@ -1,29 +1,31 @@
 // src/components/booking/sections/Step07Access.tsx
+// Compact 2×2 dropdown layout (Geraldine, 2026-07): Pets + Children on one row,
+// Access + Referral on the next. Keeping it short leaves room for the agreement
+// checkbox + Submit button, now that the Terms step was removed from the funnel.
 'use client'
 
 import React from 'react'
-import { PawPrint, Baby, KeyRound, Hash, DoorOpen, ConciergeBell, HelpCircle, Search } from 'lucide-react'
+import { PawPrint, Baby, KeyRound, Search } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 
 const PET_TYPES = ['Dog', 'Cat', 'Bird', 'Other']
 
 const ACCESS_METHODS = [
-  { id: 'key',       label: 'Leave a Key',      icon: KeyRound },
-  { id: 'keypad',    label: 'Keypad / Code',    icon: Hash },
-  { id: 'open',      label: 'Open Door',        icon: DoorOpen },
-  { id: 'concierge', label: 'Concierge / Super', icon: ConciergeBell },
-  { id: 'other',     label: 'Other',            icon: HelpCircle },
+  { id: 'key',       label: 'Leave a Key' },
+  { id: 'keypad',    label: 'Keypad / Code' },
+  { id: 'open',      label: 'Open Door / Someone Home' },
+  { id: 'concierge', label: 'Concierge / Super' },
+  { id: 'other',     label: 'Other' },
 ]
 
 const REFERRAL_OPTIONS = [
-  { value: '',            label: 'Select one…' },
-  { value: 'google',      label: 'Google Search' },
-  { value: 'yelp',        label: 'Yelp' },
-  { value: 'facebook',    label: 'Facebook / Instagram' },
-  { value: 'neighbour',   label: 'Neighbour / Friend' },
-  { value: 'flyer',       label: 'Flyer / Postcard' },
-  { value: 'repeat',      label: 'Returning Customer' },
-  { value: 'other',       label: 'Other' },
+  { value: 'google',    label: 'Google Search' },
+  { value: 'yelp',      label: 'Yelp' },
+  { value: 'facebook',  label: 'Facebook / Instagram' },
+  { value: 'neighbour', label: 'Neighbor / Friend' },
+  { value: 'flyer',     label: 'Flyer / Postcard' },
+  { value: 'repeat',    label: 'Returning Customer' },
+  { value: 'other',     label: 'Other' },
 ]
 
 const labelStyle: React.CSSProperties = {
@@ -33,14 +35,56 @@ const labelStyle: React.CSSProperties = {
   letterSpacing: '1px',
   fontWeight: 700,
   color: 'rgba(74,90,106,0.9)',
-  marginBottom: '10px',
+  marginBottom: '6px',
   display: 'block',
 }
 
-const sectionDivider: React.CSSProperties = {
-  borderBottom: '1px solid rgba(13,27,46,0.06)',
-  marginBottom: '32px',
-  paddingBottom: '32px',
+const selectStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '12px 16px 12px 42px',
+  border: '1px solid rgba(13,27,46,0.1)',
+  background: 'white',
+  fontSize: '0.95rem',
+  outline: 'none',
+  transition: 'border-color 0.3s, box-shadow 0.3s',
+  borderRadius: 0,
+  cursor: 'pointer',
+  appearance: 'none',
+}
+
+const onFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
+  e.target.style.borderColor = 'var(--color-teal)'
+  e.target.style.boxShadow = '0 0 0 4px rgba(23,176,171,0.05)'
+}
+const onBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
+  e.target.style.borderColor = 'rgba(13,27,46,0.1)'
+  e.target.style.boxShadow = 'none'
+}
+
+// Labeled select with a leading icon.
+function IconSelect({
+  label, icon: Icon, value, onChange, children, required,
+}: {
+  label: string
+  icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
+  value: string
+  onChange: (v: string) => void
+  children: React.ReactNode
+  required?: boolean
+}) {
+  return (
+    <div>
+      <label style={labelStyle}>
+        {label} {required && <span style={{ color: 'var(--color-teal)' }}>*</span>}
+      </label>
+      <div style={{ position: 'relative' }}>
+        <Icon size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
+        <select value={value} onChange={(e) => onChange(e.target.value)} onFocus={onFocus} onBlur={onBlur} style={selectStyle} required={required}>
+          {children}
+        </select>
+      </div>
+    </div>
+  )
 }
 
 export function Step07Access() {
@@ -50,184 +94,88 @@ export function Step07Access() {
 
   return (
     <div>
-      <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '36px' }}>
-        Conditions & Access.
+      <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '32px' }}>
+        Conditions &amp; Access.
       </h2>
 
-      {/* ── Pets ─────────────────────────────────────────────── */}
-      <div style={sectionDivider}>
-        <label style={labelStyle}>Pets in the Home?</label>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
 
-        {/* Yes / No toggle */}
-        <div style={{ display: 'flex', gap: '10px' }}>
-          {(['Yes', 'No'] as const).map((opt) => {
-            const active = opt === 'Yes' ? hasPets : !hasPets
-            return (
-              <div
-                key={opt}
-                onClick={opt === 'Yes' ? () => { if (!hasPets) togglePets() } : () => { if (hasPets) togglePets() }}
-                style={{
-                  border: `1px solid ${active ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
-                  padding: '10px 28px',
-                  cursor: 'pointer',
-                  background: active ? '#e0f5f4' : 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'border-color 0.2s, background 0.2s, color 0.2s',
-                  fontWeight: 700,
-                  fontSize: '0.88rem',
-                  color: active ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.65)',
-                }}
-              >
-                <PawPrint size={14} style={{ color: active ? 'var(--color-teal)' : 'rgba(74,90,106,0.4)' }} />
-                {opt}
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Pet type chips — always rendered, collapsed when hasPets is false */}
-        <div
-          aria-hidden={!hasPets}
-          style={{
-            maxHeight: hasPets ? '220px' : '0',
-            opacity: hasPets ? 1 : 0,
-            overflow: 'hidden',
-            marginTop: hasPets ? '18px' : '0',
-            transition: 'max-height 0.3s ease-out, opacity 0.2s ease-out, margin-top 0.3s ease-out',
-          }}
+        {/* Row 1 — Pets | Children */}
+        <IconSelect
+          label="Pets in the Home?"
+          icon={PawPrint}
+          value={hasPets ? 'yes' : 'no'}
+          onChange={(v) => { const yes = v === 'yes'; if (yes !== hasPets) togglePets() }}
         >
-          <label style={{ ...labelStyle, marginBottom: '8px' }}>What kind of pets?</label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {PET_TYPES.map((pet) => {
-              const sel = pets.includes(pet)
-              return (
-                <div
-                  key={pet}
-                  onClick={() => togglePetType(pet)}
-                  style={{
-                    border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
-                    padding: '7px 18px',
-                    cursor: 'pointer',
-                    background: sel ? '#e0f5f4' : 'white',
-                    fontSize: '0.82rem',
-                    fontWeight: 600,
-                    color: sel ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.7)',
-                    transition: 'border-color 0.2s, background 0.2s, color 0.2s',
-                  }}
-                  onMouseEnter={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-teal)' }}
-                  onMouseLeave={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,46,0.1)' }}
-                >
-                  {pet}
-                  {sel && <span style={{ marginLeft: '6px', color: 'var(--color-teal)', fontSize: '0.7rem' }}>✓</span>}
-                </div>
-              )
-            })}
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </IconSelect>
+
+        <IconSelect
+          label="Children in the Home?"
+          icon={Baby}
+          value={hasChildren ? 'yes' : 'no'}
+          onChange={(v) => { const yes = v === 'yes'; if (yes !== hasChildren) toggleChildren() }}
+        >
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </IconSelect>
+
+        {/* Pet type chips — only when pets = Yes */}
+        {hasPets && (
+          <div style={{ gridColumn: 'span 2', marginTop: '-4px' }}>
+            <label style={{ ...labelStyle, marginBottom: '8px' }}>What kind of pets?</label>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {PET_TYPES.map((pet) => {
+                const sel = pets.includes(pet)
+                return (
+                  <button
+                    type="button"
+                    key={pet}
+                    onClick={() => togglePetType(pet)}
+                    style={{
+                      padding: '8px 16px',
+                      border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.12)'}`,
+                      background: sel ? '#e0f5f4' : 'white',
+                      color: sel ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.75)',
+                      fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', borderRadius: 0,
+                      transition: 'all 0.25s ease',
+                    }}
+                  >
+                    {pet}
+                  </button>
+                )
+              })}
+            </div>
           </div>
-          <p style={{ marginTop: '8px', fontSize: '0.75rem', color: 'rgba(74,90,106,0.65)', lineHeight: 1.5 }}>
-            A small pet fee may apply to ensure a thorough clean.
-          </p>
-        </div>
-      </div>
+        )}
 
-      {/* ── Children ─────────────────────────────────────────── */}
-      <div style={sectionDivider}>
-        <label style={labelStyle}>Children Present?</label>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          {(['Yes', 'No'] as const).map((opt) => {
-            const active = opt === 'Yes' ? hasChildren : !hasChildren
-            return (
-              <div
-                key={opt}
-                onClick={opt === 'Yes' ? () => { if (!hasChildren) toggleChildren() } : () => { if (hasChildren) toggleChildren() }}
-                style={{
-                  border: `1px solid ${active ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
-                  padding: '10px 28px',
-                  cursor: 'pointer',
-                  background: active ? '#e0f5f4' : 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'border-color 0.2s, background 0.2s, color 0.2s',
-                  fontWeight: 700,
-                  fontSize: '0.88rem',
-                  color: active ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.65)',
-                }}
-              >
-                <Baby size={14} style={{ color: active ? 'var(--color-teal)' : 'rgba(74,90,106,0.4)' }} />
-                {opt}
-              </div>
-            )
-          })}
-        </div>
-        <p style={{ marginTop: '8px', fontSize: '0.75rem', color: 'rgba(74,90,106,0.65)' }}>
-          We use eco-friendly, child-safe products.
-        </p>
-      </div>
+        {/* Row 2 — Access method | Referral */}
+        <IconSelect
+          label="How will our team access the property?"
+          icon={KeyRound}
+          value={accessMethod}
+          onChange={updateAccessMethod}
+          required
+        >
+          <option value="">Select one…</option>
+          {ACCESS_METHODS.map(({ id, label }) => (
+            <option key={id} value={id}>{label}</option>
+          ))}
+        </IconSelect>
 
-      {/* ── Access Method ─────────────────────────────────────── */}
-      <div style={sectionDivider}>
-        <label style={labelStyle}>
-          How will our team access the property? <span style={{ color: 'var(--color-teal)' }}>*</span>
-        </label>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '10px' }}>
-          {ACCESS_METHODS.map(({ id, label, icon: Icon }) => {
-            const sel = accessMethod === id
-            return (
-              <div
-                key={id}
-                onClick={() => updateAccessMethod(id)}
-                style={{
-                  border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
-                  padding: '14px 12px',
-                  cursor: 'pointer',
-                  background: sel ? '#e0f5f4' : 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  transition: 'border-color 0.2s, background 0.2s, box-shadow 0.2s',
-                }}
-                onMouseEnter={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-teal)' }}
-                onMouseLeave={(e) => { if (!sel) (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,46,0.1)' }}
-              >
-                <Icon size={15} style={{ color: sel ? 'var(--color-teal)' : 'rgba(74,90,106,0.5)', flexShrink: 0 }} />
-                <span style={{ fontSize: '0.82rem', fontWeight: 600, color: sel ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.75)' }}>{label}</span>
-                {sel && <div style={{ marginLeft: 'auto', width: '14px', height: '14px', border: '1px solid var(--color-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.55rem', color: 'var(--color-teal)', flexShrink: 0 }}>✓</div>}
-              </div>
-            )
-          })}
-        </div>
-      </div>
+        <IconSelect
+          label="How did you hear about us?"
+          icon={Search}
+          value={referralSource}
+          onChange={updateReferralSource}
+        >
+          <option value="">Select one…</option>
+          {REFERRAL_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </IconSelect>
 
-      {/* ── Referral Source ───────────────────────────────────── */}
-      <div>
-        <label style={labelStyle}>How Did You Hear About Us?</label>
-        <div style={{ position: 'relative' }}>
-          <Search size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.45)', pointerEvents: 'none', zIndex: 1 }} />
-          <select
-            value={referralSource}
-            onChange={(e) => updateReferralSource(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px 16px 12px 42px',
-              border: '1px solid rgba(13,27,46,0.1)',
-              background: 'white',
-              fontSize: '0.92rem',
-              outline: 'none',
-              borderRadius: 0,
-              cursor: 'pointer',
-              appearance: 'none' as const,
-              transition: 'border-color 0.3s',
-            }}
-            onFocus={(e) => { e.target.style.borderColor = 'var(--color-teal)' }}
-            onBlur={(e) => { e.target.style.borderColor = 'rgba(13,27,46,0.1)' }}
-          >
-            {REFERRAL_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-        </div>
       </div>
     </div>
   )

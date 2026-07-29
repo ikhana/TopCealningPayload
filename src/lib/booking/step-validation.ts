@@ -7,7 +7,7 @@
 // whether or not Step 9 (Payment) is filtered out by the feature flag.
 
 import type { BookingFormData } from '@/types/booking'
-import { isBrowardZip } from './broward-zips'
+import { isServiceAreaZip } from './broward-zips'
 
 export interface StepValidationResult {
   valid: boolean
@@ -29,6 +29,7 @@ export function validateStep(
     case 1: {
       const { customer, address } = data
       if (!customer.firstName?.trim()) return { valid: false, missingField: 'First Name' }
+      if (!customer.lastName?.trim()) return { valid: false, missingField: 'Last Name' }
       if (!customer.email?.trim()) return { valid: false, missingField: 'Email' }
       if (!customer.phone?.trim()) return { valid: false, missingField: 'Phone' }
       // Light email format check — bad email is the #1 cause of unreachable leads
@@ -40,9 +41,9 @@ export function validateStep(
       if (!address.city?.trim()) return { valid: false, missingField: 'City' }
       if (!address.state?.trim()) return { valid: false, missingField: 'State' }
       if (!address.zipCode?.trim()) return { valid: false, missingField: 'ZIP Code' }
-      // Service-area gate — Broward County only (Geraldine's PDF slide 15)
-      if (!isBrowardZip(address.zipCode)) {
-        return { valid: false, missingField: 'a Broward County zip code (we don\'t service this area yet)' }
+      // Service-area gate — Broward, Miami-Dade and Palm Beach counties
+      if (!isServiceAreaZip(address.zipCode)) {
+        return { valid: false, missingField: 'a zip code in our service area (Broward, Miami-Dade or Palm Beach)' }
       }
       return ok
     }

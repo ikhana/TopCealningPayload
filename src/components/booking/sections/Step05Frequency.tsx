@@ -6,13 +6,13 @@ import { CalendarDays, CalendarCheck, Calendar, CalendarRange } from 'lucide-rea
 import { useBooking } from '@/components/booking/BookingContext'
 import type { FrequencyOption } from '@/types/booking'
 
+// Four options only (Geraldine, 2026-07): One Time / Weekly / Twice a Month /
+// Once a Month. The 3-week and 8-week cadences were dropped.
 const FREQUENCIES = [
-  { id: 'one-time' as FrequencyOption,  label: 'One Time',       desc: 'Single service',             discount: 0,    icon: CalendarDays },
-  { id: 'weekly' as FrequencyOption,    label: 'Weekly',         desc: 'Every week',                 discount: 10,   icon: CalendarCheck },
-  { id: 'biweekly' as FrequencyOption,  label: 'Bi-Weekly',      desc: 'Every two weeks',            discount: 7.5,  icon: CalendarRange },
-  { id: '3weekly' as FrequencyOption,   label: 'Every 3 Weeks',  desc: 'Every three weeks',          discount: 5,    icon: CalendarRange },
-  { id: 'monthly' as FrequencyOption,   label: 'Monthly',        desc: 'Once a month',               discount: 2.5,  icon: Calendar },
-  { id: '8weekly' as FrequencyOption,   label: 'Every 8 Weeks',  desc: 'Every eight weeks',          discount: 0,    icon: Calendar },
+  { id: 'one-time' as FrequencyOption,  label: 'One Time',      desc: 'Single service',   discount: 0,   popular: false, icon: CalendarDays },
+  { id: 'weekly' as FrequencyOption,    label: 'Weekly',        desc: 'Every week',       discount: 15,  popular: false, icon: CalendarCheck },
+  { id: 'biweekly' as FrequencyOption,  label: 'Twice a Month', desc: 'Every two weeks',  discount: 10,  popular: true,  icon: CalendarRange },
+  { id: 'monthly' as FrequencyOption,   label: 'Once a Month',  desc: 'Once a month',     discount: 5,   popular: false, icon: Calendar },
 ]
 
 export function Step05Frequency() {
@@ -27,7 +27,7 @@ export function Step05Frequency() {
 
       {/* Frequency cards grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
-        {FREQUENCIES.map(({ id, label, desc, discount, icon: Icon }) => {
+        {FREQUENCIES.map(({ id, label, desc, discount, popular, icon: Icon }) => {
           const sel = frequency === id
           return (
             <div
@@ -62,6 +62,11 @@ export function Step05Frequency() {
               <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--color-navy-deep)', marginBottom: '4px' }}>
                 {label}
               </div>
+              {popular && (
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', fontWeight: 700, color: '#fc8181', letterSpacing: '0.5px', marginBottom: '4px' }}>
+                  ★ MOST POPULAR
+                </div>
+              )}
               <div style={{ fontSize: '0.72rem', color: 'rgba(74,90,106,0.6)', marginBottom: discount > 0 ? '10px' : 0 }}>
                 {desc}
               </div>

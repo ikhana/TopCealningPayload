@@ -21,7 +21,7 @@ import { Step05Frequency } from '@/components/booking/sections/Step05Frequency'
 import { Step06Schedule } from '@/components/booking/sections/Step06Schedule'
 import { Step07Access } from '@/components/booking/sections/Step07Access'
 import { Step09Payment } from '@/components/booking/sections/Step09Payment'
-import { Step10Terms } from '@/components/booking/sections/Step10Terms'
+import { BookingAgreement } from '@/components/booking/BookingAgreement'
 
 /* ── Mobile sticky bottom bar ───────────────────────────────── */
 function MobileBottomBar({
@@ -145,7 +145,8 @@ const ALL_STEPS = [
   { num: '07', label: 'Access', desc: 'Property access' },
   // Address (was '08') merged into Step 1 (Contact & Address).
   { num: '09', label: 'Payment', desc: 'Secure checkout' },
-  { num: '10', label: 'Terms', desc: 'Review & confirm' },
+  // Terms (was '10') is no longer its own step — the last step shows an
+  // "I agree" checkbox linking to /terms (less funnel friction).
 ]
 
 // Per-service step flows — which real step numbers each service includes.
@@ -153,9 +154,9 @@ const ALL_STEPS = [
 // selector, so the flow resolves the moment a service is chosen.
 const SERVICE_STEP_NUMS: Partial<Record<ServiceCategory, string[]>> = {
   // Handyman: Contact, Service, Details (handyman questions + mandatory
-  // photos), Schedule (preferred date), Access (pets/children/access), Terms.
+  // photos), Schedule (preferred date), Access (pets/children/access).
   // No add-ons or frequency.
-  handyman: ['01', '02', '03', '06', '07', '10'],
+  handyman: ['01', '02', '03', '06', '07'],
 }
 
 // Builds the visible step list for a service, applying the payment-flag filter.
@@ -270,6 +271,8 @@ function BookingFormInner() {
   const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
   const [futureOccurrences, setFutureOccurrences] = useState<Array<{ occurrence: number; startTime: string }> | undefined>(undefined)
   const [stepError, setStepError] = useState<string | null>(null)
+  // Terms acceptance lives here so the mobile bar can gate submit too.
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   // Step list is service-driven (e.g. Handyman shows fewer steps). serviceType
   // only changes on Step 2, so currentStep stays valid; the clamp below is a guard.
@@ -358,6 +361,10 @@ function BookingFormInner() {
   }, [currentStep, idempotencyKey, setIdempotencyKey])
 
   const handleSubmit = async () => {
+    if (!termsAccepted) {
+      setSubmissionError('Please accept the Terms & Conditions to submit your request.')
+      return
+    }
     if (PAYMENT_ENABLED && !paymentNonce) {
       setSubmissionError('Payment not confirmed. Please go back and verify your card.')
       return
@@ -679,9 +686,16 @@ function BookingFormInner() {
             {STEP_NUM_AT(currentStep) === 6  && <Step06Schedule />}
             {STEP_NUM_AT(currentStep) === 7  && <Step07Access />}
             {STEP_NUM_AT(currentStep) === 9  && PAYMENT_ENABLED && <Step09Payment />}
-            {STEP_NUM_AT(currentStep) === 10 && (
+
+            {/* Final step — agreement checkbox + submit (Terms is no longer its own step) */}
+            {currentStep === TOTAL_STEPS && (
               <>
-                <Step10Terms onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+                <BookingAgreement
+                  accepted={termsAccepted}
+                  onChange={setTermsAccepted}
+                  onSubmit={handleSubmit}
+                  isSubmitting={isSubmitting}
+                />
                 {submissionError && (
                   <div style={{ marginTop: '16px', padding: '14px 16px', background: '#fef2f2', border: '1px solid #fca5a5', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <AlertCircle size={16} style={{ color: '#ef4444', flexShrink: 0 }} />
@@ -733,7 +747,7 @@ function BookingFormInner() {
             overflowY: 'auto',
           }}
         >
-          <BookingSummary onBook={goNext} />
+          <BookingSummary />
         </aside>
 
       </div>

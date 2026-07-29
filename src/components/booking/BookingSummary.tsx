@@ -5,7 +5,7 @@
 'use client'
 
 import React from 'react'
-import { Gem, Leaf, BadgeCheck, ClipboardCheck } from 'lucide-react'
+import { Gem, Sparkles, BadgeCheck, ClipboardCheck } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 
 const SERVICE_LABELS: Record<string, string> = {
@@ -21,11 +21,11 @@ const SERVICE_LABELS: Record<string, string> = {
 
 const TRUST = [
   { icon: Gem,        title: 'Premium Quality',        desc: 'Top-tier service & attention to detail' },
-  { icon: Leaf,       title: 'Eco-Friendly',           desc: 'Safe products for your home and the planet' },
+  { icon: Sparkles,   title: 'Quality Products',       desc: 'Chosen to deliver outstanding results' },
   { icon: BadgeCheck, title: 'Satisfaction Guaranteed', desc: "We're not happy until you are" },
 ]
 
-export function BookingSummary({ onBook }: { onBook?: () => void }) {
+export function BookingSummary() {
   const { bookingData } = useBooking()
   const { serviceType, selectedExtras, property } = bookingData
 
@@ -99,8 +99,8 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
         </p>
       </div>
 
-      {/* Trust badges */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+      {/* Trust badges — pinned to the bottom (the wizard's own nav handles submit) */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 'auto' }}>
         {TRUST.map(({ icon: Icon, title, desc }) => (
           <div key={title} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
             <Icon size={22} style={{ color: 'var(--color-teal)', flexShrink: 0, marginTop: '2px' }} />
@@ -116,37 +116,6 @@ export function BookingSummary({ onBook }: { onBook?: () => void }) {
         ))}
       </div>
 
-      {/* Submit button — pinned to the bottom */}
-      <button
-        type="button"
-        onClick={onBook}
-        style={{
-          width: '100%',
-          padding: '18px',
-          background: 'var(--color-teal)',
-          color: 'white',
-          border: 'none',
-          fontFamily: 'var(--font-mono)',
-          fontWeight: 700,
-          fontSize: '0.85rem',
-          letterSpacing: '2px',
-          textTransform: 'uppercase',
-          cursor: 'pointer',
-          marginTop: 'auto',
-          clipPath: 'polygon(0 0, 100% 0, 95% 100%, 0% 100%)',
-          transition: 'all 0.35s cubic-bezier(0.25,1,0.5,1)',
-        }}
-        onMouseEnter={(e) => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = 'var(--color-navy-deep)'
-          ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-3px)'
-        }}
-        onMouseLeave={(e) => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = 'var(--color-teal)'
-          ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'
-        }}
-      >
-        Submit Request
-      </button>
     </div>
   )
 }

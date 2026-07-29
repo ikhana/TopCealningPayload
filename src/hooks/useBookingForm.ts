@@ -19,6 +19,7 @@ import { calculateTotalPrice } from '@/utilities/booking-helpers'
 const initialBookingData: BookingFormData = {
   customer: {
     firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     countryCode: 'US',

@@ -95,6 +95,13 @@ function SpecSelect({
 const WITH_BEDROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 const WITH_BATHROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 
+// Short explainer shown under the residential "Type of Cleaning" select.
+const CLEANING_TYPE_INFO: Record<string, { badge: string; desc: string }> = {
+  'Regular': { badge: 'Maintenance', desc: 'Perfect for maintaining a consistently clean home.' },
+  'Deep': { badge: 'Detailed', desc: 'Ideal for first-time cleanings or homes needing extra attention.' },
+  'Move-in/Move-out': { badge: 'Vacant Property', desc: 'Designed for empty homes before moving in or after moving out.' },
+}
+
 const HANDYMAN_SERVICES = ['TV mounting', 'Plumbing minor repairs', 'Drywall repair', 'Door/lock fixing', 'Furniture assembly', 'Painting touch-ups', 'Other']
 const JOB_CONDITIONS = ['Urgent / same-day', 'Attempted before by someone else', 'Visible damage or safety risk']
 
@@ -226,9 +233,21 @@ export function Step03Property() {
 
         {/* ── Per-service extra questions ─────────────────────── */}
         {serviceType === 'residential' && (
-          <SpecSelect label="Type of Cleaning" icon={Sparkles} required
-            value={serviceExtras.cleaningType ?? ''} onChange={setExtra('cleaningType')}
-            options={['Regular', 'Deep', 'Move-in/Move-out']} />
+          <>
+            <SpecSelect label="Type of Cleaning" icon={Sparkles} required
+              value={serviceExtras.cleaningType ?? ''} onChange={setExtra('cleaningType')}
+              options={['Regular', 'Deep', 'Move-in/Move-out']} />
+            {serviceExtras.cleaningType && CLEANING_TYPE_INFO[serviceExtras.cleaningType] && (
+              <div style={{ gridColumn: 'span 2', marginTop: '-14px', display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '12px 14px', background: 'rgba(23,176,171,0.05)', borderLeft: '3px solid var(--color-teal)' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-teal)', flexShrink: 0, marginTop: '2px' }}>
+                  {CLEANING_TYPE_INFO[serviceExtras.cleaningType]!.badge}
+                </span>
+                <span style={{ fontSize: '0.82rem', color: 'rgba(74,90,106,0.85)', lineHeight: 1.45 }}>
+                  {CLEANING_TYPE_INFO[serviceExtras.cleaningType]!.desc}
+                </span>
+              </div>
+            )}
+          </>
         )}
 
         {serviceType === 'commercial' && (

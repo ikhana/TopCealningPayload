@@ -7,7 +7,7 @@
 import React, { useRef } from 'react'
 import { User, Mail, Phone, Info, MapPin, Home, Building2, Hash, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
-import { isBrowardZip } from '@/lib/booking/broward-zips'
+import { isServiceAreaZip } from '@/lib/booking/broward-zips'
 import { useAddressAutocomplete } from '@/hooks/useAddressAutocomplete'
 
 const inputStyle: React.CSSProperties = {
@@ -70,9 +70,9 @@ export function Step01Customer() {
       {/* ── Contact details ─────────────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
 
-        {/* Full Name — spans 2 */}
-        <div style={{ gridColumn: 'span 2' }}>
-          <label style={labelStyle}>Full Name <span style={{ color: 'var(--color-teal)' }}>*</span></label>
+        {/* First Name */}
+        <div>
+          <label style={labelStyle}>First Name <span style={{ color: 'var(--color-teal)' }}>*</span></label>
           <div style={{ position: 'relative' }}>
             <User size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
             <input
@@ -82,7 +82,26 @@ export function Step01Customer() {
               onChange={handleChange}
               onFocus={onFocus}
               onBlur={onBlur}
-              placeholder="e.g. Alexander Pierce"
+              placeholder="e.g. Alexander"
+              style={inputStyle}
+              required
+            />
+          </div>
+        </div>
+
+        {/* Last Name */}
+        <div>
+          <label style={labelStyle}>Last Name <span style={{ color: 'var(--color-teal)' }}>*</span></label>
+          <div style={{ position: 'relative' }}>
+            <User size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none' }} />
+            <input
+              type="text"
+              name="lastName"
+              value={customer.lastName ?? ''}
+              onChange={handleChange}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              placeholder="e.g. Pierce"
               style={inputStyle}
               required
             />
@@ -213,7 +232,7 @@ export function Step01Customer() {
               const zip = (address.zipCode ?? '').trim()
               const digits = zip.replace(/\D/g, '').slice(0, 5)
               const fullyTyped = digits.length === 5
-              const valid = fullyTyped && isBrowardZip(digits)
+              const valid = fullyTyped && isServiceAreaZip(digits)
               const invalid = fullyTyped && !valid
               return (
                 <>

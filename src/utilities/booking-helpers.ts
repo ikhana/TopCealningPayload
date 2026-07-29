@@ -133,13 +133,13 @@ export const calculateTotalPrice = (
 export function getDiscountPercentageByFrequency(frequency: FrequencyOption): number {
   switch (frequency) {
     case 'weekly':
-      return 0.1
+      return 0.15
     case 'biweekly':
-      return 0.075
+      return 0.1
     case '3weekly':
       return 0.05
     case 'monthly':
-      return 0.025
+      return 0.05
     default:
       return 0
   }

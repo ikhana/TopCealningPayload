@@ -71,9 +71,7 @@ export function Step02Service() {
                 <div style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '3px' }}>
                   {svc.label}
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', opacity: 0.65 }}>
-                  Recommended minimum: 3 hours
-                </div>
+                
               </div>
               {isSelected && (
                 <div style={{
