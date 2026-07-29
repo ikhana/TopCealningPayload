@@ -159,7 +159,7 @@ export default async function ServicePage({ params }: Args) {
     title: service.faq.title,
     description: undefined as any,
     contactItems: [
-      { label: 'Call us', value: '(754) 307-4034', link: 'tel:+17543074034' },
+      { label: 'Call us', value: '(954) 833 4276', link: 'tel:+17543074034' },
       { label: 'Email', value: 'Topcleaningfl@gmail.com', link: 'mailto:Topcleaningfl@gmail.com' },
     ],
     faqs: service.faq.items.map(({ question, answer }) => ({
@@ -265,7 +265,7 @@ function ServiceCloser({ service }: { service: ServiceContent }) {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <TCButton variant="primary" href="/booking">Book Your Cleaning</TCButton>
-            <TCButton variant="ghost" href="tel:+17543074034">Or call (754) 307-4034</TCButton>
+            <TCButton variant="ghost" href="tel:+17543074034">Or call (954) 833 4276</TCButton>
           </div>
         </div>
 

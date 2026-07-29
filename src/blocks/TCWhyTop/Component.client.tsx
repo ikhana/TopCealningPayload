@@ -54,9 +54,8 @@ const NODES = [
 ]
 
 const STATS = [
-  { value: '4.5K+', label: 'Clients' },
+  { value: 'Hundreds', label: 'Happy Clients' },
   { value: '98%',   label: 'Retention' },
-  { value: '5+',    label: 'Years' },
   { value: '4.9',   label: 'Rating' },
 ]
 

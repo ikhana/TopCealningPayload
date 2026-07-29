@@ -97,7 +97,7 @@ export const Header: GlobalConfig = {
           name: 'phone1',
           type: 'text',
           label: 'Primary Phone',
-          admin: { placeholder: '(754) 307-4034' },
+          admin: { placeholder: '(954) 833 4276' },
         },
         {
           name: 'phone2',
