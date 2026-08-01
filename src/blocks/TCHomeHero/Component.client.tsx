@@ -115,7 +115,7 @@ export function TCHomeHeroClient(_props: Props) {
             {/* Headline — light theme over light photo */}
             <TCHeadingStack
               mainLine="Cleaning Service"
-              secondaryLine="Now servicing Broward County!"
+              secondaryLine="Where Order and Energy Flow Together."
               level="h1"
               theme="light"
               size="lg"
