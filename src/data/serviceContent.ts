@@ -166,7 +166,7 @@ export const SERVICES = {
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/residential1.jpg',
-      imageAlt: 'Top Cleaning team member tidying a residential South Florida home',
+      imageAlt: 'Freshly cleaned dining and living area in a South Florida home',
     },
     whatsIncluded: {
       ghostKicker: "What's Included",
@@ -273,7 +273,7 @@ export const SERVICES = {
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/deep-cleaning1.jpg',
-      imageAlt: 'Deep cleaning specialist scrubbing detailed kitchen surfaces in a South Florida home',
+      imageAlt: 'Polished granite countertop gleaming after a Top Cleaning deep clean',
     },
     whatsIncluded: {
       ghostKicker: "What's Included",
@@ -384,7 +384,7 @@ export const SERVICES = {
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/move-in-out1.jpg',
-      imageAlt: 'Move out cleaning team detailing an empty South Florida home before handoff',
+      imageAlt: 'Spotless kitchen cleaned and ready for move-in in a South Florida home',
     },
     whatsIncluded: {
       ghostKicker: "What's Included",
@@ -597,7 +597,7 @@ export const SERVICES = {
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/airbnb-cleaning1.jpg',
-      imageAlt: 'AirBnB turnover cleaning crew making beds with fresh linens in a South Florida rental',
+      imageAlt: 'Guest-ready bedroom prepared for an AirBnB turnover in South Florida',
     },
     whatsIncluded: {
       ghostKicker: "What's Included",
