@@ -32,11 +32,11 @@ import { X, Sparkles } from 'lucide-react'
 
 // ── Offer (edit these to change the promo) ────────────────────
 const OFFER_HEADLINE = 'Wait — before you go!'
-const OFFER_AMOUNT = '10% OFF'
+const OFFER_AMOUNT = '15% OFF'
 const OFFER_SUBJECT = 'your first cleaning'
-const OFFER_CODE = 'WELCOME10'
+const OFFER_CODE = 'WELCOME15'
 const OFFER_BLURB =
-  "Book your first clean with Top Cleaning and we'll take 10% off. Mention the code when we confirm your quote."
+  "Book your first clean with Top Cleaning and we'll take 15% off. Mention the code when we confirm your quote."
 
 // ── Behaviour ─────────────────────────────────────────────────
 const SESSION_SHOWN_KEY = 'tc_exit_offer_shown'
