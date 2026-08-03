@@ -283,6 +283,15 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       email: formData.customer.email,
       phone: formData.customer.phone,
       locationId: process.env.GHL_LOCATION_ID!,
+      // Service address — the confirmation email renders
+      // {{contact.address1}}, {{contact.city}}, {{contact.state}}. Without
+      // these the email showed "undefined,,".
+      address1: [formData.address.street, formData.address.apt ? `Apt ${formData.address.apt}` : '']
+        .filter(Boolean)
+        .join(', '),
+      city: formData.address.city,
+      state: formData.address.state,
+      postalCode: formData.address.zipCode,
       customFields: contactCustomFields,
     })
     ghlContactId = ghlContact.id

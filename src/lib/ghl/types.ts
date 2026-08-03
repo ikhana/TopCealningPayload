@@ -57,6 +57,12 @@ export interface GhlUpsertContactPayload {
   email: string
   phone: string
   locationId: string
+  // Service address — powers {{contact.address1}} / {{contact.city}} /
+  // {{contact.state}} merge fields in the booking emails.
+  address1?: string
+  city?: string
+  state?: string
+  postalCode?: string
   customFields?: GhlCustomFieldValue[]
   tags?: string[]
 }
