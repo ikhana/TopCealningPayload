@@ -43,14 +43,14 @@ const TAB_CONTENT: Record<Tab, {
   vision: {
     heading: 'Our Vision',
     body: 'To be the leading cleaning company in the region, providing high-quality solutions for both residential and commercial clients — delivering convenience, consistency, and exceptional results every time.',
-    image: '/images/cleaning/aboutsecond.jpg',
-    imageAlt: 'Vision — spotless residential interior',
+    image: '/images/cleaning/about-vision-kitchen.jpg',
+    imageAlt: 'A spotless modern kitchen cleaned by the Top Cleaning team',
   },
   mission: {
     heading: 'Our Mission',
     body: 'We deliver high-quality cleaning and disinfection services with efficiency, competitive pricing, and an agile process — so our customers aren\'t just satisfied, they\'re genuinely happy with every visit.',
-    image: '/images/cleaning/about-cleaning.jpg',
-    imageAlt: 'Mission — professional cleaning in action',
+    image: '/images/cleaning/about-mission-cooktop.jpg',
+    imageAlt: 'Top Cleaning cleaning products on a freshly polished cooktop',
   },
   values: {
     heading: 'Our Values',
@@ -59,8 +59,8 @@ const TAB_CONTENT: Record<Tab, {
       { title: 'Teamwork',      desc: 'Collaboration and mutual support to deliver high-quality results consistently.' },
       { title: 'Commitment',    desc: 'Dedication to our team and full responsibility to every client we serve.' },
     ],
-    image: '/images/cleaning/aboutthird.jpg',
-    imageAlt: 'Values — team meeting and collaboration',
+    image: '/images/cleaning/about-values-team.jpg',
+    imageAlt: 'A Top Cleaning team member in uniform',
   },
 }
 
