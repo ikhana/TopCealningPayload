@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { AdminBar } from '@/components/AdminBar'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
+import { ExitIntentPopup } from '@/components/ExitIntentPopup'
 import { HashScrollHandler } from '@/components/HashScrollHandler'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { Providers } from '@/providers'
@@ -68,6 +69,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               section of every page doesn't get covered by the "Ready for a spotless space?" band */}
           <main className="flex-1 w-full pb-40">{children}</main>
           <Footer />
+          {/* Exit-intent coupon — self-suppresses on booking/checkout paths */}
+          <ExitIntentPopup />
         </Providers>
       </body>
     </html>
