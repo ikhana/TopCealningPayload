@@ -159,11 +159,15 @@ export function CMSLink({ link, className, children, onClick }: CMSLinkProps) {
 
   // Internal links
   return (
-    <Link 
-      href={href} 
-      onClick={handleClick} 
+    <Link
+      href={href}
+      onClick={handleClick}
       className={className}
-      scroll={false}
+      // Only anchor links suppress Next's scroll reset — they position
+      // themselves (same-page via scrollToElement, cross-page via
+      // HashScrollHandler). Normal links must scroll to top, otherwise
+      // navigating from a footer link lands you at the footer of the new page.
+      scroll={link.type === 'anchor' ? false : true}
     >
       {children || link.label}
     </Link>
