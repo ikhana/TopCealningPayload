@@ -22,7 +22,7 @@ const SERVICES = [
     description:
       'Our standard cleaning service keeps your space immaculate with regular maintenance and attention to detail. Perfect for busy households.',
     specs: ['Custom cleaning plans', 'Eco-friendly products', 'Trained professionals', 'Satisfaction guarantee'],
-    image: '/images/services/residential.jpg',
+    image: '/images/services/residential1.jpg',
     href: '/services/residential',
     meta: { label1: 'Starting From', value1: 'Custom / visit', label2: 'Schedule', value2: 'Flexible' },
   },
@@ -34,7 +34,7 @@ const SERVICES = [
     description:
       'Comprehensive deep cleaning that covers every corner and detail. We tackle the grime that regular cleanings miss.',
     specs: ['Detailed checklist', 'Special equipment', 'Stain treatment', 'Sanitization included'],
-    image: '/images/services/deep-cleaning.jpg',
+    image: '/images/services/deep-cleaning1.jpg',
     href: '/services/deep-cleaning',
     meta: { label1: 'Starting From', value1: 'Custom / session', label2: 'Schedule', value2: 'On-Demand' },
   },
@@ -58,7 +58,7 @@ const SERVICES = [
     description:
       'Detailed cleaning to prepare your space for move-in or ensure your deposit return when moving out.',
     specs: ['Deep cleaning included', 'Inspection ready', 'Appliance cleaning', 'Window treatments'],
-    image: '/images/services/move-in-out.jpg',
+    image: '/images/services/move-in-out1.jpg',
     href: '/services/move-in-out',
     meta: { label1: 'Starting From', value1: 'Custom / service', label2: 'Intensity', value2: 'Maximum' },
   },
@@ -70,7 +70,7 @@ const SERVICES = [
     description:
       'High-speed, high-standard turnovers between guests to keep your listing spotless and 5-star ready.',
     specs: ['Quick turnaround', 'Linen service', 'Guest-ready checklist', 'Host coordination'],
-    image: '/images/services/airbnb-cleaning.jpg',
+    image: '/images/services/airbnb-cleaning1.jpg',
     href: '/services/airbnb',
     meta: { label1: 'Starting From', value1: 'Custom / turnover', label2: 'Uptime', value2: '7 Days / Week' },
   },

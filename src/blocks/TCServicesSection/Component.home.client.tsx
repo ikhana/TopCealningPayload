@@ -17,7 +17,7 @@ const SERVICES = [
     description:
       'Transform your home with premium residential cleaning services tailored to your schedule and preferences.',
     specs: ['Custom cleaning plans', 'Eco-friendly products', 'Trained professionals', 'Satisfaction guarantee'],
-    image: '/images/services/residential.jpg',
+    image: '/images/services/residential1.jpg',
     href: '/services/residential',
     delay: 0,
   },
@@ -37,7 +37,7 @@ const SERVICES = [
     description:
       'Thorough cleaning that reaches every corner and crevice for a truly fresh, sanitized start.',
     specs: ['Detailed checklist', 'Special equipment', 'Stain treatment', 'Sanitization included'],
-    image: '/images/services/deep-cleaning.jpg',
+    image: '/images/services/deep-cleaning1.jpg',
     href: '/services/deep-cleaning',
     delay: 0.16,
   },
@@ -47,7 +47,7 @@ const SERVICES = [
     description:
       'Start fresh or leave spotless with our comprehensive transition cleaning service.',
     specs: ['Deep cleaning included', 'Inspection ready', 'Appliance cleaning', 'Window treatments'],
-    image: '/images/services/move-in-out.jpg',
+    image: '/images/services/move-in-out1.jpg',
     href: '/services/move-in-out',
     delay: 0.24,
   },
@@ -67,7 +67,7 @@ const SERVICES = [
     description:
       'Fast, reliable turnovers between guests to keep your listing spotless and 5-star ready.',
     specs: ['Quick turnaround', 'Linen service', 'Guest-ready checklist', 'Host coordination'],
-    image: '/images/services/airbnb-cleaning.jpg',
+    image: '/images/services/airbnb-cleaning1.jpg',
     href: '/services/airbnb',
     delay: 0.4,
   },

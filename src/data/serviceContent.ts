@@ -165,7 +165,7 @@ export const SERVICES = {
         'Custom-tailored residential cleaning that keeps your home consistently fresh. Eco-friendly products, background-checked crews, and a quality check before we leave — every visit.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
-      image: '/images/services/residential.jpg',
+      image: '/images/services/residential1.jpg',
       imageAlt: 'Top Cleaning team member tidying a residential South Florida home',
     },
     whatsIncluded: {
@@ -272,7 +272,7 @@ export const SERVICES = {
         'Recommended for first visits, post-illness recovery, or whenever the home needs a reset. Every corner, every crevice, every overlooked surface — sanitized and refreshed.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
-      image: '/images/services/deep-cleaning.jpg',
+      image: '/images/services/deep-cleaning1.jpg',
       imageAlt: 'Deep cleaning specialist scrubbing detailed kitchen surfaces in a South Florida home',
     },
     whatsIncluded: {
@@ -383,7 +383,7 @@ export const SERVICES = {
         'Whether you are starting fresh or leaving spotless, our move cleaning covers every interior surface — fridge, oven, cabinets, closets, garage — so you hand off a property that passes any inspection.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
-      image: '/images/services/move-in-out.jpg',
+      image: '/images/services/move-in-out1.jpg',
       imageAlt: 'Move out cleaning team detailing an empty South Florida home before handoff',
     },
     whatsIncluded: {
@@ -596,7 +596,7 @@ export const SERVICES = {
         'Reliable, fast turnovers between guests so your listing stays spotless and your ratings stay high. Fresh linens, restocked essentials, damage inspection, and a photo report after every clean — so you always know what we left behind.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
-      image: '/images/services/airbnb-cleaning.jpg',
+      image: '/images/services/airbnb-cleaning1.jpg',
       imageAlt: 'AirBnB turnover cleaning crew making beds with fresh linens in a South Florida rental',
     },
     whatsIncluded: {
