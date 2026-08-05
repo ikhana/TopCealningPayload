@@ -77,8 +77,8 @@ export function FooterClient({ footer }: Props) {
                 <Image
                   src={logoImage.url}
                   alt={logoImage.alt || 'Top Cleaning'}
-                  width={300}
-                  height={110}
+                  width={logoImage.width || 1080}
+                  height={logoImage.height || 658}
                   className="h-[110px] w-auto"
                 />
               ) : (

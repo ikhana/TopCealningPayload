@@ -133,12 +133,15 @@ export function HeaderClient({ header }: Props) {
             href="/"
             className="tc-header-logo flex items-center gap-3 flex-shrink-0 no-underline relative z-[10]"
           >
+            {/* Logo uses the media record's real dimensions. Hardcoded 300x110
+                did not match the actual asset (1080x658), so the declared
+                aspect ratio disagreed with the rendered one and Next warned. */}
             {logoImage?.url ? (
               <Image
                 src={logoImage.url}
                 alt={logoImage.alt || 'Top Cleaning'}
-                width={300}
-                height={110}
+                width={logoImage.width || 1080}
+                height={logoImage.height || 658}
                 className="h-[46px] md:h-[74px] w-auto -mt-3 md:-mt-7"
                 priority
               />
