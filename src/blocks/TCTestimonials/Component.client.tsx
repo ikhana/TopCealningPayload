@@ -10,6 +10,7 @@
 
 'use client'
 
+import Image from 'next/image'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 import React from 'react'
 
@@ -224,9 +225,11 @@ export function TCTestimonialsClient(_props: Props) {
                       flexShrink: 0,
                     }}
                   >
-                    <img
+                    <Image
                       src={t.avatar}
                       alt={t.name}
+                      width={90}
+                      height={90}
                       style={{
                         width: '100%',
                         height: '100%',

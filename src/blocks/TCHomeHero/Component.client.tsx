@@ -11,6 +11,7 @@
 
 'use client'
 
+import Image from 'next/image'
 import { cn } from '@/utilities/cn'
 import { TCButton } from '@/components/ui/TCButton'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
@@ -72,17 +73,21 @@ export function TCHomeHeroClient(_props: Props) {
 
         {/* ── Background image + LIGHT left-to-right overlay (Geraldine: light colors, not dark) ── */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
-          <picture className="w-full h-full">
-            <img
-              src="/images/hero/herotopcleaning.jpg"
-              alt="Top Cleaning team member ready to clean your home"
-              className="w-full h-full object-cover object-center"
-              style={{
-                transform: 'scale(1.05)',
-                animation: 'tc-hero-zoom 20s infinite alternate linear',
-              }}
-            />
-          </picture>
+          {/* next/image serves AVIF/WebP at the right size for the viewport.
+              `priority` because this is the LCP element: it must not be lazy,
+              and it should be the one image we preload. */}
+          <Image
+            src="/images/hero/herotopcleaning.jpg"
+            alt="Top Cleaning team member ready to clean your home"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+            style={{
+              transform: 'scale(1.05)',
+              animation: 'tc-hero-zoom 20s infinite alternate linear',
+            }}
+          />
           {/* Light gradient: white-frosted left → near-transparent right so text reads clean over the photo */}
           <div
             className="absolute inset-0"

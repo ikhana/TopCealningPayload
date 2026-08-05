@@ -7,6 +7,7 @@
 import { cn } from '@/utilities/cn'
 import { TCButton } from '@/components/ui/TCButton'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 
@@ -187,8 +188,12 @@ export function TCServicesSectionHome() {
                 style={{ height:'520px', background:'white', border:'1px solid rgba(23,176,171,.1)', transitionDelay:`${service.delay}s` }}>
 
                 <div className="absolute inset-0 z-[1]">
-                  <img src={service.image} alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-110"
+                  {/* Below the fold, so no `priority`: these lazy-load, which
+                      also stops React preloading them all at high priority. */}
+                  <Image src={service.image} alt={service.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-110"
                     style={{ filter:'saturate(.8) brightness(.9)', transition:'transform 1.2s cubic-bezier(.22,1,.36,1)' }} />
                 </div>
 

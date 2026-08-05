@@ -8,6 +8,7 @@
 
 'use client'
 
+import Image from 'next/image'
 import { cn } from '@/utilities/cn'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 import { useState } from 'react'
@@ -254,14 +255,18 @@ export function TCAboutSectionClient(_props: Props) {
 
                     {/* Right half — image (About4 style: padded + offset teal shadow) */}
                     <div className="tc-about-pane-image bg-[#fdfdfd] flex items-center justify-center p-[30px] h-full">
+                      {/* `relative` added so next/image `fill` has a positioned
+                          ancestor to size against. */}
                       <div
-                        className="overflow-hidden w-full h-full"
+                        className="relative overflow-hidden w-full h-full"
                         style={{ boxShadow: '20px 20px 0 var(--color-teal-light)' }}
                       >
-                        <img
+                        <Image
                           src={pane.image}
                           alt={pane.imageAlt}
-                          className="w-full h-full object-cover block transition-transform duration-500 hover:scale-105"
+                          fill
+                          sizes="(max-width: 900px) 100vw, 50vw"
+                          className="object-cover transition-transform duration-500 hover:scale-105"
                           style={{ filter: 'saturate(0.8) contrast(1.1)' }}
                         />
                       </div>

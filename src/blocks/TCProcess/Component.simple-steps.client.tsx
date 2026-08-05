@@ -11,6 +11,7 @@
 
 'use client'
 
+import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useInView } from 'framer-motion'
 import { Calendar, Sparkles, Home, CheckCircle2 } from 'lucide-react'
@@ -293,11 +294,13 @@ export function TCProcessSimpleSteps(_props: Props) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.55, ease: 'easeInOut' }}
               >
-                <img
+                <Image
                   src={active.image}
                   alt={active.title}
-                  className="w-full h-full object-cover"
-                />
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                  />
 
                 {/* Bottom gradient overlay for legibility */}
                 <div
