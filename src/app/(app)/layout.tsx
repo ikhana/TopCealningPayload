@@ -21,18 +21,21 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {/* Preload WOFF2 only. The @font-face rules still list the .otf as a
+            fallback source, so older browsers (and any failure to fetch the
+            woff2) fall back automatically without a visible change. */}
         <link
           rel="preload"
-          href="/fonts/soleil/SoleilRegular.otf"
+          href="/fonts/soleil/SoleilRegular.woff2"
           as="font"
-          type="font/otf"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
         <link
           rel="preload"
-          href="/fonts/soleil/SoleilBold.otf"
+          href="/fonts/soleil/SoleilBold.woff2"
           as="font"
-          type="font/otf"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
       </head>
