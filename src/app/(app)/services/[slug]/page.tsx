@@ -85,6 +85,12 @@ function buildServiceJsonLd(service: ServiceContent, canonical: string) {
       '@type': 'LocalBusiness',
       name: 'Top Cleaning Team',
       image: `${SITE_URL}/images/logo.svg`,
+      url: SITE_URL,
+      // NAP in structured data: keep these identical to the Google Business
+      // Profile. Consistency is a local ranking signal and is what AI search
+      // uses to resolve the business entity.
+      telephone: '+1-954-833-4276',
+      email: 'topcleaningservicefl@gmail.com',
       areaServed: [
         'Fort Lauderdale, FL',
         'Miami, FL',
@@ -159,8 +165,8 @@ export default async function ServicePage({ params }: Args) {
     title: service.faq.title,
     description: undefined as any,
     contactItems: [
-      { label: 'Call us', value: '(954) 833 4276', link: 'tel:+17543074034' },
-      { label: 'Email', value: 'Topcleaningfl@gmail.com', link: 'mailto:Topcleaningfl@gmail.com' },
+      { label: 'Call us', value: '(954) 833 4276', link: 'tel:+19548334276' },
+      { label: 'Email', value: 'topcleaningservicefl@gmail.com', link: 'mailto:topcleaningservicefl@gmail.com' },
     ],
     faqs: service.faq.items.map(({ question, answer }) => ({
       question,
@@ -265,7 +271,7 @@ function ServiceCloser({ service }: { service: ServiceContent }) {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <TCButton variant="primary" href="/booking">Book Your Cleaning</TCButton>
-            <TCButton variant="ghost" href="tel:+17543074034">Or call (954) 833 4276</TCButton>
+            <TCButton variant="ghost" href="tel:+19548334276">Or call (954) 833 4276</TCButton>
           </div>
         </div>
 

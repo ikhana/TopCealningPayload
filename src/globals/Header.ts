@@ -109,7 +109,7 @@ export const Header: GlobalConfig = {
           name: 'email',
           type: 'text',
           label: 'Email Address',
-          admin: { placeholder: 'Topcleaningfl@gmail.com' },
+          admin: { placeholder: 'topcleaningservicefl@gmail.com' },
         },
         {
           name: 'statusText',
