@@ -4,7 +4,7 @@
 // checkbox + Submit button, now that the Terms step was removed from the funnel.
 'use client'
 
-import React from 'react'
+import React, { useId } from 'react'
 import { PawPrint, Baby, KeyRound, Search } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 
@@ -72,14 +72,16 @@ function IconSelect({
   children: React.ReactNode
   required?: boolean
 }) {
+  // htmlFor/id gives each select an accessible name for screen readers and agents.
+  const id = useId()
   return (
     <div>
-      <label style={labelStyle}>
+      <label htmlFor={id} style={labelStyle}>
         {label} {required && <span style={{ color: 'var(--color-teal)' }}>*</span>}
       </label>
       <div style={{ position: 'relative' }}>
         <Icon size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
-        <select value={value} onChange={(e) => onChange(e.target.value)} onFocus={onFocus} onBlur={onBlur} style={selectStyle} required={required}>
+        <select id={id} value={value} onChange={(e) => onChange(e.target.value)} onFocus={onFocus} onBlur={onBlur} style={selectStyle} required={required}>
           {children}
         </select>
       </div>

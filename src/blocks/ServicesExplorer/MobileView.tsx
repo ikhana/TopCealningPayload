@@ -363,6 +363,7 @@ export const MobileView: React.FC<MobileViewProps> = ({ blockData }) => {
               {blockData.enableFilters && (
                 <div className="relative">
                   <select
+                    aria-label="Filter services by category"
                     value={selectedCategory}
                     onChange={(e) => handleCategoryChange(e.target.value)}
                     className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-navy/50 px-3 py-3 text-sm font-medium text-slate-900 dark:text-clinical-white shadow-sm hover:bg-slate-50 dark:hover:bg-navy/70 focus:outline-none focus:ring-2 focus:ring-coral focus:border-transparent"

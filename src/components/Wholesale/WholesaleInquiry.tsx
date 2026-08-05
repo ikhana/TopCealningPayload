@@ -398,6 +398,7 @@ export const WholesaleInquiry: React.FC<WholesaleInquiryProps> = ({ className })
                     Business Type *
                   </label>
                   <select
+                    aria-label="Business Type"
                     name="businessType"
                     value={formData.businessType}
                     onChange={handleInputChange}
@@ -456,6 +457,7 @@ export const WholesaleInquiry: React.FC<WholesaleInquiryProps> = ({ className })
                     Years in Business
                   </label>
                   <select
+                    aria-label="Years in Business"
                     name="experience"
                     value={formData.experience}
                     onChange={handleInputChange}

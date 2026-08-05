@@ -8,7 +8,7 @@
 
 'use client'
 
-import React, { useRef, useState } from 'react'
+import React, { useId, useRef, useState } from 'react'
 import { Ruler, Building2, Bath, Sparkles, Layers, Home, Wrench, ImagePlus, X } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import { MAX_MEDIA_FILES } from '@/hooks/useBookingForm'
@@ -75,14 +75,18 @@ function SpecSelect({
   options: string[]
   required?: boolean
 }) {
+  // htmlFor/id gives the select an accessible name. Without it the label is
+  // just an adjacent element and screen readers (and AI agents) see an
+  // unlabelled dropdown.
+  const id = useId()
   return (
     <div style={{ gridColumn: 'span 2' }}>
-      <label style={labelStyle}>
+      <label htmlFor={id} style={labelStyle}>
         {label} {required && <span style={{ color: 'var(--color-teal)' }}>*</span>}
       </label>
       <div style={{ position: 'relative' }}>
         <Icon size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
-        <select value={value} onChange={(e) => onChange(e.target.value)} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required={required}>
+        <select id={id} value={value} onChange={(e) => onChange(e.target.value)} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required={required}>
           <option value="">Select…</option>
           {options.map((o) => <option key={o} value={o}>{o}</option>)}
         </select>
@@ -275,7 +279,7 @@ export function Step03Property() {
             </label>
             <div style={{ position: 'relative' }}>
               <Building2 size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
-              <select value={property.bedrooms} onChange={(e) => updatePropertySize({ bedrooms: e.target.value })} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required>
+              <select aria-label="Bedrooms" value={property.bedrooms} onChange={(e) => updatePropertySize({ bedrooms: e.target.value })} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required>
                 <option value="">Select bedrooms</option>
                 {BEDROOM_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
               </select>
@@ -290,7 +294,7 @@ export function Step03Property() {
             </label>
             <div style={{ position: 'relative' }}>
               <Bath size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
-              <select value={property.bathrooms} onChange={(e) => updatePropertySize({ bathrooms: parseInt(e.target.value) })} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required>
+              <select aria-label="Bathrooms" value={property.bathrooms} onChange={(e) => updatePropertySize({ bathrooms: parseInt(e.target.value) })} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required>
                 {BATHROOM_OPTIONS.map((n) => <option key={n} value={n}>{n} {n === 1 ? 'Bathroom' : 'Bathrooms'}</option>)}
               </select>
             </div>

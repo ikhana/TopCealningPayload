@@ -162,6 +162,7 @@ export function Step06Schedule() {
               <>
                 <Clock size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
                 <select
+                  aria-label="Preferred service time"
                   value={serviceTime}
                   onChange={(e) => updateServiceDateTime(serviceDate, e.target.value)}
                   onFocus={onFocus}
