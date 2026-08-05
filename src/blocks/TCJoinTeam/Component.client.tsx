@@ -623,30 +623,40 @@ function FieldGroup({
   full?: boolean
   style?: React.CSSProperties
 }) {
+  // The control is nested inside the <label> so it is implicitly associated
+  // with it. Previously the label was a sibling with no htmlFor, which left
+  // the <select> with no accessible name (inputs only passed because their
+  // placeholder acted as a weak fallback). Layout is unchanged: the flex
+  // column simply moved from the wrapper onto the label.
   return (
     <div
       className={full ? 'tc-join-field-full' : undefined}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
         gridColumn: full ? 'span 2' : undefined,
         ...style,
       }}
     >
       <label
         style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
-          textTransform: 'uppercase',
-          letterSpacing: '1.5px',
-          color: 'rgba(26,40,64,0.6)',
-          fontWeight: 700,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
         }}
       >
-        {label}
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.7rem',
+            textTransform: 'uppercase',
+            letterSpacing: '1.5px',
+            color: 'rgba(26,40,64,0.6)',
+            fontWeight: 700,
+          }}
+        >
+          {label}
+        </span>
+        {children}
       </label>
-      {children}
     </div>
   )
 }
