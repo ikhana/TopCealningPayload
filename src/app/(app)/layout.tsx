@@ -10,13 +10,26 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { draftMode } from 'next/headers'
+import { Poppins } from 'next/font/google'
 import './globals.css'
+
+// Self-hosted at build time by next/font. This replaces the CSS @import of
+// fonts.googleapis.com in globals.css, which was render-blocking: the browser
+// had to download globals.css, parse it, discover the @import, then do DNS +
+// TLS + a round trip to Google before anything could paint (~420ms).
+// Roboto was dropped entirely — it was requested with 4 weights and used nowhere.
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-poppins',
+})
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const { isEnabled: isDraftMode } = await draftMode()
-  
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={poppins.variable} suppressHydrationWarning>
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />

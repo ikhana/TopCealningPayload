@@ -1,6 +1,5 @@
 
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
 @import 'tailwindcss';
 
 @plugin "@tailwindcss/typography";
@@ -51,7 +50,7 @@ html, body { overflow-x: clip; }
   --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-heading: 'Soleil', system-ui, sans-serif;
-  --font-body: 'Poppins', system-ui, sans-serif;
+  --font-body: var(--font-poppins), system-ui, sans-serif;
 
   --font-family-sans: var(--font-sans);
   --font-family-serif: var(--font-heading);
