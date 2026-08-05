@@ -34,7 +34,10 @@ import {
   type ServiceContent,
 } from '@/data/serviceContent'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://topcleaningg.vercel.app'
+// Fallback must be the canonical production host (www), never the vercel.app
+// preview domain. If the env var were ever missing, a vercel.app fallback would
+// emit canonicals and JSON-LD pointing at the wrong domain.
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.topcleaningteam.com'
 
 // ── Static generation ─────────────────────────────────────────
 export function generateStaticParams() {
