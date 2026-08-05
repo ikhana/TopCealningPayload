@@ -1,4 +1,5 @@
 import PageTemplate, { generateMetadata } from './[slug]/page'
+import { LocalBusinessSchema } from '@/components/LocalBusinessSchema'
 
 // ISR rather than force-dynamic.
 //
@@ -13,6 +14,15 @@ import PageTemplate, { generateMetadata } from './[slug]/page'
 // case a hook ever fails to fire.
 export const revalidate = 3600
 
-export default PageTemplate
+// LocalBusiness JSON-LD lives on the homepage only. Service pages carry their
+// own Service/FAQ/Breadcrumb schema and reference the business as `provider`.
+export default function HomePage(props: { params: Promise<{ slug?: string }> }) {
+  return (
+    <>
+      <LocalBusinessSchema />
+      <PageTemplate {...props} />
+    </>
+  )
+}
 
 export { generateMetadata }
