@@ -42,7 +42,7 @@ const BUSINESS = {
 // Paste the Google Business Profile URL here once available. `sameAs` is what
 // tells Google the site and the GBP listing are the same entity, so the reviews
 // and the website reinforce each other rather than looking like two businesses.
-const GOOGLE_BUSINESS_PROFILE_URL = ''
+const GOOGLE_BUSINESS_PROFILE_URL = 'https://maps.app.goo.gl/Uo5cfK7XpPV3QV6Q9'
 
 export async function LocalBusinessSchema() {
   const header = (await getCachedGlobal('header', 1)()) as Header
