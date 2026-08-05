@@ -1,9 +1,10 @@
 # SEO Plan — Top Cleaning Team
 
 Domain: **topcleaningteam.com**
-Market: South Florida (Fort Lauderdale, Miami, Boca Raton, Pompano Beach, surrounding)
+Market: Broward, Miami-Dade and Palm Beach counties (anchor city: Fort Lauderdale)
 Business type: Service-area business (SAB), home + commercial cleaning
-Status as of 2026-05-21: domain live, Phase 9 email workflows shipped, no SEO work done yet
+Status as of 2026-08-06: S0 and S1 complete. S1.5 (keyword map) in progress.
+S2 blocked on Google Business Profile owner access.
 
 ---
 
@@ -43,8 +44,9 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 | # | Stage | Status | Effort | Doc |
 |---|---|---|---|---|
-| S0 | Measurement baseline + domain canonicalization | `[ ]` | 3 hrs | (this doc) |
-| S1 | Technical SEO foundation (sitemap, schema, Core Web Vitals) | `[ ]` | 15–25 dev hrs | (TBD) |
+| S0 | Measurement baseline + domain canonicalization | `[~]` | 3 hrs | `01-measurement-baseline.md` |
+| S1 | Technical SEO foundation (sitemap, schema, Core Web Vitals) | `[x]` | 15–25 dev hrs | `01-measurement-baseline.md` |
+| S1.5 | **Keyword map** — one page, one primary keyword | `[~]` | 3 hrs light + 4 hrs deep | `02-keyword-map.md` |
 | S2 | Google Business Profile optimization + ongoing posting | `[ ]` | 4–6 hrs initial + 30–60 min/week | (TBD) |
 | S3 | On-page content (service pages, location pages) | `[ ]` | 30–60 hrs (10–15 pages) | (TBD) |
 | S4 | Citations & directories | `[ ]` | 8–12 hrs | (TBD) |
@@ -82,8 +84,14 @@ Most of this is dev work — possibly already partially in place via Payload's S
   - `LocalBusiness` schema on homepage (NAP, hours, areas served, price range)
   - `Service` schema on each service page
   - `BreadcrumbList` on inner pages
-  - `Review` / `AggregateRating` (once we have 5+ reviews — pull from GBP API)
   - `FAQPage` schema on FAQ sections (eligible for rich results)
+  - **NOT** `Review` / `AggregateRating`. An earlier draft of this plan said to add
+    these once we had 5+ reviews. That was wrong and the instruction is removed.
+    Marking up your own reviews on your own site is self-serving markup: Google
+    will not render stars for it, and since July 2026 it carries manual-action
+    risk. Reviews live on the Google Business Profile, and `sameAs` in
+    `LocalBusinessSchema` is what ties the listing to the site. See the comment
+    block at the top of `src/components/LocalBusinessSchema/index.tsx`.
 - [ ] **Meta tags** — unique `<title>` and `<meta description>` per page
 - [ ] **Core Web Vitals**: LCP < 2.5s, INP < 200ms, CLS < 0.1 — verify on PageSpeed Insights
 - [ ] **Canonical URLs** — `<link rel="canonical">` pointing to chosen canonical domain
@@ -101,6 +109,14 @@ Most of this is dev work — possibly already partially in place via Payload's S
 ## Stage S2 — Google Business Profile (highest ROI in months 1–6)
 
 This is the single most impactful thing for a local cleaning service. Skip nothing here.
+
+**Do S1.5 first.** Categories, the services list and the service-area cities below
+are all keyword decisions. Category changes can trigger re-verification, so this is
+not a cheap edit to redo. Take them from `02-keyword-map.md`.
+
+**Access blocker:** editing any of this requires being signed in as an owner or
+manager of the listing. We still need to know which Google account owns it — the
+same blocker as Search Console and GA4 in S0.
 
 ### Initial setup checklist
 
@@ -348,8 +364,9 @@ If we never wrote a blog post, never built a backlink, but Geraldine got to 50 5
 
 Once we start executing, each S1–S7 stage gets its own doc following the pattern in `docs/stages/platform/` (story, what you'll learn, builds on, steps, verify, unlocks). Numbering convention:
 
-- `docs/stages/seo/01-measurement-baseline.md` (Stage S0)
-- `docs/stages/seo/02-technical-foundation.md` (Stage S1)
+- `docs/stages/seo/01-measurement-baseline.md` (Stages S0 + S1 — S1 was executed
+  alongside S0 and documented there rather than in its own file)
+- `docs/stages/seo/02-keyword-map.md` (Stage S1.5)
 - `docs/stages/seo/03-google-business-profile.md` (Stage S2)
 - `docs/stages/seo/04-service-pages.md` (Stage S3)
 - ... etc.
