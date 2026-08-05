@@ -6,6 +6,13 @@ const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://loc
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // AVIF first (roughly 20-30% smaller than WebP), WebP as fallback.
+    formats: ['image/avif', 'image/webp'],
+    // Optimized variants were being served with `max-age=0, must-revalidate`,
+    // so every page load re-fetched the hero from the optimizer (~1.2s TTFB for
+    // a 14 KB file). 30 days is long enough to stay cached between visits, short
+    // enough that replacing a file in /public still propagates in reasonable time.
+    minimumCacheTTL: 2592000,
     remotePatterns: [
       {
         protocol: 'https',
