@@ -105,10 +105,15 @@ function buildServiceJsonLd(service: ServiceContent, canonical: string) {
       ],
       priceRange: '$$',
     },
-    areaServed: {
-      '@type': 'AdministrativeArea',
-      name: 'South Florida',
-    },
+    // Counties, not "South Florida". The latter is not an AdministrativeArea that
+    // resolves to anything, and it disagreed with LocalBusinessSchema on the
+    // homepage. Both must name the same geography or we describe two different
+    // businesses to the same crawler.
+    areaServed: [
+      { '@type': 'AdministrativeArea', name: 'Broward County, FL' },
+      { '@type': 'AdministrativeArea', name: 'Miami-Dade County, FL' },
+      { '@type': 'AdministrativeArea', name: 'Palm Beach County, FL' },
+    ],
     url: canonical,
   }
 }

@@ -56,9 +56,9 @@ export const SERVICES = {
   'post-construction': {
     slug: 'post-construction',
     meta: {
-      title: 'Post Construction Cleaning South Florida | Top Cleaning Team',
+      title: 'Post Construction Cleaning Fort Lauderdale | Top Cleaning Team',
       description:
-        'Professional post construction cleaning across South Florida. We handle drywall dust, paint splatter, fixture polishing, and window detail so you can move in spotless.',
+        'Post construction cleaning in Fort Lauderdale and across Broward County. We handle drywall dust, paint splatter, fixture polishing, and window detail.',
     },
     hero: {
       kicker: 'POST CONSTRUCTION',
@@ -154,9 +154,12 @@ export const SERVICES = {
   residential: {
     slug: 'residential',
     meta: {
-      title: 'Residential Cleaning Service South Florida | Top Cleaning Team',
+      // Primary keyword is "house cleaning service", not "residential cleaning".
+      // "Residential" is how the industry talks; customers search "house cleaning"
+      // and "maid service". See 02-keyword-map.md.
+      title: 'House Cleaning Service Fort Lauderdale | Top Cleaning Team',
       description:
-        'Professional residential cleaning across South Florida. Recurring or one-time visits, eco-friendly products, trained crews, and a satisfaction guarantee on every clean.',
+        'House cleaning and maid service in Fort Lauderdale and Broward County. Recurring or one-time visits, eco-friendly products, and a satisfaction guarantee.',
     },
     hero: {
       kicker: 'RESIDENTIAL',
@@ -261,9 +264,9 @@ export const SERVICES = {
   'deep-cleaning': {
     slug: 'deep-cleaning',
     meta: {
-      title: 'Deep Cleaning Service South Florida | Top Cleaning Team',
+      title: 'Deep Cleaning Service Fort Lauderdale | Top Cleaning Team',
       description:
-        'Top-to-bottom deep cleaning that goes beyond a regular visit. Baseboards, interior windows, heavy stovetop scrub, and intensive bathroom work — recommended for first visits.',
+        'Deep cleaning in Fort Lauderdale and Broward County. Baseboards, interior windows, heavy stovetop scrub, and intensive bathroom work. Ideal for first visits.',
     },
     hero: {
       kicker: 'DEEP CLEANING',
@@ -372,9 +375,9 @@ export const SERVICES = {
   'move-in-out': {
     slug: 'move-in-out',
     meta: {
-      title: 'Move In / Move Out Cleaning South Florida | Top Cleaning Team',
+      title: 'Move In / Move Out Cleaning Fort Lauderdale | Top Cleaning Team',
       description:
-        'Detailed move in / move out cleaning to prepare your space for new occupants or secure your full deposit back. Interior of appliances, cabinets, garage, and more.',
+        'Move in and move out cleaning in Fort Lauderdale and Broward County. Interior of appliances, cabinets and garage, built to secure your full deposit back.',
     },
     hero: {
       kicker: 'MOVE IN / MOVE OUT',
@@ -481,9 +484,9 @@ export const SERVICES = {
   commercial: {
     slug: 'commercial',
     meta: {
-      title: 'Commercial Cleaning Service South Florida | Top Cleaning Team',
+      title: 'Commercial Cleaning Service Fort Lauderdale | Top Cleaning Team',
       description:
-        'Professional commercial cleaning for offices and businesses across South Florida. Flexible scheduling, industry compliance, and full liability coverage on every visit.',
+        'Commercial, office and janitorial cleaning in Fort Lauderdale and Broward County. Flexible scheduling, industry compliance, and full liability coverage.',
     },
     hero: {
       kicker: 'COMMERCIAL',
@@ -585,9 +588,9 @@ export const SERVICES = {
   airbnb: {
     slug: 'airbnb',
     meta: {
-      title: 'AirBnB Turnover Cleaning South Florida | Top Cleaning Team',
+      title: 'AirBnB Turnover Cleaning Fort Lauderdale | Top Cleaning Team',
       description:
-        'High-speed, high-standard AirBnB turnover cleaning across South Florida. Fresh linens, restocking, damage inspection, and detailed photos after every clean — built for 5-star host ratings.',
+        'AirBnB turnover and vacation rental cleaning in Fort Lauderdale and Broward County. Fresh linens, restocking, damage inspection, and photos after every clean.',
     },
     hero: {
       kicker: 'AIRBNB / SHORT TERM',
