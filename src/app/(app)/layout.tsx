@@ -11,6 +11,7 @@ import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { draftMode } from 'next/headers'
 import { Poppins } from 'next/font/google'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import './globals.css'
 
 // Self-hosted at build time by next/font. This replaces the CSS @import of
@@ -24,6 +25,15 @@ const poppins = Poppins({
   display: 'swap',
   variable: '--font-poppins',
 })
+
+// GA4 loads only when the ID is present AND we're in production. Two reasons:
+// preview deployments and localhost would otherwise pollute the property with
+// our own traffic, which is exactly what ruins a baseline; and gtag is ~50KB of
+// third-party JS we spent real effort keeping off the critical path (TBT is at
+// 30ms — `@next/third-parties` loads it with the afterInteractive strategy so it
+// stays that way).
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID
+const analyticsEnabled = Boolean(GA_ID) && process.env.NODE_ENV === 'production'
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const { isEnabled: isDraftMode } = await draftMode()
@@ -88,6 +98,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           {/* Exit-intent coupon — self-suppresses on booking/checkout paths */}
           <ExitIntentPopup />
         </Providers>
+        {analyticsEnabled && <GoogleAnalytics gaId={GA_ID!} />}
       </body>
     </html>
   )
