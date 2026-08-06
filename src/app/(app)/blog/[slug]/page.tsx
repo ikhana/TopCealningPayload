@@ -180,7 +180,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
     }
   }
 
-  return generateMeta({ doc: post })
+  return generateMeta({ doc: post, pathPrefix: '/blog' })
 }
 
 async function RelatedPosts({ post }: { post: BlogPost }) {
