@@ -24,6 +24,74 @@ Anyone promising "page 1 in 3 months" for competitive head keywords is lying.
 
 ---
 
+## The lens — how the best in this space actually think
+
+We are not inventing a methodology. Three people own this field, and their work
+is what this plan should be measured against:
+
+- **Joy Hawkins** (Sterling Sky) — the authority on Google Business Profile
+  behaviour. Google Product Expert; runs live tests instead of repeating folklore.
+  Her agency specialises in service-area businesses, which is exactly what we are.
+- **Darren Shaw** (Whitespark) — runs the annual **Local Search Ranking Factors**
+  survey, the closest thing local SEO has to a weighted model of the algorithm.
+- **Greg Gifford** (SearchLab) — tactical local SEO for service and multi-location
+  businesses.
+
+### The weighting (Whitespark, 2026)
+
+| Factor | Local Pack weight |
+|---|---|
+| **Google Business Profile signals** (primary category, completeness, proximity) | **32%** |
+| **Reviews** (quantity, velocity, recency, rating, keywords, response rate) | **20%** |
+| Links | 8% |
+| Citations | 6% |
+
+**The biggest year-over-year move: review _recency_ went from #20 in the 2023
+survey to a top-five factor in 2025.** Reviews overall rose 16% → 20%. Engagement
+signals (posts, photos, calls, direction requests) are also rising — the algorithm
+rewards profiles that look *alive*.
+
+### What this lens says about our own plan
+
+Three corrections we are adopting:
+
+1. **We sequenced backwards.** S1 (technical, 15–25 dev hrs) shipped before S2 (32%)
+   and S5 (20%) were touched. The S1 work still earns its keep for organic and
+   AEO, but the ordering was wrong. Getting GBP owner access is now the highest-
+   value action available, above any further dev work.
+
+2. **Four reviews is the emergency, not a milestone.** 20% of the algorithm sitting
+   near zero. And because recency now carries top-five weight, **a steady drip beats
+   a burst** — 3/month forever outperforms 30 in one month then silence. S5 is
+   therefore a permanent weekly habit, not a one-time push.
+
+3. **Citations are overweighted here.** S4 budgets 8–12 hrs + $420/yr BrightLocal
+   for the *smallest measured factor* (6%). Do the seven Tier-1 listings by hand,
+   skip the subscription until there is spare revenue.
+
+### The constraint nobody can content their way out of
+
+For a service-area business with no storefront, Local Pack ranking is driven
+heavily by the searcher's proximity to the registered address. **We cannot rank in
+Miami's map pack from a Broward base.**
+
+So: **Broward is the Local Pack play. Miami-Dade and Palm Beach are an organic
+play** — slower, content-dependent, entirely reliant on the S3 pages. This is a
+real limit on the three-county expansion that is already live in the schema and the
+booking form, and expectations should be set before anyone judges results.
+
+### Worth reading
+
+- Whitespark, *Local Search Ranking Factors 2026* — https://whitespark.ca/local-search-ranking-factors/
+- Sterling Sky, *We Analyzed 8,186 Businesses in 200 Cities: What Actually Gets You
+  Ranking for "Near Me" in 2025* — https://www.sterlingsky.ca/what-gets-you-ranking-for-near-me-2025/
+  (not yet read; likely to sharpen the S3 city-page approach)
+- Sterling Sky, *How to Create Unique and Helpful Service Area Pages* —
+  https://www.sterlingsky.ca/how-to-create-unique-and-helpful-service-area-pages-for-local-businesses/
+  (directly relevant to S3 — read before writing city pages)
+
+---
+
 ## Pillars (what we need and why)
 
 | Pillar | Why it matters | Owner |
@@ -149,6 +217,13 @@ same blocker as Search Console and GA4 in S0.
 ---
 
 ## Stage S3 — On-page content
+
+> **Superseded in part by `04-service-area-page-template.md`.** That doc is built
+> from Sterling Sky's service-area guide and their 8,186-business study, and it
+> corrects three things below: the city list must come from GHL revenue data rather
+> than intuition, the page count is likely 3–5 rather than 7+, and each page needs a
+> first-party payload (own pricing, staff bios, city-specific proof) that the list
+> below omits. **Read it before writing any page.**
 
 Build URL structure that lets us rank for each service × location combination.
 
