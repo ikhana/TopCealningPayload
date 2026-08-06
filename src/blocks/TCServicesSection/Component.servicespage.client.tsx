@@ -110,6 +110,18 @@ const SERVICES = [
     href: '/services/organizing',
     meta: { label1: 'Starting From', value1: 'Custom / hour', label2: 'Type', value2: 'Systematic' },
   },
+  {
+    badge: 'New',
+    category: 'Specialized',
+    title: 'Handyman Services',
+    subtitle: 'The small repairs, finally done',
+    description:
+      'TV mounting, furniture assembly, drywall and door repairs, minor plumbing, and painting touch-ups. Send photos when you book and get a firm price before we start.',
+    specs: ['Firm price up front', 'Photos reviewed first', 'Insured crews', 'Same-day when available'],
+    image: '/images/services/handyman.jpg',
+    href: '/services/handyman',
+    meta: { label1: 'Starting From', value1: 'Custom / job', label2: 'Type', value2: 'Repairs + Install' },
+  },
 ]
 
 const FILTERS = ['All', 'Residential', 'Commercial', 'Specialized'] as const

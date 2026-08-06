@@ -15,6 +15,7 @@ export type ServiceSlug =
   | 'commercial'
   | 'airbnb'
   | 'post-construction'
+  | 'handyman'
 
 export type ServiceContent = {
   slug: ServiceSlug
@@ -473,7 +474,7 @@ export const SERVICES = {
         {
           question: 'What about the walls and ceilings?',
           answer:
-            "Wall marks and scuffs are included up to standard cleaning intensity. Patching, painting, or repairs are not part of cleaning scope — we can refer a handyman if needed.",
+            "Wall marks and scuffs are included up to standard cleaning intensity. Patching, painting, and repairs are not part of cleaning scope, but they are part of our Handyman Services — book both and we will schedule the crews back to back.",
         },
       ],
     },
@@ -686,6 +687,109 @@ export const SERVICES = {
       ],
     },
     related: ['move-in-out', 'commercial'],
+  },
+
+  // ─── HANDYMAN SERVICES ──────────────────────────────────────────
+  // The booking wizard has sold this since the Geraldine revisions (Step 2,
+  // "Handyman Services") with no page behind it — no ranking surface, no
+  // schema, no entry in the GBP services list. The scope below mirrors
+  // HANDYMAN_SERVICES in Step03Property.tsx exactly; do not add capabilities
+  // here that the form does not offer, or the page promises what we cannot book.
+  handyman: {
+    slug: 'handyman',
+    meta: {
+      title: 'Handyman Services Fort Lauderdale | Top Cleaning Team',
+      description:
+        'Handyman services in Fort Lauderdale and Broward County. TV mounting, furniture assembly, drywall and door repairs, minor plumbing, and painting touch-ups.',
+    },
+    hero: {
+      kicker: 'HANDYMAN',
+      title: 'The Small Jobs, Finally Done.',
+      body:
+        'The shelf that never went up. The door that sticks. The drywall patch behind the sofa. We handle the backlog of small repairs most contractors will not take on, with the same vetted, insured crews that clean thousands of South Florida homes.',
+      ctaText: 'Get Your Quote',
+      ctaHref: '/booking',
+      image: '/images/services/handyman.jpg',
+      imageAlt: 'Handyman mounting a wall fixture in a Fort Lauderdale home',
+    },
+    whatsIncluded: {
+      ghostKicker: 'What We Handle',
+      mainLine: 'Small Jobs',
+      secondaryLine: 'done right.',
+      intro:
+        'Send a few photos when you book and we will come with the right tools and a firm price. No hourly meter running while someone drives to the hardware store.',
+      sections: [
+        {
+          title: 'Mounting & Assembly',
+          items: [
+            'TV mounting on drywall, plaster, and concrete, with cable management',
+            'Flat-pack furniture assembly — beds, wardrobes, desks, shelving units',
+            'Hanging mirrors, artwork, floating shelves, and curtain rods',
+          ],
+        },
+        {
+          title: 'Repairs & Fixes',
+          items: [
+            'Drywall repair — holes, cracks, anchor damage, sanded and ready for paint',
+            'Doors that stick, drag, or will not latch, plus hinge and lock replacement',
+            'Minor plumbing — leaking faucets, running toilets, shower heads, P-traps',
+          ],
+        },
+        {
+          title: 'Finishing Touches',
+          items: [
+            'Painting touch-ups to match existing walls and trim',
+            'Re-caulking around tubs, sinks, and backsplashes',
+            'Baseboard and trim reattachment',
+          ],
+        },
+        {
+          title: 'How We Quote',
+          items: [
+            'Photos of the job go in with your booking, so we arrive prepared',
+            'A firm price before any work starts — no hourly surprises',
+            'Fully insured crews, background checked, same as our cleaning teams',
+          ],
+        },
+      ],
+    },
+    faq: {
+      eyebrow: 'FAQ',
+      title: 'Common Questions',
+      items: [
+        {
+          question: 'Why do you ask for photos when I book?',
+          answer:
+            'Because it is the difference between one visit and two. A photo of the wall, the fixture, or the leak tells us what anchors, parts, and tools to load before we leave the shop. It is also how we give you a firm price up front instead of an hourly estimate that drifts.',
+        },
+        {
+          question: 'What is outside your scope?',
+          answer:
+            'Anything requiring a licensed specialist — panel work and new electrical circuits, re-piping, roofing, structural changes, or permitted work. We will tell you straight away if a job crosses that line, and we can refer trades we have worked with.',
+        },
+        {
+          question: 'Can you come the same day?',
+          answer:
+            'Often, yes. Flag it as urgent when you book and we will tell you honestly whether we can reach you that day rather than holding the slot and cancelling.',
+        },
+        {
+          question: 'Someone already tried to fix it and made it worse. Is that a problem?',
+          answer:
+            'Not at all, and it helps to know. There is a checkbox for it when you book. A previous attempt usually means stripped screws, oversized holes, or a part that no longer seats properly, and knowing in advance means we bring what is needed to undo it.',
+        },
+        {
+          question: 'Can you do handyman work and a cleaning on the same visit?',
+          answer:
+            'Yes, and it is a common request after a renovation or before a move. Book the cleaning as your service and note the repairs in the special instructions, or book them separately and we will schedule the crews back to back.',
+        },
+        {
+          question: 'How is it priced?',
+          answer:
+            'By the job, not the hour, once we have seen your photos. You get the number before we start. Nothing is charged at booking.',
+        },
+      ],
+    },
+    related: ['residential', 'move-in-out'],
   },
 } satisfies Partial<Record<ServiceSlug, ServiceContent>>
 
