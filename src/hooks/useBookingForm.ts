@@ -18,8 +18,8 @@ import { calculateTotalPrice, EXTRA_PRICES } from '@/utilities/booking-helpers'
 import {
   isAreaPriced,
   priceRooms,
+  quoteAreas,
   estimateHours,
-  MINIMUM_BOOKING,
   type CleaningTier,
 } from '@/data/pricing'
 
@@ -231,21 +231,22 @@ export const useBookingForm = () => {
 
       const areaSubtotal = priceRooms(areas, tier)
       const extrasTotal = selectedExtras.reduce((sum, id) => sum + (EXTRA_PRICES[id] ?? 0), 0)
-      const subtotal = areaSubtotal + extrasTotal
-      const minimum = MINIMUM_BOOKING[tier]
 
-      // NOTE: no frequency or first-time discount applied here. Her formula does
-      // not mention either, and quietly discounting below her stated minimum
-      // would give away margin she did not agree to. Open question for her.
+      // Recurring discounts only — the first-time-customer discount was removed
+      // from the site on Geraldine's instruction (2026-08-20). quoteAreas also
+      // enforces her rule that a discount is dropped entirely if the minimum
+      // would swallow it.
+      const quote = quoteAreas(areas, tier, frequency, extrasTotal)
+
       setBookingData((prev) => ({
         ...prev,
         pricing: {
           basePrice: areaSubtotal,
           pricePerSqft: 0,
           extrasTotal,
-          subtotal,
-          discount: 0,
-          total: Math.max(minimum, subtotal),
+          subtotal: quote.subtotal,
+          discount: quote.discountAmount,
+          total: quote.total,
           estimatedTime: estimateHours(areas, tier, property.squareFootage),
         },
       }))

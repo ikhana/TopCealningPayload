@@ -2,6 +2,7 @@
 // Ported from TopCleaningwebsite/src/utils/booking-helpers.ts
 
 import type { ServiceCategory, FrequencyOption, ExtraServiceId } from '@/types/booking'
+import { FREQUENCY_DISCOUNTS } from '@/data/pricing'
 
 /** Florida Minimum Wage as of 2025 */
 export const MINIMUM_WAGE = 13
@@ -119,9 +120,13 @@ export const calculateTotalPrice = (
   const extrasTotal = extras.reduce((total, id) => total + (EXTRA_PRICES[id] || 0), 0)
   const subtotal = basePrice + extrasTotal
 
-  const recurringDiscount = frequency !== 'one-time' ? getDiscountPercentageByFrequency(frequency) : 0
-  const firstTimeDiscount = isFirstTimeClient ? FIRST_TIME_DISCOUNT : 0
-  const discountPercentage = Math.max(recurringDiscount, firstTimeDiscount)
+  // First-time-customer discount removed site-wide on Geraldine's instruction
+  // (2026-08-20): "Let's remove the first-time customer discount from the
+  // website. I only want to keep the recurring cleaning discounts."
+  // `isFirstTimeClient` is still captured — it is useful to know — it just no
+  // longer changes the price.
+  const discountPercentage =
+    frequency !== 'one-time' ? getDiscountPercentageByFrequency(frequency) : 0
   const discount = subtotal * discountPercentage
   const total = subtotal - discount
   const estimatedTime = calculateEstimatedTime(squareFootage, extras)
@@ -129,18 +134,14 @@ export const calculateTotalPrice = (
   return { basePrice, pricePerSqft, extrasTotal, subtotal, discount, total, estimatedTime }
 }
 
-/** Discount % by frequency */
+/**
+ * Discount % by frequency.
+ *
+ * Rates set by Geraldine 2026-08-20 (weekly 20%, every 2 weeks 15%, monthly 10%),
+ * replacing the old 15/10/5/5. Single source of truth is FREQUENCY_DISCOUNTS in
+ * src/data/pricing.ts — this reads from it so the legacy square-footage path and
+ * the area path can never quote different discounts for the same frequency.
+ */
 export function getDiscountPercentageByFrequency(frequency: FrequencyOption): number {
-  switch (frequency) {
-    case 'weekly':
-      return 0.15
-    case 'biweekly':
-      return 0.1
-    case '3weekly':
-      return 0.05
-    case 'monthly':
-      return 0.05
-    default:
-      return 0
-  }
+  return FREQUENCY_DISCOUNTS[frequency] ?? 0
 }

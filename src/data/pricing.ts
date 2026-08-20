@@ -131,6 +131,23 @@ export function priceHome(
   return priceRooms({ bedroom: bedrooms, fullBathroom: fullBathrooms }, tier, true)
 }
 
+/**
+ * Recurring discounts (Geraldine, 2026-08-20). The first-time-customer discount
+ * was removed from the site entirely on the same instruction.
+ *
+ * Her wizard labels "Twice a Month" and her message says "Every 2 Weeks"; both
+ * map to `biweekly`.
+ */
+export const FREQUENCY_DISCOUNTS: Record<string, number> = {
+  'one-time': 0,
+  weekly: 0.2,
+  biweekly: 0.15,
+  monthly: 0.1,
+  // Not offered in the wizard any more, kept so old saved bookings do not break.
+  '3weekly': 0.1,
+  '8weekly': 0.1,
+}
+
 export type Quote = {
   /** Raw sum of selected areas, before the minimum is applied. */
   subtotal: number
@@ -142,6 +159,10 @@ export type Quote = {
   minimumApplied: boolean
   /** Headroom left before they stop paying for nothing. 0 once subtotal ≥ minimum. */
   remainingToMinimum: number
+  /** Recurring discount rate actually applied. 0 when suppressed by the minimum. */
+  discountRate: number
+  /** Dollars saved. 0 when no discount applied. */
+  discountAmount: number
 }
 
 /**
@@ -154,17 +175,54 @@ export type Quote = {
  * until they reach it. That framing turns a floor into an upsell instead of a
  * surcharge the customer resents.
  */
-export function quoteAreas(counts: RoomCounts, tier: CleaningTier): Quote {
-  const subtotal = priceRooms(counts, tier)
+export function quoteAreas(
+  counts: RoomCounts,
+  tier: CleaningTier,
+  frequency: string = 'one-time',
+  extrasTotal = 0,
+): Quote {
   const minimum = MINIMUM_BOOKING[tier]
-  const minimumApplied = subtotal < minimum
+
+  // The minimum is a floor on the ROOMS, not on rooms-plus-extras. Geraldine,
+  // 2026-08-20: extras "should be added on TOP of the room/area prices. They
+  // should not count as replacements for the selected rooms."
+  //
+  // If extras counted toward the floor they would substitute for rooms: one
+  // bathroom ($35) plus fridge and oven ($65) would reach $100, floor to $120,
+  // and the customer would have bought their way under the minimum with add-ons.
+  // Flooring the rooms first prevents that — same example becomes $120 + $65.
+  const roomsSubtotal = priceRooms(counts, tier)
+  const roomsFloored = Math.max(minimum, roomsSubtotal)
+  const subtotal = roomsFloored + extrasTotal
+
+  // Discount rule (Geraldine, 2026-08-20): "The discount should only be applied
+  // when the discounted price remains above the minimum booking amount. I don't
+  // want the website to display a discount if the minimum price would override
+  // it, as that could be confusing for the customer."
+  //
+  // So we test the discounted figure against the floor FIRST, and only keep the
+  // discount if it survives. Otherwise the customer sees a clean minimum price
+  // with no phantom saving next to it.
+  const candidateRate = FREQUENCY_DISCOUNTS[frequency] ?? 0
+  const discounted = subtotal * (1 - candidateRate)
+  const discountSurvives = candidateRate > 0 && discounted >= minimum
+
+  const discountRate = discountSurvives ? candidateRate : 0
+  const total = discountSurvives ? Math.round(discounted) : subtotal
+
+  // The upsell message is about ROOMS only, for the same reason: telling someone
+  // they can "add $20 more" when an add-on would satisfy it would be telling them
+  // add-ons count toward the floor, which they do not.
+  const minimumApplied = roomsSubtotal < minimum
 
   return {
     subtotal,
     minimum,
-    total: Math.max(minimum, subtotal),
+    total,
     minimumApplied,
-    remainingToMinimum: minimumApplied ? minimum - subtotal : 0,
+    remainingToMinimum: minimumApplied ? minimum - roomsSubtotal : 0,
+    discountRate,
+    discountAmount: discountSurvives ? subtotal - total : 0,
   }
 }
 
