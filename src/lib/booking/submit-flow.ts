@@ -9,6 +9,14 @@ import { createBookingRecord, associateBookingWithContact } from '@/lib/ghl/cust
 import { GHL_FIELDS } from '@/lib/ghl/custom-fields'
 import { rollbackAppointment } from './rollback'
 import { EXTRA_PRICES } from '@/utilities/booking-helpers'
+import {
+  appointmentHours,
+  estimateHours,
+  quoteAreas,
+  hasSelection,
+  MINIMUM_HOURS,
+  type CleaningTier,
+} from '@/data/pricing'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { Booking } from '@/payload-types'
@@ -309,14 +317,41 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
 
     // Step 6: Create GHL appointment (first occurrence)
     const startTime = buildIsoDateTime(formData.serviceDate, formData.serviceTime)
-    // Min 2h — square footage is optional now, so estimatedTime is often 0.
-    // Using `||` (not `??`) so 0/NaN fall back to the default; a zero-duration
-    // appointment makes GHL reject with "Invalid slot range".
-    const estimatedHours = (formData.pricing as { estimatedTime?: number }).estimatedTime || 2
-    const endTime = addHours(startTime, estimatedHours)
+    // We block the MINIMUM, not the full estimate (decision 2026-08-20). A large
+    // deep clean estimates at 8-10h, and blanking out a whole working day from an
+    // unconfirmed form submission makes the calendar useless. The real duration is
+    // settled on the confirmation call, same as the price.
+    //
+    // Still guarded with `||` (not `??`): 0 and NaN must both fall back, because a
+    // zero-duration appointment makes GHL reject with "Invalid slot range".
+    const areaCounts = formData.property?.areas ?? {}
+    const tier: CleaningTier =
+      formData.serviceExtras?.cleaningType === 'Deep' ? 'deep' : 'regular'
+
+    const bookedHours = appointmentHours(areaCounts, tier) || MINIMUM_HOURS
+    const endTime = addHours(startTime, bookedHours)
+
+    // The full estimate still travels to GHL so whoever schedules can see that a
+    // 3h slot is holding an 8h job and extend it.
+    const fullEstimateHours = estimateHours(areaCounts, tier, formData.property?.squareFootage)
+
     const appointmentTitle = buildServiceTitle(formData)
     const appointmentAddress = formatAddress(formData.address)
-    const appointmentNotes = formData.accessMethod ? `Access: ${formData.accessMethod}` : undefined
+
+    const noteParts: string[] = []
+    if (formData.accessMethod) noteParts.push(`Access: ${formData.accessMethod}`)
+    if (hasSelection(areaCounts)) {
+      noteParts.push(`Estimated duration: ${fullEstimateHours}h (slot booked at ${bookedHours}h — extend if needed)`)
+      noteParts.push(`Estimated price: $${quoteAreas(areaCounts, tier).total}`)
+      noteParts.push(
+        'Areas: ' +
+          (Object.entries(areaCounts) as [string, number][])
+            .filter(([, n]) => n > 0)
+            .map(([k, n]) => `${k} x${n}`)
+            .join(', '),
+      )
+    }
+    const appointmentNotes = noteParts.length > 0 ? noteParts.join('\n') : undefined
 
     const ghlAppointment = await createAppointment({
       calendarId: process.env.GHL_CALENDAR_ID!,

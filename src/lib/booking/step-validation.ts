@@ -8,6 +8,7 @@
 
 import type { BookingFormData } from '@/types/booking'
 import { isServiceAreaZip } from './broward-zips'
+import { isAreaPriced, hasSelection } from '@/data/pricing'
 
 export interface StepValidationResult {
   valid: boolean
@@ -82,6 +83,16 @@ export function validateStep(
         if (!serviceExtras.propertyType) return { valid: false, missingField: 'Property Type' }
         if (!serviceExtras.completionStatus) return { valid: false, missingField: 'Completion Status' }
       }
+      // Area-priced services collect bedrooms and bathrooms through the area
+      // picker, so the standalone checks below do not apply — a customer booking
+      // only a kitchen has zero bathrooms and that is a valid booking.
+      if (isAreaPriced(serviceType)) {
+        if (!hasSelection(property.areas ?? {})) {
+          return { valid: false, missingField: 'at least one area to clean' }
+        }
+        return ok
+      }
+
       if (needsBedrooms && !property.bedrooms?.toString().trim()) {
         return { valid: false, missingField: 'Bedrooms' }
       }

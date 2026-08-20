@@ -14,7 +14,14 @@ import type {
   FrequencyOption,
   ExtraServiceId,
 } from '@/types/booking'
-import { calculateTotalPrice } from '@/utilities/booking-helpers'
+import { calculateTotalPrice, EXTRA_PRICES } from '@/utilities/booking-helpers'
+import {
+  isAreaPriced,
+  priceRooms,
+  estimateHours,
+  MINIMUM_BOOKING,
+  type CleaningTier,
+} from '@/data/pricing'
 
 const initialBookingData: BookingFormData = {
   customer: {
@@ -211,6 +218,40 @@ export const useBookingForm = () => {
   useEffect(() => {
     const { serviceType, property, hasChildren, hasPets, frequency, isFirstTimeClient, selectedExtras } =
       bookingData
+
+    // Area-priced services use Geraldine's model (2026-08-20):
+    //   Final Price = MAX(Minimum Booking Price, Total Price of Selected Areas)
+    // The legacy square-footage path below is kept only for services her sheet
+    // does not cover. Without this branch both models would write `pricing` and
+    // whichever ran last would win — two different prices for the same booking.
+    if (isAreaPriced(serviceType)) {
+      const areas = property.areas ?? {}
+      const tier: CleaningTier =
+        bookingData.serviceExtras?.cleaningType === 'Deep' ? 'deep' : 'regular'
+
+      const areaSubtotal = priceRooms(areas, tier)
+      const extrasTotal = selectedExtras.reduce((sum, id) => sum + (EXTRA_PRICES[id] ?? 0), 0)
+      const subtotal = areaSubtotal + extrasTotal
+      const minimum = MINIMUM_BOOKING[tier]
+
+      // NOTE: no frequency or first-time discount applied here. Her formula does
+      // not mention either, and quietly discounting below her stated minimum
+      // would give away margin she did not agree to. Open question for her.
+      setBookingData((prev) => ({
+        ...prev,
+        pricing: {
+          basePrice: areaSubtotal,
+          pricePerSqft: 0,
+          extrasTotal,
+          subtotal,
+          discount: 0,
+          total: Math.max(minimum, subtotal),
+          estimatedTime: estimateHours(areas, tier, property.squareFootage),
+        },
+      }))
+      return
+    }
+
     if (property.squareFootage <= 0) return
 
     const pricing = calculateTotalPrice(
@@ -234,6 +275,10 @@ export const useBookingForm = () => {
     bookingData.frequency,
     bookingData.isFirstTimeClient,
     bookingData.selectedExtras,
+    // Area model inputs. Without these the price would not move when the customer
+    // adds a room or switches Regular/Deep — the two things that actually change it.
+    bookingData.property.areas,
+    bookingData.serviceExtras?.cleaningType,
   ])
 
   return {

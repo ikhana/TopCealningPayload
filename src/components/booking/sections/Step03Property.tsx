@@ -13,6 +13,14 @@ import { Ruler, Building2, Bath, Sparkles, Layers, Home, Wrench, ImagePlus, X } 
 import { useBooking } from '@/components/booking/BookingContext'
 import { MAX_MEDIA_FILES } from '@/hooks/useBookingForm'
 import type { ServiceCategory, ServiceExtras } from '@/types/booking'
+import {
+  ROOM_PRICES,
+  quoteAreas,
+  isAreaPriced,
+  type RoomKey,
+  type RoomCounts,
+  type CleaningTier,
+} from '@/data/pricing'
 
 const BEDROOM_OPTIONS = [
   { value: 'studio', label: 'Studio' },
@@ -99,6 +107,158 @@ function SpecSelect({
 const WITH_BEDROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 const WITH_BATHROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 
+// Display order and labels for the area picker. Keys must match ROOM_PRICES.
+const AREA_LIST: Array<{ key: RoomKey; label: string }> = [
+  { key: 'bedroom',       label: 'Bedroom' },
+  { key: 'fullBathroom',  label: 'Full Bathroom' },
+  { key: 'halfBathroom',  label: 'Half Bathroom' },
+  { key: 'kitchen',       label: 'Kitchen' },
+  { key: 'livingRoom',    label: 'Living Room' },
+  { key: 'diningRoom',    label: 'Dining Room' },
+  { key: 'familyRoom',    label: 'Family Room' },
+  { key: 'office',        label: 'Office' },
+  { key: 'laundryRoom',   label: 'Laundry Room' },
+  { key: 'stairsHallway', label: 'Stairs / Hallway' },
+  { key: 'patioBalcony',  label: 'Patio / Balcony' },
+]
+
+const MAX_PER_AREA = 10
+
+// One row: label, unit price for the active tier, and a -/+ stepper.
+function AreaRow({
+  label, price, count, onChange,
+}: {
+  label: string
+  price: number
+  count: number
+  onChange: (next: number) => void
+}) {
+  const selected = count > 0
+  const btn = (enabled: boolean): React.CSSProperties => ({
+    width: '30px', height: '30px', flexShrink: 0,
+    border: '1px solid rgba(13,27,46,0.12)',
+    background: 'white',
+    color: enabled ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.3)',
+    fontSize: '1rem', lineHeight: 1, fontWeight: 700,
+    cursor: enabled ? 'pointer' : 'not-allowed',
+    borderRadius: 0,
+  })
+
+  return (
+    <div
+      style={{
+        display: 'flex', alignItems: 'center', gap: '12px',
+        padding: '10px 14px',
+        border: `1px solid ${selected ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
+        background: selected ? '#e0f5f4' : 'white',
+        transition: 'border-color 0.25s, background 0.25s',
+      }}
+    >
+      <span style={{ flex: 1, fontSize: '0.92rem', fontWeight: 600, color: 'var(--color-navy-deep)' }}>
+        {label}
+      </span>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'rgba(74,90,106,0.75)' }}>
+        ${price}
+      </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <button
+          type="button"
+          aria-label={`Remove one ${label}`}
+          disabled={count === 0}
+          onClick={() => onChange(Math.max(0, count - 1))}
+          style={btn(count > 0)}
+        >
+          −
+        </button>
+        <span
+          aria-live="polite"
+          style={{
+            minWidth: '22px', textAlign: 'center',
+            fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 700,
+            color: 'var(--color-navy-deep)',
+          }}
+        >
+          {count}
+        </span>
+        <button
+          type="button"
+          aria-label={`Add one ${label}`}
+          disabled={count >= MAX_PER_AREA}
+          onClick={() => onChange(Math.min(MAX_PER_AREA, count + 1))}
+          style={btn(count < MAX_PER_AREA)}
+        >
+          +
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// The area picker + live estimate.
+//
+// Pricing rule (Geraldine, 2026-08-20):
+//   Final Price = MAX(Minimum Booking Price, Total Price of Selected Areas)
+// When the minimum bites we tell the customer how much headroom is left, so the
+// floor reads as "you may as well add rooms" rather than as a surcharge.
+function AreaSelector({
+  counts, tier, onChange,
+}: {
+  counts: RoomCounts
+  tier: CleaningTier
+  onChange: (next: RoomCounts) => void
+}) {
+  const quote = quoteAreas(counts, tier)
+
+  return (
+    <div style={{ gridColumn: 'span 2' }}>
+      <label style={labelStyle}>
+        Areas to Clean <span style={{ color: 'var(--color-teal)' }}>*</span>
+      </label>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px' }}>
+        {AREA_LIST.map(({ key, label }) => (
+          <AreaRow
+            key={key}
+            label={label}
+            price={ROOM_PRICES[key][tier]}
+            count={counts[key] ?? 0}
+            onChange={(next) => onChange({ ...counts, [key]: next })}
+          />
+        ))}
+      </div>
+
+      {/* Live estimate */}
+      <div
+        style={{
+          marginTop: '16px', padding: '16px 18px',
+          background: 'var(--color-navy-deep)', color: 'white',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.75 }}>
+            Estimated Total
+          </span>
+          <span style={{ fontSize: '1.6rem', fontWeight: 900, letterSpacing: '-1px' }}>
+            ${quote.total}
+          </span>
+        </div>
+
+        {quote.minimumApplied && (
+          <p style={{ margin: '10px 0 0', fontSize: '0.8rem', lineHeight: 1.5, opacity: 0.8 }}>
+            Minimum service charge: ${quote.minimum}. Your selection comes to $
+            {quote.subtotal} — you may add up to ${quote.remainingToMinimum} more in
+            cleaning areas at no extra cost.
+          </p>
+        )}
+
+        <p style={{ margin: '10px 0 0', fontSize: '0.75rem', lineHeight: 1.5, opacity: 0.6 }}>
+          This is an estimate. The exact price is confirmed with you after our call.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 // Short explainer shown under the residential "Type of Cleaning" select.
 const CLEANING_TYPE_INFO: Record<string, { badge: string; desc: string }> = {
   'Regular': { badge: 'Maintenance', desc: 'Perfect for maintaining a consistently clean home.' },
@@ -166,8 +326,28 @@ export function Step03Property() {
 
   const setExtra = (key: keyof ServiceExtras) => (v: string) => updateServiceExtras({ [key]: v })
 
-  const showBedrooms = WITH_BEDROOMS.includes(serviceType)
-  const showBathrooms = WITH_BATHROOMS.includes(serviceType)
+  const showAreas = isAreaPriced(serviceType)
+
+  // When the area picker is shown it already collects bedrooms and bathrooms, so
+  // the standalone selects would be asking the same question twice.
+  const showBedrooms = WITH_BEDROOMS.includes(serviceType) && !showAreas
+  const showBathrooms = WITH_BATHROOMS.includes(serviceType) && !showAreas
+
+  // Tier comes from the existing "Type of Cleaning" question rather than a new
+  // toggle — it already exists and already maps to a GHL field.
+  const tier: CleaningTier = serviceExtras.cleaningType === 'Deep' ? 'deep' : 'regular'
+
+  const areas: RoomCounts = property.areas ?? {}
+
+  // Keep bedrooms/bathrooms in sync with the picker. They are no longer shown as
+  // inputs here, but they still feed GHL custom fields and the summary panel.
+  const handleAreasChange = (next: RoomCounts) => {
+    updatePropertySize({
+      areas: next,
+      bedrooms: String(next.bedroom ?? 0),
+      bathrooms: (next.fullBathroom ?? 0) + (next.halfBathroom ?? 0),
+    })
+  }
 
   return (
     <div>
@@ -269,6 +449,11 @@ export function Step03Property() {
               value={serviceExtras.completionStatus ?? ''} onChange={setExtra('completionStatus')}
               options={['New build', 'Renovation']} />
           </>
+        )}
+
+        {/* ── Areas to clean (area-priced services) ───────────── */}
+        {showAreas && (
+          <AreaSelector counts={areas} tier={tier} onChange={handleAreasChange} />
         )}
 
         {/* ── Bedrooms / Bathrooms (conditional) ──────────────── */}

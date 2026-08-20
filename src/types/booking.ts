@@ -1,6 +1,8 @@
 // src/types/booking.ts
 // Ported from TopCleaningwebsite/src/types/booking.ts
 
+import type { RoomCounts } from '@/data/pricing'
+
 export type ServiceCategory =
   | 'residential'
   | 'movein-out'
@@ -22,9 +24,19 @@ export type FrequencyOption =
 export type ExtraServiceId = string
 
 export interface PropertySize {
+  /**
+   * Optional. No longer affects price (Geraldine, 2026-08-20: "we are not using
+   * the Square based prices any more") — it now only sharpens the time estimate.
+   */
   squareFootage: number
   bedrooms: string
   bathrooms: number
+  /**
+   * Areas the customer selected, keyed by RoomKey. This is what the price is
+   * calculated from: Final Price = MAX(minimum, sum of selected areas).
+   * See src/data/pricing.ts.
+   */
+  areas?: RoomCounts
 }
 
 // Per-service extra questions shown on Step 3, conditional on serviceType.
