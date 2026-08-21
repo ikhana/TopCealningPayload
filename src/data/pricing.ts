@@ -192,8 +192,7 @@ export function quoteAreas(
   // and the customer would have bought their way under the minimum with add-ons.
   // Flooring the rooms first prevents that — same example becomes $120 + $65.
   const roomsSubtotal = priceRooms(counts, tier)
-  const roomsFloored = Math.max(minimum, roomsSubtotal)
-  const subtotal = roomsFloored + extrasTotal
+  const subtotal = Math.max(minimum, roomsSubtotal) + extrasTotal
 
   // Discount rule (Geraldine, 2026-08-20): "The discount should only be applied
   // when the discounted price remains above the minimum booking amount. I don't
@@ -204,11 +203,20 @@ export function quoteAreas(
   // discount if it survives. Otherwise the customer sees a clean minimum price
   // with no phantom saving next to it.
   const candidateRate = FREQUENCY_DISCOUNTS[frequency] ?? 0
-  const discounted = subtotal * (1 - candidateRate)
-  const discountSurvives = candidateRate > 0 && discounted >= minimum
+
+  // The discount applies to the ROOMS, then the minimum floors the result:
+  //   Final Price = MAX(Minimum Booking Price, Price After Discount)
+  // Extras are added afterwards and are not discounted — the recurring discount
+  // is on the recurring cleaning, not on one-off add-on tasks.
+  const roomsDiscounted = roomsSubtotal * (1 - candidateRate)
+  const roomsFinal = Math.max(minimum, roomsDiscounted)
+
+  // Show the discount only when it actually changed what they pay. If the floor
+  // swallowed it, displaying "20% off" next to the minimum price is confusing.
+  const discountSurvives = candidateRate > 0 && roomsDiscounted > minimum
 
   const discountRate = discountSurvives ? candidateRate : 0
-  const total = discountSurvives ? Math.round(discounted) : subtotal
+  const total = Math.round(roomsFinal) + extrasTotal
 
   // The upsell message is about ROOMS only, for the same reason: telling someone
   // they can "add $20 more" when an add-on would satisfy it would be telling them
@@ -222,7 +230,7 @@ export function quoteAreas(
     minimumApplied,
     remainingToMinimum: minimumApplied ? minimum - roomsSubtotal : 0,
     discountRate,
-    discountAmount: discountSurvives ? subtotal - total : 0,
+    discountAmount: discountSurvives ? Math.round(roomsSubtotal - roomsFinal) : 0,
   }
 }
 
@@ -234,7 +242,9 @@ export function quoteAreas(
  * list. If the two drifted, the picker would render while validation still
  * demanded a bathroom count the picker no longer collects.
  */
-export const AREA_PRICED_SERVICES = ['residential', 'custom'] as const
+// 'custom' was here until 2026-08-20. It is now the Hourly / Custom option, which
+// sells time rather than areas — see HOURLY_* below.
+export const AREA_PRICED_SERVICES = ['residential'] as const
 
 export function isAreaPriced(serviceType: string): boolean {
   return (AREA_PRICED_SERVICES as readonly string[]).includes(serviceType)
@@ -243,6 +253,58 @@ export function isAreaPriced(serviceType: string): boolean {
 /** Has the customer selected anything at all? Used to gate the estimate display. */
 export function hasSelection(counts: RoomCounts): boolean {
   return Object.values(counts).some((n) => (n ?? 0) > 0)
+}
+
+// ─── HOURLY / CUSTOM CLEANING ────────────────────────────────────────────────
+//
+// Third booking option (Geraldine, 2026-08-20). Exists so a customer who only
+// wants their oven and fridge done is not forced to select rooms they do not
+// need just to clear the Regular minimum.
+//
+// They are buying TIME, not a checklist. Completion of every requested task is
+// explicitly not guaranteed — the crew works to the customer's stated priorities
+// for the hours booked. That disclaimer has to appear on the form; it is the
+// thing that keeps an hourly booking from turning into a dispute.
+
+export const HOURLY_RATE = 45
+
+/** Labor-hour options. Her stated set; 3 is the minimum. */
+export const HOURLY_OPTIONS = [3, 4, 6] as const
+
+export const HOURLY_MINIMUM_HOURS = 3
+
+export function priceHourly(laborHours: number): number {
+  return Math.max(HOURLY_MINIMUM_HOURS, laborHours) * HOURLY_RATE
+}
+
+// ─── TEAM SIZE ───────────────────────────────────────────────────────────────
+//
+// Geraldine, 2026-08-20: the customer SEES the estimated team size but does not
+// choose it. "Smaller jobs → 1 cleaner, larger jobs → 2." It affects scheduling
+// and the time shown at the property, never the price.
+//
+// ⚠️ The threshold below is mine, not hers — she gave the principle, not a
+// number. 4 labor hours is the point where a single cleaner stops fitting a
+// job comfortably into a morning. Confirm before launch.
+export const TWO_CLEANER_THRESHOLD_HOURS = 4
+
+export function estimateTeamSize(laborHours: number): number {
+  return laborHours > TWO_CLEANER_THRESHOLD_HOURS ? 2 : 1
+}
+
+/**
+ * Wall-clock time the crew is at the property, as a range for display.
+ *
+ * Labor hours divided by team size. Shown as a range rather than a single figure
+ * because she asked us to say the estimate may change, and a range communicates
+ * that honestly instead of implying a precision we do not have.
+ */
+export function timeAtProperty(laborHours: number, teamSize: number): { low: number; high: number } {
+  const centre = laborHours / Math.max(1, teamSize)
+  return {
+    low: Math.max(1, Math.floor(centre * 2) / 2),
+    high: Math.ceil(centre * 2) / 2 + 0.5,
+  }
 }
 
 // ─── DURATION ────────────────────────────────────────────────────────────────
