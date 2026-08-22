@@ -10,7 +10,7 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { draftMode } from 'next/headers'
-import { Poppins } from 'next/font/google'
+import { Poppins, JetBrains_Mono } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import './globals.css'
 
@@ -26,6 +26,21 @@ const poppins = Poppins({
   variable: '--font-poppins',
 })
 
+// JetBrains Mono was in the design prototypes (design/*.html load it from Google
+// Fonts at weights 400/500/700/800) and in the brand spec as the label typeface,
+// but it was never loaded here. `--font-mono` in globals.css named it as a quoted
+// family, which registers nothing, so ~330 usages across the site have been
+// silently falling back to the browser's default monospace: Courier New on
+// Windows.
+//
+// Loaded as a variable font, so the whole weight range arrives in one file rather
+// than four static cuts. No `weight` array on purpose.
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jetbrains',
+})
+
 // GA4 loads only when the ID is present AND we're in production. Two reasons:
 // preview deployments and localhost would otherwise pollute the property with
 // our own traffic, which is exactly what ruins a baseline; and gtag is ~50KB of
@@ -39,7 +54,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const { isEnabled: isDraftMode } = await draftMode()
 
   return (
-    <html lang="en" className={poppins.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${poppins.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
