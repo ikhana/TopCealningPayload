@@ -325,13 +325,9 @@ function SmsConsentBlock() {
 
   return (
     <div style={{ marginTop: '32px', borderTop: '1px solid rgba(13,27,46,0.08)', paddingTop: '24px' }}>
-      <label style={{ ...labelStyle, marginBottom: '14px' }}>
-        Text Message Preferences{' '}
-        <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, color: 'rgba(74,90,106,0.6)' }}>
-          (optional)
-        </span>
-      </label>
-
+      {/* No section heading. Nothing in the A2P rules asks for one, and each
+          checkbox already states what it is agreeing to. Optionality is proven by
+          the form submitting with both unticked, not by a label saying so. */}
       {rows.map(({ key, label }) => (
         <label
           key={key}
