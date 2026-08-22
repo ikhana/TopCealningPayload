@@ -268,6 +268,100 @@ export function Step01Customer() {
         </div>
       </div>
 
+      <SmsConsentBlock />
+
+    </div>
+  )
+}
+
+// ── A2P 10DLC SMS consent ──────────────────────────────────────────────
+//
+// Lives on Step 1 by necessity, not by preference. Step 1 posts to
+// /api/ghl/lead-capture, which puts the phone number in the CRM and tags the
+// contact `website-lead` — the trigger for the abandoned-booking sequence. If
+// consent were collected later, every abandoned lead would sit in GHL with no
+// consent record and the recovery SMS could not legally be sent.
+//
+// Both boxes are optional and unticked on load. The form must submit with both
+// declined (Twilio 30931), and a pre-ticked box invalidates the consent record
+// regardless of the label. All five required disclosures (message type,
+// frequency, rates, STOP, HELP) are present in this panel: the message type sits
+// in each label, the rest in the shared block below both (Twilio 30924).
+//
+// See docs/a2p-compliance-handoff.md sections 4.1 and 6.1.
+function SmsConsentBlock() {
+  const { bookingData, updateSmsConsent } = useBooking()
+  const { smsConsent } = bookingData
+
+  // Each label keeps the two things that must be per-checkbox: the MESSAGE TYPE
+  // (what separates marketing consent from service consent, Twilio 30913) and the
+  // BRAND NAME (HighLevel's DBA guidance wants the brand in the checkbox CTA).
+  //
+  // The five boilerplate disclosures are NOT repeated per label. Researched during
+  // the SMPL remediation: the requirement is about PLACEMENT, not repetition —
+  // "clear and conspicuous text directly adjacent to the consent mechanism, on the
+  // same screen as the checkbox, before the user submits". A shared block sitting
+  // inside the same consent panel satisfies that. One source phrases it "adjacent
+  // to each consent mechanism", so a pedantic reviewer could object; SMPL kept the
+  // repetition only because it had a single clean attempt left. Top Cleaning has
+  // used none, and this is a booking funnel where two 40-word labels cost
+  // conversions.
+  //
+  // Do not remove the shared block. Compliance is ongoing, not a one-time gate:
+  // carriers spot-check and complaints trigger re-review. Swapping one compliant
+  // layout for another is fine; dropping the disclosures is not.
+  const rows: Array<{ key: 'service' | 'marketing'; label: string }> = [
+    {
+      key: 'service',
+      label:
+        'I agree to receive account and service text messages from Top Cleaning Team, such as booking confirmations, appointment reminders, and replies to my enquiry.',
+    },
+    {
+      key: 'marketing',
+      label:
+        'I agree to receive marketing and promotional text messages from Top Cleaning Team about cleaning services, offers, and updates.',
+    },
+  ]
+
+  return (
+    <div style={{ marginTop: '32px', borderTop: '1px solid rgba(13,27,46,0.08)', paddingTop: '24px' }}>
+      <label style={{ ...labelStyle, marginBottom: '14px' }}>
+        Text Message Preferences{' '}
+        <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, color: 'rgba(74,90,106,0.6)' }}>
+          (optional)
+        </span>
+      </label>
+
+      {rows.map(({ key, label }) => (
+        <label
+          key={key}
+          style={{
+            display: 'flex', alignItems: 'flex-start', gap: '10px',
+            cursor: 'pointer', marginBottom: '14px', userSelect: 'none',
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={smsConsent[key]}
+            onChange={(e) => updateSmsConsent({ [key]: e.target.checked })}
+            style={{ marginTop: '3px', width: '16px', height: '16px', flexShrink: 0, accentColor: '#17b0ab', cursor: 'pointer' }}
+          />
+          <span style={{ fontSize: '0.82rem', lineHeight: 1.55, color: 'rgba(74,90,106,0.85)' }}>
+            {label}
+          </span>
+        </label>
+      ))}
+
+      {/* Shared disclosure block. Must stay inside this panel, directly below the
+          checkboxes and above the submit control. Not in a footer, not behind a
+          link, not in an accordion. */}
+      <p style={{ fontSize: '0.78rem', color: 'rgba(74,90,106,0.65)', margin: '4px 0 0', lineHeight: 1.6 }}>
+        Message frequency varies. Message and data rates may apply. Reply STOP to opt out
+        or HELP for help. See our{' '}
+        <a href="/privacy" style={{ color: '#17b0ab', fontWeight: 600 }}>Privacy Policy</a>
+        {' '}and{' '}
+        <a href="/terms" style={{ color: '#17b0ab', fontWeight: 600 }}>Terms of Service</a>.
+      </p>
     </div>
   )
 }
