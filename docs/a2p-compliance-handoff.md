@@ -282,7 +282,103 @@ why it would never be diagnosed from the symptom.
 Also shifts the "no SMS before 8am / after 9pm" quiet-hours rule by an hour, which
 matters once SMS is live.
 
-### 4.10 Unverified, do not act on without checking
+### 4.10 Full website content audit (2026-08-22)
+
+Section 6.4 run properly against the live site, not just the repo.
+
+#### ✅ RESOLVED 2026-08-22 — fabricated testimonials replaced with real Google reviews
+
+Five genuine reviews now live in `src/data/testimonials.ts`, rendered by
+`TCTestimonials`. Names and wording exactly as Google displays them, verbatim, no
+tidying. Stock avatars replaced with monogram initials, because a stock face
+beside a real quote is still deceptive and a real face would need the reviewer's
+permission. Invented job titles replaced with "Google Review · <date>", and
+Laura Cuervo's is labelled "Translated" since Google machine-translated it from
+Spanish. A "Read all reviews on Google" link points at the listing so any quote
+can be verified in one click, which is what turns these from claims into evidence.
+
+`VERIFIED`: no fabricated name remains anywhere in `src/`, and no reference to
+`/images/testimonials/person*.jpg` remains in the codebase.
+
+Deliberately **not** given Review or AggregateRating schema. Self-serving markup.
+
+Minor leftover: the five stock photos still sit unreferenced in
+`public/images/testimonials/`. Nothing links to them. Safe to delete whenever.
+
+The original finding follows, kept because it is the worked example of why this
+audit exists.
+
+#### 🔴 ORIGINAL FINDING — fabricated testimonials, live on the homepage
+
+`VERIFIED` (fetched `https://www.topcleaningteam.com/` and matched the strings;
+source at `src/blocks/TCTestimonials/Component.client.tsx:23`):
+
+| Name | Role |
+|---|---|
+| Sarah Andersen | Residential Client |
+| James Miller | Property Manager |
+| Rebecca Lynch | **Ops Manager, TechBase** |
+| Tom Hiddles | Tenant |
+
+Hardcoded in a `const TESTIMONIALS` array and rendered unconditionally
+(`TESTIMONIALS.map` at line 190, no CMS source, no conditional). Avatars are
+`/images/testimonials/person1.jpg` through `person5.jpg`: five stock files for
+four testimonials, which is the signature of untouched template scaffolding.
+
+**This is Twilio 30962, deceptive marketing / fake endorsements, and it is
+NON-RESUBMITTABLE.** Not "rejected, fix, resubmit". The campaign can be
+permanently barred. It is the single highest-severity item in this document and it
+outranks every other task.
+
+**It is also fixable at no cost.** The Google Business Profile carries **6 genuine
+reviews at 5.0**. Replace the fabricated set with real ones, or remove the block
+until real ones are wired in. Either is acceptable; leaving them is not.
+
+⚠️ `INFERENCE`, flagged as such: these are *presumed* fabricated on the evidence
+above. If Geraldine says they are real clients, they can stay, but the names then
+need to be attributable. The asymmetry decides it: unverified testimonials risk a
+permanent bar, and removing them costs nothing.
+
+`VERIFIED` that `CleanTestimonials` and `TestimonialsCarousel` contain no
+hardcoded names. The defect is confined to `TCTestimonials`.
+
+#### 🟠 Must fix before submission
+
+- **No business address anywhere on the site.** `VERIFIED`: the live homepage
+  matches "954" and "topcleaningservicefl" but zero matches for "Coral Springs",
+  "8802" or "LLC". Section 6.4 requires name, address, email and phone displayed.
+  Phone and email pass; address and legal name do not.
+- **No legal entity or DBA disclosure.** The site never names TEAM TOP CLEANING
+  LLC. HighLevel's DBA guidance wants the callout in five places: campaign
+  description, checkbox CTAs, Terms, Privacy Policy, and the website.
+- **Fort Myers contradiction**, unchanged from 4.6.
+- **`/shop` and `/find-stores` live**, unchanged from 4.6.
+- **`/terms` is currently 404.** `VERIFIED`: caused by this project's own seed
+  script omitting `_status: 'published'` on 2026-08-22, which flipped the document
+  to draft. The document is republished and the seed now asserts published on
+  every run. The live 404 is a stale Vercel cache (`X-Vercel-Cache: HIT`,
+  `Age: 510`) and clears on redeploy. **Do not submit a registration naming
+  `/terms` until a redeploy has confirmed it serves 200.**
+
+#### 🟡 Minor
+
+- **`/favicon.svg` 404s.** Referenced in `layout.tsx` but absent from `/public`,
+  which only holds `favicon.ico`. A dead link in the document head.
+- **`/booking` appears twice in `sitemap.xml`.**
+- **`/home` returns 200** and duplicates `/`. The canonical tag resolves it for
+  search, and it is not an A2P defect, but it is a second URL for one page.
+- **Live pages missing from the sitemap:** `/shop`, `/find-stores`. A reviewer
+  crawling links reaches pages the sitemap does not declare.
+
+#### ✅ Passes
+
+- No `href="#"` dead links anywhere `VERIFIED` by grep
+- No lorem ipsum or "goes here" placeholder text
+- All 13 unique sitemap URLs return 200 except `/terms` (cache, above)
+- Phone and email displayed site-wide in the header ticker
+- No prohibited-category content or links
+
+### 4.11 Unverified, do not act on without checking
 
 - Whether all five phone-collecting forms post to GHL, or whether some are inert.
   Only the booking wizard path was traced.

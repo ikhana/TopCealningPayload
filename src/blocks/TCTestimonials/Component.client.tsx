@@ -10,9 +10,13 @@
 
 'use client'
 
-import Image from 'next/image'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 import React from 'react'
+import {
+  TESTIMONIALS as REAL_TESTIMONIALS,
+  GOOGLE_REVIEWS_URL,
+  initialOf,
+} from '@/data/testimonials'
 
 type Props = {
   id?: string
@@ -20,36 +24,16 @@ type Props = {
   blockType?: 'tcTestimonials'
 }
 
-const TESTIMONIALS = [
-  {
-    quote:
-      "The level of detail is unlike any other service in Florida. They don't just clean; they restore the clarity of your home.",
-    name: 'Sarah Andersen',
-    role: 'Residential Client',
-    avatar: '/images/testimonials/person1.jpg',
-  },
-  {
-    quote:
-      "Managing multiple AirBnBs is a nightmare without a reliable cleaning partner. Top Cleaning is the backbone of my 5-star host rating.",
-    name: 'James Miller',
-    role: 'Property Manager',
-    avatar: '/images/testimonials/person2.jpg',
-  },
-  {
-    quote:
-      "Professional, punctual, and highly efficient. Our office workspace has never felt more inviting. Highly recommended for commercial needs.",
-    name: 'Rebecca Lynch',
-    role: 'Ops Manager, TechBase',
-    avatar: '/images/testimonials/person3.jpg',
-  },
-  {
-    quote:
-      "After our move-out cleaning, we got our full deposit back without a single question. They caught things I would have completely missed.",
-    name: 'Tom Hiddles',
-    role: 'Tenant',
-    avatar: '/images/testimonials/person4.jpg',
-  },
-]
+// Real Google reviews, from src/data/testimonials.ts.
+//
+// This array previously held four fabricated testimonials with stock avatars.
+// That is Twilio 30962 (deceptive marketing), NON-RESUBMITTABLE for A2P, and it
+// was live on the homepage. Do not reintroduce invented quotes, invented names,
+// invented job titles, or stock photographs of people.
+//
+// To add a review: edit src/data/testimonials.ts. It must exist publicly on the
+// Google listing so that anyone, including a carrier reviewer, can verify it.
+const TESTIMONIALS = REAL_TESTIMONIALS
 
 function StarIcon() {
   return (
@@ -211,33 +195,36 @@ export function TCTestimonialsClient(_props: Props) {
                     marginBottom: '30px',
                   }}
                 >
-                  &ldquo;{t.quote}&rdquo;
+                  {/* No typographic quotes here: the card already renders a
+                      decorative quote mark above, and wrapping the text as well
+                      double-quotes it. */}
+                  {t.quote}
                 </div>
 
                 {/* Meta row */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  {/* Monogram, not a photograph. A stock face beside a real quote
+                      is still deceptive, and a real face needs the reviewer's
+                      permission. Neither is worth the risk for an avatar. */}
                   <div
+                    aria-hidden
                     style={{
                       width: '45px',
                       height: '45px',
                       borderRadius: '2px',
-                      overflow: 'hidden',
                       flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: '#e0f5f4',
+                      border: '1px solid rgba(23,176,171,0.3)',
+                      color: '#0d1b2e',
+                      fontWeight: 800,
+                      fontSize: '1.05rem',
+                      lineHeight: 1,
                     }}
                   >
-                    <Image
-                      src={t.avatar}
-                      alt={t.name}
-                      width={90}
-                      height={90}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        objectPosition: 'center top',
-                        display: 'block',
-                      }}
-                    />
+                    {initialOf(t.name)}
                   </div>
                   <div>
                     <h5
@@ -251,6 +238,8 @@ export function TCTestimonialsClient(_props: Props) {
                     >
                       {t.name}
                     </h5>
+                    {/* Provenance, not an invented job title. "Google Review"
+                        plus the date is what makes the quote checkable. */}
                     <span
                       style={{
                         display: 'block',
@@ -260,7 +249,8 @@ export function TCTestimonialsClient(_props: Props) {
                         textTransform: 'uppercase',
                       }}
                     >
-                      {t.role}
+                      Google Review &middot; {t.when}
+                      {t.translated && ' · Translated'}
                     </span>
                   </div>
                 </div>
@@ -274,12 +264,36 @@ export function TCTestimonialsClient(_props: Props) {
                     color: '#17b0ab',
                   }}
                 >
-                  {[0, 1, 2, 3, 4].map((i) => (
+                  {Array.from({ length: t.rating }, (_, i) => (
                     <StarIcon key={i} />
                   ))}
                 </div>
               </article>
             ))}
+          </div>
+
+          {/* The link is what makes these verifiable rather than merely claimed.
+              Anyone, including a carrier reviewer checking for fabricated
+              endorsements, can confirm every quote above in one click. */}
+          <div style={{ textAlign: 'center', marginTop: '36px' }}>
+            <a
+              href={GOOGLE_REVIEWS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.75rem',
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                fontWeight: 700,
+                color: '#17b0ab',
+                textDecoration: 'none',
+                borderBottom: '1px solid rgba(23,176,171,0.4)',
+                paddingBottom: '3px',
+              }}
+            >
+              Read all reviews on Google →
+            </a>
           </div>
 
         </div>
