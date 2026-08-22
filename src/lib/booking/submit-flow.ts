@@ -283,6 +283,13 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       GHL_FIELDS.jobConditions && hman.jobConditions?.length && { id: GHL_FIELDS.jobConditions, field_value: hman.jobConditions },
       GHL_FIELDS.toolsMaterials && hman.toolsMaterials && { id: GHL_FIELDS.toolsMaterials, field_value: hman.toolsMaterials },
       GHL_FIELDS.partsNeeded && hman.partsNeeded?.trim() && { id: GHL_FIELDS.partsNeeded, field_value: hman.partsNeeded.trim() },
+      // A2P consent, re-sent on completion. Step 1 already wrote it, but the
+      // customer can tick or untick between Step 1 and submit, and the last
+      // stated preference is the one that must be on file. Sent unconditionally
+      // as yes/no so an untick is recorded as a withdrawal rather than silently
+      // leaving the earlier "yes" in place.
+      GHL_FIELDS.smsServiceConsent && { id: GHL_FIELDS.smsServiceConsent, field_value: formData.smsConsent?.service ? 'yes' : 'no' },
+      GHL_FIELDS.smsMarketingConsent && { id: GHL_FIELDS.smsMarketingConsent, field_value: formData.smsConsent?.marketing ? 'yes' : 'no' },
     ].filter(Boolean) as Array<{ id: string; field_value: string | string[] }>
 
     const ghlContact = await upsertContact({

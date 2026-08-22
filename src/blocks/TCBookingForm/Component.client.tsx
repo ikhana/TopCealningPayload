@@ -324,7 +324,7 @@ function BookingFormInner() {
     const nextStep = Math.min(currentStep + 1, TOTAL_STEPS)
 
     if (currentStep === 1) {
-      const { customer } = bookingData
+      const { customer, smsConsent } = bookingData
       // Save the draft FIRST so the row exists in the DB before lead-capture
       // builds the resume URL referencing this token. The lead-capture call
       // populates the GHL contact's cart_resume_url custom field which powers
@@ -339,6 +339,9 @@ function BookingFormInner() {
           phone: customer.phone,
           countryCode: customer.countryCode,
           draftToken: getToken(),
+          // A2P: consent travels with the very first CRM write, so an abandoned
+          // lead still has an auditable record of what they agreed to.
+          smsConsent,
         }),
       }).catch(() => {})
     } else {

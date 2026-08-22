@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import type {
   BookingFormData,
   CustomerInfo,
+  SmsConsent,
   PropertySize,
   ServiceExtras,
   HandymanDetails,
@@ -30,6 +31,12 @@ const initialBookingData: BookingFormData = {
     email: '',
     phone: '',
     countryCode: 'US',
+  },
+  // Both false on load. Never pre-selected: a pre-ticked consent box is Twilio
+  // 30931 and invalidates the consent record regardless of what the label says.
+  smsConsent: {
+    service: false,
+    marketing: false,
   },
   property: {
     squareFootage: 0,
@@ -119,6 +126,10 @@ export const useBookingForm = () => {
 
   const updateCustomerInfo = (data: Partial<CustomerInfo>) => {
     setBookingData((prev) => ({ ...prev, customer: { ...prev.customer, ...data } }))
+  }
+
+  const updateSmsConsent = (data: Partial<SmsConsent>) => {
+    setBookingData((prev) => ({ ...prev, smsConsent: { ...prev.smsConsent, ...data } }))
   }
 
   const updatePropertySize = (data: Partial<PropertySize>) => {
@@ -285,6 +296,7 @@ export const useBookingForm = () => {
   return {
     bookingData,
     updateCustomerInfo,
+    updateSmsConsent,
     updatePropertySize,
     updateServiceExtras,
     updateHandyman,

@@ -60,6 +60,27 @@ export interface HandymanDetails {
   partsNeeded?: string        // e.g. TV bracket, paint color
 }
 
+/**
+ * SMS consent, captured on Step 1 beside the phone field.
+ *
+ * Placement is deliberate and is a correctness requirement, not a preference.
+ * Step 1 fires `/api/ghl/lead-capture`, which puts the phone number into the CRM
+ * and tags the contact `website-lead`, which is what triggers the abandoned
+ * booking sequence. Collecting consent any later would mean every abandoned lead
+ * sits in GHL with no consent record at all, making the recovery SMS unsendable.
+ *
+ * See docs/a2p-compliance-handoff.md section 4.1.
+ *
+ * Both flags are optional to submit. A2P review fails (Twilio 30931) if the form
+ * cannot be submitted while declining messaging.
+ */
+export interface SmsConsent {
+  /** Booking confirmations, reminders, replies to an enquiry. */
+  service: boolean
+  /** Offers, promotions, abandoned-booking recovery, review requests. */
+  marketing: boolean
+}
+
 export interface CustomerInfo {
   firstName: string
   lastName?: string
@@ -100,6 +121,7 @@ export interface PricingDetails {
 
 export interface BookingFormData {
   customer: CustomerInfo
+  smsConsent: SmsConsent
   property: PropertySize
   serviceExtras: ServiceExtras
   handyman: HandymanDetails

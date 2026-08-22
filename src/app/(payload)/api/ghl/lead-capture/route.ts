@@ -23,12 +23,13 @@ function siteUrl(): string {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { firstName, email, phone, countryCode, draftToken } = body as {
+    const { firstName, email, phone, countryCode, draftToken, smsConsent } = body as {
       firstName: string
       email: string
       phone: string
       countryCode: string
       draftToken?: string
+      smsConsent?: { service?: boolean; marketing?: boolean }
     }
 
     if (!email || !phone) {
@@ -50,6 +51,25 @@ export async function POST(req: Request) {
     if (draftToken && GHL_FIELDS.cartResumeUrl) {
       const resumeUrl = `${siteUrl()}/booking?resume=${encodeURIComponent(draftToken)}`
       customFields.push({ id: GHL_FIELDS.cartResumeUrl, field_value: resumeUrl })
+    }
+
+    // A2P: the consent record has to land here, on the very first request, not on
+    // completion. This endpoint is what creates the contact and applies the
+    // `website-lead` tag that triggers the abandoned-booking sequence, so a lead
+    // that never finishes the wizard still needs its consent state on file.
+    // Written as explicit "yes"/"no" rather than omitting the field when false,
+    // so a declined consent is a recorded decision rather than an absent value.
+    if (GHL_FIELDS.smsServiceConsent) {
+      customFields.push({
+        id: GHL_FIELDS.smsServiceConsent,
+        field_value: smsConsent?.service ? 'yes' : 'no',
+      })
+    }
+    if (GHL_FIELDS.smsMarketingConsent) {
+      customFields.push({
+        id: GHL_FIELDS.smsMarketingConsent,
+        field_value: smsConsent?.marketing ? 'yes' : 'no',
+      })
     }
 
     await upsertContact({

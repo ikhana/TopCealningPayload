@@ -25,6 +25,14 @@ export const GHL_FIELDS = {
   jobConditions: process.env.GHL_FIELD_JOB_CONDITIONS ?? '',              // CHECKBOX (array)
   toolsMaterials: process.env.GHL_FIELD_TOOLS_MATERIALS ?? '',
   partsNeeded: process.env.GHL_FIELD_PARTS_NEEDED ?? '',
+  // A2P 10DLC — SMS consent captured on Step 1, beside the phone field.
+  // These are the fields GHL workflows gate on: marketing sequences (abandoned
+  // booking, review requests) check smsMarketingConsent, service sequences
+  // (confirmations, reminders) check smsServiceConsent. A consent record that
+  // never reaches the CRM cannot be produced on audit, which is the whole point
+  // of collecting it. See docs/a2p-compliance-handoff.md section 6.1.
+  smsServiceConsent: process.env.GHL_FIELD_SMS_SERVICE_CONSENT ?? '',
+  smsMarketingConsent: process.env.GHL_FIELD_SMS_MARKETING_CONSENT ?? '',
 } as const
 
 export type GhlFieldKey = keyof typeof GHL_FIELDS
