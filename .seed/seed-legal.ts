@@ -169,18 +169,72 @@ const TEXT_FIXUPS: Array<{ find: RegExp; replace: string; why: string }> = [
     replace: 'TEAM TOP CLEANING LLC does business as (DBA) Top Cleaning Team.',
     why: 'Twilio 30918 — reviewers pattern-match the literal "DBA" formulation',
   },
+
+  // The "Business partners" bullet. Confirmed with Geraldine 2026-08-24: it was
+  // always meant to describe the subcontracted cleaners who attend the job.
+  //
+  // Renaming rather than deleting, for three reasons. It is the truth — the crew
+  // genuinely receives the customer's address. "Subcontractor" is the one sharing
+  // category carriers explicitly bless ("Information sharing to subcontractors in
+  // support services... is permitted"). And "Business partners" is the undefined
+  // keyword class LeadConnector says to strip, of the same family that rejected
+  // SMPL under 7103.
+  //
+  // Bold label and body are separate text nodes, hence two fixups.
+  {
+    find: /^Business partners$/,
+    replace: 'Cleaning subcontractors',
+    why: 'LeadConnector — "business partners" is an undefined sharing category (7103 class)',
+  },
+  {
+    // Patterns deliberately start at the first word, not at a leading space.
+    // The rich text editor stores a non-breaking space between the bold label
+    // and the body, so a pattern beginning with a literal " " silently never
+    // matched — the label was rewritten while the sentence after it was not.
+    find: /strictly necessary to fulfill your service request/,
+    replace:
+      'assigned to your booking, who receive only the details needed to perform the service at your property and never for their own marketing',
+    why: 'names the actual operational scope instead of a protective qualifier',
+  },
+
+  // Service providers stay — explicitly permitted — but say what they may not do.
+  {
+    find: /who assist in operating our website and booking system.*$/,
+    replace:
+      'who assist in operating our website and booking system, such as payment processors and scheduling tools, acting only to deliver the service',
+    why: 'MessageDesk — state that providers act only to deliver the service',
+  },
+
+  // Stale by five months. The SMS section was added 2026-08-22; a March date beside
+  // it is a visible mismatch. Applies to /privacy and /terms alike.
+  {
+    find: /Last updated: March 2026/,
+    replace: 'Last updated: August 2026',
+    why: 'date was stale — document materially changed in August',
+  },
+
+  // The policy called the business "Top Cleaning", a third name alongside
+  // "Top Cleaning Team" and the registered entity. Twilio 30918 fires when the
+  // website identifies a business name that does not match the brand record.
+  {
+    find: /^Top Cleaning \("we", "our", "us"\)/,
+    replace: 'Top Cleaning Team, a DBA of TEAM TOP CLEANING LLC ("we", "our", "us")',
+    why: 'Twilio 30918 — one business name across the site',
+  },
 ]
 
+/**
+ * Recursive. The first version of this walked only one level, which was enough
+ * for paragraphs but silently skipped list items (list > listitem > text) — and
+ * the sharing bullets that matter most live exactly there.
+ */
 const applyFixups = (children: any[]): { children: any[]; applied: string[] } => {
   const applied: string[] = []
 
-  const next = children.map((node) => {
-    if (!Array.isArray(node?.children)) return node
-
-    let touched = false
-    const kids = node.children.map((child: any) => {
-      if (typeof child?.text !== 'string') return child
-      let text = child.text
+  const fixNode = (node: any): any => {
+    if (typeof node?.text === 'string') {
+      let text = node.text
+      let touched = false
       for (const fix of TEXT_FIXUPS) {
         if (fix.find.test(text)) {
           text = text.replace(fix.find, fix.replace)
@@ -188,13 +242,17 @@ const applyFixups = (children: any[]): { children: any[]; applied: string[] } =>
           if (!applied.includes(fix.why)) applied.push(fix.why)
         }
       }
-      return touched ? { ...child, text } : child
-    })
+      return touched ? { ...node, text } : node
+    }
 
-    return touched ? { ...node, children: kids } : node
-  })
+    if (Array.isArray(node?.children)) {
+      return { ...node, children: node.children.map(fixNode) }
+    }
 
-  return { children: next, applied }
+    return node
+  }
+
+  return { children: children.map(fixNode), applied }
 }
 
 /* ── insertion ────────────────────────────────────────────────────── */
