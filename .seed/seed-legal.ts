@@ -144,6 +144,13 @@ const TERMS_SMS_NODES = [
     'Carriers are not liable for delayed or undelivered messages.',
   ),
 
+  // Age restriction. Not in the original five-clause list, but HighLevel's
+  // pre-submission compliance checker tests for it explicitly and failed the
+  // Terms review 6/7 without it.
+  para(
+    'You must be 18 years of age or older to use this SMS service.',
+  ),
+
   // Clause 4 — direct privacy policy link, not to the homepage.
   paraWithLink(
     'For details of how we handle mobile opt-in data, see our ',
@@ -211,6 +218,16 @@ const TEXT_FIXUPS: Array<{ find: RegExp; replace: string; why: string }> = [
     find: /Last updated: March 2026/,
     replace: 'Last updated: August 2026',
     why: 'date was stale — document materially changed in August',
+  },
+
+  // Age restriction, appended to the carrier-liability paragraph on documents
+  // that were seeded before this clause existed. The `$` anchor makes it
+  // self-idempotent: once appended, the sentence no longer ends there.
+  {
+    find: /Carriers are not liable for delayed or undelivered messages\.$/,
+    replace:
+      'Carriers are not liable for delayed or undelivered messages. You must be 18 years of age or older to use this SMS service.',
+    why: 'HighLevel compliance check — Terms failed 6/7 without an age restriction',
   },
 
   // The policy called the business "Top Cleaning", a third name alongside

@@ -39,7 +39,29 @@ export const EMPTY_SMS_CONSENT: SmsConsentValue = { service: false, marketing: f
  */
 export type SmsConsentAudience = 'customer' | 'careers'
 
-const BRAND = 'Top Cleaning Team'
+// Trading name plus legal entity. HighLevel's automated compliance check requires
+// the registered business name inside the consent text itself, not merely
+// somewhere on the page.
+const BRAND = 'Top Cleaning Team (TEAM TOP CLEANING LLC)'
+
+// The full disclosure set, repeated inside EVERY label.
+//
+// This reverses an earlier decision, deliberately. The documented rule is about
+// PLACEMENT ("clear and conspicuous text directly adjacent to the consent
+// mechanism") and not repetition, so a single shared block below both checkboxes
+// is defensible — and it reads far better in a booking funnel.
+//
+// HighLevel's pre-submission compliance checker disagrees. It parses the checkbox
+// LABEL as the consent text and nothing else, so a shared block scores:
+//   message type ✅ (in the label)   opt-out ❌  frequency ❌  rates ❌
+//
+// Being right about the standard does not get a campaign approved. SMPL shipped
+// full repetition and was approved; this matches that.
+//
+// If a future reviewer of this file wonders why the labels are so long: they are
+// long on purpose. Do not "tidy" them by hoisting the disclosures out again.
+const DISCLOSURE =
+  ' Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help.'
 
 const COPY: Record<
   SmsConsentAudience,
@@ -48,11 +70,15 @@ const COPY: Record<
   customer: [
     {
       key: 'service',
-      label: `I agree to receive account and service text messages from ${BRAND}, such as booking confirmations, appointment reminders, and replies to my enquiry.`,
+      label:
+        `I agree to receive account and service text messages from ${BRAND}, such as booking confirmations, appointment reminders, and replies to my enquiry.` +
+        DISCLOSURE,
     },
     {
       key: 'marketing',
-      label: `I agree to receive marketing and promotional text messages from ${BRAND} about cleaning services, offers, and updates.`,
+      label:
+        `I agree to receive marketing and promotional text messages from ${BRAND} about cleaning services, offers, and updates.` +
+        DISCLOSURE,
     },
   ],
   // Careers deliberately offers only the service box. We are not going to send
@@ -61,7 +87,9 @@ const COPY: Record<
   careers: [
     {
       key: 'service',
-      label: `I agree to receive text messages from ${BRAND} about my application, such as interview scheduling and status updates.`,
+      label:
+        `I agree to receive text messages from ${BRAND} about my application, such as interview scheduling and status updates.` +
+        DISCLOSURE,
     },
   ],
 }
@@ -127,11 +155,12 @@ export function SmsConsentFields({
         </label>
       ))}
 
-      {/* Shared disclosure. Must stay inside this panel, below the boxes and
-          above the submit control. Not in a footer, not behind a link. */}
+      {/* Links only. The five disclosures now live inside each label above, so
+          repeating them here as well would be a third copy on screen. The links
+          must stay: "Privacy Policy and Terms links visible on the form page" is
+          its own checklist item, and it passes. */}
       <p style={{ fontSize: '0.78rem', color: noteColor, margin: '4px 0 0', lineHeight: 1.6 }}>
-        Message frequency varies. Message and data rates may apply. Reply STOP to opt out or
-        HELP for help. See our{' '}
+        See our{' '}
         <a href="/privacy" style={{ color: linkColor, fontWeight: 600 }}>
           Privacy Policy
         </a>{' '}
