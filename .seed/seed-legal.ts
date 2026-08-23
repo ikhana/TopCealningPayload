@@ -230,13 +230,32 @@ const TEXT_FIXUPS: Array<{ find: RegExp; replace: string; why: string }> = [
     why: 'HighLevel compliance check — Terms failed 6/7 without an age restriction',
   },
 
-  // The policy called the business "Top Cleaning", a third name alongside
-  // "Top Cleaning Team" and the registered entity. Twilio 30918 fires when the
-  // website identifies a business name that does not match the brand record.
+  // Business identity in the privacy policy intro.
+  //
+  // ⚠️ CORRECTED 2026-08-24. An earlier version of this fixup rewrote the intro
+  // to "Top Cleaning Team, a DBA of TEAM TOP CLEANING LLC" on the assumption
+  // that "Top Cleaning" was a stray third variant. It was not. The IRS record
+  // for EIN 39-4300652 lists the trade name as TOP CLEANING, so the original
+  // wording was the registered one and the "correction" made it less accurate.
+  //
+  // Now: registered trade name, plus the legal entity for §6.4 disclosure.
+  // Matches both directions so the fixup is safe whichever state a document is in.
+  {
+    find: /^Top Cleaning Team, a DBA of TEAM TOP CLEANING LLC \("we", "our", "us"\)/,
+    replace: 'Top Cleaning, a DBA of TEAM TOP CLEANING LLC ("we", "our", "us")',
+    why: 'IRS trade name is TOP CLEANING, not Top Cleaning Team',
+  },
   {
     find: /^Top Cleaning \("we", "our", "us"\)/,
-    replace: 'Top Cleaning Team, a DBA of TEAM TOP CLEANING LLC ("we", "our", "us")',
-    why: 'Twilio 30918 — one business name across the site',
+    replace: 'Top Cleaning, a DBA of TEAM TOP CLEANING LLC ("we", "our", "us")',
+    why: 'adds the legal entity to the privacy policy intro (§6.4)',
+  },
+
+  // Same correction in the Terms SMS clause.
+  {
+    find: /does business as \(DBA\) Top Cleaning Team\./,
+    replace: 'does business as (DBA) Top Cleaning.',
+    why: 'IRS trade name is TOP CLEANING',
   },
 ]
 

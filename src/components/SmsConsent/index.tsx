@@ -39,10 +39,21 @@ export const EMPTY_SMS_CONSENT: SmsConsentValue = { service: false, marketing: f
  */
 export type SmsConsentAudience = 'customer' | 'careers'
 
-// Trading name plus legal entity. HighLevel's automated compliance check requires
-// the registered business name inside the consent text itself, not merely
-// somewhere on the page.
-const BRAND = 'Top Cleaning Team (TEAM TOP CLEANING LLC)'
+// Registered trade name plus legal entity.
+//
+// "Top Cleaning" is deliberate and is NOT a typo for "Top Cleaning Team". The
+// IRS record for EIN 39-4300652 lists the legal name as TEAM TOP CLEANING LLC
+// with the trade name / DBA as TOP CLEANING. Those are the two names with
+// documentary backing, and they are what the A2P brand record declares.
+//
+// "Top Cleaning Team" is the domain and the marketing name, and it stays in
+// headings and page copy. It just does not appear in identity statements, where
+// a name a reviewer cannot verify against the tax record is Twilio 30918.
+//
+// The legal entity is included because HighLevel's compliance check requires the
+// registered business name inside the consent text itself, not merely elsewhere
+// on the page.
+const BRAND = 'Top Cleaning (TEAM TOP CLEANING LLC)'
 
 // The full disclosure set, repeated inside EVERY label.
 //

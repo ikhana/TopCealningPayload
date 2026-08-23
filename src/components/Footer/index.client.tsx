@@ -275,7 +275,7 @@ export function FooterClient({ footer }: Props) {
         <div className="flex flex-col gap-1">
           <div>{copyrightText}</div>
           <div className="text-white/65">
-            TEAM TOP CLEANING LLC DBA Top Cleaning Team &middot; Coral Springs, FL
+            TEAM TOP CLEANING LLC DBA Top Cleaning &middot; Coral Springs, FL
           </div>
         </div>
 
