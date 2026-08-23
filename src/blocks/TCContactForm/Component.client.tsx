@@ -15,6 +15,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { SmsConsentFields, EMPTY_SMS_CONSENT } from '@/components/SmsConsent'
 
 type Props = {
   id?: string
@@ -26,6 +27,17 @@ type FormState = 'idle' | 'sending' | 'sent'
 
 export function TCContactFormClient(_props: Props) {
   const [formState, setFormState] = useState<FormState>('idle')
+
+  // A2P 10DLC consent. This form collects a phone number, so it needs the same
+  // consent mechanism as the booking wizard — reviewers crawl the site, not just
+  // the declared opt-in URL.
+  //
+  // ⚠️ KNOWN GAP, tracked in docs/a2p-compliance-handoff.md: handleSubmit below
+  // does not send anywhere. It simulates a send with a setTimeout and resets the
+  // form, so this consent value currently has no destination. Wiring this form to
+  // GHL is queued for after campaign submission. Until then the consent record is
+  // collected but not produced-able on audit.
+  const [smsConsent, setSmsConsent] = useState(EMPTY_SMS_CONSENT)
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -409,6 +421,12 @@ export function TCContactFormClient(_props: Props) {
                   placeholder="Tell us about your space..."
                 />
               </div>
+
+              <SmsConsentFields
+                audience="customer"
+                value={smsConsent}
+                onChange={setSmsConsent}
+              />
 
               {/* Submit */}
               <button

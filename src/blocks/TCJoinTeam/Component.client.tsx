@@ -19,6 +19,7 @@
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 import { TCButton } from '@/components/ui/TCButton'
 import React, { useRef, useState } from 'react'
+import { SmsConsentFields, EMPTY_SMS_CONSENT } from '@/components/SmsConsent'
 
 type Props = {
   id?: string
@@ -36,6 +37,10 @@ export function TCJoinTeamClient(_props: Props) {
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1)
   const [fileName, setFileName] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  // A2P consent. Same known gap as TCContactForm: handleSubmit does not send
+  // anywhere yet, so this value has no destination until the form is wired to GHL
+  // after campaign submission.
+  const [smsConsent, setSmsConsent] = useState(EMPTY_SMS_CONSENT)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -579,6 +584,16 @@ export function TCJoinTeamClient(_props: Props) {
                         />
                       </FieldGroup>
                     </div>
+
+                    {/* A2P 10DLC consent. Careers gets the service box only —
+                        we are not sending job applicants promotional cleaning
+                        offers, and a consent option we never intend to use is a
+                        claim we cannot substantiate. */}
+                    <SmsConsentFields
+                      audience="careers"
+                      value={smsConsent}
+                      onChange={setSmsConsent}
+                    />
 
                     <PlateActions>
                       <NavButton variant="prev" onClick={() => setActiveStep(2)}>Back</NavButton>
