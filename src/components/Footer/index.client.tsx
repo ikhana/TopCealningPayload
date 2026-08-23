@@ -254,10 +254,10 @@ export function FooterClient({ footer }: Props) {
       {/* ── Bottom bar ──────────────────────────────────────────────── */}
       <div className={cn(
         'relative z-[2]',
-        'border-t border-white/[0.05]',
+        'border-t border-white/[0.10]',
         'px-[5%] py-[28px]',
         'flex flex-col md:flex-row md:items-center md:justify-between gap-5',
-        'font-mono text-[0.7rem] tracking-[1px] text-white/30',
+        'font-mono text-[0.7rem] tracking-[1px] text-white/50',
       )}>
         {/* Business identity for A2P 10DLC (§6.4 of docs/a2p-compliance-handoff.md).
             Three things a carrier reviewer looks for, all in one line:
@@ -274,7 +274,7 @@ export function FooterClient({ footer }: Props) {
                requirement, and the registered address is the owner's home. */}
         <div className="flex flex-col gap-1">
           <div>{copyrightText}</div>
-          <div className="text-white/25">
+          <div className="text-white/65">
             TEAM TOP CLEANING LLC DBA Top Cleaning Team &middot; Coral Springs, FL
           </div>
         </div>
@@ -285,7 +285,7 @@ export function FooterClient({ footer }: Props) {
               <CMSLink
                 key={(item as any).id || i}
                 link={(item as any).link}
-                className="text-white/30 hover:text-white transition-colors duration-200 no-underline"
+                className="text-white/60 hover:text-white transition-colors duration-200 no-underline"
               >
                 {(item as any).link?.label}
               </CMSLink>
