@@ -1,0 +1,35 @@
+{
+  "name": "Top Cleaning Team",
+  "short_name": "Top Cleaning",
+  "description": "Professional residential and commercial cleaning across Broward, Miami-Dade and Palm Beach counties.",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#17b0ab",
+  "background_color": "#0d1b2e",
+  "display": "standalone",
+  "start_url": "/"
+}

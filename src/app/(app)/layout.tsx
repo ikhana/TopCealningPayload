@@ -61,8 +61,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     >
       <head>
         <InitTheme />
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
+        {/* Order matters: browsers take the first format they support, so the
+            vector goes first and the .ico is the legacy fallback. Until now
+            /favicon.svg was referenced but did not exist, so this line 404'd on
+            every page load. */}
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <link href="/favicon.ico" rel="icon" sizes="32x32" />
+        <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+        <link href="/site.webmanifest" rel="manifest" />
         {/* Preload WOFF2 only. The @font-face rules still list the .otf as a
             fallback source, so older browsers (and any failure to fetch the
             woff2) fall back automatically without a visible change. */}

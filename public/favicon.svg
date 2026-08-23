@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Top Cleaning Team">
+  <!--
+    Hand-drawn vector, deliberately not the file realfavicongenerator produced.
+
+    That one was 1.4 MB: a base64-encoded PNG wrapped in an <svg> tag, one
+    <image> element and zero paths. Browsers prefer image/svg+xml when it is
+    offered, so every page load would have pulled 1.4 MB to render a 16 px icon,
+    and it would still have been a raster at large sizes. This is ~1 KB and
+    actually scales.
+
+    The generator's raster outputs (.ico, apple-touch-icon, the manifest PNGs)
+    are kept as-is. Those are supposed to be raster.
+
+    Mark: the letter T whose stem flares into a squeegee head.
+    Ground: brand teal, full bleed. A solid ground is what gives the icon an
+    edge on both light and dark browser chrome.
+  -->
+  <rect width="64" height="64" rx="10" fill="#17b0ab"/>
+
+  <!-- T crossbar -->
+  <rect x="13" y="12" width="38" height="10" fill="#ffffff"/>
+
+  <!-- T stem, meeting the head with no gap -->
+  <rect x="27" y="12" width="10" height="17" fill="#ffffff"/>
+
+  <!-- Squeegee head: flares from the stem, drawn as one solid shape -->
+  <path d="M27 29 C27 35 21 35 17 43 L47 43 C43 35 37 35 37 29 Z" fill="#ffffff"/>
+
+  <!-- Blade. Kept as a separate bar to match the chosen design, but thickened:
+       at 16 px this is ~1.5 px and the gap above it ~0.75 px, so the two will
+       visually merge into one base. The silhouette still reads as a T on a
+       plinth, which is the part that matters at tab size. -->
+  <rect x="15" y="46" width="34" height="6" fill="#ffffff"/>
+</svg>
