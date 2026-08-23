@@ -110,8 +110,16 @@ const TERMS_SMS_NODES = [
   heading(TERMS_SMS_HEADING),
 
   // Clause 1 — business identity and what messages to expect.
+  //
+  // Phrased as "does business as (DBA)" rather than "is a trading name of".
+  // Semantically identical, but Twilio 30918 fires when "the website, campaign
+  // description, or sample messages identify a business name that does not match
+  // the registered brand information", and the documented remedy is to declare
+  // "[Legal Name] DBA [Brand Name]" consistently across the site, the privacy
+  // policy, the terms, the checkbox labels and the campaign description.
+  // Reviewers pattern-match on the literal "DBA" formulation.
   para(
-    `${TRADING_NAME} is a trading name of ${LEGAL_ENTITY}. If you opt in to text messages, you may receive ` +
+    `${LEGAL_ENTITY} does business as (DBA) ${TRADING_NAME}. If you opt in to text messages, you may receive ` +
     'booking confirmations, appointment reminders, replies to your enquiry, and, where you have separately ' +
     'agreed to marketing messages, occasional offers and service updates. ' +
     'These are two separate consents and you may give either, both, or neither.',
@@ -144,6 +152,50 @@ const TERMS_SMS_NODES = [
     '.',
   ),
 ]
+
+/* ── text fixups ──────────────────────────────────────────────────── */
+
+/**
+ * Applied to every paragraph on every run, independently of whether the section
+ * insertion happens. Needed because the insertion is idempotent and skips once
+ * the heading exists, so wording corrections to already-seeded copy would
+ * otherwise never land.
+ *
+ * Self-idempotent: once a replacement is applied the pattern no longer matches.
+ */
+const TEXT_FIXUPS: Array<{ find: RegExp; replace: string; why: string }> = [
+  {
+    find: /Top Cleaning Team is a trading name of TEAM TOP CLEANING LLC\./,
+    replace: 'TEAM TOP CLEANING LLC does business as (DBA) Top Cleaning Team.',
+    why: 'Twilio 30918 — reviewers pattern-match the literal "DBA" formulation',
+  },
+]
+
+const applyFixups = (children: any[]): { children: any[]; applied: string[] } => {
+  const applied: string[] = []
+
+  const next = children.map((node) => {
+    if (!Array.isArray(node?.children)) return node
+
+    let touched = false
+    const kids = node.children.map((child: any) => {
+      if (typeof child?.text !== 'string') return child
+      let text = child.text
+      for (const fix of TEXT_FIXUPS) {
+        if (fix.find.test(text)) {
+          text = text.replace(fix.find, fix.replace)
+          touched = true
+          if (!applied.includes(fix.why)) applied.push(fix.why)
+        }
+      }
+      return touched ? { ...child, text } : child
+    })
+
+    return touched ? { ...node, children: kids } : node
+  })
+
+  return { children: next, applied }
+}
 
 /* ── insertion ────────────────────────────────────────────────────── */
 
@@ -216,20 +268,31 @@ const run = async () => {
       continue
     }
 
-    const { children, status } = insertBefore(root.children, page.anchor, page.nodes, page.marker)
+    const inserted = insertBefore(root.children, page.anchor, page.nodes, page.marker)
+    const fixed = applyFixups(inserted.children)
+    const children = fixed.children
+    const status = inserted.status
 
     const nextLayout = layout.map((b: any, i: number) =>
       i === blockIdx ? { ...b, content: { ...b.content, root: { ...root, children } } } : b,
     )
 
+    // `_status: 'published'` is REQUIRED, not decorative. Pages have drafts
+    // enabled, and an update that omits it can leave the document as a draft,
+    // which 404s the live route. The first run of this script did exactly that
+    // to /terms. Asserted on every run, including when the content insert is
+    // skipped, so a page can never be left unpublished by this script.
     await payload.update({
       collection: 'pages',
       id: doc.id,
-      data: { layout: nextLayout } as any,
+      data: { layout: nextLayout, _status: 'published' } as any,
       context: { disableRevalidate: true },
     })
 
-    console.log(`/${page.slug}: ${status}  (${root.children.length} -> ${children.length} nodes)`)
+    console.log(
+      `/${page.slug}: ${status}  (${root.children.length} -> ${children.length} nodes)  [published]`,
+    )
+    for (const why of fixed.applied) console.log(`           fixup applied: ${why}`)
   }
 
   console.log('\nNot changed by this script, still open:')

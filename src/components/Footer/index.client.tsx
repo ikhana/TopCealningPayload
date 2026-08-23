@@ -259,7 +259,25 @@ export function FooterClient({ footer }: Props) {
         'flex flex-col md:flex-row md:items-center md:justify-between gap-5',
         'font-mono text-[0.7rem] tracking-[1px] text-white/30',
       )}>
-        <div>{copyrightText}</div>
+        {/* Business identity for A2P 10DLC (§6.4 of docs/a2p-compliance-handoff.md).
+            Three things a carrier reviewer looks for, all in one line:
+
+            1. The legal entity, exactly as Florida and the IRS hold it, so the
+               brand registration reconciles against the site.
+            2. "DBA Top Cleaning Team", because the site brands itself under a
+               name that is not the legal one. Twilio 30918 fires when "the
+               website... identifies a business name that does not match the
+               registered brand information", and the documented remedy is to
+               declare "[Legal Name] DBA [Brand Name]" consistently.
+            3. City and state. The street address is deliberately NOT here: it is
+               a required REGISTRATION field but has no documented website
+               requirement, and the registered address is the owner's home. */}
+        <div className="flex flex-col gap-1">
+          <div>{copyrightText}</div>
+          <div className="text-white/25">
+            TEAM TOP CLEANING LLC DBA Top Cleaning Team &middot; Coral Springs, FL
+          </div>
+        </div>
 
         {footer.legalLinks && footer.legalLinks.length > 0 && (
           <div className="flex items-center gap-6">
