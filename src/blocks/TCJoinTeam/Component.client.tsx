@@ -36,21 +36,67 @@ const STEP_NODES = [
 export function TCJoinTeamClient(_props: Props) {
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1)
   const [fileName, setFileName] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-  // A2P consent. Same known gap as TCContactForm: handleSubmit does not send
-  // anywhere yet, so this value has no destination until the form is wired to GHL
-  // after campaign submission.
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  // A2P consent. Careers gets the service box only — see SmsConsentFields below.
   const [smsConsent, setSmsConsent] = useState(EMPTY_SMS_CONSENT)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  // Every step is conditionally rendered, so moving from step 1 to step 2
+  // UNMOUNTS step 1's inputs — by the time the form is submitted from step 3,
+  // `new FormData(form)` can only see step 3. Nothing warns you about this; the
+  // application simply arrives with two thirds of it missing.
+  //
+  // So each step's values are captured on the way past and merged at submit.
+  // A ref rather than state because nothing renders from it, and re-rendering
+  // the form on every keystroke-adjacent change would fight the step animation.
+  const collected = useRef<Map<string, FormDataEntryValue>>(new Map())
+
+  function snapshot() {
+    const el = formRef.current
+    if (!el) return
+    for (const [key, value] of new FormData(el).entries()) {
+      // Only overwrite with something real. A field that is absent because its
+      // step is unmounted must not wipe the value captured earlier.
+      if (typeof value === 'string') {
+        if (value.trim()) collected.current.set(key, value)
+      } else if (value instanceof File && value.size > 0) {
+        collected.current.set(key, value)
+      }
+    }
+  }
+
+  function goToStep(step: 1 | 2 | 3) {
+    snapshot()
+    setActiveStep(step)
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) setFileName(file.name)
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setSubmitted(true)
+    snapshot()
+    setStatus('sending')
+
+    const body = new FormData()
+    for (const [key, value] of collected.current.entries()) body.append(key, value)
+    body.set('audience', 'careers')
+    body.set('sms_service_consent', smsConsent.service ? 'yes' : 'no')
+
+    try {
+      const res = await fetch('/api/ghl/form-submit', { method: 'POST', body })
+      if (!res.ok) throw new Error(`form-submit responded ${res.status}`)
+      setStatus('sent')
+    } catch (err) {
+      console.error('[join-team]', err)
+      // Left on 'error' with the form intact. An applicant who has filled in
+      // three steps and attached a resume must not be shown anything that looks
+      // like success, and must not have to start again.
+      setStatus('error')
+    }
   }
 
   return (
@@ -206,7 +252,7 @@ export function TCJoinTeamClient(_props: Props) {
                 <div
                   key={node.step}
                   className={`tc-join-node${activeStep === node.step ? ' active' : ''}`}
-                  onClick={() => setActiveStep(node.step as 1 | 2 | 3)}
+                  onClick={() => goToStep(node.step as 1 | 2 | 3)}
                   style={{
                     padding: '30px',
                     position: 'relative',
@@ -271,7 +317,7 @@ export function TCJoinTeamClient(_props: Props) {
             className="tc-join-form-assembly"
             style={{ position: 'relative', minHeight: '700px' }}
           >
-            {submitted ? (
+            {status === 'sent' ? (
               /* Success message */
               <div
                 style={{
@@ -310,7 +356,7 @@ export function TCJoinTeamClient(_props: Props) {
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} ref={formRef}>
 
                 {/* ── STEP 1: Personal Details ── */}
                 {activeStep === 1 && (
@@ -382,7 +428,7 @@ export function TCJoinTeamClient(_props: Props) {
 
                     <PlateActions>
                       <span />
-                      <NavButton variant="next" onClick={() => setActiveStep(2)}>
+                      <NavButton variant="next" onClick={() => goToStep(2)}>
                         Proceed to Experience
                       </NavButton>
                     </PlateActions>
@@ -494,8 +540,8 @@ export function TCJoinTeamClient(_props: Props) {
                     </FieldGroup>
 
                     <PlateActions>
-                      <NavButton variant="prev" onClick={() => setActiveStep(1)}>Back</NavButton>
-                      <NavButton variant="next" onClick={() => setActiveStep(3)}>Final Information</NavButton>
+                      <NavButton variant="prev" onClick={() => goToStep(1)}>Back</NavButton>
+                      <NavButton variant="next" onClick={() => goToStep(3)}>Final Information</NavButton>
                     </PlateActions>
                   </div>
                 )}
@@ -595,9 +641,27 @@ export function TCJoinTeamClient(_props: Props) {
                       onChange={setSmsConsent}
                     />
 
+                    {status === 'error' && (
+                      <p
+                        role="alert"
+                        style={{
+                          margin: '16px 0 0',
+                          color: '#c53030',
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.8rem',
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        We could not submit your application. Your answers are still here, so
+                        please press Submit again. If it keeps failing, email us instead.
+                      </p>
+                    )}
+
                     <PlateActions>
-                      <NavButton variant="prev" onClick={() => setActiveStep(2)}>Back</NavButton>
-                      <TCButton variant="submit" type="submit">Submit Application</TCButton>
+                      <NavButton variant="prev" onClick={() => goToStep(2)}>Back</NavButton>
+                      <TCButton variant="submit" type="submit">
+                        {status === 'sending' ? 'Submitting...' : 'Submit Application'}
+                      </TCButton>
                     </PlateActions>
                   </div>
                 )}

@@ -1,4 +1,5 @@
 import { withPayload } from '@payloadcms/next/withPayload'
+import { withBotId } from 'botid/next/config'
 import redirects from './redirects.js'
 
 const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
@@ -69,4 +70,9 @@ const nextConfig = {
   },
 }
 
-export default withPayload(nextConfig)
+// withBotId adds rewrites that proxy the bot-detection challenge through this
+// origin rather than a Vercel domain. That is not cosmetic: served from a
+// third-party host the script is trivially blocked by ad-blockers and privacy
+// extensions, and a blocked challenge means every real visitor using one looks
+// exactly like a bot.
+export default withBotId(withPayload(nextConfig))

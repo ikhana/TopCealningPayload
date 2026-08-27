@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { upsertContact } from '@/lib/ghl/contacts'
 import { getGhlFields } from '@/lib/ghl/custom-fields'
 import { CONSENT_VERSION, clientIp } from '@/lib/consent'
+import { checkBotId } from 'botid/server'
 
 const COUNTRY_PREFIX: Record<string, string> = {
   US: '+1',
@@ -31,6 +32,26 @@ export async function POST(req: Request) {
       countryCode: string
       draftToken?: string
       smsConsent?: { service?: boolean; marketing?: boolean }
+    }
+
+    // Bot-detection challenge, solved in the browser and verified here. This
+    // endpoint creates a CRM contact from anonymous input, and every junk one it
+    // accepts carries a fabricated SMS consent record along with it.
+    //
+    // Always returns isBot: false locally, so this is inert in development and
+    // only does real work on a deployment.
+    try {
+      const { isBot } = await checkBotId()
+      if (isBot) {
+        // Answered as if it succeeded. Telling a bot precisely which check it
+        // failed is free tuning feedback for whoever is running it.
+        return NextResponse.json({ ok: true })
+      }
+    } catch (err) {
+      // Never let the detector's own failure block a submission. If Vercel's
+      // endpoint is unreachable or the challenge did not load, the right
+      // outcome is an unscreened lead, not a lost one.
+      console.warn('[lead-capture] bot check unavailable, allowing:', err)
     }
 
     if (!email || !phone) {

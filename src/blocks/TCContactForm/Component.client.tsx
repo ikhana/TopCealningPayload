@@ -23,7 +23,7 @@ type Props = {
   blockType?: 'tcContactForm'
 }
 
-type FormState = 'idle' | 'sending' | 'sent'
+type FormState = 'idle' | 'sending' | 'sent' | 'error'
 
 export function TCContactFormClient(_props: Props) {
   const [formState, setFormState] = useState<FormState>('idle')
@@ -31,22 +31,39 @@ export function TCContactFormClient(_props: Props) {
   // A2P 10DLC consent. This form collects a phone number, so it needs the same
   // consent mechanism as the booking wizard — reviewers crawl the site, not just
   // the declared opt-in URL.
-  //
-  // ⚠️ KNOWN GAP, tracked in docs/a2p-compliance-handoff.md: handleSubmit below
-  // does not send anywhere. It simulates a send with a setTimeout and resets the
-  // form, so this consent value currently has no destination. Wiring this form to
-  // GHL is queued for after campaign submission. Until then the consent record is
-  // collected but not produced-able on audit.
   const [smsConsent, setSmsConsent] = useState(EMPTY_SMS_CONSENT)
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+
+    // Captured before the first await. React nulls currentTarget once the
+    // synthetic event is pooled, so reading it after the fetch would throw.
+    const formEl = e.currentTarget
     setFormState('sending')
-    setTimeout(() => {
+
+    const body = new FormData(formEl)
+    body.set('audience', 'contact')
+    body.set('sms_service_consent', smsConsent.service ? 'yes' : 'no')
+    body.set('sms_marketing_consent', smsConsent.marketing ? 'yes' : 'no')
+
+    try {
+      const res = await fetch('/api/ghl/form-submit', { method: 'POST', body })
+      if (!res.ok) throw new Error(`form-submit responded ${res.status}`)
+
       setFormState('sent')
-      ;(e.target as HTMLFormElement).reset()
+      formEl.reset()
+      // reset() clears the DOM inputs but not the controlled consent state, and
+      // a box left ticked after a successful send would pre-tick the next
+      // visitor's form on the same device — which is Twilio 30931.
+      setSmsConsent(EMPTY_SMS_CONSENT)
       setTimeout(() => setFormState('idle'), 3500)
-    }, 1400)
+    } catch (err) {
+      console.error('[contact-form]', err)
+      // Deliberately no auto-reset to idle. A failed send must stay visible:
+      // clearing it would look identical to success and the enquiry would be
+      // silently lost.
+      setFormState('error')
+    }
   }
 
   return (
@@ -371,6 +388,7 @@ export function TCContactFormClient(_props: Props) {
                   <label htmlFor="tc-cf-name">Full Name</label>
                   <input
                     id="tc-cf-name"
+                    name="name"
                     type="text"
                     className="tc-cf-input"
                     placeholder="John Doe"
@@ -381,6 +399,7 @@ export function TCContactFormClient(_props: Props) {
                   <label htmlFor="tc-cf-phone">Phone Number</label>
                   <input
                     id="tc-cf-phone"
+                    name="phone"
                     type="tel"
                     className="tc-cf-input"
                     placeholder="(555) 000-0000"
@@ -394,6 +413,7 @@ export function TCContactFormClient(_props: Props) {
                   <label htmlFor="tc-cf-email">Email Address</label>
                   <input
                     id="tc-cf-email"
+                    name="email"
                     type="email"
                     className="tc-cf-input"
                     placeholder="john@example.com"
@@ -402,7 +422,7 @@ export function TCContactFormClient(_props: Props) {
                 </div>
                 <div className="tc-cf-field">
                   <label htmlFor="tc-cf-service">Service Type</label>
-                  <select id="tc-cf-service" className="tc-cf-input" style={{ appearance: 'none' }}>
+                  <select id="tc-cf-service" name="service" className="tc-cf-input" style={{ appearance: 'none' }}>
                     <option>Residential Cleaning</option>
                     <option>Deep Cleaning</option>
                     <option>Commercial Cleaning</option>
@@ -417,6 +437,7 @@ export function TCContactFormClient(_props: Props) {
                 <label htmlFor="tc-cf-message">How can we help?</label>
                 <textarea
                   id="tc-cf-message"
+                  name="message"
                   className="tc-cf-input"
                   placeholder="Tell us about your space..."
                 />
@@ -445,6 +466,7 @@ export function TCContactFormClient(_props: Props) {
                   </>
                 )}
                 {formState === 'sending' && '[ PROCESSING... ]'}
+                {formState === 'error'   && '[ SEND FAILED — RETRY ]'}
                 {formState === 'sent'    && '[ MESSAGE SENT ✓ ]'}
               </button>
 

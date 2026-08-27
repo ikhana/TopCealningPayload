@@ -75,6 +75,9 @@ export const FIELD_KEYS = {
   consentVersion: 'contact.consent_version',
   consentTimestamp: 'contact.consent_timestamp',
   consentIp: 'contact.consent_ip_address',
+
+  // Join Our Team resume upload. FILE_UPLOAD, single file, .pdf/.doc/.docx.
+  resume: 'contact.resume',
 } as const
 
 export type FieldKey = keyof typeof FIELD_KEYS
