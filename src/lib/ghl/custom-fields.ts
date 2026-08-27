@@ -1,47 +1,56 @@
-// Contact-level GHL custom field UUIDs.
-// Most booking details live in the GHL Booking custom object — these contact fields
-// are a denormalized "latest booking" snapshot for use in email templates that are
-// triggered by contact-tag events (where appointment placeholders aren't available).
-export const GHL_FIELDS = {
-  confirmationCode: process.env.GHL_FIELD_CONFIRMATION_CODE ?? '',
-  // Stage 8 — booking snapshot for email merge variables
-  service: process.env.GHL_FIELD_SERVICE ?? '',
-  serviceDate: process.env.GHL_FIELD_SERVICE_DATE ?? '',
-  serviceTime: process.env.GHL_FIELD_SERVICE_TIME ?? '',
-  serviceTotal: process.env.GHL_FIELD_SERVICE_TOTAL ?? '',
-  // Stage 9.7.4 — resume URL for abandoned booking recovery emails
-  cartResumeUrl: process.env.GHL_FIELD_CART_RESUME_URL ?? '',
-  // Per-service extras (SINGLE_OPTIONS) — pushed from Step 3 based on serviceType
-  cleaningType: process.env.GHL_FIELD_CLEANING_TYPE ?? '',
-  typeOfSpace: process.env.GHL_FIELD_TYPE_OF_SPACE ?? '',
-  propertiesManaged: process.env.GHL_FIELD_PROPERTIES_MANAGED ?? '',
-  propertyType: process.env.GHL_FIELD_PROPERTY_TYPE ?? '',
-  completionStatus: process.env.GHL_FIELD_COMPLETION_STATUS ?? '',
-  // Special Instructions (all services) → GHL "NOTES" large-text field
-  notes: process.env.GHL_FIELD_NOTES ?? '',
-  // Handyman-specific extras (Step 3, handyman only)
-  handymanServiceType: process.env.GHL_FIELD_HANDYMAN_SERVICE_TYPE ?? '', // MULTIPLE_OPTIONS (array)
-  handymanOtherDetail: process.env.GHL_FIELD_HANDYMAN_OTHER_DETAIL ?? '',
-  jobConditions: process.env.GHL_FIELD_JOB_CONDITIONS ?? '',              // CHECKBOX (array)
-  toolsMaterials: process.env.GHL_FIELD_TOOLS_MATERIALS ?? '',
-  partsNeeded: process.env.GHL_FIELD_PARTS_NEEDED ?? '',
-  // A2P 10DLC — SMS consent captured on Step 1, beside the phone field.
-  // These are the fields GHL workflows gate on: marketing sequences (abandoned
-  // booking, review requests) check smsMarketingConsent, service sequences
-  // (confirmations, reminders) check smsServiceConsent. A consent record that
-  // never reaches the CRM cannot be produced on audit, which is the whole point
-  // of collecting it. See docs/a2p-compliance-handoff.md section 6.1.
-  smsServiceConsent: process.env.GHL_FIELD_SMS_SERVICE_CONSENT ?? '',
-  smsMarketingConsent: process.env.GHL_FIELD_SMS_MARKETING_CONSENT ?? '',
-} as const
+// src/lib/ghl/custom-fields.ts
+import { FIELD_KEYS, type FieldKey, clearFieldCache, resolveFieldIds } from './fields'
 
-export type GhlFieldKey = keyof typeof GHL_FIELDS
+/**
+ * Contact-level GHL custom field ids, resolved by `fieldKey` at runtime.
+ *
+ * This used to be a plain object read straight out of `process.env` — twenty
+ * `GHL_FIELD_*` variables holding opaque ids. See `./fields.ts` for why that
+ * was replaced. Nothing here needs an environment variable any more.
+ *
+ * The SHAPE is unchanged on purpose: a record of logical name to id string,
+ * with `''` for anything that did not resolve. Every write site already guards
+ * with `FIELDS.x && { id: FIELDS.x, ... }`, so those guards keep working
+ * verbatim and the migration is one added line per call site.
+ */
+export type GhlFieldKey = FieldKey
+export type GhlFieldMap = Record<GhlFieldKey, string>
 
-// Returns only fields that have a configured UUID (safe to send to GHL)
-export function buildCustomFields(
-  _data: Record<string, unknown> = {},
-): Array<{ id: string; field_value: string | number }> {
-  // Booking details are stored in the GHL Booking custom object, not contact fields.
-  // This function is retained for the confirmation-code merge in submit-flow.
-  return []
+const EMPTY: GhlFieldMap = Object.fromEntries(
+  Object.keys(FIELD_KEYS).map((k) => [k, '']),
+) as GhlFieldMap
+
+// Logged once per process rather than once per booking. A missing field is a
+// standing configuration fact, not a per-request event, and repeating it on
+// every submission would bury it.
+let warned = false
+
+export async function getGhlFields(): Promise<GhlFieldMap> {
+  try {
+    const { ids, missing } = await resolveFieldIds()
+
+    if (missing.length && !warned) {
+      warned = true
+      console.warn(
+        `[ghl] custom fields not present in location, their values will not be sent: ${missing.join(', ')}`,
+      )
+    }
+
+    const out: GhlFieldMap = { ...EMPTY }
+    for (const [name, id] of ids) out[name] = id
+    return out
+  } catch (err) {
+    // Deliberately not fatal. This runs inside a live booking submission, and
+    // failing the whole booking because a metadata lookup timed out is worse
+    // than writing the contact without its extras — the customer's name, phone
+    // and email still land, and the booking still completes.
+    //
+    // But it is logged as an error, not swallowed: the previous env-based code
+    // could drop consent with no trace at all, which is the failure this file
+    // exists to prevent. The cache is cleared so the next request retries
+    // rather than inheriting a poisoned resolution for the rest of the process.
+    clearFieldCache()
+    console.error('[ghl] custom field resolution failed; sending contact without custom fields', err)
+    return { ...EMPTY }
+  }
 }

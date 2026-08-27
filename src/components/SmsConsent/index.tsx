@@ -74,6 +74,14 @@ const BRAND = 'Top Cleaning (TEAM TOP CLEANING LLC)'
 const DISCLOSURE =
   ' Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help.'
 
+// The labels below are versioned. CONSENT_VERSION in src/lib/consent.ts is
+// written to GHL against every contact that ticks a box, and it is how a
+// reviewer answers "what exactly did this person agree to?" months later.
+//
+// If you change any label here in substance — the brand name, the message type,
+// or any of the five disclosures — BUMP CONSENT_VERSION in the same commit.
+// Leaving it stale silently reattributes old consents to new wording, which is
+// the one thing the version exists to prevent.
 const COPY: Record<
   SmsConsentAudience,
   Array<{ key: keyof SmsConsentValue; label: string }>

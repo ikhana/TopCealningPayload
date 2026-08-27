@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { upsertContact } from '@/lib/ghl/contacts'
-import { GHL_FIELDS } from '@/lib/ghl/custom-fields'
+import { getGhlFields } from '@/lib/ghl/custom-fields'
+import { CONSENT_VERSION, clientIp } from '@/lib/consent'
 
 const COUNTRY_PREFIX: Record<string, string> = {
   US: '+1',
@@ -45,6 +46,10 @@ export async function POST(req: Request) {
     const digits = phone.replace(/\D/g, '')
     const e164 = `${prefix}${digits}`
 
+    // Field ids are resolved from GHL by fieldKey, not read from env. See
+    // src/lib/ghl/fields.ts. Cached for the life of the process.
+    const GHL_FIELDS = await getGhlFields()
+
     // Build the resume URL only if a draftToken was provided and the GHL field
     // is configured. Missing either is non-fatal — the contact still gets upserted.
     const customFields: Array<{ id: string; field_value: string | number }> = []
@@ -70,6 +75,26 @@ export async function POST(req: Request) {
         id: GHL_FIELDS.smsMarketingConsent,
         field_value: smsConsent?.marketing ? 'yes' : 'no',
       })
+    }
+
+    // Consent evidence. A "yes" on its own is not proof of anything — proof is
+    // when it was given, from where, and against which wording. Written on
+    // every consent decision including a decline, because a recorded "no" is
+    // evidence the choice was genuinely offered.
+    //
+    // Timestamp and IP are taken server-side. A client-supplied time or address
+    // is not evidence; it is whatever the client chose to send.
+    const consentAt = new Date().toISOString()
+    const consentIp = clientIp(req)
+
+    if (GHL_FIELDS.consentVersion) {
+      customFields.push({ id: GHL_FIELDS.consentVersion, field_value: CONSENT_VERSION })
+    }
+    if (GHL_FIELDS.consentTimestamp) {
+      customFields.push({ id: GHL_FIELDS.consentTimestamp, field_value: consentAt })
+    }
+    if (GHL_FIELDS.consentIp && consentIp) {
+      customFields.push({ id: GHL_FIELDS.consentIp, field_value: consentIp })
     }
 
     await upsertContact({

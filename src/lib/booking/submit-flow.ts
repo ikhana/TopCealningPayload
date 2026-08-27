@@ -6,7 +6,8 @@ import { upsertContact } from '@/lib/ghl/contacts'
 import { createAppointment } from '@/lib/ghl/appointments'
 import { createOpportunity } from '@/lib/ghl/opportunities'
 import { createBookingRecord, associateBookingWithContact } from '@/lib/ghl/custom-objects'
-import { GHL_FIELDS } from '@/lib/ghl/custom-fields'
+import { getGhlFields } from '@/lib/ghl/custom-fields'
+import { CONSENT_VERSION } from '@/lib/consent'
 import { rollbackAppointment } from './rollback'
 import { EXTRA_PRICES } from '@/utilities/booking-helpers'
 import {
@@ -47,6 +48,7 @@ export interface SubmitBookingParams {
   idempotencyKey: string
   userId?: string // undefined for guest checkouts
   draftToken?: string // present when the wizard had a saved draft (Stage 9.7.5)
+  consentIp?: string // originating IP, resolved by the route from request headers
 }
 
 export interface SubmitBookingResult {
@@ -135,7 +137,7 @@ function formatServiceTime(serviceTime: string): string {
 }
 
 export async function submitBooking(params: SubmitBookingParams): Promise<SubmitBookingResult> {
-  const { formData, paymentNonce, idempotencyKey, userId, draftToken } = params
+  const { formData, paymentNonce, idempotencyKey, userId, draftToken, consentIp } = params
 
   // Step 1: Validate
   validateBookingData(formData)
@@ -265,6 +267,10 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     const extras = formData.serviceExtras ?? {}
     const hman = formData.handyman ?? {}
 
+    // Field ids are resolved from GHL by fieldKey, not read from env. See
+    // src/lib/ghl/fields.ts. Cached for the life of the process.
+    const GHL_FIELDS = await getGhlFields()
+
     const contactCustomFields = [
       GHL_FIELDS.confirmationCode && { id: GHL_FIELDS.confirmationCode, field_value: confirmationCode },
       GHL_FIELDS.service && { id: GHL_FIELDS.service, field_value: serviceName },
@@ -290,6 +296,12 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       // leaving the earlier "yes" in place.
       GHL_FIELDS.smsServiceConsent && { id: GHL_FIELDS.smsServiceConsent, field_value: formData.smsConsent?.service ? 'yes' : 'no' },
       GHL_FIELDS.smsMarketingConsent && { id: GHL_FIELDS.smsMarketingConsent, field_value: formData.smsConsent?.marketing ? 'yes' : 'no' },
+      // Evidence refreshed with the flags. These record the LATEST stated
+      // preference, matching the flags above — if the customer unticked
+      // between Step 1 and submit, the withdrawal is what needs a timestamp.
+      GHL_FIELDS.consentVersion && { id: GHL_FIELDS.consentVersion, field_value: CONSENT_VERSION },
+      GHL_FIELDS.consentTimestamp && { id: GHL_FIELDS.consentTimestamp, field_value: new Date().toISOString() },
+      GHL_FIELDS.consentIp && consentIp && { id: GHL_FIELDS.consentIp, field_value: consentIp },
     ].filter(Boolean) as Array<{ id: string; field_value: string | string[] }>
 
     const ghlContact = await upsertContact({

@@ -8,6 +8,7 @@ import { getMeUser } from '@/utilities/getMeUser'
 import { submitBooking, BookingValidationError } from '@/lib/booking/submit-flow'
 import { AuthNetDeclinedError, AuthNetAvsError, AuthNetCvvError } from '@/lib/authnet/errors'
 import { GhlApiError } from '@/lib/ghl/errors'
+import { clientIp } from '@/lib/consent'
 
 export const dynamic = 'force-dynamic'
 
@@ -52,6 +53,7 @@ export async function POST(request: NextRequest) {
       idempotencyKey,
       userId: user ? String(user.id) : undefined,
       draftToken: typeof draftToken === 'string' ? draftToken : undefined,
+      consentIp: clientIp(request),
     })
 
     return NextResponse.json(result, { status: 200 })

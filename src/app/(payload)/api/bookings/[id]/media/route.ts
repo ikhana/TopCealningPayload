@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { uploadFilesToContactField, type UploadFile } from '@/lib/ghl/files'
+import { getGhlFields } from '@/lib/ghl/custom-fields'
 import type { Booking } from '@/payload-types'
 
 export const dynamic = 'force-dynamic'
@@ -74,7 +75,8 @@ export async function POST(
   }
 
   const contactId = booking.ghlContactId
-  const fieldId = process.env.GHL_FIELD_SERVICE_MEDIA
+  // Resolved from GHL by fieldKey rather than env. See src/lib/ghl/fields.ts.
+  const fieldId = (await getGhlFields()).serviceMedia
   if (!contactId || !fieldId) {
     // No GHL contact (GHL may have failed during submit) or field not configured.
     // Don't error the client — booking stands; just report nothing uploaded.
