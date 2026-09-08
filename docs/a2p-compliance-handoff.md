@@ -229,12 +229,38 @@ NAP fix and for the brand registration.
 
 `VERIFIED` (supplied by Geraldine, and corroborated by the GHL location record):
 
+`VERIFIED` against the Florida Division of Corporations record (sunbiz.org),
+2026-08-22. These are the values the brand registration must carry, exactly.
+
 | Field | Value |
 |---|---|
 | Legal entity | **TEAM TOP CLEANING LLC** |
-| EIN | **39-4300652** |
-| Address | 8802 NW 38th Dr, Coral Springs, FL 33065 |
-| GHL account name | Top Cleaning Team |
+| FEI/EIN | **39-4300652** |
+| Document number | L25000277523 |
+| Date filed | 06/13/2025 |
+| Status | **ACTIVE** |
+| Principal + mailing address | **8802 NW 38 TH DR, APT 1, CORAL SPRINGS, FL 33065** |
+| Registered agent | Gavilanez, Geraldine (same address) |
+| Authorized person | Gavilanez, Geraldine, President |
+| Last annual report | 03/07/2026 |
+| Name history | None |
+
+⚠️ **The address includes `APT 1`.** The value supplied verbally omitted it. Brand
+vetting matches submitted details against state and IRS records, so the unit
+number goes in.
+
+⚠️ **The registered address is a residential apartment**, and it is the registered
+agent's own home. This makes the separate GBP "should we publish an address"
+question concrete rather than hypothetical: publishing it means publishing
+Geraldine's home address. Brand registration requires the address but does not
+publish it; a Google Business Profile does.
+
+⚠️ **No fictitious name is shown on the entity record, and there is no name
+history.** Florida files fictitious names separately, so this does not prove
+"Top Cleaning Team" is unregistered, but nothing here confirms it either.
+`UNVERIFIED` — check the Fictitious Name Search at sunbiz.org. It matters twice:
+HighLevel's DBA guidance wants the trade name disclosed in five places, and
+Florida requires fictitious names used in trade to be registered.
 
 **This resolves section 5 in favour of Standard Brand.** An EIN exists, so Sole
 Proprietor is not forced and promotional messaging stays available. The
@@ -532,6 +558,27 @@ which is a correctness issue rather than a compliance nicety.
       "for their own marketing purposes". Put the absolute sentence first and make
       the list subject to it.
 - [ ] Does not mention affiliation, selling, or buying of leads anywhere
+- [ ] **Remove the "Business partners" bullet from the Data Sharing list.**
+
+      `VERIFIED` 2026-08-22 (full fetch of the live page). The list reads:
+      Service providers, Legal authorities, **Business partners** — "strictly
+      necessary to fulfill your service request".
+
+      That qualifier is exactly the pattern that rejected SMPL under 7103. Its
+      offending bullet named "the specific sales agent or referral partner you
+      asked to assist you", also qualified, and the fix was to **delete the
+      bullet, not reword it**. Reviewers pattern-match on the noun; qualifiers
+      are not read.
+
+      Our unqualified exclusion now sits *above* this list and explicitly covers
+      it, which is stronger than SMPL ever had. But the cheapest way to remove
+      the risk is to remove the words.
+
+      ⚠️ Business question first, per section 2: does Top Cleaning actually
+      share customer data with business partners? For a cleaning company this
+      reads as boilerplate; the real recipients are the payment processor,
+      scheduling tools, and legal authorities, both already listed. If nothing
+      relies on it, delete it.
 - [ ] Does not name referral partners, resellers or affiliates as data recipients
 - [ ] "Last updated" date current and consistent everywhere it appears
 - [ ] Publicly accessible, no login
@@ -553,8 +600,31 @@ All five clauses are currently **absent**. All five must be added:
 
 ### 6.4 Website
 
-- [ ] Legal business name and contact details displayed: address, email, phone
-- [ ] Any DBA or alternate business name disclosed
+- [ ] Legal business name and contact details displayed: **email, phone, and at
+      minimum city + state**
+
+      **Researched 2026-08-22. The street address is a REGISTRATION field, not a
+      website requirement.** Brand registration requires a physical street address
+      matching state and IRS records (PO Boxes and PMBs rejected, mismatches hurt
+      the Trust Score), and residential addresses are explicitly acceptable. That
+      form is never published.
+
+      Rejection 30919 is scoped to "website lacks sufficient business or messaging
+      use case information", i.e. identifying the business and explaining the
+      messages. No Twilio, HighLevel or LeadConnector documentation specifies an
+      address format for the site.
+
+      **Decision: publish "Coral Springs, FL" plus the legal entity name, not the
+      street address.** The registered address is the owner's home apartment;
+      publishing it site-wide is a permanent personal exposure to satisfy a
+      requirement that is not documented. Adding the street later is a five-minute
+      change if a reviewer ever queries legitimacy. Un-publishing a home address
+      is not.
+
+      `INFERENCE`, flagged: absence of a stated requirement is not documented
+      permission. The risk is small but non-zero.
+- [ ] Any DBA or alternate business name disclosed — see 30918. The site must
+      state that "Top Cleaning Team" is a trading name of TEAM TOP CLEANING LLC
 - [ ] **Resolve the Fort Myers contradiction** in `TCContactMap`, both legal page
       titles, and the careers form location list
 - [ ] **Resolve the "Team Top Cleaning" vs "Top Cleaning Team" mismatch** against
@@ -614,6 +684,7 @@ Top Cleaning is materially safer than either SMPL or BrandBloom.
 | 30913 | Marketing consent not collected separately from transactional |
 | 30916 | Lead generation vs lead nurture mismatch |
 | 30917 | Multiple opt-in methods listed but not all described |
+| **30918** | **DBA name does not match the legal business name on file.** Directly relevant: the site trades as "Top Cleaning Team", the entity is TEAM TOP CLEANING LLC |
 | 30919 | Website lacks sufficient business information |
 | 30923 | Consent bundled into mandatory terms |
 | 30924 | Missing required disclosures at point of consent |
