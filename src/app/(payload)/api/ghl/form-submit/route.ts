@@ -16,7 +16,7 @@ import { getGhlFields } from '@/lib/ghl/custom-fields'
 import { CONSENT_VERSION, clientIp } from '@/lib/consent'
 import { createOpportunity } from '@/lib/ghl/opportunities'
 import { resolvePipelines, type PipelineTarget } from '@/lib/ghl/pipelines'
-import { checkBotId } from 'botid/server'
+import { isBotRequest } from '@/lib/botid'
 
 export const dynamic = 'force-dynamic'
 
@@ -86,23 +86,13 @@ export async function POST(request: NextRequest) {
     // behind them, which is the exact shape spam looks for — and every junk
     // contact it creates carries a fabricated SMS consent record with it.
     //
-    // Always returns isBot: false locally, so this is inert in development and
-    // only does real work on a deployment.
-    try {
-      // No options: that is Basic mode, which is what we want. Deep Analysis is
-      // opt-in via advancedOptions.checkLevel = 'deepAnalysis' and is a paid
-      // tier — do not switch it on here, this project is on Hobby.
-      const { isBot } = await checkBotId()
-      if (isBot) {
-        // Answered as if it succeeded. Telling a bot precisely which check it
-        // failed is free tuning feedback for whoever is running it.
-        return NextResponse.json({ ok: true, resumeUploaded: false })
-      }
-    } catch (err) {
-      // Never let the detector's own failure block a submission. If Vercel's
-      // endpoint is unreachable or the challenge did not load, the right
-      // outcome is an unscreened enquiry, not a lost one.
-      console.warn('[form-submit] bot check unavailable, allowing:', err)
+    // Returns isBot: false locally unless BOTID_DEV_VERDICT forces it, so this
+    // is inert in development and only does real work on a deployment.
+    // Answered as if it succeeded: telling a bot precisely which check it failed
+    // is free tuning feedback for whoever is running it. See src/lib/botid.ts —
+    // that silence is also why the reject is logged there.
+    if (await isBotRequest('form-submit', str(form, 'email') || str(form, 'phone'))) {
+      return NextResponse.json({ ok: true, resumeUploaded: false })
     }
 
     const locationId = process.env.GHL_LOCATION_ID
