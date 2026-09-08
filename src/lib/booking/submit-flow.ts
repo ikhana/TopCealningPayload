@@ -390,7 +390,19 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       scheduleRecurringAppointments({
         frequency: formData.frequency,
         firstStartTime: startTime,
-        estimatedHours,
+        // `bookedHours`, not `fullEstimateHours`: every occurrence in the series
+        // must block the same duration as the first one, which is the minimum
+        // (see appointmentHours()). Using the full estimate here would give
+        // occurrence 1 a 3h slot and occurrences 2..N an 8h slot for the same job.
+        //
+        // This identifier was previously undeclared, which threw a ReferenceError
+        // before the call was ever made — and because the object literal is built
+        // synchronously, the trailing .catch() below could not see it. It hit the
+        // outer catch instead, which cancels the booking, cancels the series and
+        // rolls back the GHL appointment. Every recurring booking failed with a
+        // 500; one-time bookings never reach this branch, which is why it went
+        // unnoticed. Reproduced and fixed 2026-09-08.
+        estimatedHours: bookedHours,
         calendarId: process.env.GHL_CALENDAR_ID!,
         locationId: process.env.GHL_LOCATION_ID!,
         contactId: ghlContactId,
