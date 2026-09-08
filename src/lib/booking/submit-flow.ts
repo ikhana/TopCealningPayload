@@ -16,6 +16,11 @@ import {
   quoteAreas,
   hasSelection,
   MINIMUM_HOURS,
+  activeCondition,
+  conditionUplift,
+  conditionLabel,
+  lastCleanedLabel,
+  effectiveTier,
   type CleaningTier,
 } from '@/data/pricing'
 import { getPayload } from 'payload'
@@ -267,6 +272,16 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     const extras = formData.serviceExtras ?? {}
     const hman = formData.handyman ?? {}
 
+    // Resolved here rather than at the appointment block below, because the
+    // "Type of Cleaning" custom field is written a few lines down and it has to
+    // carry the tier we actually PRICED at. A contact reading "Regular" against
+    // a deep-clean total is the version of this that ends in an argument on the
+    // doorstep.
+    const condition = activeCondition(extras.lastCleaned, extras.homeCondition)
+    const tier: CleaningTier = effectiveTier(extras.cleaningType, condition)
+    const uplift = conditionUplift(condition)
+    const cleaningTypeValue = tier === 'deep' ? 'Deep' : extras.cleaningType
+
     // Field ids are resolved from GHL by fieldKey, not read from env. See
     // src/lib/ghl/fields.ts. Cached for the life of the process.
     const GHL_FIELDS = await getGhlFields()
@@ -277,7 +292,12 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       GHL_FIELDS.serviceDate && { id: GHL_FIELDS.serviceDate, field_value: serviceDateFmt },
       GHL_FIELDS.serviceTime && { id: GHL_FIELDS.serviceTime, field_value: serviceTimeFmt },
       GHL_FIELDS.serviceTotal && { id: GHL_FIELDS.serviceTotal, field_value: serviceTotalFmt },
-      GHL_FIELDS.cleaningType && extras.cleaningType && { id: GHL_FIELDS.cleaningType, field_value: extras.cleaningType },
+      GHL_FIELDS.cleaningType && cleaningTypeValue && { id: GHL_FIELDS.cleaningType, field_value: cleaningTypeValue },
+      // Sent as the display LABELS, because these are SINGLE_OPTIONS fields in
+      // GHL and a value outside the option list is silently dropped. The app
+      // stores stable keys; the mapping happens here, at the edge.
+      GHL_FIELDS.lastCleaned && lastCleanedLabel(extras.lastCleaned) && { id: GHL_FIELDS.lastCleaned, field_value: lastCleanedLabel(extras.lastCleaned)! },
+      GHL_FIELDS.homeCondition && conditionLabel(condition) && { id: GHL_FIELDS.homeCondition, field_value: conditionLabel(condition)! },
       GHL_FIELDS.typeOfSpace && extras.typeOfSpace && { id: GHL_FIELDS.typeOfSpace, field_value: extras.typeOfSpace },
       GHL_FIELDS.propertiesManaged && extras.propertiesManaged && { id: GHL_FIELDS.propertiesManaged, field_value: extras.propertiesManaged },
       GHL_FIELDS.propertyType && extras.propertyType && { id: GHL_FIELDS.propertyType, field_value: extras.propertyType },
@@ -344,15 +364,13 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     // Still guarded with `||` (not `??`): 0 and NaN must both fall back, because a
     // zero-duration appointment makes GHL reject with "Invalid slot range".
     const areaCounts = formData.property?.areas ?? {}
-    const tier: CleaningTier =
-      formData.serviceExtras?.cleaningType === 'Deep' ? 'deep' : 'regular'
 
     const bookedHours = appointmentHours(areaCounts, tier) || MINIMUM_HOURS
     const endTime = addHours(startTime, bookedHours)
 
     // The full estimate still travels to GHL so whoever schedules can see that a
     // 3h slot is holding an 8h job and extend it.
-    const fullEstimateHours = estimateHours(areaCounts, tier, formData.property?.squareFootage)
+    const fullEstimateHours = estimateHours(areaCounts, tier, formData.property?.squareFootage, uplift)
 
     const appointmentTitle = buildServiceTitle(formData)
     const appointmentAddress = formatAddress(formData.address)
@@ -361,7 +379,21 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     if (formData.accessMethod) noteParts.push(`Access: ${formData.accessMethod}`)
     if (hasSelection(areaCounts)) {
       noteParts.push(`Estimated duration: ${fullEstimateHours}h (slot booked at ${bookedHours}h — extend if needed)`)
-      noteParts.push(`Estimated price: $${quoteAreas(areaCounts, tier).total}`)
+      noteParts.push(`Estimated price: $${quoteAreas(areaCounts, tier, 'one-time', 0, uplift).total}`)
+      // The crew and whoever takes the confirmation call need to know what they
+      // are walking into. This is the one place the condition IS spelled out:
+      // Geraldine's "do not show a +25% line" is about the customer-facing
+      // quote, not about what the team sees.
+      if (extras.lastCleaned) {
+        noteParts.push(`Last thoroughly cleaned: ${lastCleanedLabel(extras.lastCleaned)}`)
+      }
+      if (condition) {
+        noteParts.push(
+          `Home condition: ${conditionLabel(condition)}` +
+            (uplift > 0 ? ` (+${Math.round(uplift * 100)}% on areas)` : '') +
+            (condition === 'heavy' ? ', repriced as Deep Cleaning' : ''),
+        )
+      }
       noteParts.push(
         'Areas: ' +
           (Object.entries(areaCounts) as [string, number][])

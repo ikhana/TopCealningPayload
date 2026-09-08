@@ -53,6 +53,9 @@ type FieldSpec = {
   acceptedFormat?: string[]
   isMultipleFile?: boolean
   maxNumberOfFiles?: number
+  // SINGLE_OPTIONS only. Must be the DISPLAY labels — this is what shows in the
+  // GHL dropdown and in workflow filter conditions, so it has to read as English.
+  picklistOptions?: string[]
 }
 
 const FIELDS: FieldSpec[] = [
@@ -70,6 +73,41 @@ const FIELDS: FieldSpec[] = [
     acceptedFormat: ['.pdf', '.doc', '.docx'],
     isMultipleFile: false,
     maxNumberOfFiles: 1,
+  },
+
+  // Home condition (Geraldine, 2026-09-08). These drive the price, so they have
+  // to be on the contact and not only in the appointment notes: the crew needs
+  // them before arriving, and whoever takes the confirmation call needs to see
+  // WHY the quote is what it is without opening the calendar event.
+  //
+  // SINGLE_OPTIONS rather than TEXT so they are filterable in workflows — "last
+  // cleaned over 6 months ago" is a segment worth being able to target later.
+  //
+  // Option labels must stay in sync with LAST_CLEANED_OPTIONS and
+  // HOME_CONDITION_OPTIONS in src/data/pricing.ts. The app stores the stable
+  // keys and maps to these labels at the GHL edge, so editing the wording in
+  // GHL alone will silently stop the write from matching.
+  {
+    name: 'Last Cleaned',
+    dataType: 'SINGLE_OPTIONS',
+    placeholder: '',
+    picklistOptions: [
+      'Within the last month',
+      '1-3 months ago',
+      '3-6 months ago',
+      'More than 6 months ago',
+      "I'm not sure",
+    ],
+  },
+  {
+    name: 'Home Condition',
+    dataType: 'SINGLE_OPTIONS',
+    placeholder: '',
+    picklistOptions: [
+      'Generally Maintained',
+      'Needs Extra Attention',
+      'Heavy Buildup: Needs Significant Attention',
+    ],
   },
 ]
 
@@ -117,6 +155,12 @@ for (const field of FIELDS) {
       ...(field.maxNumberOfFiles !== undefined
         ? { maxNumberOfFiles: field.maxNumberOfFiles }
         : {}),
+      // Sent as `options`, NOT `picklistOptions` — the same read/write asymmetry
+      // as the FILE_UPLOAD settings above. The CREATE endpoint rejects
+      // `picklistOptions` outright ("property picklistOptions should not
+      // exist"), while the READ endpoint reports this exact field back under
+      // that name. Confirmed against a live 422, 2026-09-08.
+      ...(field.picklistOptions ? { options: field.picklistOptions } : {}),
     }),
   })
 

@@ -48,6 +48,8 @@ export const FIELD_KEYS = {
 
   // Per-service extras, pushed from Step 3 based on serviceType
   cleaningType: 'contact.cleaning_type',
+  lastCleaned: 'contact.last_cleaned',
+  homeCondition: 'contact.home_condition',
   typeOfSpace: 'contact.type_of_space',
   propertiesManaged: 'contact.properties_managed',
   propertyType: 'contact.property_type',

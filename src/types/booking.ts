@@ -44,6 +44,15 @@ export interface PropertySize {
 // the GHL options exactly).
 export interface ServiceExtras {
   cleaningType?: string       // Residential:       Regular | Deep | Move-in/Move-out
+  /**
+   * Home condition (Geraldine, 2026-09-08). Stored as the stable `value` keys
+   * from LAST_CLEANED_OPTIONS / HOME_CONDITION_OPTIONS in src/data/pricing.ts,
+   * NOT the display labels — the labels contain punctuation and are wording
+   * she will want to edit, and a copy change must not silently reprice a job.
+   * Map to labels with lastCleanedLabel() / conditionLabel() at the edges.
+   */
+  lastCleaned?: string        // within-1-month | 1-3-months | 3-6-months | over-6-months | not-sure
+  homeCondition?: string      // maintained | attention | heavy   (only asked when asksCondition())
   typeOfSpace?: string        // Commercial:        Office | Store | Other
   propertiesManaged?: string  // Airbnb:            1 | 2-5 | 6-10 | 10+
   propertyType?: string       // Post-Construction: House | Apartment | Commercial

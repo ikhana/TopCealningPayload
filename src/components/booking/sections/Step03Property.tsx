@@ -9,7 +9,7 @@
 'use client'
 
 import React, { useId, useRef, useState } from 'react'
-import { Ruler, Building2, Bath, Sparkles, Layers, Home, Wrench, ImagePlus, X } from 'lucide-react'
+import { Ruler, Building2, Bath, Sparkles, Layers, Home, Wrench, ImagePlus, X, CalendarClock } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import { MAX_MEDIA_FILES } from '@/hooks/useBookingForm'
 import type { ServiceCategory, ServiceExtras } from '@/types/booking'
@@ -17,6 +17,12 @@ import {
   ROOM_PRICES,
   quoteAreas,
   isAreaPriced,
+  LAST_CLEANED_OPTIONS,
+  HOME_CONDITION_OPTIONS,
+  asksCondition,
+  activeCondition,
+  conditionUplift,
+  effectiveTier,
   type RoomKey,
   type RoomCounts,
   type CleaningTier,
@@ -74,14 +80,15 @@ const onFieldBlur = (e: React.FocusEvent<FieldEl>) => {
 
 // Reusable labeled <select> for the per-service single-option questions.
 function SpecSelect({
-  label, icon: Icon, value, onChange, options, required,
+  label, icon: Icon, value, onChange, options, required, disabled,
 }: {
   label: string
   icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>
   value: string
   onChange: (v: string) => void
-  options: string[]
+  options: Array<string | { value: string; label: string }>
   required?: boolean
+  disabled?: boolean
 }) {
   // htmlFor/id gives the select an accessible name. Without it the label is
   // just an adjacent element and screen readers (and AI agents) see an
@@ -94,9 +101,22 @@ function SpecSelect({
       </label>
       <div style={{ position: 'relative' }}>
         <Icon size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(74,90,106,0.5)', pointerEvents: 'none', zIndex: 1 }} />
-        <select id={id} value={value} onChange={(e) => onChange(e.target.value)} onFocus={onFieldFocus} onBlur={onFieldBlur} style={selectStyle} required={required}>
+        <select
+          id={id}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={onFieldFocus}
+          onBlur={onFieldBlur}
+          style={{ ...selectStyle, ...(disabled ? { background: 'rgba(13,27,46,0.04)', cursor: 'not-allowed', color: 'rgba(74,90,106,0.75)' } : null) }}
+          required={required}
+          disabled={disabled}
+        >
           <option value="">Select…</option>
-          {options.map((o) => <option key={o} value={o}>{o}</option>)}
+          {options.map((o) => {
+            const v = typeof o === 'string' ? o : o.value
+            const l = typeof o === 'string' ? o : o.label
+            return <option key={v} value={v}>{l}</option>
+          })}
         </select>
       </div>
     </div>
@@ -201,13 +221,14 @@ function AreaRow({
 // When the minimum bites we tell the customer how much headroom is left, so the
 // floor reads as "you may as well add rooms" rather than as a surcharge.
 function AreaSelector({
-  counts, tier, onChange,
+  counts, tier, uplift, onChange,
 }: {
   counts: RoomCounts
   tier: CleaningTier
+  uplift: number
   onChange: (next: RoomCounts) => void
 }) {
-  const quote = quoteAreas(counts, tier)
+  const quote = quoteAreas(counts, tier, 'one-time', 0, uplift)
 
   return (
     <div style={{ gridColumn: 'span 2' }}>
@@ -244,15 +265,23 @@ function AreaSelector({
         </div>
 
         {quote.minimumApplied && (
+          // With a condition uplift active this deliberately stops printing the
+          // running subtotal. The uplifted figure would not match the list
+          // prices shown beside each row above, and two numbers on one screen
+          // that do not add up reads as a mistake — or worse, as a hidden fee.
+          // The headroom figure is already in list dollars, so it still adds up.
           <p style={{ margin: '10px 0 0', fontSize: '0.8rem', lineHeight: 1.5, opacity: 0.8 }}>
-            Minimum service charge: ${quote.minimum}. Your selection comes to $
-            {quote.subtotal} — you may add up to ${quote.remainingToMinimum} more in
-            cleaning areas at no extra cost.
+            Minimum service charge: ${quote.minimum}.
+            {uplift > 0
+              ? ' You may add roughly $'
+              : ` Your selection comes to $${quote.subtotal} — you may add up to $`}
+            {quote.remainingToMinimum} more in cleaning areas at no extra cost.
           </p>
         )}
 
         <p style={{ margin: '10px 0 0', fontSize: '0.75rem', lineHeight: 1.5, opacity: 0.6 }}>
-          This is an estimate. The exact price is confirmed with you after our call.
+          Pricing is based on the size, selected areas, service type, and current condition
+          of the home. This is an estimate. The exact price is confirmed with you after our call.
         </p>
       </div>
     </div>
@@ -310,6 +339,69 @@ function MultiChips({ label, options, selected, onToggle, required }: {
   )
 }
 
+/**
+ * Home condition picker (Geraldine, 2026-09-08).
+ *
+ * Cards rather than a <select> because each option carries a sentence of
+ * description, and the description is the whole point — it is what stops a
+ * customer picking "Generally Maintained" for a home that has not been touched
+ * in a year and then being surprised on the day.
+ *
+ * No price is shown against any option, per her explicit instruction: "Please
+ * do NOT show the customer a line that says 'Home Condition Fee +15%' or
+ * '+25%.'" The Estimated Total above simply moves.
+ */
+function ConditionCards({
+  value, onChange,
+}: {
+  value: string
+  onChange: (v: string) => void
+}) {
+  const name = useId()
+  return (
+    <div style={{ gridColumn: 'span 2' }}>
+      <label style={labelStyle}>
+        How would you describe the current condition of your home?{' '}
+        <span style={{ color: 'var(--color-teal)' }}>*</span>
+      </label>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {HOME_CONDITION_OPTIONS.map((opt) => {
+          const sel = value === opt.value
+          return (
+            <label
+              key={opt.value}
+              style={{
+                display: 'flex', alignItems: 'flex-start', gap: '12px',
+                padding: '14px 16px', cursor: 'pointer',
+                border: `1px solid ${sel ? 'var(--color-teal)' : 'rgba(13,27,46,0.1)'}`,
+                background: sel ? '#e0f5f4' : 'white',
+                transition: 'border-color 0.25s, background 0.25s',
+              }}
+            >
+              <input
+                type="radio"
+                name={name}
+                value={opt.value}
+                checked={sel}
+                onChange={() => onChange(opt.value)}
+                style={{ marginTop: '3px', accentColor: 'var(--color-teal)', flexShrink: 0 }}
+              />
+              <span>
+                <span style={{ display: 'block', fontSize: '0.92rem', fontWeight: 700, color: 'var(--color-navy-deep)' }}>
+                  {opt.label}
+                </span>
+                <span style={{ display: 'block', marginTop: '3px', fontSize: '0.82rem', lineHeight: 1.45, color: 'rgba(74,90,106,0.85)' }}>
+                  {opt.desc}
+                </span>
+              </span>
+            </label>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export function Step03Property() {
   const { bookingData, updatePropertySize, updateServiceExtras, updateHandyman, toggleHandymanMulti, updateSpecialInstructions, mediaFiles, addMediaFiles, removeMediaFile } = useBooking()
   const { property, serviceType, serviceExtras, handyman, specialInstructions } = bookingData
@@ -334,8 +426,18 @@ export function Step03Property() {
   const showBathrooms = WITH_BATHROOMS.includes(serviceType) && !showAreas
 
   // Tier comes from the existing "Type of Cleaning" question rather than a new
-  // toggle — it already exists and already maps to a GHL field.
-  const tier: CleaningTier = serviceExtras.cleaningType === 'Deep' ? 'deep' : 'regular'
+  // toggle — it already exists and already maps to a GHL field. Heavy buildup
+  // overrides it, so both inputs go through the one shared resolver.
+  const condition = activeCondition(serviceExtras.lastCleaned, serviceExtras.homeCondition)
+  const heavyBuildup = condition === 'heavy'
+  const tier: CleaningTier = effectiveTier(serviceExtras.cleaningType, condition)
+  const uplift = conditionUplift(condition)
+
+  // What the "Type of Cleaning" select shows. Heavy buildup forces Deep, but we
+  // do NOT write that back into state: if the customer changes their condition
+  // answer the select has to return to whatever they originally picked, and it
+  // cannot do that if the original answer has been overwritten.
+  const shownCleaningType = heavyBuildup ? 'Deep' : (serviceExtras.cleaningType ?? '')
 
   const areas: RoomCounts = property.areas ?? {}
 
@@ -419,15 +521,27 @@ export function Step03Property() {
         {serviceType === 'residential' && (
           <>
             <SpecSelect label="Type of Cleaning" icon={Sparkles} required
-              value={serviceExtras.cleaningType ?? ''} onChange={setExtra('cleaningType')}
+              value={shownCleaningType} onChange={setExtra('cleaningType')}
+              disabled={heavyBuildup}
               options={['Regular', 'Deep', 'Move-in/Move-out']} />
-            {serviceExtras.cleaningType && CLEANING_TYPE_INFO[serviceExtras.cleaningType] && (
+            {heavyBuildup && (
+              <div style={{ gridColumn: 'span 2', marginTop: '-14px', display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '12px 14px', background: 'rgba(252,129,129,0.08)', borderLeft: '3px solid var(--color-coral, #fc8181)' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-coral, #fc8181)', flexShrink: 0, marginTop: '2px' }}>
+                  Recommended
+                </span>
+                <span style={{ fontSize: '0.82rem', color: 'rgba(74,90,106,0.9)', lineHeight: 1.45 }}>
+                  Based on the condition you described, we recommend a Deep Cleaning and have
+                  priced it that way. To change this, adjust your answer below.
+                </span>
+              </div>
+            )}
+            {shownCleaningType && CLEANING_TYPE_INFO[shownCleaningType] && (
               <div style={{ gridColumn: 'span 2', marginTop: '-14px', display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '12px 14px', background: 'rgba(23,176,171,0.05)', borderLeft: '3px solid var(--color-teal)' }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-teal)', flexShrink: 0, marginTop: '2px' }}>
-                  {CLEANING_TYPE_INFO[serviceExtras.cleaningType]!.badge}
+                  {CLEANING_TYPE_INFO[shownCleaningType]!.badge}
                 </span>
                 <span style={{ fontSize: '0.82rem', color: 'rgba(74,90,106,0.85)', lineHeight: 1.45 }}>
-                  {CLEANING_TYPE_INFO[serviceExtras.cleaningType]!.desc}
+                  {CLEANING_TYPE_INFO[shownCleaningType]!.desc}
                 </span>
               </div>
             )}
@@ -453,7 +567,7 @@ export function Step03Property() {
 
         {/* ── Areas to clean (area-priced services) ───────────── */}
         {showAreas && (
-          <AreaSelector counts={areas} tier={tier} onChange={handleAreasChange} />
+          <AreaSelector counts={areas} tier={tier} uplift={uplift} onChange={handleAreasChange} />
         )}
 
         {/* ── Bedrooms / Bathrooms (conditional) ──────────────── */}
@@ -512,6 +626,34 @@ export function Step03Property() {
             />
           </div>
         </div>
+        )}
+
+        {/* ── Home condition (area-priced services) ───────────── */}
+        {/*
+          Geraldine, 2026-09-08. Placed last in the grid, immediately before
+          Special Instructions, as she asked. It sits after the area picker on
+          purpose too: the customer has already seen the Estimated Total, so
+          when answering these moves it, they watch it move rather than being
+          shown a number that silently already included the adjustment.
+        */}
+        {showAreas && (
+          <>
+            <SpecSelect
+              label="When was your home last thoroughly cleaned?"
+              icon={CalendarClock}
+              required
+              value={serviceExtras.lastCleaned ?? ''}
+              onChange={setExtra('lastCleaned')}
+              options={LAST_CLEANED_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+            />
+
+            {asksCondition(serviceExtras.lastCleaned) && (
+              <ConditionCards
+                value={serviceExtras.homeCondition ?? ''}
+                onChange={setExtra('homeCondition')}
+              />
+            )}
+          </>
         )}
 
       </div>

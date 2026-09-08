@@ -8,7 +8,7 @@
 
 import type { BookingFormData } from '@/types/booking'
 import { isServiceAreaZip } from './broward-zips'
-import { isAreaPriced, hasSelection } from '@/data/pricing'
+import { isAreaPriced, hasSelection, asksCondition } from '@/data/pricing'
 
 export interface StepValidationResult {
   valid: boolean
@@ -89,6 +89,15 @@ export function validateStep(
       if (isAreaPriced(serviceType)) {
         if (!hasSelection(property.areas ?? {})) {
           return { valid: false, missingField: 'at least one area to clean' }
+        }
+        // Home condition (Geraldine, 2026-09-08). Required, not optional: it is
+        // a pricing input, and an optional pricing input is one most customers
+        // skip, which would leave the adjustment doing nothing on most bookings.
+        if (!serviceExtras.lastCleaned) {
+          return { valid: false, missingField: 'when your home was last thoroughly cleaned' }
+        }
+        if (asksCondition(serviceExtras.lastCleaned) && !serviceExtras.homeCondition) {
+          return { valid: false, missingField: 'the current condition of your home' }
         }
         return ok
       }

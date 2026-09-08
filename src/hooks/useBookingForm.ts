@@ -21,7 +21,9 @@ import {
   priceRooms,
   quoteAreas,
   estimateHours,
-  type CleaningTier,
+  effectiveTier,
+  conditionUplift,
+  activeCondition,
 } from '@/data/pricing'
 
 const initialBookingData: BookingFormData = {
@@ -237,8 +239,10 @@ export const useBookingForm = () => {
     // whichever ran last would win — two different prices for the same booking.
     if (isAreaPriced(serviceType)) {
       const areas = property.areas ?? {}
-      const tier: CleaningTier =
-        bookingData.serviceExtras?.cleaningType === 'Deep' ? 'deep' : 'regular'
+      const extras = bookingData.serviceExtras ?? {}
+      const condition = activeCondition(extras.lastCleaned, extras.homeCondition)
+      const tier = effectiveTier(extras.cleaningType, condition)
+      const uplift = conditionUplift(condition)
 
       const areaSubtotal = priceRooms(areas, tier)
       const extrasTotal = selectedExtras.reduce((sum, id) => sum + (EXTRA_PRICES[id] ?? 0), 0)
@@ -247,7 +251,7 @@ export const useBookingForm = () => {
       // from the site on Geraldine's instruction (2026-08-20). quoteAreas also
       // enforces her rule that a discount is dropped entirely if the minimum
       // would swallow it.
-      const quote = quoteAreas(areas, tier, frequency, extrasTotal)
+      const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift)
 
       setBookingData((prev) => ({
         ...prev,
@@ -258,7 +262,7 @@ export const useBookingForm = () => {
           subtotal: quote.subtotal,
           discount: quote.discountAmount,
           total: quote.total,
-          estimatedTime: estimateHours(areas, tier, property.squareFootage),
+          estimatedTime: estimateHours(areas, tier, property.squareFootage, uplift),
         },
       }))
       return
@@ -291,6 +295,10 @@ export const useBookingForm = () => {
     // adds a room or switches Regular/Deep — the two things that actually change it.
     bookingData.property.areas,
     bookingData.serviceExtras?.cleaningType,
+    // Home condition also moves the price — via a multiplier on the areas, or
+    // by switching the whole job to the deep tier.
+    bookingData.serviceExtras?.lastCleaned,
+    bookingData.serviceExtras?.homeCondition,
   ])
 
   return {

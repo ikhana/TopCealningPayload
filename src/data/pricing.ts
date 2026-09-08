@@ -148,7 +148,119 @@ export const FREQUENCY_DISCOUNTS: Record<string, number> = {
   '8weekly': 0.1,
 }
 
+// ─── HOME CONDITION ──────────────────────────────────────────────────────────
+//
+// Geraldine, 2026-09-08: "two homes with the same number of bedrooms and
+// bathrooms can require very different amounts of work." Per-area prices stay
+// exactly as they are; this adds a multiplier on top of the AREA total only.
+//
+// Two questions, the second conditional on the first. Asking "when was it last
+// cleaned" first matters: it is a fact the customer knows, whereas "what
+// condition is your home in" is a judgement they will flatter themselves on.
+// The date question sets the frame before the judgement is asked.
+
+export const LAST_CLEANED_OPTIONS = [
+  { value: 'within-1-month', label: 'Within the last month' },
+  { value: '1-3-months', label: '1-3 months ago' },
+  { value: '3-6-months', label: '3-6 months ago' },
+  { value: 'over-6-months', label: 'More than 6 months ago' },
+  { value: 'not-sure', label: "I'm not sure" },
+] as const
+
+/**
+ * Does this answer open the condition question?
+ *
+ * Everything except "within the last month" — including "I'm not sure", which
+ * Geraldine grouped with the long gaps deliberately. Someone who cannot
+ * remember when it was last done is far more likely to be a long gap than a
+ * short one.
+ */
+export function asksCondition(lastCleaned?: string): boolean {
+  return !!lastCleaned && lastCleaned !== 'within-1-month'
+}
+
+/**
+ * `uplift` multiplies the AREA subtotal only, never add-ons. Geraldine:
+ * "The 25% condition adjustment should apply only to the base area cleaning
+ * price. It should NOT apply to add-ons."
+ *
+ * `heavy` carries an uplift of 0 on purpose. It is not a surcharge — it
+ * switches the whole job to the Deep tier and re-prices from the deep column,
+ * which is a much larger change than 25% (a 3 bed / 2 bath goes $205 → $365,
+ * or +78%). See effectiveTier().
+ */
+export const HOME_CONDITION_OPTIONS = [
+  {
+    value: 'maintained',
+    label: 'Generally Maintained',
+    desc: 'The home is regularly picked up and cleaned, with little to no buildup.',
+    uplift: 0,
+  },
+  {
+    value: 'attention',
+    label: 'Needs Extra Attention',
+    desc: "There is some dust, buildup, pet hair, or areas that haven't been cleaned recently.",
+    uplift: 0.25,
+  },
+  {
+    value: 'heavy',
+    label: 'Heavy Buildup: Needs Significant Attention',
+    desc: 'The home has significant buildup or has not been thoroughly cleaned for an extended period.',
+    uplift: 0,
+  },
+] as const
+
+export type HomeConditionValue = (typeof HOME_CONDITION_OPTIONS)[number]['value']
+
+/**
+ * The condition answer that actually counts, or undefined.
+ *
+ * The condition question is only shown for some answers to the first question,
+ * so a stored value can be stale: pick "3-6 months ago", answer "Needs Extra
+ * Attention", then go back and change the first answer to "within the last
+ * month" and the second question disappears — but its answer is still in state.
+ * Charging for an answer the customer can no longer see is exactly the kind of
+ * thing that turns into a chargeback, so every caller normalises through here.
+ */
+export function activeCondition(lastCleaned?: string, homeCondition?: string): string | undefined {
+  return asksCondition(lastCleaned) ? homeCondition : undefined
+}
+
+export function conditionUplift(condition?: string): number {
+  return HOME_CONDITION_OPTIONS.find((o) => o.value === condition)?.uplift ?? 0
+}
+
+export function conditionLabel(condition?: string): string | undefined {
+  return HOME_CONDITION_OPTIONS.find((o) => o.value === condition)?.label
+}
+
+export function lastCleanedLabel(value?: string): string | undefined {
+  return LAST_CLEANED_OPTIONS.find((o) => o.value === value)?.label
+}
+
+/**
+ * The tier the job is actually priced and staffed at.
+ *
+ * SINGLE SOURCE OF TRUTH. Three places used to derive the tier with their own
+ * copy of `cleaningType === 'Deep' ? 'deep' : 'regular'` — the step component,
+ * the pricing hook and the submit flow. Adding a second way to reach the deep
+ * tier meant a fourth divergence waiting to happen, so they all call this now.
+ *
+ * Heavy buildup wins over the customer's "Type of Cleaning" answer because it
+ * describes the property, not a preference. Geraldine: "Do NOT add a
+ * percentage. Instead, recommend Deep Cleaning and recalculate the service
+ * using our Deep Cleaning pricing."
+ */
+export function effectiveTier(cleaningType?: string, homeCondition?: string): CleaningTier {
+  if (homeCondition === 'heavy') return 'deep'
+  return cleaningType === 'Deep' ? 'deep' : 'regular'
+}
+
 export type Quote = {
+  /** Sum of the per-area list prices, exactly as shown next to each row. */
+  roomsList: number
+  /** Dollars the condition multiplier added. Internal — never shown itemised. */
+  conditionAmount: number
   /** Raw sum of selected areas, before the minimum is applied. */
   subtotal: number
   /** The floor for this tier. */
@@ -180,6 +292,7 @@ export function quoteAreas(
   tier: CleaningTier,
   frequency: string = 'one-time',
   extrasTotal = 0,
+  uplift = 0,
 ): Quote {
   const minimum = MINIMUM_BOOKING[tier]
 
@@ -191,7 +304,15 @@ export function quoteAreas(
   // bathroom ($35) plus fridge and oven ($65) would reach $100, floor to $120,
   // and the customer would have bought their way under the minimum with add-ons.
   // Flooring the rooms first prevents that — same example becomes $120 + $65.
-  const roomsSubtotal = priceRooms(counts, tier)
+  // The condition multiplier lands HERE — on the rooms, before the minimum and
+  // before the discount. That ordering is what makes Geraldine's stated formula
+  // true (Area Price + Home Condition Adjustment + Add-ons − Recurring Discount)
+  // while keeping the two rules she gave separately intact: the uplift never
+  // touches `extrasTotal`, and the minimum still floors rooms-only.
+  const roomsList = priceRooms(counts, tier)
+  const roomsSubtotal = roomsList * (1 + uplift)
+  const conditionAmount = Math.round(roomsSubtotal - roomsList)
+
   const subtotal = Math.max(minimum, roomsSubtotal) + extrasTotal
 
   // Discount rule (Geraldine, 2026-08-20): "The discount should only be applied
@@ -224,11 +345,17 @@ export function quoteAreas(
   const minimumApplied = roomsSubtotal < minimum
 
   return {
-    subtotal,
+    roomsList,
+    conditionAmount,
+    subtotal: Math.round(subtotal),
     minimum,
     total,
     minimumApplied,
-    remainingToMinimum: minimumApplied ? minimum - roomsSubtotal : 0,
+    // Expressed in LIST dollars — the numbers printed beside each area row —
+    // because that is what the customer is being invited to add. With an uplift
+    // active the raw gap to the minimum is not reachable by adding that many
+    // dollars of rooms, since each dollar added carries the multiplier with it.
+    remainingToMinimum: minimumApplied ? Math.round((minimum - roomsSubtotal) / (1 + uplift)) : 0,
     discountRate,
     discountAmount: discountSurvives ? Math.round(roomsSubtotal - roomsFinal) : 0,
   }
@@ -361,6 +488,7 @@ export function estimateHours(
   counts: RoomCounts,
   tier: CleaningTier,
   squareFootage?: number,
+  uplift = 0,
 ): number {
   let minutes = 0
 
@@ -389,7 +517,12 @@ export function estimateHours(
       ? (squareFootage / 500) * (tier === 'deep' ? DEEP_TIME_MULTIPLIER : 1)
       : 0
 
-  const rounded = Math.ceil(Math.max(fromAreas, fromSqft) * 2) / 2
+  // A home that needs extra attention takes longer, not just more money. The
+  // uplift is Geraldine's own measure of "the actual amount of work required",
+  // so it belongs on the duration for the same reason it belongs on the price.
+  // This only reaches the crew note — appointmentHours() still blocks the
+  // minimum — but that note is what tells a scheduler to extend the slot.
+  const rounded = Math.ceil(Math.max(fromAreas, fromSqft) * (1 + uplift) * 2) / 2
 
   return Math.max(MINIMUM_HOURS, rounded)
 }
