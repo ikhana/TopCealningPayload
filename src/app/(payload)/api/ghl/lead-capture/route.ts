@@ -41,6 +41,9 @@ export async function POST(req: Request) {
     // Always returns isBot: false locally, so this is inert in development and
     // only does real work on a deployment.
     try {
+      // No options: that is Basic mode, which is what we want. Deep Analysis is
+      // opt-in via advancedOptions.checkLevel = 'deepAnalysis' and is a paid
+      // tier — do not switch it on here, this project is on Hobby.
       const { isBot } = await checkBotId()
       if (isBot) {
         // Answered as if it succeeded. Telling a bot precisely which check it
