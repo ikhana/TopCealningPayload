@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 import type { Page } from '@/payload-types'
+import { pageHref } from '@/utilities/pageHref'
 
 type LinkType = {
   type?: 'reference' | 'custom' | 'anchor' | null
@@ -50,7 +51,7 @@ export function CMSLink({ link, className, children, onClick }: CMSLinkProps) {
         }
         
         if (refValue && typeof refValue === 'object' && 'slug' in refValue) {
-          return `/${refValue.slug}`
+          return pageHref(refValue.slug)
         }
         
         return '#'
@@ -73,7 +74,10 @@ export function CMSLink({ link, className, children, onClick }: CMSLinkProps) {
             pageSlug = pageValue.slug || ''
           }
           
-          return pageSlug ? `/${pageSlug}#${anchorId}` : `#${anchorId}`
+          if (!pageSlug) return `#${anchorId}`
+          // `/#section` on the home page, not `//#section`.
+          const base = pageHref(pageSlug)
+          return `${base === '/' ? '' : base}#${anchorId}`
         }
         
         // Same-page anchor: #section

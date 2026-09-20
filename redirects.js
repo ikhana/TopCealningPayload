@@ -29,7 +29,28 @@ const redirects = async () => {
     permanent: false,
   }))
 
-  const redirects = [internetExplorerRedirect, ...templateLeftovers]
+  // `/home` and `/` render the SAME Pages document — app/(app)/page.tsx renders
+  // it by defaulting the slug, so both URLs were live. Only `/` was ever purged
+  // (revalidatePage calls revalidatePath('/')), which left `/home` serving
+  // whatever render was cached when it was last hit. Measured at 12.2 days old
+  // (Age: 1053730, X-Vercel-Cache: HIT) while `/` was 1.2 hours — which is why
+  // it was still advertising services that had been removed from the site.
+  //
+  // Fixing the nav link alone would not have been enough: the URL stays
+  // reachable from bookmarks, old emails and anything Google has indexed, and it
+  // would go on serving a stale page indefinitely. The duplicate has to stop
+  // existing.
+  //
+  // `permanent: true` (308) on purpose, unlike the template leftovers below.
+  // This is not a maybe-restore-later route — `/home` should never be a URL on
+  // this site, and a 308 also collapses the duplicate-content split in search.
+  const homeDuplicate = {
+    source: '/home',
+    destination: '/',
+    permanent: true,
+  }
+
+  const redirects = [internetExplorerRedirect, homeDuplicate, ...templateLeftovers]
 
   return redirects
 }

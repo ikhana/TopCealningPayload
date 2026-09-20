@@ -4,6 +4,7 @@
 
 import type { Header } from '@/payload-types'
 import { cn } from '@/utilities/cn'
+import { pageHref } from '@/utilities/pageHref'
 import { ChevronDown, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -70,7 +71,7 @@ export function MobileMenu({ menu }: Props) {
     if (link.reference?.value) {
       if (typeof link.reference.value === 'string') return link.reference.value
       if (typeof link.reference.value === 'object' && link.reference.value.slug) {
-        return `/${link.reference.value.slug}`
+        return pageHref(link.reference.value.slug)
       }
     }
     return undefined

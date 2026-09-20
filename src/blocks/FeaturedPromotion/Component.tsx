@@ -34,7 +34,7 @@ export const FeaturedPromotionBlock: React.FC<
     if (link?.url) {
       promotionUrl = link.url
     } else if (link?.reference?.value && typeof link.reference.value === 'object') {
-      promotionUrl = `/${link.reference.value.slug || ''}`
+      promotionUrl = pageHref(link.reference.value.slug)
     }
   } else if (mediaSource === 'product' && featuredProduct && typeof featuredProduct === 'object') {
     productData = featuredProduct
