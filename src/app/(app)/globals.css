@@ -81,18 +81,40 @@ html, body { overflow-x: clip; }
 :root {
   --radius: 0.75rem;
   
+  /*
+   * Raw OKLCH components (lightness chroma hue), NOT usable colours.
+   * `oklch()` is wrapped around them in the @theme block below.
+   *
+   * The `-lch` suffix is load-bearing. These used to be named --color-teal,
+   * --color-navy and so on, which is also what the @theme block names the
+   * finished colours, so it ended up declaring:
+   *
+   *     --color-teal: oklch(var(--color-teal));   <-- the bug
+   *
+   * A custom property that references itself is a dependency cycle, and the
+   * spec makes it "guaranteed-invalid". The nasty part is that
+   * `var(--color-teal, #17b0ab)` does NOT fall back: a fallback only fires when
+   * the property is UNDEFINED, not when it is defined-but-invalid. So every
+   * brand colour silently computed to nothing, and elements kept their layout
+   * while painting transparent. That is why the "What's Included" checkboxes
+   * held their 20px of space and showed no teal square.
+   *
+   * Every other colour in this file already used two distinct names
+   * (--background raw, --color-background wrapped). The brand colours were the
+   * exception. They no longer are.
+   */
   /* TopCleaning brand: primary teal #17b0ab */
-  --color-teal: 0.6854 0.1146 191.14;
-  --color-teal-dark: 0.6036 0.1005 191.36;
+  --teal-lch: 0.6854 0.1146 191.14;
+  --teal-dark-lch: 0.6036 0.1005 191.36;
   /* TopCleaning brand: secondary navy #2a4365 */
-  --color-navy: 0.4090 0.0500 241.54;
+  --navy-lch: 0.4090 0.0500 241.54;
   /* TopCleaning brand: tertiary warm sand #f5efe0 */
-  --color-sand: 0.9528 0.0209 88.72;
+  --sand-lch: 0.9528 0.0209 88.72;
   /* TopCleaning brand: accent coral #fc8181 */
-  --color-coral: 0.7120 0.2100 27.23;
-  --color-success: 0.7227 0.192 149.58;
-  --color-warning: 0.7952 0.1617 86.05;
-  --color-error: 0.577 0.245 27.325;
+  --coral-lch: 0.7120 0.2100 27.23;
+  --success-lch: 0.7227 0.192 149.58;
+  --warning-lch: 0.7952 0.1617 86.05;
+  --error-lch: 0.577 0.245 27.325;
   
   --border-gradient-light: 0.9 0 0;
   --border-gradient-mid: 0.7 0 0;
@@ -106,26 +128,26 @@ html, body { overflow-x: clip; }
   --popover: 1 0 0;
   --popover-foreground: 0.129 0.042 264.695;
 
-  --primary: var(--color-teal);
+  --primary: var(--teal-lch);
   --primary-foreground: 0.984 0.003 247.858;
 
-  --secondary: var(--color-navy);
+  --secondary: var(--navy-lch);
   --secondary-foreground: 0.984 0.003 247.858;
   
   --muted: 0.968 0.007 247.896;
   --muted-foreground: 0.554 0.046 257.417;
-  --accent: var(--color-coral);
+  --accent: var(--coral-lch);
   --accent-foreground: 0.208 0.042 265.755;
   
-  --destructive: var(--color-error);
+  --destructive: var(--error-lch);
   --destructive-foreground: 1 0 0;
-  --success: var(--color-success);
-  --warning: var(--color-warning);
-  --error: var(--color-error);
+  --success: var(--success-lch);
+  --warning: var(--warning-lch);
+  --error: var(--error-lch);
   
   --border: 0.929 0.013 255.508;
   --input: 0.929 0.013 255.508;
-  --ring: var(--color-teal);
+  --ring: var(--teal-lch);
 
   /* Standardized Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -147,26 +169,26 @@ html, body { overflow-x: clip; }
   --popover: 0.1865 0.0176 264.01;
   --popover-foreground: 1 0 0;
   
-  --primary: var(--color-teal);
+  --primary: var(--teal-lch);
   --primary-foreground: 1 0 0;
   
-  --secondary: var(--color-navy);
+  --secondary: var(--navy-lch);
   --secondary-foreground: 1 0 0;
   
   --muted: 0.3231 0.0356 260.11;
   --muted-foreground: 0.7137 0.0192 261.32;
-  --accent: var(--color-coral);
+  --accent: var(--coral-lch);
   --accent-foreground: 1 0 0;
   
-  --destructive: var(--color-error);
+  --destructive: var(--error-lch);
   --destructive-foreground: 1 0 0;
-  --success: var(--color-success);
-  --warning: var(--color-warning);
-  --error: var(--color-error);
+  --success: var(--success-lch);
+  --warning: var(--warning-lch);
+  --error: var(--error-lch);
   
   --border: 0.3231 0.0356 260.11;
   --input: 0.1762 0.021 258.31;
-  --ring: var(--color-teal);
+  --ring: var(--teal-lch);
 }
 
 @theme inline {
@@ -199,11 +221,11 @@ html, body { overflow-x: clip; }
   --color-warning: oklch(var(--warning));
   --color-error: oklch(var(--error));
   
-  --color-teal: oklch(var(--color-teal));
-  --color-teal-dark: oklch(var(--color-teal-dark));
-  --color-navy: oklch(var(--color-navy));
-  --color-sand: oklch(var(--color-sand));
-  --color-coral: oklch(var(--color-coral));
+  --color-teal: oklch(var(--teal-lch));
+  --color-teal-dark: oklch(var(--teal-dark-lch));
+  --color-navy: oklch(var(--navy-lch));
+  --color-sand: oklch(var(--sand-lch));
+  --color-coral: oklch(var(--coral-lch));
 
   /* Extended palette — navy variants + teal variants */
   --color-navy-deep: #0d1b2e;
@@ -265,7 +287,7 @@ a, input, button {
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, oklch(var(--color-teal-dark)) 0%, oklch(var(--color-teal-dark) / 0.85) 100%);
+  background: linear-gradient(135deg, var(--color-teal-dark) 0%, color-mix(in oklab, var(--color-teal-dark) 85%, transparent) 100%);
   box-shadow: 0 8px 25px oklch(var(--primary) / 0.35);
   transform: translateY(-1px);
 }
@@ -302,7 +324,7 @@ a, input, button {
 }
 
 .btn-accent:hover {
-  background: oklch(var(--color-teal-dark));
+  background: var(--color-teal-dark);
   box-shadow: 0 8px 25px oklch(var(--accent) / 0.35);
   transform: translateY(-1px);
 }
