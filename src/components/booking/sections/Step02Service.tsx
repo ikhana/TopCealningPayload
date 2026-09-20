@@ -2,21 +2,32 @@
 'use client'
 
 import React from 'react'
-import { Home, PackageOpen, Bed, Sparkles, Building2, Wrench, Package, Hammer } from 'lucide-react'
+import { Home, PackageOpen, Bed, Building2, Wrench, Hammer } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import type { ServiceCategory } from '@/types/booking'
 
 // All services share the same 3-hour minimum per Geraldine's PDF slide 16.
 // (Was per-service before: 3h/4h/5h/6h variants.) Booking-summary still
 // computes a longer estimate when square footage warrants it on Step 3+.
+// 'custom' and 'hoarding' were removed from this list on 2026-09-21 (Geraldine:
+// remove Custom Cleaning, it belongs under Residential; remove Hoarding Cleanup).
+//
+// Removed from the PICKER only. ServiceCategory still carries both values, and so
+// do the label maps and the Bookings collection options, because bookings already
+// taken under them have to keep rendering. Deleting the values outright would turn
+// those records into blanks in the admin and in the customer's own history.
+//
+// Worth noting what 'custom' actually was: it had no working price model. The
+// hourly model meant to back it (HOURLY_RATE / priceHourly in src/data/pricing.ts)
+// was written but never wired to any UI, so choosing Custom Cleaning fell through
+// to the dead square-footage path. Removing it takes out a broken option, not a
+// working one.
 const SERVICES = [
   { id: 'residential' as ServiceCategory, label: 'Residential Cleaning', icon: Home },
   { id: 'movein-out' as ServiceCategory, label: 'Move In / Out', icon: PackageOpen },
   { id: 'airbnb' as ServiceCategory, label: 'AirBnB Special', icon: Bed },
-  { id: 'custom' as ServiceCategory, label: 'Custom Cleaning', icon: Sparkles },
   { id: 'commercial' as ServiceCategory, label: 'Commercial Office', icon: Building2 },
   { id: 'renovation' as ServiceCategory, label: 'Post Renovation', icon: Wrench },
-  { id: 'hoarding' as ServiceCategory, label: 'Hoarding Cleanup', icon: Package },
   { id: 'handyman' as ServiceCategory, label: 'Handyman Services', icon: Hammer },
 ]
 
