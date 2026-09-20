@@ -27,6 +27,7 @@ import {
   type RoomCounts,
   type CleaningTier,
 } from '@/data/pricing'
+import { HANDYMAN_SERVICES, JOB_CONDITIONS } from '@/data/handyman'
 
 const BEDROOM_OPTIONS = [
   { value: 'studio', label: 'Studio' },
@@ -295,13 +296,15 @@ const CLEANING_TYPE_INFO: Record<string, { badge: string; desc: string }> = {
   'Move-in/Move-out': { badge: 'Vacant Property', desc: 'Designed for empty homes before moving in or after moving out.' },
 }
 
-const HANDYMAN_SERVICES = ['TV mounting', 'Plumbing minor repairs', 'Drywall repair', 'Door/lock fixing', 'Furniture assembly', 'Painting touch-ups', 'Other']
-const JOB_CONDITIONS = ['Urgent / same-day', 'Attempted before by someone else', 'Visible damage or safety risk']
 
 // Multi-select chip group (handyman service types + job conditions).
 function MultiChips({ label, options, selected, onToggle, required }: {
   label: string
-  options: string[]
+  // readonly, so the `as const` option lists in @/data/handyman can be passed
+  // straight in. Those are const tuples on purpose: the strings have to match
+  // GHL's option sets exactly, and widening them to string[] would let a typo
+  // through that GHL then silently drops.
+  options: readonly string[]
   selected: string[]
   onToggle: (v: string) => void
   required?: boolean

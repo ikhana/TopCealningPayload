@@ -16,6 +16,7 @@ import type {
   ExtraServiceId,
 } from '@/types/booking'
 import { calculateTotalPrice, EXTRA_PRICES } from '@/utilities/booking-helpers'
+import { JOB_CONDITION_NONE } from '@/data/handyman'
 import {
   isAreaPriced,
   priceRooms,
@@ -150,7 +151,19 @@ export const useBookingForm = () => {
   const toggleHandymanMulti = (key: 'serviceTypes' | 'jobConditions', value: string) => {
     setBookingData((prev) => {
       const cur = prev.handyman[key] ?? []
-      const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value]
+      let next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value]
+
+      // "None of the above" is mutually exclusive with every real condition.
+      // Selecting it drops the rest; selecting a real one drops it. Otherwise a
+      // job can arrive flagged both "Urgent / same-day" and "None of the above",
+      // and whoever picks up the phone has to work out which the customer meant.
+      if (key === 'jobConditions' && next.includes(value)) {
+        next =
+          value === JOB_CONDITION_NONE
+            ? [JOB_CONDITION_NONE]
+            : next.filter((v) => v !== JOB_CONDITION_NONE)
+      }
+
       return { ...prev, handyman: { ...prev.handyman, [key]: next } }
     })
   }

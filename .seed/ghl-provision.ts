@@ -18,6 +18,7 @@
 
 import { ghlFetch } from '../src/lib/ghl/client'
 import { PIPELINE_TARGETS } from '../src/lib/ghl/pipelines'
+import { JOB_CONDITIONS, HANDYMAN_SERVICES } from '../src/data/handyman'
 
 const DRY = Boolean(process.env.DRY)
 
@@ -167,6 +168,60 @@ for (const field of FIELDS) {
   const body = await created.json()
   const made = body?.customField ?? body
   console.log(`  created       ${field.name.padEnd(22)} ${made?.id ?? '?'}  ${made?.fieldKey ?? key}`)
+}
+
+console.log('')
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Option sets on fields that ALREADY EXIST
+//
+// A CHECKBOX / MULTIPLE_OPTIONS field silently discards any value outside its
+// option list. No error, no warning — the answer simply never lands. So an
+// option added to the wizard without being added here does nothing, and the
+// failure only shows up as a suspiciously empty column in the CRM.
+//
+// Declared from the same constants the wizard renders from, so the two cannot
+// disagree. Additive only: existing options are never removed, because removing
+// one would orphan the value on every contact already carrying it.
+
+const OPTION_SETS: Array<{ fieldKey: string; options: readonly string[] }> = [
+  { fieldKey: 'contact.job_conditions', options: JOB_CONDITIONS },
+  { fieldKey: 'contact.handyman_service_type', options: HANDYMAN_SERVICES },
+]
+
+const byKeyAll = new Map(
+  ((await (await ghlFetch(`/locations/${locationId}/customFields`)).json())?.customFields ?? []).map(
+    (f: { id: string; fieldKey: string; picklistOptions?: string[] }) => [f.fieldKey, f],
+  ) as Array<[string, { id: string; fieldKey: string; picklistOptions?: string[] }]>,
+)
+
+for (const set of OPTION_SETS) {
+  const field = byKeyAll.get(set.fieldKey)
+  if (!field) {
+    console.log(`  MISSING FIELD  ${set.fieldKey} — cannot sync options`)
+    continue
+  }
+
+  const current = field.picklistOptions ?? []
+  const missing = set.options.filter((o) => !current.includes(o))
+
+  if (!missing.length) {
+    console.log(`  options ok     ${set.fieldKey.padEnd(34)} ${current.length} options`)
+    continue
+  }
+
+  if (DRY) {
+    console.log(`  would add      ${set.fieldKey.padEnd(34)} ${JSON.stringify(missing)}`)
+    continue
+  }
+
+  // Send the union, not just the additions — this endpoint replaces the list.
+  const merged = [...current, ...missing]
+  await ghlFetch(`/locations/${locationId}/customFields/${field.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ name: field.fieldKey.replace('contact.', ''), options: merged }),
+  })
+  console.log(`  options added  ${set.fieldKey.padEnd(34)} ${JSON.stringify(missing)}`)
 }
 
 console.log('')
