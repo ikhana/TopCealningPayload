@@ -4,6 +4,7 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react'
+import Link from 'next/link'
 import { AlertCircle, Info } from 'lucide-react'
 import { TCButton } from '@/components/ui/TCButton'
 import { BookingProvider } from '@/components/booking/BookingContext'
@@ -167,7 +168,7 @@ function buildSteps(serviceType: ServiceCategory | '') {
   return steps
 }
 
-/* ── Success screen shown after booking is confirmed ─────── */
+/* ── Screen shown once the request has been submitted ────── */
 function BookingSuccess({
   confirmationCode,
   appointmentTime,
@@ -206,7 +207,7 @@ function BookingSuccess({
         </svg>
       </div>
       <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 900, letterSpacing: '-2px', color: 'var(--color-navy-deep)', marginBottom: '16px' }}>
-        Booking Confirmed!
+        Request Received
       </h2>
       {confirmationCode && (
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-teal)', letterSpacing: '0.1em', marginBottom: '12px' }}>
@@ -215,14 +216,16 @@ function BookingSuccess({
       )}
       {appointmentTime && (
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'rgba(74,90,106,0.6)', marginBottom: hasFutureOccurrences ? '24px' : '16px' }}>
-          {hasFutureOccurrences ? `Your first cleaning: ${formatDateTime(appointmentTime)}` : formatDateTime(appointmentTime)}
+          {hasFutureOccurrences
+            ? `First date requested: ${formatDateTime(appointmentTime)}`
+            : `Requested for ${formatDateTime(appointmentTime)}`}
         </p>
       )}
 
       {hasFutureOccurrences && (
         <div style={{ border: '1px solid rgba(13,27,46,0.08)', background: '#fafbfc', padding: '20px 28px', marginBottom: '28px', maxWidth: '460px', width: '100%' }}>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', fontWeight: 700, color: 'var(--color-teal)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '12px' }}>
-            Your upcoming cleanings
+            Dates you requested
           </div>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, textAlign: 'left' }}>
             {futureOccurrences.map((occ) => (
@@ -239,8 +242,18 @@ function BookingSuccess({
       )}
 
       <p style={{ fontSize: '1rem', color: 'rgba(74,90,106,0.75)', maxWidth: '420px', lineHeight: 1.7, marginBottom: '36px' }}>
-        Thank you — we&apos;ve received your booking. A confirmation text/email will arrive shortly. View your booking anytime in{' '}
-        <a href="/account/bookings" style={{ color: 'var(--color-teal)' }}>My Bookings</a>.
+        {/*
+          Nothing on this screen may say the booking is confirmed (Geraldine,
+          2026-09-21). It is not: the crew still has to check the date against
+          the schedule and settle the final price on a call. Saying "confirmed"
+          here also contradicts the wizard's own summary panel, which tells the
+          customer this is a request form and pricing is confirmed afterwards.
+          Promising a slot we have not checked is how you end up cancelling on
+          someone who has already booked the day off.
+        */}
+        Thank you. We have your request and someone from our team will contact you within
+        24 hours to confirm the date and the final price. You can view it anytime in{' '}
+        <Link href="/account/bookings" style={{ color: 'var(--color-teal)' }}>My Bookings</Link>.
       </p>
       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'rgba(74,90,106,0.5)', letterSpacing: '0.08em', border: '1px solid rgba(13,27,46,0.08)', padding: '12px 24px' }}>
         TOPCLEANING · EST. 2019
