@@ -53,11 +53,11 @@ const SERVICES = [
   {
     badge: '',
     category: 'Residential',
-    title: 'Move In / Out Cleaning',
+    title: 'Move-In / Move-Out Cleaning',
     subtitle: 'Fresh start for your new space',
     description:
       'Detailed cleaning to prepare your space for move-in or ensure your deposit return when moving out.',
-    specs: ['Deep cleaning included', 'Inspection ready', 'Appliance cleaning', 'Window treatments'],
+    specs: ['Deep cleaning included', 'Ready for Inspection', 'Appliance cleaning', 'Window treatments'],
     image: '/images/services/move-in-out1.jpg',
     href: '/services/move-in-out',
     meta: { label1: 'Starting From', value1: 'Custom / service', label2: 'Intensity', value2: 'Maximum' },

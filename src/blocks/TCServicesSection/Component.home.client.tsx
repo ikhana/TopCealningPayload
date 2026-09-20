@@ -44,10 +44,10 @@ const SERVICES = [
   },
   {
     badge: 'Custom Quote Available',
-    title: 'Move In / Out Cleaning',
+    title: 'Move-In / Move-Out Cleaning',
     description:
       'Start fresh or leave spotless with our comprehensive transition cleaning service.',
-    specs: ['Deep cleaning included', 'Inspection ready', 'Appliance cleaning', 'Window treatments'],
+    specs: ['Deep cleaning included', 'Ready for Inspection', 'Appliance cleaning', 'Window treatments'],
     image: '/images/services/move-in-out1.jpg',
     href: '/services/move-in-out',
     delay: 0.24,
