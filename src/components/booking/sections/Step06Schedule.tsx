@@ -48,7 +48,15 @@ function formatSlotLabel(iso: string, timezone?: string): string {
   })
 }
 
-export function Step06Schedule() {
+/**
+ * `embedded` renders this inside another step instead of as a step of its own.
+ *
+ * Geraldine, 2026-09-21: the date is now the FIRST thing asked in SPECS, so this
+ * block moved to the top of Step 3 and the standalone Schedule step was removed
+ * from the flow. Embedded mode drops the page-sized heading and the top margin,
+ * because it is no longer the page.
+ */
+export function Step06Schedule({ embedded = false }: { embedded?: boolean } = {}) {
   const { bookingData, updateServiceDateTime, toggleFlexibleTime } = useBooking()
   const { serviceDate, serviceTime, flexibleTimes } = bookingData
 
@@ -119,11 +127,17 @@ export function Step06Schedule() {
 
   return (
     <div>
-      <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '36px' }}>
-        When to Arrive?
-      </h2>
+      {embedded ? (
+        <h3 style={{ fontSize: '1.05rem', fontWeight: 800, letterSpacing: '-0.3px', color: 'var(--color-navy-deep)', marginBottom: '20px' }}>
+          Select your service date
+        </h3>
+      ) : (
+        <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '36px' }}>
+          Select your service date
+        </h2>
+      )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '36px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: embedded ? '28px' : '36px' }}>
 
         {/* Date */}
         <div>

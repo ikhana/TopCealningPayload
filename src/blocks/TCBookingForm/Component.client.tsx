@@ -19,7 +19,6 @@ import { Step02Service } from '@/components/booking/sections/Step02Service'
 import { Step03Property } from '@/components/booking/sections/Step03Property'
 import { Step04AddOns } from '@/components/booking/sections/Step04AddOns'
 import { Step05Frequency } from '@/components/booking/sections/Step05Frequency'
-import { Step06Schedule } from '@/components/booking/sections/Step06Schedule'
 import { Step07Access } from '@/components/booking/sections/Step07Access'
 import { Step09Payment } from '@/components/booking/sections/Step09Payment'
 import { BookingAgreement } from '@/components/booking/BookingAgreement'
@@ -142,7 +141,9 @@ const ALL_STEPS = [
   { num: '03', label: 'Specs', desc: 'Customize details' },
   { num: '04', label: 'Add-ons', desc: 'Enhance your clean' },
   { num: '05', label: 'Frequency', desc: 'Choose a schedule' },
-  { num: '06', label: 'Schedule', desc: 'Pick your date' },
+  // '06' (Schedule) removed 2026-09-21. The date is now the first question in
+  // Step 3 (Specs) on Geraldine's instruction, so a standalone Schedule step
+  // would ask for it a second time.
   { num: '07', label: 'Access', desc: 'Property access' },
   // Address (was '08') merged into Step 1 (Contact & Address).
   { num: '09', label: 'Payment', desc: 'Secure checkout' },
@@ -157,7 +158,7 @@ const SERVICE_STEP_NUMS: Partial<Record<ServiceCategory, string[]>> = {
   // Handyman: Contact, Service, Details (handyman questions + mandatory
   // photos), Schedule (preferred date), Access (pets/children/access).
   // No add-ons or frequency.
-  handyman: ['01', '02', '03', '06', '07'],
+  handyman: ['01', '02', '03', '07'],
 }
 
 // Builds the visible step list for a service, applying the payment-flag filter.
@@ -699,7 +700,6 @@ function BookingFormInner() {
             {STEP_NUM_AT(currentStep) === 3  && <Step03Property />}
             {STEP_NUM_AT(currentStep) === 4  && <Step04AddOns />}
             {STEP_NUM_AT(currentStep) === 5  && <Step05Frequency />}
-            {STEP_NUM_AT(currentStep) === 6  && <Step06Schedule />}
             {STEP_NUM_AT(currentStep) === 7  && <Step07Access />}
             {STEP_NUM_AT(currentStep) === 9  && PAYMENT_ENABLED && <Step09Payment />}
           </div>

@@ -56,6 +56,12 @@ export function validateStep(
       // Service-aware specs. Square footage is now optional (approx size) for
       // all services. Required fields differ per service.
       const { property, serviceType, serviceExtras } = data
+
+      // The date moved here from the old Step 6 (Geraldine, 2026-09-21: it is
+      // the first question in SPECS). Checked FIRST so the error names the field
+      // at the top of the step rather than sending the customer hunting.
+      if (!data.serviceDate) return { valid: false, missingField: 'Service Date' }
+      if (!data.serviceTime) return { valid: false, missingField: 'Service Time' }
       const needsBedrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding'].includes(serviceType)
       const needsBathrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding'].includes(serviceType)
 
@@ -118,11 +124,9 @@ export function validateStep(
       if (!data.frequency) return { valid: false, missingField: 'Frequency' }
       return ok
     }
-    case 6: {
-      if (!data.serviceDate) return { valid: false, missingField: 'Service Date' }
-      if (!data.serviceTime) return { valid: false, missingField: 'Service Time' }
-      return ok
-    }
+    // case 6 (Schedule) removed — the date and time are collected and validated
+    // on step 3 now. Kept out of the switch entirely rather than left returning
+    // ok, so a stray reference to step 6 shows up as a real gap.
     case 7: {
       if (!data.accessMethod) return { valid: false, missingField: 'Access Method' }
       return ok

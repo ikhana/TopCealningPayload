@@ -28,6 +28,7 @@ import {
   type CleaningTier,
 } from '@/data/pricing'
 import { HANDYMAN_SERVICES, JOB_CONDITIONS } from '@/data/handyman'
+import { Step06Schedule } from '@/components/booking/sections/Step06Schedule'
 
 const BEDROOM_OPTIONS = [
   { value: 'studio', label: 'Studio' },
@@ -456,9 +457,24 @@ export function Step03Property() {
 
   return (
     <div>
-      <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '40px' }}>
+      <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.2rem)', fontWeight: 900, letterSpacing: '-1.5px', color: 'var(--color-navy-deep)', marginBottom: '32px' }}>
         Service Details.
       </h2>
+
+      {/*
+        The date is the first question in SPECS (Geraldine, 2026-09-21). It used
+        to be its own step after Add-ons and Frequency, which meant a customer
+        specced a whole job before finding out the day they wanted was not
+        available. Asking first means a clash costs them one click instead of
+        four steps of work.
+
+        Safe to move because this block depends only on serviceDate/serviceTime
+        and its own two API calls. It reads nothing from the areas, the add-ons
+        or the frequency, so nothing downstream had to be reordered.
+      */}
+      <div style={{ marginBottom: '36px', paddingBottom: '32px', borderBottom: '1px solid rgba(13,27,46,0.08)' }}>
+        <Step06Schedule embedded />
+      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
 
