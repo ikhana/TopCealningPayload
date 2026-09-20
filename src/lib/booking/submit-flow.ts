@@ -9,12 +9,14 @@ import { createBookingRecord, associateBookingWithContact } from '@/lib/ghl/cust
 import { getGhlFields } from '@/lib/ghl/custom-fields'
 import { CONSENT_VERSION } from '@/lib/consent'
 import { rollbackAppointment } from './rollback'
-import { getAddOn, addOnTotal, addOnQty, addOnsTotal } from '@/data/addons'
+import { getAddOn, addOnTotal, addOnQty } from '@/data/addons'
 import {
   appointmentHours,
   estimateHours,
   quoteAreas,
   hasSelection,
+  isAreaPriced,
+  quoteHourly,
   MINIMUM_HOURS,
   activeCondition,
   conditionUplift,
@@ -200,7 +202,12 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
   // the customer was quoted. `quantity` is stored alongside it so the unit price
   // is still recoverable — without it, a $40 line could be one $40 item or eight
   // $5 ceiling fans, and nobody on the crew could tell which.
-  const selectedExtras = formData.selectedExtras.map((id) => ({
+  // Custom Hourly replaces the area quote entirely, so the add-ons are not part
+  // of the price and must not be persisted as if they were. They stay in
+  // formData (the customer may switch back), they just do not reach the booking.
+  const hourlyMode = isAreaPriced(formData.serviceType) && formData.customHourly?.enabled === true
+
+  const selectedExtras = hourlyMode ? [] : formData.selectedExtras.map((id) => ({
     extraId: id,
     label: getAddOn(id)?.label ?? id,
     price: addOnTotal(id, formData.extraQuantities),
@@ -366,7 +373,20 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
 
     const noteParts: string[] = []
     if (formData.accessMethod) noteParts.push(`Access: ${formData.accessMethod}`)
-    if (hasSelection(areaCounts)) {
+
+    if (hourlyMode) {
+      // The crew needs the staffing shape, not an area list. Total labour hours
+      // is spelled out because "2 cleaners x 4 hours" and "8 hours" schedule
+      // very differently.
+      const h = quoteHourly(formData.customHourly!.cleaners, formData.customHourly!.hoursPerCleaner)
+      noteParts.push('CUSTOM HOURLY BOOKING (not priced by area)')
+      noteParts.push(`Cleaners: ${h.cleaners}`)
+      noteParts.push(`Hours per cleaner: ${h.hoursPerCleaner}`)
+      noteParts.push(`Total labor hours: ${h.totalLaborHours}`)
+      noteParts.push(`Rate: $${h.rate}/hour per cleaner`)
+      noteParts.push(`Estimated price: $${h.total}`)
+      noteParts.push('Time-based: prioritise the customer\'s stated areas, completion not guaranteed.')
+    } else if (hasSelection(areaCounts)) {
       noteParts.push(`Estimated duration: ${fullEstimateHours}h (slot booked at ${bookedHours}h — extend if needed)`)
       noteParts.push(`Estimated price: $${quoteAreas(areaCounts, tier, 'one-time', 0, uplift).total}`)
       // The crew and whoever takes the confirmation call need to know what they

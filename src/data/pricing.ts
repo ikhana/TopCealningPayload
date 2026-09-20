@@ -56,6 +56,51 @@ export const ROOM_PRICES = {
 export type RoomKey = keyof typeof ROOM_PRICES
 
 /**
+ * Display names and the order areas are shown in.
+ *
+ * Lives here rather than in the step component because the summary panel has to
+ * name the same areas the picker does. When the two kept their own lists, the
+ * summary simply had no way to say "Full Bathroom" for the key `fullBathroom`.
+ */
+export const ROOM_LABELS: Array<{ key: RoomKey; label: string }> = [
+  { key: 'bedroom',       label: 'Bedroom' },
+  { key: 'fullBathroom',  label: 'Full Bathroom' },
+  { key: 'halfBathroom',  label: 'Half Bathroom' },
+  { key: 'kitchen',       label: 'Kitchen' },
+  { key: 'livingRoom',    label: 'Living Room' },
+  { key: 'diningRoom',    label: 'Dining Room' },
+  { key: 'familyRoom',    label: 'Family Room' },
+  { key: 'office',        label: 'Office' },
+  { key: 'laundryRoom',   label: 'Laundry Room' },
+  { key: 'stairsHallway', label: 'Stairs / Hallway' },
+  { key: 'patioBalcony',  label: 'Patio / Balcony' },
+]
+
+const ROOM_LABEL_BY_KEY = new Map(ROOM_LABELS.map((r) => [r.key, r.label]))
+
+export function roomLabel(key: RoomKey): string {
+  return ROOM_LABEL_BY_KEY.get(key) ?? key
+}
+
+/**
+ * Selected areas as priced line items, in display order.
+ *
+ * Quantity is included in `total` and shown as "2 Bedrooms" rather than a bare
+ * count, because Geraldine's example summary lists the count alongside the
+ * money: "2 Bedrooms — $50".
+ */
+export function areaLineItems(
+  counts: RoomCounts,
+  tier: CleaningTier,
+): Array<{ key: RoomKey; label: string; qty: number; unit: number; total: number }> {
+  return ROOM_LABELS.filter(({ key }) => (counts[key] ?? 0) > 0).map(({ key, label }) => {
+    const qty = counts[key] as number
+    const unit = ROOM_PRICES[key][tier]
+    return { key, label, qty, unit, total: unit * qty }
+  })
+}
+
+/**
  * Rooms the *package table* assumes, regardless of bedroom/bathroom count. A
  * 1 Bed / 1 Bath in her sheet is a bedroom, a bathroom, a kitchen and a living
  * room — which is why $120 and not $60.
@@ -393,16 +438,77 @@ export function hasSelection(counts: RoomCounts): boolean {
 // for the hours booked. That disclaimer has to appear on the form; it is the
 // thing that keeps an hourly booking from turning into a dispute.
 
-export const HOURLY_RATE = 45
+// Repriced to Geraldine's tiered model, 2026-09-21. The flat $45/hr that used to
+// be here was never wired to any UI, so nothing was ever quoted from it.
 
-/** Labor-hour options. Her stated set; 3 is the minimum. */
-export const HOURLY_OPTIONS = [3, 4, 6] as const
+export const HOURLY_MIN_HOURS_PER_CLEANER = 3
+export const HOURLY_MAX_HOURS_PER_CLEANER = 12
+export const HOURLY_MIN_CLEANERS = 1
+export const HOURLY_MAX_CLEANERS = 6
 
-export const HOURLY_MINIMUM_HOURS = 3
+/**
+ * Rate per cleaner-hour, banded by HOURS PER CLEANER. Highest band first so the
+ * first match wins.
+ */
+export const HOURLY_RATE_TIERS = [
+  { minHours: 8, rate: 30 },
+  { minHours: 5, rate: 32 },
+  { minHours: 3, rate: 35 },
+] as const
 
-export function priceHourly(laborHours: number): number {
-  return Math.max(HOURLY_MINIMUM_HOURS, laborHours) * HOURLY_RATE
+/**
+ * The rate for a booking.
+ *
+ * Banded on HOURS PER CLEANER, explicitly NOT on total labour hours. Geraldine,
+ * 2026-09-21: "The rate is determined by the hours selected per cleaner, not
+ * total combined labor hours."
+ *
+ * The distinction is worth money. Her own example is 2 cleaners x 3 hours: that
+ * is 6 combined labour hours, which would fall in the 5-7 band at $32 and quote
+ * $192. The correct answer is $35 (each cleaner works 3 hours, the 3-4 band) for
+ * a total of $210. Band on the wrong number and every multi-cleaner job is
+ * under-quoted.
+ */
+export function hourlyRate(hoursPerCleaner: number): number {
+  const hours = Math.max(HOURLY_MIN_HOURS_PER_CLEANER, hoursPerCleaner)
+  return (HOURLY_RATE_TIERS.find((t) => hours >= t.minHours) ?? HOURLY_RATE_TIERS[2]).rate
 }
+
+export type HourlyQuote = {
+  cleaners: number
+  hoursPerCleaner: number
+  /** cleaners x hoursPerCleaner. Display only — the rate does not come from it. */
+  totalLaborHours: number
+  rate: number
+  total: number
+}
+
+/**
+ * Cleaners x Hours Per Cleaner x Rate.
+ *
+ * This REPLACES the area price entirely. Geraldine, 2026-09-21: "Custom Cleaning
+ * is an alternative to Regular/Deep Cleaning. The previous room/area prices and
+ * add-ons should not be added to the Custom Cleaning total." So no area total, no
+ * add-ons, no minimum booking and no recurring discount are applied on top: the
+ * customer is buying a block of time, not a scope of work.
+ */
+export function quoteHourly(cleaners: number, hoursPerCleaner: number): HourlyQuote {
+  const c = Math.min(HOURLY_MAX_CLEANERS, Math.max(HOURLY_MIN_CLEANERS, Math.floor(cleaners) || HOURLY_MIN_CLEANERS))
+  const h = Math.min(
+    HOURLY_MAX_HOURS_PER_CLEANER,
+    Math.max(HOURLY_MIN_HOURS_PER_CLEANER, Math.floor(hoursPerCleaner) || HOURLY_MIN_HOURS_PER_CLEANER),
+  )
+  const rate = hourlyRate(h)
+  return { cleaners: c, hoursPerCleaner: h, totalLaborHours: c * h, rate, total: c * h * rate }
+}
+
+/**
+ * The wording that keeps an hourly booking from becoming a dispute. Verbatim
+ * from Geraldine, 2026-09-21 — it has to appear wherever hourly is quoted.
+ */
+export const HOURLY_DISCLAIMER =
+  'Hourly cleaning is based on time rather than completion of a specific checklist. ' +
+  'Our team will prioritize your requested areas and complete as much as possible within the booked time.'
 
 // ─── TEAM SIZE ───────────────────────────────────────────────────────────────
 //

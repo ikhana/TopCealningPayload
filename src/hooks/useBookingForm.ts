@@ -15,7 +15,7 @@ import type {
   FrequencyOption,
   ExtraServiceId,
 } from '@/types/booking'
-import { calculateTotalPrice, EXTRA_PRICES } from '@/utilities/booking-helpers'
+import { calculateTotalPrice } from '@/utilities/booking-helpers'
 import { JOB_CONDITION_NONE } from '@/data/handyman'
 import { addOnsTotal, getAddOn, MAX_ADDON_QTY } from '@/data/addons'
 import {
@@ -26,6 +26,9 @@ import {
   effectiveTier,
   conditionUplift,
   activeCondition,
+  quoteHourly,
+  HOURLY_MIN_CLEANERS,
+  HOURLY_MIN_HOURS_PER_CLEANER,
 } from '@/data/pricing'
 
 const initialBookingData: BookingFormData = {
@@ -208,6 +211,19 @@ export const useBookingForm = () => {
     })
   }
 
+  const updateCustomHourly = (data: Partial<NonNullable<BookingFormData['customHourly']>>) => {
+    setBookingData((prev) => ({
+      ...prev,
+      customHourly: {
+        enabled: false,
+        cleaners: HOURLY_MIN_CLEANERS + 1, // her example starts at 2
+        hoursPerCleaner: HOURLY_MIN_HOURS_PER_CLEANER,
+        ...(prev.customHourly ?? {}),
+        ...data,
+      },
+    }))
+  }
+
   const setExtraQuantity = (extraId: ExtraServiceId, qty: number) => {
     setBookingData((prev) => ({
       ...prev,
@@ -271,6 +287,33 @@ export const useBookingForm = () => {
     // The legacy square-footage path below is kept only for services her sheet
     // does not cover. Without this branch both models would write `pricing` and
     // whichever ran last would win — two different prices for the same booking.
+    // Custom Hourly replaces the area model outright (Geraldine, 2026-09-21:
+    // "stop using the Regular/Deep Cleaning pricing completely"). No areas, no
+    // add-ons, no minimum and no recurring discount — the customer is buying a
+    // block of time. Checked BEFORE the area branch so it wins.
+    if (isAreaPriced(serviceType) && bookingData.customHourly?.enabled) {
+      const h = quoteHourly(
+        bookingData.customHourly.cleaners,
+        bookingData.customHourly.hoursPerCleaner,
+      )
+      setBookingData((prev) => ({
+        ...prev,
+        pricing: {
+          basePrice: h.total,
+          pricePerSqft: 0,
+          extrasTotal: 0,
+          subtotal: h.total,
+          discount: 0,
+          total: h.total,
+          // Wall-clock hours the crew is on site, which is hours PER CLEANER —
+          // not the labour-hour figure. Two cleaners for 3 hours blocks 3 hours
+          // of calendar, not 6.
+          estimatedTime: h.hoursPerCleaner,
+        },
+      }))
+      return
+    }
+
     if (isAreaPriced(serviceType)) {
       const areas = property.areas ?? {}
       const extras = bookingData.serviceExtras ?? {}
@@ -326,6 +369,7 @@ export const useBookingForm = () => {
     bookingData.isFirstTimeClient,
     bookingData.selectedExtras,
     bookingData.extraQuantities,
+    bookingData.customHourly,
     // Area model inputs. Without these the price would not move when the customer
     // adds a room or switches Regular/Deep — the two things that actually change it.
     bookingData.property.areas,
@@ -351,6 +395,7 @@ export const useBookingForm = () => {
     togglePets,
     toggleExtra,
     setExtraQuantity,
+    updateCustomHourly,
     updateAddress,
     updateServiceDateTime,
     toggleFirstTimeClient,

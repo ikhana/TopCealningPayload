@@ -148,6 +148,20 @@ export interface BookingFormData {
    * string[] shape (and every saved booking and draft carrying it) keeps working.
    */
   extraQuantities?: Record<string, number>
+  /**
+   * Custom Hourly Cleaning (Geraldine, 2026-09-21). An ALTERNATIVE to the
+   * area-priced Regular/Deep quote, not an addition to it: when `enabled`, the
+   * area prices, the add-ons, the minimum booking and the recurring discount are
+   * all set aside and the total is cleaners x hours x rate.
+   *
+   * The area and add-on selections are deliberately NOT cleared when switching,
+   * so a customer who tries hourly and switches back still has their rooms.
+   */
+  customHourly?: {
+    enabled: boolean
+    cleaners: number
+    hoursPerCleaner: number
+  }
   address: AddressInfo
   serviceDate: string
   serviceTime: string
