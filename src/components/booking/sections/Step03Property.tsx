@@ -241,6 +241,20 @@ function AreaSelector({
       </div>
 
       {/*
+        Office was removed from this list (Geraldine, 2026-09-21: "the office can
+        be considered as a bedroom"). Removing it without saying so would leave a
+        customer with a home office guessing, so the instruction is on screen.
+
+        It has to be an instruction rather than a silent equivalence because the
+        two were not priced the same: an office area was $20 against a bedroom's
+        $25. Leaving the office row in place would have let people pick the
+        cheaper one and quietly undercut the very rule this note states.
+      */}
+      <p style={{ margin: '10px 0 0', fontSize: '0.75rem', lineHeight: 1.5, color: 'rgba(74,90,106,0.75)' }}>
+        Have a home office, den or study? Count it as a bedroom.
+      </p>
+
+      {/*
         NO TOTAL HERE. Geraldine, 2026-09-21: "Price has to be shown at the last
         / after client see the additional service." The estimate now lives at the
         bottom of Step 4, once the add-ons are on screen.
