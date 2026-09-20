@@ -249,42 +249,42 @@ function AreaSelector({
         ))}
       </div>
 
-      {/* Live estimate */}
-      <div
-        style={{
-          marginTop: '16px', padding: '16px 18px',
-          background: 'var(--color-navy-deep)', color: 'white',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.75 }}>
-            Estimated Total
-          </span>
-          <span style={{ fontSize: '1.6rem', fontWeight: 900, letterSpacing: '-1px' }}>
-            ${quote.total}
-          </span>
-        </div>
+      {/*
+        NO TOTAL HERE. Geraldine, 2026-09-21: "Price has to be shown at the last
+        / after client see the additional service." The estimate now lives at the
+        bottom of Step 4, once the add-ons are on screen.
 
-        {quote.minimumApplied && (
-          // With a condition uplift active this deliberately stops printing the
-          // running subtotal. The uplifted figure would not match the list
-          // prices shown beside each row above, and two numbers on one screen
-          // that do not add up reads as a mistake — or worse, as a hidden fee.
-          // The headroom figure is already in list dollars, so it still adds up.
-          <p style={{ margin: '10px 0 0', fontSize: '0.8rem', lineHeight: 1.5, opacity: 0.8 }}>
+        The minimum-charge guidance stays, because it is about choosing AREAS
+        rather than about the price: it tells the customer they are paying the
+        floor regardless and may as well add rooms up to it. That advice is
+        useless a step later, when the area picker is no longer in front of them.
+      */}
+      {quote.minimumApplied && (
+        <div
+          style={{
+            marginTop: '16px', padding: '14px 18px',
+            background: 'var(--color-navy-deep)', color: 'white',
+          }}
+        >
+          {/*
+            With a condition uplift active this deliberately does not print the
+            running subtotal. The uplifted figure would not match the list prices
+            shown beside each row above, and two numbers on one screen that do
+            not add up reads as a mistake, or worse as a hidden fee. The headroom
+            figure is already in list dollars, so it still adds up.
+          */}
+          <p style={{ margin: 0, fontSize: '0.8rem', lineHeight: 1.5, opacity: 0.85 }}>
             Minimum service charge: ${quote.minimum}.
             {uplift > 0
               ? ' You may add roughly $'
-              : ` Your selection comes to $${quote.subtotal} — you may add up to $`}
+              : ` Your selection comes to $${quote.subtotal}, so you may add up to $`}
             {quote.remainingToMinimum} more in cleaning areas at no extra cost.
           </p>
-        )}
-
-        <p style={{ margin: '10px 0 0', fontSize: '0.75rem', lineHeight: 1.5, opacity: 0.6 }}>
-          Pricing is based on the size, selected areas, service type, and current condition
-          of the home. This is an estimate. The exact price is confirmed with you after our call.
-        </p>
-      </div>
+          <p style={{ margin: '8px 0 0', fontSize: '0.72rem', lineHeight: 1.5, opacity: 0.6 }}>
+            Your estimate is shown after the add-ons step.
+          </p>
+        </div>
+      )}
     </div>
   )
 }
@@ -527,16 +527,16 @@ export function Step03Property() {
               value={shownCleaningType} onChange={setExtra('cleaningType')}
               disabled={heavyBuildup}
               options={['Regular', 'Deep', 'Move-in/Move-out']} />
+            {/*
+              One line, not the full banner. The banner belongs next to the
+              radio that caused this (see below). But the select is locked and
+              showing a value the customer did not choose, so leaving it with no
+              explanation at all just moves the confusion up here instead.
+            */}
             {heavyBuildup && (
-              <div style={{ gridColumn: 'span 2', marginTop: '-14px', display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '12px 14px', background: 'rgba(252,129,129,0.08)', borderLeft: '3px solid var(--color-coral, #fc8181)' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-coral, #fc8181)', flexShrink: 0, marginTop: '2px' }}>
-                  Recommended
-                </span>
-                <span style={{ fontSize: '0.82rem', color: 'rgba(74,90,106,0.9)', lineHeight: 1.45 }}>
-                  Based on the condition you described, we recommend a Deep Cleaning and have
-                  priced it that way. To change this, adjust your answer below.
-                </span>
-              </div>
+              <p style={{ gridColumn: 'span 2', margin: '-14px 0 0', fontSize: '0.78rem', color: 'rgba(74,90,106,0.75)' }}>
+                Set automatically from the home condition you selected below.
+              </p>
             )}
             {shownCleaningType && CLEANING_TYPE_INFO[shownCleaningType] && (
               <div style={{ gridColumn: 'span 2', marginTop: '-14px', display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '12px 14px', background: 'rgba(23,176,171,0.05)', borderLeft: '3px solid var(--color-teal)' }}>
@@ -655,6 +655,27 @@ export function Step03Property() {
                 value={serviceExtras.homeCondition ?? ''}
                 onChange={setExtra('homeCondition')}
               />
+            )}
+
+            {/*
+              Sits directly under the option that triggers it (Geraldine,
+              2026-09-21). It used to render beside "Type of Cleaning" at the top
+              of the step, which is roughly a screen above the radio the customer
+              just clicked — so the price moved, the service silently changed to
+              Deep, and the sentence explaining why was off-screen. A consequence
+              the customer cannot see reads as the form doing something behind
+              their back.
+            */}
+            {heavyBuildup && (
+              <div style={{ gridColumn: 'span 2', marginTop: '-2px', display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '12px 14px', background: 'rgba(252,129,129,0.08)', borderLeft: '3px solid var(--color-coral, #fc8181)' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-coral, #fc8181)', flexShrink: 0, marginTop: '2px' }}>
+                  Recommended
+                </span>
+                <span style={{ fontSize: '0.82rem', color: 'rgba(74,90,106,0.9)', lineHeight: 1.45 }}>
+                  Based on the condition you described, we recommend a Deep Cleaning and have
+                  priced it that way. To change this, pick a different condition above.
+                </span>
+              </div>
             )}
           </>
         )}

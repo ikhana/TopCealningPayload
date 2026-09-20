@@ -9,7 +9,7 @@ import { createBookingRecord, associateBookingWithContact } from '@/lib/ghl/cust
 import { getGhlFields } from '@/lib/ghl/custom-fields'
 import { CONSENT_VERSION } from '@/lib/consent'
 import { rollbackAppointment } from './rollback'
-import { EXTRA_PRICES } from '@/utilities/booking-helpers'
+import { getAddOn, addOnTotal, addOnQty, addOnsTotal } from '@/data/addons'
 import {
   appointmentHours,
   estimateHours,
@@ -27,25 +27,9 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { Booking } from '@/payload-types'
 
-const EXTRA_LABELS: Record<string, string> = {
-  'inside-fridge': 'Inside Fridge',
-  'inside-oven': 'Inside Oven',
-  'inside-cabinets': 'Inside Cabinets',
-  'inside-windows': 'Inside Windows',
-  baseboards: 'Baseboards',
-  walls: 'Walls',
-  dishes: 'Dishes',
-  closets: 'Closets',
-  ironing: 'Ironing',
-  laundry: 'Laundry',
-  organizing: 'Organizing',
-  balcony: 'Balcony / Patio',
-  'pet-hair': 'Pet Hair Removal',
-  office: 'Office Area',
-  'ceiling-fans': 'Ceiling Fans',
-  chandeliers: 'Chandeliers',
-  'same-day': 'Same-Day Service',
-}
+// Labels and prices come from src/data/addons.ts. This file used to carry its
+// own copy of both, which is how the CRM ended up recording "Closets" and
+// "Office Area" for add-ons the customer saw as "Basement" and "Office".
 
 export interface SubmitBookingParams {
   formData: BookingFormData
@@ -212,10 +196,15 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
   }
 
   // Step 3b: Create pending Booking record (linked to series if recurring)
+  // `price` is the LINE total (unit price x quantity), so the array sums to what
+  // the customer was quoted. `quantity` is stored alongside it so the unit price
+  // is still recoverable — without it, a $40 line could be one $40 item or eight
+  // $5 ceiling fans, and nobody on the crew could tell which.
   const selectedExtras = formData.selectedExtras.map((id) => ({
     extraId: id,
-    label: EXTRA_LABELS[id] ?? id,
-    price: EXTRA_PRICES[id] ?? 0,
+    label: getAddOn(id)?.label ?? id,
+    price: addOnTotal(id, formData.extraQuantities),
+    quantity: addOnQty(id, formData.extraQuantities),
   }))
 
   const pendingBooking = await payload.create({
@@ -719,7 +708,7 @@ async function scheduleRecurringAppointments(params: {
   seriesId: number
   userId?: string
   formData: BookingFormData
-  selectedExtras: Array<{ extraId: string; label: string; price: number }>
+  selectedExtras: Array<{ extraId: string; label: string; price: number; quantity: number }>
   idempotencyKey: string
 }): Promise<void> {
   // Shared helper computes which occurrences are in-window (DRY with computeOccurrenceSchedule)

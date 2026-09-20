@@ -140,6 +140,14 @@ export interface BookingFormData {
   hasChildren: boolean
   hasPets: boolean
   selectedExtras: ExtraServiceId[]
+  /**
+   * How many units of each selected add-on, keyed by add-on id. Absent or 0
+   * means 1. Only add-ons marked `quantity: true` in src/data/addons.ts use it.
+   *
+   * Kept BESIDE selectedExtras rather than folded into it, so the existing
+   * string[] shape (and every saved booking and draft carrying it) keeps working.
+   */
+  extraQuantities?: Record<string, number>
   address: AddressInfo
   serviceDate: string
   serviceTime: string

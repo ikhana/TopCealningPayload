@@ -3,6 +3,7 @@
 
 import type { ServiceCategory, FrequencyOption, ExtraServiceId } from '@/types/booking'
 import { FREQUENCY_DISCOUNTS } from '@/data/pricing'
+import { ADD_ONS } from '@/data/addons'
 
 /** Florida Minimum Wage as of 2025 */
 export const MINIMUM_WAGE = 13
@@ -34,26 +35,16 @@ export const PETS_MODIFIER = 0.01
 export const BOTH_MODIFIER = 0.02
 export const FIRST_TIME_DISCOUNT = 0.15
 
-/** Extra service fixed prices */
-export const EXTRA_PRICES: Record<string, number> = {
-  'inside-fridge': 30,
-  'inside-oven': 35,
-  'inside-cabinets': 35,
-  'inside-windows': 30,
-  baseboards: 25,
-  walls: 35,
-  dishes: 25,
-  closets: 45,
-  ironing: 35,
-  laundry: 30,
-  organizing: 45,
-  balcony: 40,
-  'pet-hair': 30,
-  office: 35,
-  'ceiling-fans': 25,
-  chandeliers: 35,
-  'same-day': 40,
-}
+/**
+ * Unit prices by add-on id, derived from the single source in src/data/addons.ts.
+ *
+ * Kept as an export because the legacy square-footage path below still sums
+ * extras this way. It is UNIT price only and ignores quantity, so anything that
+ * needs a real total must use addOnsTotal() instead.
+ */
+export const EXTRA_PRICES: Record<string, number> = Object.fromEntries(
+  ADD_ONS.map((a) => [a.id, a.price]),
+)
 
 /** Legacy base prices (fallback) */
 export const BASE_PRICES: Record<string, number> = {

@@ -17,6 +17,7 @@ import type {
 } from '@/types/booking'
 import { calculateTotalPrice, EXTRA_PRICES } from '@/utilities/booking-helpers'
 import { JOB_CONDITION_NONE } from '@/data/handyman'
+import { addOnsTotal, getAddOn, MAX_ADDON_QTY } from '@/data/addons'
 import {
   isAreaPriced,
   priceRooms,
@@ -56,6 +57,7 @@ const initialBookingData: BookingFormData = {
   hasChildren: false,
   hasPets: false,
   selectedExtras: [],
+  extraQuantities: {},
   address: {
     street: '',
     city: '',
@@ -189,11 +191,30 @@ export const useBookingForm = () => {
   }
 
   const toggleExtra = (extraId: ExtraServiceId) => {
+    setBookingData((prev) => {
+      const removing = prev.selectedExtras.includes(extraId)
+      const selectedExtras = removing
+        ? prev.selectedExtras.filter((id) => id !== extraId)
+        : [...prev.selectedExtras, extraId]
+
+      // Drop the quantity when the add-on is deselected. Leaving it behind means
+      // a customer who picks 6 windows, changes their mind, then picks windows
+      // again silently gets 6 back — and pays for them.
+      const extraQuantities = { ...(prev.extraQuantities ?? {}) }
+      if (removing) delete extraQuantities[extraId]
+      else if (getAddOn(extraId)?.quantity) extraQuantities[extraId] = 1
+
+      return { ...prev, selectedExtras, extraQuantities }
+    })
+  }
+
+  const setExtraQuantity = (extraId: ExtraServiceId, qty: number) => {
     setBookingData((prev) => ({
       ...prev,
-      selectedExtras: prev.selectedExtras.includes(extraId)
-        ? prev.selectedExtras.filter((id) => id !== extraId)
-        : [...prev.selectedExtras, extraId],
+      extraQuantities: {
+        ...(prev.extraQuantities ?? {}),
+        [extraId]: Math.max(1, Math.min(MAX_ADDON_QTY, Math.floor(qty) || 1)),
+      },
     }))
   }
 
@@ -258,7 +279,7 @@ export const useBookingForm = () => {
       const uplift = conditionUplift(condition)
 
       const areaSubtotal = priceRooms(areas, tier)
-      const extrasTotal = selectedExtras.reduce((sum, id) => sum + (EXTRA_PRICES[id] ?? 0), 0)
+      const extrasTotal = addOnsTotal(selectedExtras, bookingData.extraQuantities)
 
       // Recurring discounts only — the first-time-customer discount was removed
       // from the site on Geraldine's instruction (2026-08-20). quoteAreas also
@@ -304,6 +325,7 @@ export const useBookingForm = () => {
     bookingData.frequency,
     bookingData.isFirstTimeClient,
     bookingData.selectedExtras,
+    bookingData.extraQuantities,
     // Area model inputs. Without these the price would not move when the customer
     // adds a room or switches Regular/Deep — the two things that actually change it.
     bookingData.property.areas,
@@ -328,6 +350,7 @@ export const useBookingForm = () => {
     toggleChildren,
     togglePets,
     toggleExtra,
+    setExtraQuantity,
     updateAddress,
     updateServiceDateTime,
     toggleFirstTimeClient,

@@ -128,7 +128,8 @@ export const Bookings: CollectionConfig = {
       fields: [
         { name: 'extraId', type: 'text', required: true },
         { name: 'label', type: 'text', required: true },
-        { name: 'price', type: 'number', required: true, min: 0 },
+        { name: 'price', type: 'number', required: true, min: 0, admin: { description: 'Line total: unit price x quantity.' } },
+        { name: 'quantity', type: 'number', min: 1, defaultValue: 1 },
       ],
     },
     {

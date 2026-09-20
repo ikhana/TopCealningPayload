@@ -5093,7 +5093,11 @@ export interface Booking {
     | {
         extraId: string;
         label: string;
+        /**
+         * Line total: unit price x quantity.
+         */
         price: number;
+        quantity?: number | null;
         id?: string | null;
       }[]
     | null;
@@ -7407,6 +7411,7 @@ export interface BookingsSelect<T extends boolean = true> {
         extraId?: T;
         label?: T;
         price?: T;
+        quantity?: T;
         id?: T;
       };
   hasChildren?: T;
