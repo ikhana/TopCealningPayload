@@ -76,18 +76,6 @@ const SERVICES = [
   },
   {
     badge: '',
-    category: 'Residential',
-    title: 'Laundry & Ironing',
-    subtitle: 'Professional garment care',
-    description:
-      'Comprehensive laundry services including washing, drying, folding, and professional ironing for all fabric types.',
-    specs: ['All fabric types', 'Folding included', 'Professional ironing', '24-48h turnaround'],
-    image: '/images/services/laundry.jpg',
-    href: '/services/laundry',
-    meta: { label1: 'Starting From', value1: 'Custom / load', label2: 'Turnaround', value2: '24-48 Hours' },
-  },
-  {
-    badge: '',
     category: 'Commercial',
     title: 'Commercial Cleaning',
     subtitle: 'Excellence for your business',
@@ -97,18 +85,6 @@ const SERVICES = [
     image: '/images/services/commercial.jpg',
     href: '/services/commercial',
     meta: { label1: 'Starting From', value1: 'Custom / visit', label2: 'Schedule', value2: 'Flexible' },
-  },
-  {
-    badge: '',
-    category: 'Specialized',
-    title: 'Organize Closets & Cabinets',
-    subtitle: 'Professional organization solutions',
-    description:
-      'Transform cluttered spaces into organized, functional storage areas with systems that keep you tidy long-term.',
-    specs: ['Custom systems', 'Label & sort', 'Space optimization', 'Follow-up tips'],
-    image: '/images/services/organization.jpg',
-    href: '/services/organizing',
-    meta: { label1: 'Starting From', value1: 'Custom / hour', label2: 'Type', value2: 'Systematic' },
   },
   {
     badge: 'New',
