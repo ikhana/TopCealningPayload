@@ -15,6 +15,7 @@ import { MAX_MEDIA_FILES } from '@/hooks/useBookingForm'
 import type { ServiceCategory, ServiceExtras } from '@/types/booking'
 import {
   ROOM_PRICES,
+  ROOM_LABELS,
   quoteAreas,
   isAreaPriced,
   LAST_CLEANED_OPTIONS,
@@ -23,7 +24,6 @@ import {
   activeCondition,
   conditionUplift,
   effectiveTier,
-  type RoomKey,
   type RoomCounts,
   type CleaningTier,
 } from '@/data/pricing'
@@ -129,20 +129,10 @@ function SpecSelect({
 const WITH_BEDROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 const WITH_BATHROOMS: ServiceCategory[] = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding']
 
-// Display order and labels for the area picker. Keys must match ROOM_PRICES.
-const AREA_LIST: Array<{ key: RoomKey; label: string }> = [
-  { key: 'bedroom',       label: 'Bedroom' },
-  { key: 'fullBathroom',  label: 'Full Bathroom' },
-  { key: 'halfBathroom',  label: 'Half Bathroom' },
-  { key: 'kitchen',       label: 'Kitchen' },
-  { key: 'livingRoom',    label: 'Living Room' },
-  { key: 'diningRoom',    label: 'Dining Room' },
-  { key: 'familyRoom',    label: 'Family Room' },
-  { key: 'office',        label: 'Office' },
-  { key: 'laundryRoom',   label: 'Laundry Room' },
-  { key: 'stairsHallway', label: 'Stairs / Hallway' },
-  { key: 'patioBalcony',  label: 'Patio / Balcony' },
-]
+// Display order and labels come from ROOM_LABELS in @/data/pricing. This file
+// used to keep its own copy, which meant the picker and the summary panel could
+// list different areas — removing one here would have left it still showing in
+// the summary.
 
 const MAX_PER_AREA = 10
 
@@ -239,7 +229,7 @@ function AreaSelector({
       </label>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px' }}>
-        {AREA_LIST.map(({ key, label }) => (
+        {ROOM_LABELS.map(({ key, label }) => (
           <AreaRow
             key={key}
             label={label}

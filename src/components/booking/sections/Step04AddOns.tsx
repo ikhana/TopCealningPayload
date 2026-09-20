@@ -49,7 +49,6 @@ const ICONS: Record<string, React.ComponentType<{ size?: number; style?: React.C
   organizing: Box,
   balcony: LayoutGrid,
   'pet-hair': PawPrint,
-  office: Archive,
   'ceiling-fans': Wind,
   chandeliers: Lightbulb,
   'same-day': Clock,

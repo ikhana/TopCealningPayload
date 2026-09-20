@@ -70,7 +70,11 @@ export const ROOM_LABELS: Array<{ key: RoomKey; label: string }> = [
   { key: 'livingRoom',    label: 'Living Room' },
   { key: 'diningRoom',    label: 'Dining Room' },
   { key: 'familyRoom',    label: 'Family Room' },
-  { key: 'office',        label: 'Office' },
+  // 'office' removed 2026-09-21 (Geraldine: an office counts as a bedroom).
+  // It stays in ROOM_PRICES on purpose: bookings already taken with an office
+  // have to keep pricing and rendering, and dropping the key would make those
+  // rooms vanish from the record and from the total. Removed from this list
+  // only, which is what the picker and the summary read.
   { key: 'laundryRoom',   label: 'Laundry Room' },
   { key: 'stairsHallway', label: 'Stairs / Hallway' },
   { key: 'patioBalcony',  label: 'Patio / Balcony' },

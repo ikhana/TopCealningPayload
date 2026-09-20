@@ -70,7 +70,13 @@ export const ADD_ONS: AddOn[] = [
   { id: 'organizing',      label: 'Home Organization',    price: 45, unit: 'hour',   quantity: true,  unitSuffix: 'per hour', hint: 'How many hours?' },
   { id: 'balcony',         label: 'Balcony / Patio',      price: 35, unit: 'each',   quantity: true,  unitSuffix: 'each', hint: 'How many balconies or patios?', startingAt: true },
   { id: 'pet-hair',        label: 'Pet Hair Removal',     price: 25, unit: 'flat',   quantity: false },
-  { id: 'office',          label: 'Office',               price: 35, unit: 'flat',   quantity: false },
+  // 'office' removed 2026-09-21 (Geraldine: "the office can be considered as a
+  // bedroom"). Dropped from the areas list in ./pricing.ts for the same reason,
+  // so a home office is now counted as a bedroom in both places rather than
+  // being a room, an add-on, and a bedroom depending on where you look.
+  //
+  // Not deleted from history: bookings already taken store their own label and
+  // price in selectedExtras, so they still render with the figure charged.
   { id: 'ceiling-fans',    label: 'Ceiling Fans',         price: 5,  unit: 'each',   quantity: true,  unitSuffix: 'each', hint: 'How many fans?' },
   { id: 'chandeliers',     label: 'Chandeliers / Lights', price: 15, unit: 'each',   quantity: true,  unitSuffix: 'each', hint: 'How many chandeliers or light fixtures?' },
   { id: 'same-day',        label: 'Same Day Booking',     price: 40, unit: 'flat',   quantity: false },
