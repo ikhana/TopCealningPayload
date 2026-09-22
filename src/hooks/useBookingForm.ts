@@ -61,6 +61,7 @@ const initialBookingData: BookingFormData = {
   hasPets: false,
   selectedExtras: [],
   extraQuantities: {},
+  extraVariants: {},
   address: {
     street: '',
     city: '',
@@ -224,6 +225,13 @@ export const useBookingForm = () => {
     }))
   }
 
+  const setExtraVariant = (extraId: ExtraServiceId, variant: string) => {
+    setBookingData((prev) => ({
+      ...prev,
+      extraVariants: { ...(prev.extraVariants ?? {}), [extraId]: variant },
+    }))
+  }
+
   const setExtraQuantity = (extraId: ExtraServiceId, qty: number) => {
     setBookingData((prev) => ({
       ...prev,
@@ -322,7 +330,7 @@ export const useBookingForm = () => {
       const uplift = conditionUplift(condition)
 
       const areaSubtotal = priceRooms(areas, tier)
-      const extrasTotal = addOnsTotal(selectedExtras, bookingData.extraQuantities)
+      const extrasTotal = addOnsTotal(selectedExtras, bookingData.extraQuantities, bookingData.extraVariants)
 
       // Recurring discounts only — the first-time-customer discount was removed
       // from the site on Geraldine's instruction (2026-08-20). quoteAreas also
@@ -369,6 +377,7 @@ export const useBookingForm = () => {
     bookingData.isFirstTimeClient,
     bookingData.selectedExtras,
     bookingData.extraQuantities,
+    bookingData.extraVariants,
     bookingData.customHourly,
     // Area model inputs. Without these the price would not move when the customer
     // adds a room or switches Regular/Deep — the two things that actually change it.
@@ -395,6 +404,7 @@ export const useBookingForm = () => {
     togglePets,
     toggleExtra,
     setExtraQuantity,
+    setExtraVariant,
     updateCustomHourly,
     updateAddress,
     updateServiceDateTime,

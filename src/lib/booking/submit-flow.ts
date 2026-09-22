@@ -9,7 +9,7 @@ import { createBookingRecord, associateBookingWithContact } from '@/lib/ghl/cust
 import { getGhlFields } from '@/lib/ghl/custom-fields'
 import { CONSENT_VERSION } from '@/lib/consent'
 import { rollbackAppointment } from './rollback'
-import { getAddOn, addOnTotal, addOnQty } from '@/data/addons'
+import { getAddOn, addOnTotal, addOnQty, addOnVariant } from '@/data/addons'
 import {
   appointmentHours,
   estimateHours,
@@ -209,8 +209,8 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
 
   const selectedExtras = hourlyMode ? [] : formData.selectedExtras.map((id) => ({
     extraId: id,
-    label: getAddOn(id)?.label ?? id,
-    price: addOnTotal(id, formData.extraQuantities),
+    label: [getAddOn(id)?.label ?? id, addOnVariant(id, formData.extraVariants)?.label].filter(Boolean).join(' - '),
+    price: addOnTotal(id, formData.extraQuantities, formData.extraVariants),
     quantity: addOnQty(id, formData.extraQuantities),
   }))
 

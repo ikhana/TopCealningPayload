@@ -149,6 +149,12 @@ export interface BookingFormData {
    */
   extraQuantities?: Record<string, number>
   /**
+   * Chosen size band per add-on, keyed by add-on id. Only add-ons that declare
+   * `variants` in src/data/addons.ts use it. Absent means the first (cheapest)
+   * band, which is what addOnVariant() falls back to.
+   */
+  extraVariants?: Record<string, string>
+  /**
    * Custom Hourly Cleaning (Geraldine, 2026-09-21). An ALTERNATIVE to the
    * area-priced Regular/Deep quote, not an addition to it: when `enabled`, the
    * area prices, the add-ons, the minimum booking and the recurring discount are

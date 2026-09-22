@@ -463,25 +463,30 @@ export const HOURLY_RATE_TIERS = [
 /**
  * The rate for a booking.
  *
- * Banded on HOURS PER CLEANER, explicitly NOT on total labour hours. Geraldine,
- * 2026-09-21: "The rate is determined by the hours selected per cleaner, not
- * total combined labor hours."
+ * Banded on TOTAL COMBINED LABOUR HOURS (cleaners x hours each).
  *
- * The distinction is worth money. Her own example is 2 cleaners x 3 hours: that
- * is 6 combined labour hours, which would fall in the 5-7 band at $32 and quote
- * $192. The correct answer is $35 (each cleaner works 3 hours, the 3-4 band) for
- * a total of $210. Band on the wrong number and every multi-cleaner job is
- * under-quoted.
+ * Her written spec first said the opposite: "the rate is determined by the hours
+ * selected per cleaner, not total combined labor hours." We raised it because
+ * the two readings differ by real money, and she changed the rule on
+ * 2026-09-21: "if they are booking 5 or more total labor hours, they should
+ * receive the lower hourly rate regardless of how those hours are divided
+ * between the cleaners. For example, if they select 2 cleaners x 3 hours = 6
+ * total labor hours, the $32/hour rate should apply."
+ *
+ * So her worked example now resolves to 6 hours in the 5-7 band at $32, giving
+ * $192 rather than the $210 the per-cleaner reading produced. The comment is
+ * long on purpose: the printed spec still says per-cleaner, so anyone checking
+ * this code against that document will think it is wrong.
  */
-export function hourlyRate(hoursPerCleaner: number): number {
-  const hours = Math.max(HOURLY_MIN_HOURS_PER_CLEANER, hoursPerCleaner)
+export function hourlyRate(totalLaborHours: number): number {
+  const hours = Math.max(HOURLY_MIN_HOURS_PER_CLEANER, totalLaborHours)
   return (HOURLY_RATE_TIERS.find((t) => hours >= t.minHours) ?? HOURLY_RATE_TIERS[2]).rate
 }
 
 export type HourlyQuote = {
   cleaners: number
   hoursPerCleaner: number
-  /** cleaners x hoursPerCleaner. Display only — the rate does not come from it. */
+  /** cleaners x hoursPerCleaner. This is what the rate band is chosen from. */
   totalLaborHours: number
   rate: number
   total: number
@@ -502,8 +507,9 @@ export function quoteHourly(cleaners: number, hoursPerCleaner: number): HourlyQu
     HOURLY_MAX_HOURS_PER_CLEANER,
     Math.max(HOURLY_MIN_HOURS_PER_CLEANER, Math.floor(hoursPerCleaner) || HOURLY_MIN_HOURS_PER_CLEANER),
   )
-  const rate = hourlyRate(h)
-  return { cleaners: c, hoursPerCleaner: h, totalLaborHours: c * h, rate, total: c * h * rate }
+  const totalLaborHours = c * h
+  const rate = hourlyRate(totalLaborHours)
+  return { cleaners: c, hoursPerCleaner: h, totalLaborHours, rate, total: totalLaborHours * rate }
 }
 
 /**

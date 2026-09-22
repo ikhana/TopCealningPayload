@@ -15,6 +15,7 @@ import {
   addOnQty,
   addOnTotal,
   addOnsTotal,
+  addOnVariant,
   type AddOn,
 } from '@/data/addons'
 import {
@@ -102,6 +103,59 @@ function QtyStepper({ addon, qty, onChange }: { addon: AddOn; qty: number; onCha
   )
 }
 
+/**
+ * Size bands, for add-ons priced by amount rather than count.
+ *
+ * Each band shows its own description because that is the entire mechanism:
+ * "Small" on its own means whatever the customer hopes it means, and the
+ * argument about whether a roasting tin counted happens on the doorstep. The
+ * item and pot/pan caps move it to before the booking.
+ */
+function VariantPicker({
+  addon, selected, onChange,
+}: {
+  addon: AddOn
+  selected?: string
+  onChange: (v: string) => void
+}) {
+  const active = addOnVariant(addon.id, selected ? { [addon.id]: selected } : undefined)
+  return (
+    // The card behind this is a toggle, so a click here would switch the add-on
+    // off before the size ever registered.
+    <div onClick={(e) => e.stopPropagation()} style={{ marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      {addon.variants!.map((v) => {
+        const on = active?.value === v.value
+        return (
+          <button
+            key={v.value}
+            type="button"
+            onClick={() => onChange(v.value)}
+            style={{
+              textAlign: 'left', width: '100%', cursor: 'pointer',
+              padding: '8px 10px', borderRadius: 0,
+              border: `1px solid ${on ? 'var(--color-teal)' : 'rgba(13,27,46,0.12)'}`,
+              background: on ? 'white' : 'rgba(255,255,255,0.6)',
+            }}
+          >
+            <span style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-navy-deep)' }}>
+              <span>{v.label}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', color: on ? 'var(--color-teal)' : 'rgba(74,90,106,0.75)' }}>${v.price}</span>
+            </span>
+            <span style={{ display: 'block', marginTop: '3px', fontSize: '0.66rem', lineHeight: 1.4, color: 'rgba(74,90,106,0.75)' }}>
+              {v.desc}
+            </span>
+          </button>
+        )
+      })}
+      {addon.note && (
+        <p style={{ margin: '2px 0 0', fontSize: '0.64rem', lineHeight: 1.4, color: 'rgba(74,90,106,0.7)', fontStyle: 'italic' }}>
+          {addon.note}
+        </p>
+      )}
+    </div>
+  )
+}
+
 /** Labelled −/+ row for the two Custom Hourly inputs. */
 function HourlyStepper({
   label, hint, value, min, max, onChange,
@@ -140,8 +194,8 @@ function HourlyStepper({
 }
 
 export function Step04AddOns() {
-  const { bookingData, toggleExtra, setExtraQuantity, updateCustomHourly } = useBooking()
-  const { selectedExtras, extraQuantities, serviceType, property, serviceExtras, frequency, customHourly } = bookingData
+  const { bookingData, toggleExtra, setExtraQuantity, setExtraVariant, updateCustomHourly } = useBooking()
+  const { selectedExtras, extraQuantities, extraVariants, serviceType, property, serviceExtras, frequency, customHourly } = bookingData
   const [infoOpen, setInfoOpen] = useState(false)
   const hourlyOn = customHourly?.enabled === true
   const hourly = quoteHourly(customHourly?.cleaners ?? 2, customHourly?.hoursPerCleaner ?? 3)
@@ -154,7 +208,7 @@ export function Step04AddOns() {
   const areas: RoomCounts = property.areas ?? {}
   const condition = activeCondition(serviceExtras.lastCleaned, serviceExtras.homeCondition)
   const tier = effectiveTier(serviceExtras.cleaningType, condition)
-  const extrasTotal = addOnsTotal(selectedExtras, extraQuantities)
+  const extrasTotal = addOnsTotal(selectedExtras, extraQuantities, extraVariants)
   const quote = quoteAreas(areas, tier, frequency, extrasTotal, conditionUplift(condition))
   const showQuote = isAreaPriced(serviceType)
 
@@ -234,6 +288,10 @@ export function Step04AddOns() {
               {sel && addon.quantity && (
                 <QtyStepper addon={addon} qty={qty} onChange={(n) => setExtraQuantity(id, n)} />
               )}
+
+              {sel && addon.variants && (
+                <VariantPicker addon={addon} selected={extraVariants?.[id]} onChange={(v) => setExtraVariant(id, v)} />
+              )}
             </div>
           )
         })}
@@ -280,14 +338,21 @@ export function Step04AddOns() {
               longer drops the rate, rather than wondering why it moved. */}
           <div style={{ marginTop: '18px', border: '1px solid rgba(13,27,46,0.08)', background: 'white' }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.6)', padding: '10px 14px 6px' }}>
-              Hourly rates (per cleaner)
+              Hourly rates (by total labor hours)
             </div>
+            {/*
+              Banded on TOTAL labour hours, matching hourlyRate(). Geraldine
+              changed this on 2026-09-21: book 5+ combined hours and you get the
+              lower rate however the hours are split between cleaners. If this
+              row highlighting used hoursPerCleaner it would disagree with the
+              price printed directly beneath it.
+            */}
             {[
               { band: '3 – 4 hours', rate: 35, lo: 3, hi: 4 },
               { band: '5 – 7 hours', rate: 32, lo: 5, hi: 7 },
-              { band: '8+ hours',    rate: 30, lo: 8, hi: 99 },
+              { band: '8+ hours',    rate: 30, lo: 8, hi: 999 },
             ].map(({ band, rate, lo, hi }) => {
-              const active = hourly.hoursPerCleaner >= lo && hourly.hoursPerCleaner <= hi
+              const active = hourly.totalLaborHours >= lo && hourly.totalLaborHours <= hi
               return (
                 <div key={band} style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 14px', fontSize: '0.82rem', background: active ? '#e0f5f4' : 'transparent', fontWeight: active ? 700 : 400, color: 'var(--color-navy-deep)' }}>
                   <span>{band}</span>

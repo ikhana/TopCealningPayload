@@ -28,7 +28,7 @@ import {
   HOURLY_DISCLAIMER,
   type RoomCounts,
 } from '@/data/pricing'
-import { addOnQty, addOnTotal, addOnsTotal, getAddOn } from '@/data/addons'
+import { addOnQty, addOnTotal, addOnsTotal, addOnVariant, getAddOn } from '@/data/addons'
 
 const SERVICE_LABELS: Record<string, string> = {
   residential:  'Residential Cleaning',
@@ -81,7 +81,7 @@ function Line({ label, value, muted, accent }: { label: string; value: string; m
 
 export function BookingSummary() {
   const { bookingData } = useBooking()
-  const { serviceType, selectedExtras, extraQuantities, property, serviceExtras, frequency, customHourly } = bookingData
+  const { serviceType, selectedExtras, extraQuantities, extraVariants, property, serviceExtras, frequency, customHourly } = bookingData
 
   const priced = isAreaPriced(serviceType)
   const hourly = priced && customHourly?.enabled === true
@@ -90,7 +90,7 @@ export function BookingSummary() {
   const condition = activeCondition(serviceExtras.lastCleaned, serviceExtras.homeCondition)
   const tier = effectiveTier(serviceExtras.cleaningType, condition)
   const lines = areaLineItems(areas, tier)
-  const extrasTotal = addOnsTotal(selectedExtras, extraQuantities)
+  const extrasTotal = addOnsTotal(selectedExtras, extraQuantities, extraVariants)
   const quote = quoteAreas(areas, tier, frequency, extrasTotal, conditionUplift(condition))
   const hourlyQuote = quoteHourly(customHourly?.cleaners ?? 2, customHourly?.hoursPerCleaner ?? 3)
 
@@ -119,7 +119,7 @@ export function BookingSummary() {
               <Line label="Number of Cleaners" value={String(hourlyQuote.cleaners)} />
               <Line label="Hours Per Cleaner" value={`${hourlyQuote.hoursPerCleaner} hours`} />
               <Line label="Total Labor Hours" value={`${hourlyQuote.totalLaborHours} hours`} muted />
-              <Line label="Rate (per cleaner)" value={`$${hourlyQuote.rate} / hour`} muted />
+              <Line label="Hourly rate" value={`$${hourlyQuote.rate} / hour`} muted />
             </>
           ) : (
             <>
@@ -148,8 +148,14 @@ export function BookingSummary() {
                         key={id}
                         // Quantity in brackets only when the add-on takes one, so
                         // a flat charge does not read as "Wall Spot Cleaning (1)".
-                        label={addon.quantity ? `${addon.label} (${qty})` : addon.label}
-                        value={`$${addOnTotal(id, extraQuantities)}`}
+                        label={
+                          addon.quantity
+                            ? `${addon.label} (${qty})`
+                            : addon.variants
+                              ? `${addon.label} (${addOnVariant(id, extraVariants)?.label})`
+                              : addon.label
+                        }
+                        value={`$${addOnTotal(id, extraQuantities, extraVariants)}`}
                       />
                     )
                   })}
