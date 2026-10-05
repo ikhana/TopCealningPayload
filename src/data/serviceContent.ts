@@ -8,6 +8,13 @@
 //   2. The /services/[slug] route will pick it up automatically via
 //      generateStaticParams.
 
+import {
+  HOURLY_DISCLAIMER,
+  HOURLY_MIN_HOURS_PER_CLEANER,
+  HOURLY_RATE_TIERS,
+  quoteHourly,
+} from '@/data/pricing'
+
 export type ServiceSlug =
   | 'residential'
   | 'deep-cleaning'
@@ -16,6 +23,7 @@ export type ServiceSlug =
   | 'airbnb'
   | 'post-construction'
   | 'handyman'
+  | 'after-party-cleaning'
 
 export type ServiceContent = {
   slug: ServiceSlug
@@ -46,6 +54,17 @@ export type ServiceContent = {
       items: string[]
     }>
   }
+  // Optional price table. Only rendered when present, so services without a firm
+  // published price (most of them) are unaffected. Rows are pre-formatted strings.
+  pricing?: {
+    ghostKicker: string
+    mainLine: string
+    secondaryLine: string
+    intro: string
+    rows: Array<{ label: string; value: string }>
+    example: string
+    note: string
+  }
   faq: {
     eyebrow: string
     title: string
@@ -56,6 +75,54 @@ export type ServiceContent = {
   }
   related: ServiceSlug[]
 }
+
+// ─── After-party pricing text ────────────────────────────────────────────────
+// Generated from the SAME constants the booking form's Custom Hourly option uses
+// (HOURLY_RATE_TIERS, the 3-hour minimum, quoteHourly), so this page cannot quote a
+// rate the form does not charge. If Geraldine changes a rate in pricing.ts, the
+// table, the worked example and the FAQ answer below all change with it.
+//
+// Rates are banded on TOTAL labor hours (cleaners x hours each), per her
+// 2026-09-21 ruling. See hourlyRate() in pricing.ts for why that comment is long.
+function afterPartyPricing() {
+  const tiers = [...HOURLY_RATE_TIERS].sort((a, b) => a.minHours - b.minHours)
+
+  const range = (i: number) => {
+    const lo = tiers[i]!.minHours
+    const next = tiers[i + 1]
+    if (!next) return `${lo} or more`
+    return next.minHours - 1 === lo ? `${lo}` : `${lo} to ${next.minHours - 1}`
+  }
+
+  const rows = tiers.map((t, i) => ({
+    label: `${range(i)} labor hours`,
+    value: `$${t.rate} per labor hour`,
+  }))
+
+  // "$35 per labor hour for 3 to 4 labor hours, $32 for 5 to 7, and $30 for 8 or more."
+  const parts = tiers.map((t, i) =>
+    i === 0 ? `$${t.rate} per labor hour for ${range(i)} labor hours` : `$${t.rate} for ${range(i)}`,
+  )
+  const rateSentence =
+    parts.length > 1 ? `${parts.slice(0, -1).join(', ')}, and ${parts[parts.length - 1]}` : parts[0]!
+
+  const example = quoteHourly(2, 3)
+  const smallest = quoteHourly(1, HOURLY_MIN_HOURS_PER_CLEANER)
+  const exampleText =
+    `${example.cleaners} cleaners for ${example.hoursPerCleaner} hours each is ${example.totalLaborHours} ` +
+    `labor hours at $${example.rate} per hour, so $${example.total}. ` +
+    `The smallest booking, one cleaner for ${smallest.hoursPerCleaner} hours, is $${smallest.total}.`
+
+  const rates = tiers.map((t) => t.rate)
+  return {
+    rows,
+    rateSentence,
+    exampleText,
+    lowRate: Math.min(...rates),
+    highRate: Math.max(...rates),
+  }
+}
+const AFTER_PARTY = afterPartyPricing()
 
 export const SERVICES = {
   'post-construction': {
@@ -264,7 +331,7 @@ export const SERVICES = {
         },
       ],
     },
-    related: ['deep-cleaning', 'move-in-out'],
+    related: ['deep-cleaning', 'move-in-out', 'after-party-cleaning'],
   },
 
   // ─── DEEP CLEANING ──────────────────────────────────────────────
@@ -376,7 +443,7 @@ export const SERVICES = {
         },
       ],
     },
-    related: ['residential', 'move-in-out'],
+    related: ['residential', 'move-in-out', 'after-party-cleaning'],
   },
 
   // ─── MOVE IN / MOVE OUT ──────────────────────────────────────────
@@ -696,7 +763,7 @@ export const SERVICES = {
         },
       ],
     },
-    related: ['move-in-out', 'commercial'],
+    related: ['move-in-out', 'commercial', 'after-party-cleaning'],
   },
 
   // ─── HANDYMAN SERVICES ──────────────────────────────────────────
@@ -801,6 +868,141 @@ export const SERVICES = {
       ],
     },
     related: ['residential', 'move-in-out'],
+  },
+  // ─── AFTER PARTY ─────────────────────────────────────────────────
+  // Added 2026-10 on the owner's decision to build it. Positioning is HOMES, not
+  // venues: the competitors who rank are event and venue specialists charging
+  // $400 to $1,600, a different job and a different crew. The honest lane for us is
+  // the house party, priced by the hour through the existing Custom Hourly option.
+  //
+  // Scope statements below (what is and is not included) are the ones to confirm
+  // with Geraldine before this goes live. See the FAQ answers on trash, stains and
+  // venues in particular.
+  'after-party-cleaning': {
+    slug: 'after-party-cleaning',
+    name: 'After Party Cleaning',
+    meta: {
+      title: 'After Party Cleaning Fort Lauderdale | Top Cleaning Team',
+      description: `After party cleaning in Fort Lauderdale and Broward County. Book by the hour with clear rates, $${AFTER_PARTY.lowRate} to $${AFTER_PARTY.highRate} per labor hour. Licensed and insured.`,
+    },
+    hero: {
+      kicker: 'THE MORNING AFTER, TAKEN CARE OF',
+      title: 'After Party Cleaning in Fort Lauderdale',
+      body:
+        'The party was the fun part. Our crew handles what is left: the floors, the kitchen, the bathrooms and every glass and plate in between. Book by the hour with clear rates, so you can see the cost before you book.',
+      ctaText: 'Get Your Estimate',
+      ctaHref: '/booking',
+      image: '/images/services/party-cleaning.jpg',
+      imageAlt:
+        'Cleaner vacuuming a living room floor after a party, with champagne glasses and confetti left on the table and rug',
+    },
+    whatsIncluded: {
+      ghostKicker: "What's Included",
+      mainLine: 'The Morning-After',
+      secondaryLine: 'reset.',
+      intro:
+        'After party cleaning is booked by the hour, so your time goes where the mess is. This is what a typical visit covers. Tell us your priorities when you book and the crew starts there.',
+      sections: [
+        {
+          title: 'Living + Entertaining Areas',
+          items: [
+            'Collect and bag trash, cups, bottles, and food waste',
+            'Wipe down tables, counters, and other surfaces',
+            'Vacuum carpets and rugs',
+            'Sweep and mop hard floors',
+            'Spot-clean sticky spills and floor marks',
+          ],
+        },
+        {
+          title: 'Kitchen',
+          items: [
+            'Clean and sanitize the sink and faucet',
+            'Wipe countertops and backsplash',
+            'Wipe the outside of appliances and cabinet fronts',
+            'Sweep and mop the kitchen floor',
+            'Wash dishes and glassware, if you want your hours spent there',
+          ],
+        },
+        {
+          title: 'Bathrooms',
+          items: [
+            'Scrub toilets, sinks, and showers or tubs',
+            'Clean mirrors and glass',
+            'Wipe counters and empty the bins',
+            'Sweep and mop the floor',
+          ],
+        },
+        {
+          title: 'Patio + Outdoor Seating',
+          items: [
+            'Sweep patio or balcony floors',
+            'Wipe outdoor tables and chairs',
+            'Collect cups and trash left outside',
+          ],
+        },
+      ],
+    },
+    pricing: {
+      ghostKicker: 'Pricing',
+      mainLine: 'After Party Cleaning',
+      secondaryLine: 'prices.',
+      intro:
+        'After party cleaning is booked by the hour, because no two parties leave the same mess. You choose the number of cleaners and the hours each one works, with a minimum of 3 hours per cleaner. The more labor hours you book in total, the lower the hourly rate.',
+      rows: AFTER_PARTY.rows,
+      example: AFTER_PARTY.exampleText,
+      note: HOURLY_DISCLAIMER,
+    },
+    faq: {
+      eyebrow: 'FAQ',
+      title: 'Common Questions',
+      items: [
+        {
+          question: 'How much does after party cleaning cost?',
+          answer: `It is priced by the hour: ${AFTER_PARTY.rateSentence}. Labor hours are the number of cleaners times the hours each one works. ${AFTER_PARTY.exampleText} You see the estimated total before you submit, and nothing is charged at booking.`,
+        },
+        {
+          question: 'How long does after party cleanup take?',
+          answer:
+            'It depends on the size of the home, how many guests you had, and how much was left behind. As a starting point, we suggest 2 cleaners for 3 hours for a typical home party, then more for a larger home or a bigger crowd. You choose the cleaners and hours when you book, and we are happy to help you pick on the phone.',
+        },
+        {
+          question: 'What is included in an after party cleaning?',
+          answer:
+            'Trash and bottles bagged, surfaces wiped, floors vacuumed and mopped, the kitchen and bathrooms cleaned, and patio areas tidied. The full list is above. Because you are booking time rather than a fixed checklist, you tell us your priorities and the crew starts there.',
+        },
+        {
+          question: 'Can you clean the morning after, or the same day?',
+          answer:
+            'You can book for the morning after, once the guests have gone. Same-day cleaning depends on the schedule, so call (954) 833-4276 and we will tell you what is open.',
+        },
+        {
+          question: 'Do I need to be home?',
+          answer:
+            'No. When you book, you tell us how the team will get in, such as leaving a key, and you can add parking and entry notes for the crew.',
+        },
+        {
+          question: 'What about stains, spills, and broken glass?',
+          answer:
+            'Sticky spills and floor marks are part of the clean, and we sweep up broken glass carefully. Set-in stains on carpet or upholstery do not always lift with regular cleaning, and we will tell you plainly if one will not. Steam cleaning and shampooing of carpets and furniture is not part of this service.',
+        },
+        {
+          question: 'Do you take the trash away?',
+          answer:
+            'We bag trash, bottles, and food waste and leave it at your bins or pickup spot. We do not haul large volumes of event waste.',
+        },
+        {
+          question: 'Do you clean event venues, weddings, or large events?',
+          answer:
+            'Our after party cleaning is built for homes and apartments. For a venue, a wedding, or a large event, call us before you book and we will tell you honestly whether we are the right fit.',
+        },
+        {
+          question: 'How do I book after party cleaning?',
+          answer:
+            'Book online with the hourly Custom Cleaning option, or call (954) 833-4276 and we will set it up with you. You see the estimated total before you submit, and nothing is charged at booking.',
+        },
+      ],
+    },
+    related: ['deep-cleaning', 'residential', 'airbnb'],
   },
 } satisfies Partial<Record<ServiceSlug, ServiceContent>>
 

@@ -266,6 +266,59 @@ export default async function ServicePage({ params }: Args) {
           sections={service.whatsIncluded.sections}
         />
 
+        {/* Price table, only for services that publish one. This is the page's
+            answer to the "prices" and "cost" searches that show up for nearly every
+            service: competitors either hide the number or give a $400 to $1,600
+            range. The rows are generated from the booking form's own rate constants
+            (see afterPartyPricing in serviceContent.ts), so it cannot drift. */}
+        {service.pricing && (
+          <section id="pricing" className="bg-white py-[80px] lg:py-[100px] px-[5%]">
+            <div className="max-w-[900px] mx-auto">
+              <TCHeadingStack
+                ghostKicker={service.pricing.ghostKicker}
+                mainLine={service.pricing.mainLine}
+                secondaryLine={service.pricing.secondaryLine}
+                level="h2"
+                theme="light"
+                size="md"
+                className="mb-8"
+              />
+              <p className="text-[1rem] lg:text-[1.05rem] leading-[1.7] text-navy-deep/70 mb-8">
+                {service.pricing.intro}
+              </p>
+
+              <table className="w-full border-collapse border border-slate-200 mb-6">
+                <caption className="sr-only">{service.name} hourly rates</caption>
+                <thead>
+                  <tr className="bg-[#f4f7f6]">
+                    <th scope="col" className="text-left font-mono text-[0.72rem] uppercase tracking-[1.5px] text-navy-deep/70 px-5 py-3">
+                      Total labor hours booked
+                    </th>
+                    <th scope="col" className="text-right font-mono text-[0.72rem] uppercase tracking-[1.5px] text-navy-deep/70 px-5 py-3">
+                      Rate
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {service.pricing.rows.map((row) => (
+                    <tr key={row.label} className="border-t border-slate-200">
+                      <td className="px-5 py-4 text-[0.95rem] text-navy-deep">{row.label}</td>
+                      <td className="px-5 py-4 text-right text-[0.95rem] font-bold text-navy-deep">{row.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <p className="text-[0.95rem] leading-[1.7] text-navy-deep/80 mb-4">
+                <strong className="text-navy-deep">Example:</strong> {service.pricing.example}
+              </p>
+              <p className="text-[0.82rem] leading-[1.6] text-navy-deep/60 mb-8">{service.pricing.note}</p>
+
+              <TCButton variant="primary" href={service.hero.ctaHref}>{service.hero.ctaText}</TCButton>
+            </div>
+          </section>
+        )}
+
         {/* 3. Why Top Cleaning — universal value props */}
         <TCWhyTopSectionClient />
 
