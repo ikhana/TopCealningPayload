@@ -47,6 +47,12 @@ Rules:
 
 **Confirm with Geraldine:** the real maximum drive radius. This also unblocks S3.
 
+**Checked 2026-10-05, from outside the dashboard.** Google's own page for the listing carries a place location of 27.698638, -83.804601 (twice) and frames it at zoom 7, which is the whole state. OpenStreetMap has no land or administrative feature at that point, so it is open water in the Gulf of Mexico. It sits almost exactly on the centre of Florida's bounding box (about 27.8, -83.8), which is what Google shows when a service area is very large. The listing's place ID decodes to the same CID as the review link, so it is the same listing. Decoding the location embedded in the place ID gave a meaningless point mid-Atlantic, while two control places decoded correctly, so that ID carries no usable location for this listing either.
+
+**Confirmed:** the displayed coordinates, and that the likely cause is a very large (probably statewide) service area.
+
+**NOT confirmed:** where the verified (hidden) business address is. That decides how much this matters, because for a hidden-address business Google generally ranks on the real address and the public pin is just the service-area centre. The statewide service area still dilutes relevance either way. Only the dashboard shows it: Edit profile, then Business location and Service area. Do not call this "the pin is in the Gulf" as if someone dropped it there; it is a computed centre.
+
 ---
 
 ## Priority 2 — Primary category

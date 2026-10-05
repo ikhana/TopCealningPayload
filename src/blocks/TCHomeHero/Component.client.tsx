@@ -153,7 +153,13 @@ export function TCHomeHeroClient(_props: Props) {
                 <span className="text-[1rem]" style={{ color: '#f7b500' }}>★★★★★</span>
               </div>
               <div className="tc-review-divider border-l border-navy-deep/15 pl-8">
-                See our 275+ 4.7-Star Reviews on{' '}
+                {/* This said "275+ 4.7-Star Reviews". Google's own listing for the business
+                    shows 5.0 stars from 9 reviews (checked 2026-10-05), so the claim was
+                    wrong on both numbers, and a visitor can verify it in one click.
+                    Deliberately NO count: it goes stale the day the next review lands, and
+                    a number that has to be edited by hand is how this one got wrong. If a
+                    count is wanted later, read it from the listing rather than typing it. */}
+                See our 5.0-Star Reviews on{' '}
                 <span className="text-teal ml-1 inline-flex items-center gap-1">
                   {/* Official Google logo colours — brand requirement */}
                   <svg width="13" height="13" viewBox="0 0 48 48" aria-hidden>
