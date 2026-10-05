@@ -15,6 +15,7 @@ import Image from 'next/image'
 import { cn } from '@/utilities/cn'
 import { TCButton } from '@/components/ui/TCButton'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
+import { GOOGLE_REVIEWS_URL } from '@/data/testimonials'
 
 type Props = {
   id?: string
@@ -152,15 +153,20 @@ export function TCHomeHeroClient(_props: Props) {
               <div>
                 <span className="text-[1rem]" style={{ color: '#f7b500' }}>★★★★★</span>
               </div>
-              <div className="tc-review-divider border-l border-navy-deep/15 pl-8">
-                {/* This said "275+ 4.7-Star Reviews". Google's own listing for the business
-                    shows 5.0 stars from 9 reviews (checked 2026-10-05), so the claim was
-                    wrong on both numbers, and a visitor can verify it in one click.
-                    Deliberately NO count: it goes stale the day the next review lands, and
-                    a number that has to be edited by hand is how this one got wrong. If a
-                    count is wanted later, read it from the listing rather than typing it. */}
-                See our 5.0-Star Reviews on{' '}
-                <span className="text-teal ml-1 inline-flex items-center gap-1">
+              <a
+                href={GOOGLE_REVIEWS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="See our reviews on Google (opens in a new tab)"
+                className="tc-review-divider group border-l border-navy-deep/15 pl-8 no-underline text-inherit"
+              >
+                {/* Neutral wording on purpose. This said "275+ 4.7-Star Reviews"; Google's own listing
+                    showed 5.0 stars from 9 reviews (checked 2026-10-05). A hand-typed rating or count is
+                    wrong the moment the next review lands, so there is none. The line links to the
+                    profile instead, where the real numbers live and update themselves. Same URL as the
+                    testimonials section (GOOGLE_REVIEWS_URL), so the two cannot disagree. */}
+                See our reviews on{' '}
+                <span className="text-teal ml-1 inline-flex items-center gap-1 group-hover:underline">
                   {/* Official Google logo colours — brand requirement */}
                   <svg width="13" height="13" viewBox="0 0 48 48" aria-hidden>
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
@@ -170,7 +176,7 @@ export function TCHomeHeroClient(_props: Props) {
                   </svg>
                   Google
                 </span>
-              </div>
+              </a>
             </div>
           </div>
 
