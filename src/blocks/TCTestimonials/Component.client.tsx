@@ -227,7 +227,8 @@ export function TCTestimonialsClient(_props: Props) {
                     {initialOf(t.name)}
                   </div>
                   <div>
-                    <h5
+                    {/* A reviewer's name labels the quote; it is not a section heading, so a <p>. */}
+                    <p
                       style={{
                         fontSize: '0.9rem',
                         fontWeight: 700,
@@ -237,7 +238,7 @@ export function TCTestimonialsClient(_props: Props) {
                       }}
                     >
                       {t.name}
-                    </h5>
+                    </p>
                     {/* Provenance, not an invented job title. "Google Review"
                         plus the date is what makes the quote checkable. */}
                     <span

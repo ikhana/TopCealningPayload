@@ -272,7 +272,7 @@ export function TCJoinTeamClient(_props: Props) {
                   >
                     {node.num}
                   </span>
-                  <h4
+                  <h3
                     style={{
                       fontSize: '1.1rem',
                       fontWeight: 700,
@@ -282,7 +282,7 @@ export function TCJoinTeamClient(_props: Props) {
                     }}
                   >
                     {node.title}
-                  </h4>
+                  </h3>
                 </div>
               ))}
             </div>

@@ -228,14 +228,15 @@ export function TCHomeHeroClient(_props: Props) {
                     </div>
                   )}
 
-                  <h3
+                  {/* h2, not h3: these follow the page's h1 directly, and an h3 with no h2 above it skips a level. */}
+                  <h2
                     className={cn(
                       'text-[1.3rem] lg:text-[1.7rem] font-extrabold tracking-[-1px] mb-5 lg:mb-8 leading-tight',
                       isTealCard ? 'text-white' : 'text-navy-deep',
                     )}
                   >
                     {card.heading}
-                  </h3>
+                  </h2>
                   <TCButton variant={card.cta.variant} href={card.cta.href}>
                     {card.cta.label}
                   </TCButton>

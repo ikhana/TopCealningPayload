@@ -226,9 +226,9 @@ export function TCAboutSectionClient(_props: Props) {
                       <span className="block font-mono text-[0.9rem] font-bold tracking-[2px] mb-2 text-teal/50">
                         {number}
                       </span>
-                      <h4 className="text-[1.8rem] font-extrabold text-navy-deep mb-5 leading-tight tracking-[-0.5px]">
+                      <h3 className="text-[1.8rem] font-extrabold text-navy-deep mb-5 leading-tight tracking-[-0.5px]">
                         {pane.heading}
-                      </h4>
+                      </h3>
 
                       {pane.body && (
                         <p className="text-[0.95rem] leading-[1.8] text-[#2a4365]/70">

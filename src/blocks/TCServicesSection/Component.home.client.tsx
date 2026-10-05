@@ -203,7 +203,7 @@ export function TCServicesSectionHome() {
                       style={{ background:'rgba(255,255,255,.15)', backdropFilter:'blur(8px)', border:'1px solid rgba(255,255,255,.2)', color:'var(--color-teal-light)' }}>
                       {service.badge}
                     </span>
-                    <h4 className="text-[1.8rem] font-extrabold mb-[15px] tracking-[-0.5px]">{service.title}</h4>
+                    <h3 className="text-[1.8rem] font-extrabold mb-[15px] tracking-[-0.5px]">{service.title}</h3>
                     <p className="tc-prism-desc text-[0.95rem] leading-[1.6] mb-[25px] opacity-0 transition-opacity duration-[400ms]"
                       style={{ transitionDelay:'.1s', color:'rgba(255,255,255,.85)' }}>
                       {service.description}

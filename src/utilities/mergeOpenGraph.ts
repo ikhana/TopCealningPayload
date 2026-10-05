@@ -2,14 +2,15 @@ import type { Metadata } from 'next'
 
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
-  description: 'TopCleaning offers professional residential and commercial cleaning services — trusted, eco-friendly, and tailored to your home.',
+  description: 'Top Cleaning Team offers professional residential and commercial cleaning in Broward County, FL. Trusted, detailed, and tailored to your space.',
   images: [
     {
       url: `${process.env.NEXT_PUBLIC_SERVER_URL}/og-image.jpg`,
     },
   ],
-  siteName: 'TopCleaning',
-  title: 'TopCleaning | Professional Cleaning Services',
+  siteName: 'Top Cleaning Team',
+  locale: 'en_US',
+  title: 'Top Cleaning Team | Professional Cleaning Services',
 }
 
 export const mergeOpenGraph = (og?: Partial<Metadata['openGraph']>): Metadata['openGraph'] => {
