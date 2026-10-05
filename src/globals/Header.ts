@@ -2,11 +2,15 @@
 
 import type { GlobalConfig } from 'payload'
 import { linkWithAnchor } from '@/fields/linkWithAnchor'
+import { revalidateGlobal } from '@/hooks/revalidateGlobal'
 
 export const Header: GlobalConfig = {
   slug: 'header',
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [revalidateGlobal('header')],
   },
   fields: [
     // Promotional Banner
