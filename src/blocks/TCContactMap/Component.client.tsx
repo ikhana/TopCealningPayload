@@ -136,7 +136,9 @@ export function TCContactMapClient({ embedUrl }: Props) {
 
           <div className="tc-map-hours">
             <span>Operations: Mon — Sun</span>
-            <span>Active Window: 08:00 — 18:00</span>
+            {/* 08:00 to 22:00, matching the schema, the emails and the SMS window.
+                This said 18:00 after the rest of the site moved to 10 PM. */}
+            <span>Active Window: 08:00 — 22:00</span>
           </div>
 
         </div>
