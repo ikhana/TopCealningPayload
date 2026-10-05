@@ -74,11 +74,13 @@ const HEADER_REPOINT: Record<string, string> = {
   'air bnb cleaning': '/services/airbnb',
   'moving in, moving out': '/services/move-in-out',
 }
-const HEADER_ADD: Array<[string, string]> = [
-  ['Deep Cleaning', '/services/deep-cleaning'],
-  ['Post Construction Cleaning', '/services/post-construction'],
-  ['Handyman Services', '/services/handyman'],
-]
+// Deliberately EMPTY. This used to add Deep Cleaning, Post Construction Cleaning and Handyman
+// Services to the header dropdown. That went beyond the agreed step (repointing the four
+// existing items) and changed a menu the client had approved; the footer already links Deep
+// Cleaning and Handyman on every page, so the additions were mostly redundant. Left as an
+// empty list rather than deleted so a re-run cannot quietly bring them back, and so the
+// reason is written where the next person will look. See nav-header-revert-extras.ts.
+const HEADER_ADD: Array<[string, string]> = []
 const FOOTER_QUICK_REPOINT: Record<string, string> = { 'our services': '/services' }
 const FOOTER_QUICK_ADD: Array<[string, string]> = [['Contact', '/contact-us']]
 const FOOTER_SPEC_REPOINT: Record<string, string> = {
