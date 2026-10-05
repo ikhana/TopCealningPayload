@@ -152,21 +152,23 @@ export function TCWhyTopSectionClient(_props: Props) {
                 className="wt-node relative"
                 style={{ background: '#ffffff', padding: '50px', transition: 'background 0.3s ease' }}
               >
-                {/* Category label */}
-                <h5
+                {/* Category label. A <p>, not a heading: this used to be an <h5> sitting above an <h4>,
+                    so the outline went h2 > h5 > h4 > h5 > h4. Backwards and skipping levels is what
+                    crawlers and screen readers read as a broken document structure. */}
+                <p
                   className="font-mono text-teal font-bold uppercase text-[0.7rem] mb-[10px]"
                   style={{ letterSpacing: '2px' }}
                 >
                   {node.category}
-                </h5>
+                </p>
 
                 {/* Title */}
-                <h4
+                <h3
                   className="wt-node-title text-[1.4rem] font-extrabold"
                   style={{ marginBottom: '0', color: 'var(--color-navy-deep)', transition: 'margin-bottom 0.3s ease' }}
                 >
                   {node.title}
-                </h4>
+                </h3>
 
                 {/* Expandable description */}
                 <div

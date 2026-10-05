@@ -28,6 +28,20 @@ export function AboutSplitClient(props: AboutSplitBlock) {
       ? (image as Media).url!
       : '/images/cleaning/about-cleaning.jpg'
 
+  // Alt text, when one was supplied. This image used to be rendered as
+  // `alt="" aria-hidden` unconditionally, i.e. declared decorative, even though on
+  // a service page it is the only photograph and shows the actual service. The
+  // service data has an `imageAlt` for every page (it was already used for the
+  // social-share image) but it never reached the <img>, so the one image on the
+  // page carried no description for image search or screen readers.
+  //
+  // Falls back to the decorative treatment when there is no alt, so CMS pages
+  // whose image is purely a backdrop keep their current behaviour.
+  const imageAlt: string =
+    typeof image === 'object' && image !== null && typeof (image as Media).alt === 'string'
+      ? ((image as Media).alt as string).trim()
+      : ''
+
   return (
     <BlockWrapper sectionId={sectionId} className="-mt-20 lg:-mt-24 p-0 overflow-visible">
       <style>{`
@@ -182,7 +196,12 @@ export function AboutSplitClient(props: AboutSplitBlock) {
 
         {/* Background image — left diagonal clip */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={imageUrl} alt="" aria-hidden className="sh-bg-img" />
+        <img
+          src={imageUrl}
+          alt={imageAlt}
+          aria-hidden={imageAlt ? undefined : true}
+          className="sh-bg-img"
+        />
 
         {/* Gradient: image fades into navy */}
         <div className="sh-img-fade" />

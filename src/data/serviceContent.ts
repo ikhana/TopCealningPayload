@@ -19,6 +19,10 @@ export type ServiceSlug =
 
 export type ServiceContent = {
   slug: ServiceSlug
+  // The service's plain name, e.g. "Deep Cleaning". Used wherever the SERVICE has to be
+  // identified rather than advertised: structured data, breadcrumbs, link text.
+  // hero.title is a marketing line and must never stand in for it.
+  name: string
   meta: {
     title: string
     description: string
@@ -56,16 +60,17 @@ export type ServiceContent = {
 export const SERVICES = {
   'post-construction': {
     slug: 'post-construction',
+    name: 'Post Construction Cleaning',
     meta: {
       title: 'Post Construction Cleaning Fort Lauderdale | Top Cleaning Team',
       description:
         'Post construction cleaning in Fort Lauderdale and across Broward County. We handle drywall dust, paint splatter, fixture polishing, and window detail.',
     },
     hero: {
-      kicker: 'POST CONSTRUCTION',
-      title: 'Move-In Ready After the Build.',
+      kicker: 'MOVE-IN READY AFTER THE BUILD',
+      title: 'Post Construction Cleaning in Fort Lauderdale',
       body:
-        'A detailed, top-to-bottom service designed to transform newly built or renovated spaces into pristine, move-in ready properties — every speck of construction dust gone, every fixture polished, every surface inspected.',
+        'A detailed, top-to-bottom service designed to transform newly built or renovated spaces into pristine, move-in ready properties: every speck of construction dust gone, every fixture polished, every surface inspected.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/post-construction-cleaning.jpg',
@@ -76,7 +81,7 @@ export const SERVICES = {
       mainLine: 'Every Surface',
       secondaryLine: 'covered.',
       intro:
-        'Our Post-Construction Cleaning is a complete checklist for new builds and renovations. Every line below is included in the base scope — no upsell surprises.',
+        'Our Post-Construction Cleaning is a complete checklist for new builds and renovations. Every line below is included in the base scope, with no upsell surprises.',
       sections: [
         {
           title: 'Dust & Debris Removal',
@@ -98,14 +103,14 @@ export const SERVICES = {
           title: 'Kitchen Detail',
           items: [
             'Countertops, backsplash, and exterior + interior of cabinets',
-            'Appliance cleaning — exterior surfaces wiped, polished, and detailed',
+            'Appliance cleaning: exterior surfaces wiped, polished, and detailed',
             'Sink and faucet sanitized',
           ],
         },
         {
           title: 'Bathrooms, Glass & Final Inspection',
           items: [
-            'Intensive bathroom sanitization — showers, tubs, toilets, mirrors, and fixtures',
+            'Intensive bathroom sanitization: showers, tubs, toilets, mirrors, and fixtures',
             'Professional window, glass, and track cleaning for a crystal-clear finish',
             'Final quality inspection to ensure a spotless, dust-free, ready-to-use space',
           ],
@@ -129,7 +134,7 @@ export const SERVICES = {
         {
           question: "What if there's still some construction happening?",
           answer:
-            'We can do a "rough clean" mid-project to clear the worst of the debris and return for the full detail clean once work is complete. Two visits, two quotes — common on larger renovations.',
+            'We can do a "rough clean" mid-project to clear the worst of the debris and return for the full detail clean once work is complete. Two visits, two quotes. This is common on larger renovations.',
         },
         {
           question: 'How long does it take?',
@@ -139,7 +144,7 @@ export const SERVICES = {
         {
           question: 'Do you handle exterior cleanup too?',
           answer:
-            'Driveways, walkways, and ground-level exterior windows — yes. Roofs and second-floor exteriors require a specialty contractor; we can refer one we trust.',
+            'Yes for driveways, walkways, and ground-level exterior windows. Roofs and second-floor exteriors require a specialty contractor; we can refer one we trust.',
         },
         {
           question: 'Will dust come back after you leave?',
@@ -154,6 +159,7 @@ export const SERVICES = {
   // ─── RESIDENTIAL (Regular Cleaning) ─────────────────────────────
   residential: {
     slug: 'residential',
+    name: 'House Cleaning',
     meta: {
       // Primary keyword is "house cleaning service", not "residential cleaning".
       // "Residential" is how the industry talks; customers search "house cleaning"
@@ -163,10 +169,10 @@ export const SERVICES = {
         'House cleaning and maid service in Fort Lauderdale and Broward County. Recurring or one-time visits, eco-friendly products, and a satisfaction guarantee.',
     },
     hero: {
-      kicker: 'RESIDENTIAL',
-      title: 'Cleaning That Fits Your Routine.',
+      kicker: 'CLEANING THAT FITS YOUR ROUTINE',
+      title: 'House Cleaning in Fort Lauderdale',
       body:
-        'Custom-tailored residential cleaning that keeps your home consistently fresh. Eco-friendly products, background-checked crews, and a quality check before we leave — every visit.',
+        'Custom-tailored residential cleaning that keeps your home consistently fresh. Eco-friendly products, background-checked crews, and a quality check before we leave on every visit.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/residential1.jpg',
@@ -177,7 +183,7 @@ export const SERVICES = {
       mainLine: 'Every Room',
       secondaryLine: 'covered.',
       intro:
-        'Our Regular Cleaning is built for ongoing maintenance — a consistent baseline so your home never feels behind. Every visit covers the rooms below from top to bottom.',
+        'Our Regular Cleaning is built for ongoing maintenance: a consistent baseline so your home never feels behind. Every visit covers the rooms below from top to bottom.',
       sections: [
         {
           title: 'Whole House / General',
@@ -229,7 +235,7 @@ export const SERVICES = {
         {
           question: 'How often should I book a regular cleaning?',
           answer:
-            'Most clients land on weekly or bi-weekly visits — that pace keeps maintenance minimal and the home consistently fresh. Monthly works for smaller spaces or lower-traffic homes.',
+            'Most clients land on weekly or bi-weekly visits. That pace keeps maintenance minimal and the home consistently fresh. Monthly works for smaller spaces or lower-traffic homes.',
         },
         {
           question: 'Do I need to be home during the cleaning?',
@@ -244,12 +250,12 @@ export const SERVICES = {
         {
           question: 'What if I want to skip a week?',
           answer:
-            'No problem — recurring schedules can be paused or rescheduled with at least 24 hours notice. No cancellation fees for plan members.',
+            'No problem. Recurring schedules can be paused or rescheduled with at least 24 hours notice. No cancellation fees for plan members.',
         },
         {
           question: 'Do you bring your own supplies?',
           answer:
-            "Yes. We come fully equipped — vacuums, mops, microfiber cloths, eco-friendly cleaners, everything. You don't need to provide anything.",
+            "Yes. We come fully equipped: vacuums, mops, microfiber cloths, eco-friendly cleaners, everything. You don't need to provide anything.",
         },
         {
           question: 'What if I am not satisfied with the result?',
@@ -264,16 +270,17 @@ export const SERVICES = {
   // ─── DEEP CLEANING ──────────────────────────────────────────────
   'deep-cleaning': {
     slug: 'deep-cleaning',
+    name: 'Deep Cleaning',
     meta: {
       title: 'Deep Cleaning Service Fort Lauderdale | Top Cleaning Team',
       description:
         'Deep cleaning in Fort Lauderdale and Broward County. Baseboards, interior windows, heavy stovetop scrub, and intensive bathroom work. Ideal for first visits.',
     },
     hero: {
-      kicker: 'DEEP CLEANING',
-      title: "When Surface Clean Isn't Enough.",
+      kicker: "WHEN SURFACE CLEAN ISN'T ENOUGH",
+      title: 'Deep Cleaning in Fort Lauderdale',
       body:
-        'Recommended for first visits, post-illness recovery, or whenever the home needs a reset. Every corner, every crevice, every overlooked surface — sanitized and refreshed.',
+        'Recommended for first visits, post-illness recovery, or whenever the home needs a reset. Every corner, every crevice, every overlooked surface, sanitized and refreshed.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/deep-cleaning1.jpg',
@@ -297,7 +304,7 @@ export const SERVICES = {
           ],
         },
         {
-          title: 'Kitchen — Detailed',
+          title: 'Kitchen: Detailed',
           items: [
             'Clean outside of refrigerator',
             'Clean outside of microwave',
@@ -309,7 +316,7 @@ export const SERVICES = {
           ],
         },
         {
-          title: 'Bathrooms — Intensive',
+          title: 'Bathrooms: Intensive',
           items: [
             'Scrub toilet inside and out',
             'Scrub tub and shower walls',
@@ -350,12 +357,12 @@ export const SERVICES = {
         {
           question: 'Do you recommend a deep clean as the first visit?',
           answer:
-            "Yes — for most homes, a deep clean as the first visit gets us to a true baseline. Recurring regular cleans after that can keep the home there with much less effort.",
+            "Yes. For most homes, a deep clean as the first visit gets us to a true baseline. Recurring regular cleans after that can keep the home there with much less effort.",
         },
         {
           question: 'Do you clean inside the oven or fridge?',
           answer:
-            "Interior of appliances is not part of the standard deep clean — that's included in our Move In / Move Out service. We can quote it as an add-on if you want it on a deep clean visit.",
+            "Interior of appliances is not part of the standard deep clean. That's included in our Move In / Move Out service. We can quote it as an add-on if you want it on a deep clean visit.",
         },
         {
           question: 'What products do you use?',
@@ -375,16 +382,17 @@ export const SERVICES = {
   // ─── MOVE IN / MOVE OUT ──────────────────────────────────────────
   'move-in-out': {
     slug: 'move-in-out',
+    name: 'Move In / Move Out Cleaning',
     meta: {
       title: 'Move In / Move Out Cleaning Fort Lauderdale | Top Cleaning Team',
       description:
         'Move in and move out cleaning in Fort Lauderdale and Broward County. Interior of appliances, cabinets and garage, built to secure your full deposit back.',
     },
     hero: {
-      kicker: 'MOVE IN / MOVE OUT',
-      title: 'Spotless Handoff, Both Directions.',
+      kicker: 'SPOTLESS HANDOFF, BOTH DIRECTIONS',
+      title: 'Move In / Move Out Cleaning in Fort Lauderdale',
       body:
-        'Whether you are starting fresh or leaving spotless, our move cleaning covers every interior surface — fridge, oven, cabinets, closets, garage — so you hand off a property that passes any inspection.',
+        'Whether you are starting fresh or leaving spotless, our move cleaning covers every interior surface (fridge, oven, cabinets, closets, garage) so you hand off a property that passes any inspection.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/move-in-out1.jpg',
@@ -408,7 +416,7 @@ export const SERVICES = {
           ],
         },
         {
-          title: 'Kitchen — Inside + Out',
+          title: 'Kitchen: Inside + Out',
           items: [
             'Clean outside AND inside refrigerator',
             'Clean outside of microwave',
@@ -449,7 +457,7 @@ export const SERVICES = {
         {
           question: 'Will this help me get my full deposit back?',
           answer:
-            "That is exactly what this service is designed for. Our move-out cleaning is inspection-ready — we have years of experience with what landlords and property managers look for, and we cover every inch.",
+            "That is exactly what this service is designed for. Our move-out cleaning is inspection-ready. We have years of experience with what landlords and property managers look for, and we cover every inch.",
         },
         {
           question: 'How long does a move cleaning take?',
@@ -459,12 +467,12 @@ export const SERVICES = {
         {
           question: 'Do you do this for landlords and property managers?',
           answer:
-            "Yes — we work with several South Florida landlords and property managers on turnover cleans between tenants. We can invoice directly if needed.",
+            "Yes. We work with several South Florida landlords and property managers on turnover cleans between tenants. We can invoice directly if needed.",
         },
         {
           question: 'Do you clean inside cabinets and the oven?',
           answer:
-            "Yes — interior of all cabinets, interior of the oven and refrigerator are all part of the standard move cleaning scope. No upsells.",
+            "Yes. Interior of all cabinets, interior of the oven and refrigerator are all part of the standard move cleaning scope. No upsells.",
         },
         {
           question: 'Can you do this same-day after the movers leave?',
@@ -474,7 +482,7 @@ export const SERVICES = {
         {
           question: 'What about the walls and ceilings?',
           answer:
-            "Wall marks and scuffs are included up to standard cleaning intensity. Patching, painting, and repairs are not part of cleaning scope, but they are part of our Handyman Services — book both and we will schedule the crews back to back.",
+            "Wall marks and scuffs are included up to standard cleaning intensity. Patching, painting, and repairs are not part of cleaning scope, but they are part of our Handyman Services. Book both and we will schedule the crews back to back.",
         },
       ],
     },
@@ -484,16 +492,17 @@ export const SERVICES = {
   // ─── COMMERCIAL ──────────────────────────────────────────────────
   commercial: {
     slug: 'commercial',
+    name: 'Commercial Cleaning',
     meta: {
       title: 'Commercial Cleaning Service Fort Lauderdale | Top Cleaning Team',
       description:
         'Commercial, office and janitorial cleaning in Fort Lauderdale and Broward County. Flexible scheduling, industry compliance, and full liability coverage.',
     },
     hero: {
-      kicker: 'COMMERCIAL',
-      title: 'Workspace Cleanliness, On Your Schedule.',
+      kicker: 'WORKSPACE CLEANLINESS, ON YOUR SCHEDULE',
+      title: 'Commercial & Office Cleaning in Fort Lauderdale',
       body:
-        'Reliable commercial cleaning that fits around your operations — early mornings, evenings, weekends. We handle restrooms, breakrooms, high-touch sanitization, and the daily details that keep your team comfortable and your clients impressed.',
+        'Reliable commercial cleaning that fits around your operations: early mornings, evenings, weekends. We handle restrooms, breakrooms, high-touch sanitization, and the daily details that keep your team comfortable and your clients impressed.',
       ctaText: 'Request a Quote',
       ctaHref: '/booking',
       image: '/images/services/commercial.jpg',
@@ -553,7 +562,7 @@ export const SERVICES = {
         {
           question: 'Can you clean outside of business hours?',
           answer:
-            "Yes — early mornings, evenings, and weekend slots are available. Most of our commercial clients prefer after-hours so the office is fresh when staff arrives.",
+            "Yes. Early mornings, evenings, and weekend slots are available. Most of our commercial clients prefer after-hours so the office is fresh when staff arrives.",
         },
         {
           question: 'Are you insured for commercial work?',
@@ -568,7 +577,7 @@ export const SERVICES = {
         {
           question: 'Do you handle medical, dental, or food-service spaces?',
           answer:
-            "Yes — we have crews trained in OSHA / bloodborne pathogen protocols for medical and dental offices, and food-service safe sanitation for restaurants and cafés. Mention your industry when you book.",
+            "Yes. We have crews trained in OSHA / bloodborne pathogen protocols for medical and dental offices, and food-service safe sanitation for restaurants and cafés. Mention your industry when you book.",
         },
         {
           question: 'Can we customize the checklist for our office?',
@@ -578,7 +587,7 @@ export const SERVICES = {
         {
           question: 'Do you provide supplies?',
           answer:
-            "Yes — we bring all standard cleaning supplies. For restroom restock items (soap, paper, etc.), we can either supply them at cost or use yours, whichever you prefer.",
+            "Yes. We bring all standard cleaning supplies. For restroom restock items (soap, paper, etc.), we can either supply them at cost or use yours, whichever you prefer.",
         },
       ],
     },
@@ -588,16 +597,17 @@ export const SERVICES = {
   // ─── AIRBNB / SHORT-TERM RENTAL ──────────────────────────────────
   airbnb: {
     slug: 'airbnb',
+    name: 'AirBnB Turnover Cleaning',
     meta: {
       title: 'AirBnB Turnover Cleaning Fort Lauderdale | Top Cleaning Team',
       description:
         'AirBnB turnover and vacation rental cleaning in Fort Lauderdale and Broward County. Fresh linens, restocking, damage inspection, and photos after every clean.',
     },
     hero: {
-      kicker: 'AIRBNB / SHORT TERM',
-      title: 'Turnovers Built for 5-Star Reviews.',
+      kicker: 'TURNOVERS BUILT FOR 5-STAR REVIEWS',
+      title: 'AirBnB Turnover Cleaning in Fort Lauderdale',
       body:
-        'Reliable, fast turnovers between guests so your listing stays spotless and your ratings stay high. Fresh linens, restocked essentials, damage inspection, and a photo report after every clean — so you always know what we left behind.',
+        'Reliable, fast turnovers between guests so your listing stays spotless and your ratings stay high. Fresh linens, restocked essentials, damage inspection, and a photo report after every clean, so you always know what we left behind.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/airbnb-cleaning1.jpg',
@@ -608,7 +618,7 @@ export const SERVICES = {
       mainLine: 'Guest-Ready',
       secondaryLine: 'every time.',
       intro:
-        'A complete turnover checklist designed for AirBnB, VRBO, and other short-term rental hosts. Every line below is included in the base turnover fee — laundry, restock, photos, all of it.',
+        'A complete turnover checklist designed for AirBnB, VRBO, and other short-term rental hosts. Every line below is included in the base turnover fee: laundry, restock, photos, all of it.',
       sections: [
         {
           title: 'Complete Property Cleaning',
@@ -672,7 +682,7 @@ export const SERVICES = {
         {
           question: 'Do you coordinate directly with the calendar?',
           answer:
-            "Yes — we can sync with your Airbnb / VRBO / Hospitable / Hostfully calendar so turnovers auto-schedule the day a guest checks out. No more last-minute texts.",
+            "Yes. We can sync with your Airbnb / VRBO / Hospitable / Hostfully calendar so turnovers auto-schedule the day a guest checks out. No more last-minute texts.",
         },
         {
           question: 'Will my Superhost rating be safer with you?',
@@ -682,7 +692,7 @@ export const SERVICES = {
         {
           question: 'Do you do mid-stay cleans?',
           answer:
-            "Yes — for longer stays we can quote a mid-stay refresh. Common on stays of 7+ nights and often included in higher-tier listings.",
+            "Yes. For longer stays we can quote a mid-stay refresh. Common on stays of 7+ nights and often included in higher-tier listings.",
         },
       ],
     },
@@ -697,14 +707,15 @@ export const SERVICES = {
   // here that the form does not offer, or the page promises what we cannot book.
   handyman: {
     slug: 'handyman',
+    name: 'Handyman Services',
     meta: {
       title: 'Handyman Services Fort Lauderdale | Top Cleaning Team',
       description:
         'Handyman services in Fort Lauderdale and Broward County. TV mounting, furniture assembly, drywall and door repairs, minor plumbing, and painting touch-ups.',
     },
     hero: {
-      kicker: 'HANDYMAN',
-      title: 'The Small Jobs, Finally Done.',
+      kicker: 'THE SMALL JOBS, FINALLY DONE',
+      title: 'Handyman Services in Fort Lauderdale',
       body:
         'The shelf that never went up. The door that sticks. The drywall patch behind the sofa. We handle the backlog of small repairs most contractors will not take on, with the same vetted, insured crews that clean thousands of South Florida homes.',
       ctaText: 'Get Your Quote',
@@ -723,16 +734,16 @@ export const SERVICES = {
           title: 'Mounting & Assembly',
           items: [
             'TV mounting on drywall, plaster, and concrete, with cable management',
-            'Flat-pack furniture assembly — beds, wardrobes, desks, shelving units',
+            'Flat-pack furniture assembly: beds, wardrobes, desks, shelving units',
             'Hanging mirrors, artwork, floating shelves, and curtain rods',
           ],
         },
         {
           title: 'Repairs & Fixes',
           items: [
-            'Drywall repair — holes, cracks, anchor damage, sanded and ready for paint',
+            'Drywall repair: holes, cracks, anchor damage, sanded and ready for paint',
             'Doors that stick, drag, or will not latch, plus hinge and lock replacement',
-            'Minor plumbing — leaking faucets, running toilets, shower heads, P-traps',
+            'Minor plumbing: leaking faucets, running toilets, shower heads, P-traps',
           ],
         },
         {
@@ -747,7 +758,7 @@ export const SERVICES = {
           title: 'How We Quote',
           items: [
             'Photos of the job go in with your booking, so we arrive prepared',
-            'A firm price before any work starts — no hourly surprises',
+            'A firm price before any work starts, with no hourly surprises',
             'Fully insured crews, background checked, same as our cleaning teams',
           ],
         },
@@ -765,7 +776,7 @@ export const SERVICES = {
         {
           question: 'What is outside your scope?',
           answer:
-            'Anything requiring a licensed specialist — panel work and new electrical circuits, re-piping, roofing, structural changes, or permitted work. We will tell you straight away if a job crosses that line, and we can refer trades we have worked with.',
+            'Anything requiring a licensed specialist: panel work and new electrical circuits, re-piping, roofing, structural changes, or permitted work. We will tell you straight away if a job crosses that line, and we can refer trades we have worked with.',
         },
         {
           question: 'Can you come the same day?',

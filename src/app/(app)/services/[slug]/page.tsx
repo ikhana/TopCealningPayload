@@ -65,6 +65,8 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
       description: service.meta.description,
       url,
       type: 'website',
+      siteName: 'Top Cleaning Team',
+      locale: 'en_US',
       images: [{ url: ogImage, alt: service.hero.imageAlt }],
     },
     twitter: {
@@ -81,29 +83,31 @@ function buildServiceJsonLd(service: ServiceContent, canonical: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
-    name: service.hero.title,
+    // The service's NAME, not its marketing line. These two fields used to be
+    // hero.title, so Google was told the service was called "Spotless Handoff,
+    // Both Directions." and was categorised as that. serviceType in particular is
+    // a classification and has to read like one.
+    name: service.name,
     description: service.meta.description,
-    serviceType: service.hero.title,
+    serviceType: service.name,
+    // A REFERENCE to the business, not a second copy of it. The homepage
+    // (LocalBusinessSchema) declares the business once under this @id; pointing at
+    // the same @id from every service page is how a crawler learns that these seven
+    // pages all belong to the one entity. Declaring a fresh, unlinked LocalBusiness
+    // here, as this used to, describes eight businesses that happen to share a name.
+    //
+    // It also used to carry its own seven-city areaServed (including Miami and Boca
+    // Raton, outside the Broward service area the GBP plan targets) and an SVG
+    // logo, which Google does not accept as a structured-data image. Both lived in a
+    // copy that disagreed with the homepage, which is the failure the comment on the
+    // top-level areaServed below was written to prevent. One source now.
     provider: {
       '@type': 'LocalBusiness',
+      '@id': `${SITE_URL}/#business`,
       name: 'Top Cleaning Team',
-      image: `${SITE_URL}/images/logo.svg`,
       url: SITE_URL,
-      // NAP in structured data: keep these identical to the Google Business
-      // Profile. Consistency is a local ranking signal and is what AI search
-      // uses to resolve the business entity.
+      // NAP stays here as well: identical to the Google Business Profile.
       telephone: '+1-954-833-4276',
-      email: 'topcleaningservicefl@gmail.com',
-      areaServed: [
-        'Fort Lauderdale, FL',
-        'Miami, FL',
-        'Boca Raton, FL',
-        'Pompano Beach, FL',
-        'Hollywood, FL',
-        'Coral Springs, FL',
-        'Sunrise, FL',
-      ],
-      priceRange: '$$',
     },
     // Counties, not "South Florida". The latter is not an AdministrativeArea that
     // resolves to anything, and it disagreed with LocalBusinessSchema on the
@@ -125,7 +129,7 @@ function buildBreadcrumbJsonLd(service: ServiceContent, canonical: string) {
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
       { '@type': 'ListItem', position: 2, name: 'Services', item: `${SITE_URL}/services` },
-      { '@type': 'ListItem', position: 3, name: service.hero.title, item: canonical },
+      { '@type': 'ListItem', position: 3, name: service.name, item: canonical },
     ],
   }
 }
@@ -170,7 +174,11 @@ export default async function ServicePage({ params }: Args) {
     sectionId: `faq-${service.slug}`,
     backgroundStyle: 'default' as const,
     eyebrow: service.faq.eyebrow,
-    title: service.faq.title,
+    // The Faq block prints `title` followed by a hard-coded "Questions", so a title
+    // of "Common Questions" rendered as the heading "Common Questions Questions" on
+    // every service page. Strip a trailing "Questions" here so the data can keep
+    // reading naturally and the component's suffix is not doubled.
+    title: service.faq.title.replace(/\s*questions\s*$/i, '').trim() || 'Common',
     description: undefined as any,
     contactItems: [
       { label: 'Call us', value: '(954) 833 4276', link: 'tel:+19548334276' },
@@ -227,6 +235,28 @@ export default async function ServicePage({ params }: Args) {
           <AboutSplitClient {...aboutSplitProps} />
         </div>
 
+        {/* Visible breadcrumb. The BreadcrumbList JSON-LD above describes a trail that
+            was never shown on the page; markup is meant to reflect what visitors can
+            actually see, so this is the visible half of the same three names. A slim
+            strip below the hero rather than above it, so the full-bleed hero keeps its
+            design. */}
+        <nav
+          aria-label="Breadcrumb"
+          className="bg-white border-b border-slate-100 px-[5%] py-3"
+        >
+          <ol className="max-w-[1400px] mx-auto flex flex-wrap items-center gap-2 font-mono text-[0.72rem] text-navy-deep/60 list-none m-0 p-0">
+            <li>
+              <Link href="/" className="no-underline text-teal hover:underline">Home</Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <Link href="/services" className="no-underline text-teal hover:underline">Services</Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" className="text-navy-deep/80 font-bold">{service.name}</li>
+          </ol>
+        </nav>
+
         {/* 2. What's Included — service-specific checklist */}
         <TCWhatsIncludedClient
           ghostKicker={service.whatsIncluded.ghostKicker}
@@ -247,6 +277,14 @@ export default async function ServicePage({ params }: Args) {
       </article>
     </>
   )
+}
+
+// First sentence of a meta description, for a link blurb. Never cuts mid-word: if
+// the sentence is too long it is trimmed back to the last whole word.
+function firstSentence(text: string, max = 130): string {
+  const sentence = (text.match(/^.*?[.!?](\s|$)/)?.[0] ?? text).trim()
+  if (sentence.length <= max) return sentence
+  return sentence.slice(0, max).replace(/\s+\S*$/, '').replace(/[,;:]$/, '') + '…'
 }
 
 // ── Bottom CTA + related services ─────────────────────────────
@@ -275,7 +313,7 @@ function ServiceCloser({ service }: { service: ServiceContent }) {
           />
           <p className="text-[1rem] lg:text-[1.05rem] leading-[1.7] text-navy-deep/65 max-w-[560px] mx-auto mb-10">
             Free quotes, transparent pricing, and a satisfaction guarantee on every clean.
-            Lock in your date in under two minutes.
+            Request your date in under two minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <TCButton variant="primary" href="/booking">Book Your Cleaning</TCButton>
@@ -296,11 +334,17 @@ function ServiceCloser({ service }: { service: ServiceContent }) {
                   href={`/services/${rel.slug}`}
                   className="group block bg-white border border-slate-200 p-7 no-underline transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-22px_rgba(13,27,46,0.18)] hover:border-teal/40"
                 >
+                  {/* The anchor text of this link is what tells Google what the target
+                      page is about. It used to be the tagline ("When Surface Clean
+                      Isn't Enough.") followed by the meta description cut at a fixed
+                      110 characters, which lands mid-word, so the link text said
+                      nothing about the service it pointed to. Now: the service's
+                      name, then its first whole sentence. */}
                   <h3 className="text-[1.15rem] font-extrabold text-navy-deep mb-2 tracking-[-0.3px]">
-                    {rel.hero.title}
+                    {rel.name} in Fort Lauderdale
                   </h3>
                   <p className="text-[0.9rem] leading-[1.5] text-navy-deep/65 mb-4">
-                    {rel.meta.description.slice(0, 110)}…
+                    {firstSentence(rel.meta.description)}
                   </p>
                   <span className="inline-flex items-center gap-2 font-mono text-teal text-[0.72rem] font-bold uppercase tracking-[1.5px] group-hover:gap-3 transition-all">
                     See What&apos;s Included
