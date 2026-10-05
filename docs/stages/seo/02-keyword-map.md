@@ -216,6 +216,31 @@ Only needed for S3, not S2:
 
 ---
 
+## Decision log: After Party Cleaning (2026-10-05)
+
+**Decision:** build `/services/after-party-cleaning`, on the owner's call, against thin demand. Recorded so the reasoning is not rediscovered and so there is a date to judge it on.
+
+**Evidence it is a small niche (free tools only, no volume numbers):**
+
+- Autocomplete control test, "<service> <city>" across 8 cities, suggestions returned out of a possible 80: deep cleaning 80, commercial 80, house cleaning 79, move out 71, airbnb 56 (our weakest), **after party cleaning 0**.
+- Every local phrasing (Fort Lauderdale, Broward, Miami, Orlando, Tampa and more) returned nothing. Only the generic phrase returns suggestions, mostly "near me", "prices", "company", "crew", and other countries.
+- Intent is unambiguous when it appears: people trying to hire someone, not reading about it. Location is expressed as "near me", which the map pack answers, not a city page.
+- Google Trends could not be pulled (script blocked). **Seasonality is unmeasured.**
+
+**Competitors who rank are venue/event specialists**, not house cleaners: eventcleanupservice.com ($400 to $1,600, weddings and venues), partyfunrental.com ($400 per event), cleanreadymiami.com (thin page, from $160), plus same-day platforms (Tidy from $55).
+
+**Positioning:** homes and apartments only, priced by the hour through the existing Custom Hourly option (2 cleaners x 3 hours = $192 at current rates). Not venues, weddings or setup/teardown, which is a different job, crew and price band.
+
+**Where it can beat them:** a published price table (competitors hide it or give a wide range); an FAQ that answers the questions they only imply; honest scope limits (no hauling, no carpet shampooing, venues by call); schema and internal links they lack.
+
+**Keywords:** primary "after party cleaning" + Fort Lauderdale. Secondary: after party cleaning services near me, after party cleaning services prices, post party cleaning service, after party clean up.
+
+**Review date: 2026-12-05.** Once Search Console has data, check impressions and clicks for these queries. If the page has earned nothing, fold it into the Deep Cleaning FAQ and keep the GBP service entry; do not keep investing in it.
+
+**Open facts to confirm with Geraldine before it goes live:** that the service is still offered (it was on her May list, absent since); the scope limits (bag but do not haul trash, no carpet or upholstery shampooing); the suggested 2 cleaners x 3 hours starting point; that publishing the hourly rates is fine.
+
+---
+
 ## Feeds into
 
 - **S2** — GBP primary/secondary categories, services list, service-area cities all

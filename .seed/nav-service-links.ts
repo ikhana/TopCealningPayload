@@ -29,8 +29,12 @@
 //     repoints Deep Cleaning, Airbnb, Move-In/Out, Handyman at their pages
 //
 // WHAT IT DELIBERATELY LEAVES ALONE
-//   "After-Party Cleaning": there is no such page and it is not in the service
-//     list, so it stays pointed at the hub. Whether to keep it is a business call.
+//   After Party Cleaning in the HEADER. The footer link is repointed to its new page, but
+//     the page is deliberately not in the dropdown. A header slot is a sitewide vote of
+//     importance and visitors read it as one; this is the lowest-demand service we have
+//     (no local autocomplete suggestions at all), so it earns its links from the footer,
+//     the services hub and three related-service links instead. Revisit once Search
+//     Console shows what the page actually gets.
 //   "Join Our Team", "About Us", "FAQs": all point at the homepage with no anchor.
 //     Fixing them needs the section ids, which is a separate job.
 //   Link labels, including the trailing spaces on "Residential " and
@@ -82,6 +86,8 @@ const FOOTER_SPEC_REPOINT: Record<string, string> = {
   'airbnb cleaning': '/services/airbnb',
   'move-in / move-out cleaning.': '/services/move-in-out',
   'handyman services': '/services/handyman',
+  // This footer link existed with no page behind it. It now has one.
+  'after-party cleaning': '/services/after-party-cleaning',
 }
 
 const payload = await getPayload({ config })

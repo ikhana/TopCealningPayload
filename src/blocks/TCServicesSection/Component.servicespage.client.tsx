@@ -40,6 +40,18 @@ const SERVICES = [
   },
   {
     badge: '',
+    category: 'Residential',
+    title: 'After Party Cleaning',
+    subtitle: 'The morning-after reset',
+    description:
+      'The party was the fun part. We reset your home afterwards: the floors, the kitchen, the bathrooms and the mess in between.',
+    specs: ['Booked by the hour', 'Trash and bottles bagged', 'Kitchen and bathrooms', 'Floors vacuumed and mopped'],
+    image: '/images/services/party-cleaning.jpg',
+    href: '/services/after-party-cleaning',
+    meta: { label1: 'Pricing', value1: 'Hourly rates', label2: 'Minimum', value2: '3 hrs per cleaner' },
+  },
+  {
+    badge: '',
     category: 'Specialized',
     title: 'Post Construction Cleaning',
     subtitle: 'Cleanup after the build is done',
