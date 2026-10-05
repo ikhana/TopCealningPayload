@@ -372,10 +372,10 @@ a, input, button {
   text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6), -4px -4px 10px rgba(0, 0, 0, 0.6);
 }
 
-h1:hover {
-  transform: scale(1.1);
-  transition: transform 0.3s ease-in-out;
-}
+/* No hover effect on headings. This used to be a global `h1:hover { transform: scale(1.1) }`,
+   a leftover from the starter template, so every H1 on the site grew 10% under the cursor.
+   A heading is not a control, so nothing about it should react to the mouse. Removed
+   2026-10 at the request of the owner. */
 
 .hero-section {
   position: relative;
