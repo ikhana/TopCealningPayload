@@ -26,7 +26,8 @@
 //     "Our Services" pointed at the HOMEPAGE; it now points at /services
 //     adds Contact -> /contact-us (that page had no inbound links at all)
 //   Footer > Specialties
-//     repoints Deep Cleaning, Airbnb, Move-In/Out, Handyman at their pages
+//     repoints Deep Cleaning, Airbnb, After-Party, Move-In/Out, Handyman at their pages
+//     adds Post-Construction Cleaning (the one service with no sitewide link otherwise)
 //
 // WHAT IT DELIBERATELY LEAVES ALONE
 //   After Party Cleaning in the HEADER. The footer link is repointed to its new page, but
@@ -91,6 +92,12 @@ const FOOTER_SPEC_REPOINT: Record<string, string> = {
   // This footer link existed with no page behind it. It now has one.
   'after-party cleaning': '/services/after-party-cleaning',
 }
+
+// Post Construction was the one service with no sitewide link once the header went back
+// to the four items the client approved: the header carries Residential, Commercial,
+// Airbnb and Move In/Out, the footer carries Deep Cleaning, Handyman, Airbnb and
+// Move In/Out. A footer link, not a header one, so the approved menu stays as it was.
+const FOOTER_SPEC_ADD: Array<[string, string]> = [['Post-Construction Cleaning', '/services/post-construction']]
 
 const payload = await getPayload({ config })
 console.log(`\n  ${DRY ? 'DRY RUN, nothing will be written' : 'APPLYING'}\n`)
@@ -157,6 +164,7 @@ if (!quick || !spec) {
 repoint(quick, FOOTER_QUICK_REPOINT, 'footer quick links')
 addTo(quick, FOOTER_QUICK_ADD, 'footer quick links')
 repoint(spec, FOOTER_SPEC_REPOINT, 'footer specialties')
+addTo(spec, FOOTER_SPEC_ADD, 'footer specialties')
 
 // ── report + write ─────────────────────────────────────────────────────────────
 if (!log.length) {
@@ -182,7 +190,12 @@ const hUrls = new Set(
 )
 const fUrls = new Set((f2.sections ?? []).flatMap((s: any) => (s.links ?? []).map((l: any) => l.link?.url)).filter(Boolean))
 const wantH = [...Object.values(HEADER_REPOINT), ...HEADER_ADD.map((a) => a[1])]
-const wantF = [...Object.values(FOOTER_QUICK_REPOINT), ...FOOTER_QUICK_ADD.map((a) => a[1]), ...Object.values(FOOTER_SPEC_REPOINT)]
+const wantF = [
+  ...Object.values(FOOTER_QUICK_REPOINT),
+  ...FOOTER_QUICK_ADD.map((a) => a[1]),
+  ...Object.values(FOOTER_SPEC_REPOINT),
+  ...FOOTER_SPEC_ADD.map((a) => a[1]),
+]
 const missH = wantH.filter((u) => !hUrls.has(u))
 const missF = wantF.filter((u) => !fUrls.has(u))
 console.log(`  header: ${missH.length ? 'MISSING ' + missH.join(', ') : `all ${wantH.length} service links present`}`)
