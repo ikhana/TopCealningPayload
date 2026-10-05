@@ -31,11 +31,18 @@ const BUSINESS = {
     'Miami-Dade County, FL',
     'Palm Beach County, FL',
   ],
-  // Mon–Sat 7:00–18:00, closed Sunday.
+  // Mon–Sun 8:00–22:00 (Geraldine, 2026-09: "update work schedule to 8am-10pm").
+  // This was Mon–Sat 7:00–18:00, closed Sunday, which no longer matches the
+  // emails, the SMS quiet-hours window or what customers are told on the phone.
+  //
+  // Hours are part of NAP: they must also match the Google Business Profile
+  // EXACTLY. Google compares the two, and a mismatch is one of the cheapest ways
+  // to look unreliable. GBP could not be inspected from here (owner access is
+  // still outstanding), so confirm its hours read Mon–Sun 8:00 AM–10:00 PM.
   openingHours: {
-    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    opens: '07:00',
-    closes: '18:00',
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '08:00',
+    closes: '22:00',
   },
 }
 
