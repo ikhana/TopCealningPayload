@@ -2,6 +2,7 @@
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { RenderHero } from '@/heros/RenderHero'
+import { SERVICES, listServiceSlugs } from '@/data/serviceContent'
 import { generateMeta } from '@/utilities/generateMeta'
 import configPromise from '@payload-config'
 import type { Metadata } from 'next'
@@ -43,6 +44,46 @@ type Args = {
   }>
 }
 
+// Same fallback as the service pages: the canonical production host (www).
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.topcleaningteam.com'
+
+// The /services hub is a CMS page, so it has no template of its own. This describes it to
+// crawlers as what it is: a list of the individual service pages. The list comes from the
+// same SERVICES object the service pages render from, so a new service appears here without
+// a second edit. Names come from `service.name`, never the marketing title.
+function buildServicesHubJsonLd(page: { meta?: { title?: string | null; description?: string | null } | null }) {
+  const url = `${SITE_URL}/services`
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      '@id': `${url}#page`,
+      url,
+      name: 'Cleaning Services in Broward County, FL',
+      ...(page.meta?.description ? { description: page.meta.description } : {}),
+      isPartOf: { '@type': 'WebSite', url: SITE_URL, name: 'Top Cleaning Team' },
+      about: { '@type': 'LocalBusiness', '@id': `${SITE_URL}/#business` },
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: listServiceSlugs().map((slug, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: SERVICES[slug].name,
+          url: `${SITE_URL}/services/${slug}`,
+        })),
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Services', item: url },
+      ],
+    },
+  ]
+}
+
 export default async function Page({ params }: Args) {
   const { slug = 'home' } = await params
   const url = '/' + slug
@@ -59,6 +100,14 @@ export default async function Page({ params }: Args) {
 
   return (
     <article>
+      {slug === 'services' &&
+        buildServicesHubJsonLd(page).map((schema, i) => (
+          <script
+            key={i}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
+        ))}
       {/* Hero has its own spacing */}
       <RenderHero {...hero} />
 

@@ -319,7 +319,8 @@ export function TCServicesSectionServicesPage() {
 
                 {/* Body */}
                 <div className="sp-card-body">
-                  <h4 className="sp-card-title">{service.title}</h4>
+                  {/* h2: this page's h1 sits in the block above, and each card is a service in its own right. It was an h4 straight under the h1 (skipped two levels). */}
+                  <h2 className="sp-card-title">{service.title}</h2>
                   <span className="sp-card-subtitle">{service.subtitle}</span>
                   <p className="sp-card-desc">{service.description}</p>
 

@@ -15,9 +15,33 @@ const GradientBorders = () => (
   </>
 )
 
-export const metadata: Metadata = {
-  title: 'Blog | TopCleaning',
-  description: 'Cleaning tips, home care guides, and updates from the TopCleaning team.',
+// Same fallback as the service pages: the canonical production host (www), never a vercel.app URL.
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.topcleaningteam.com'
+
+// While there are no published posts this page is a near-empty shell, so it is kept out of
+// the index (and out of the sitemap, see src/app/sitemap.ts). The moment the first post is
+// published it becomes indexable with no code change. The canonical always points at /blog,
+// so ?search= and ?categories= views do not become duplicate pages.
+export async function generateMetadata(): Promise<Metadata> {
+  let hasPosts = false
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const published = await payload.count({
+      collection: 'blog-posts',
+      where: { _status: { equals: 'published' } },
+    })
+    hasPosts = published.totalDocs > 0
+  } catch (error) {
+    console.error('blog generateMetadata: could not count posts', error)
+  }
+
+  return {
+    title: 'Blog | Top Cleaning Team',
+    description:
+      'Cleaning tips, home care guides, and updates from the Top Cleaning Team in Fort Lauderdale and Broward County.',
+    alternates: { canonical: `${SITE_URL}/blog` },
+    robots: hasPosts ? { index: true, follow: true } : { index: false, follow: true },
+  }
 }
 
 type Props = {
