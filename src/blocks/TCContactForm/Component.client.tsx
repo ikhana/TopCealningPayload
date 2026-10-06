@@ -97,7 +97,7 @@ export function TCContactFormClient(_props: Props) {
           border: 1px solid rgba(13, 27, 46, 0.05);
         }
 
-        .tc-cf-info-block h4 {
+        .tc-cf-info-block h2 {
           font-family: var(--font-mono, 'JetBrains Mono', monospace);
           font-size: 0.75rem;
           text-transform: uppercase;
@@ -170,7 +170,7 @@ export function TCContactFormClient(_props: Props) {
           margin-bottom: 45px;
         }
 
-        .tc-cf-form-intro h3 {
+        .tc-cf-form-intro h2 {
           font-size: 2rem;
           font-weight: 900;
           color: #0d1b2e;
@@ -306,7 +306,7 @@ export function TCContactFormClient(_props: Props) {
             grid-column: span 1;
           }
 
-          .tc-cf-form-intro h3 {
+          .tc-cf-form-intro h2 {
             font-size: 1.6rem;
           }
         }
@@ -320,14 +320,13 @@ export function TCContactFormClient(_props: Props) {
 
             {/* Phone */}
             <div className="tc-cf-info-block">
-              <h4>Voice &amp; Mobile</h4>
+              <h2>Voice &amp; Mobile</h2>
               <a href="tel:9548334276" className="tc-cf-info-link">(954) 833-4276</a>
-              <a href="tel:7012383301" className="tc-cf-info-link">(701) 238-3301</a>
             </div>
 
             {/* Email */}
             <div className="tc-cf-info-block">
-              <h4>Digital Inbox</h4>
+              <h2>Digital Inbox</h2>
               <a href="mailto:topcleaningservicefl@gmail.com" className="tc-cf-info-link">
                 topcleaningservicefl@gmail.com
               </a>
@@ -335,14 +334,15 @@ export function TCContactFormClient(_props: Props) {
 
             {/* Hours */}
             <div className="tc-cf-info-block">
-              <h4>Operational Hours</h4>
-              <p className="tc-cf-hours-day">Monday — Sunday</p>
-              <p className="tc-cf-hours-time">08:00 AM — 06:00 PM</p>
+              <h2>Operational Hours</h2>
+              <p className="tc-cf-hours-day">Monday to Sunday</p>
+              {/* 8 AM to 10 PM, matching the footer, the schema and the map card. This said 6 PM. */}
+              <p className="tc-cf-hours-time">08:00 AM to 10:00 PM</p>
             </div>
 
             {/* Social */}
             <div className="tc-cf-info-block">
-              <h4>Social Network</h4>
+              <h2>Social Network</h2>
               <div className="tc-cf-socials">
                 {/* Facebook */}
                 <a href="https://web.facebook.com/people/TOP-Cleaning/61567295163475/" className="tc-cf-social-circle" aria-label="Facebook">
@@ -358,8 +358,8 @@ export function TCContactFormClient(_props: Props) {
                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                   </svg>
                 </a>
-                {/* Twitter / X */}
-                <a href="https://www.tiktok.com/@topcleaning09" className="tc-cf-social-circle" aria-label="Twitter">
+                {/* TikTok link (the glyph below is still the old Twitter bird) */}
+                <a href="https://www.tiktok.com/@topcleaning09" className="tc-cf-social-circle" aria-label="TikTok">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
                   </svg>
@@ -373,7 +373,7 @@ export function TCContactFormClient(_props: Props) {
           <main className="tc-cf-form-panel">
 
             <div className="tc-cf-form-intro">
-              <h3>Send a Message</h3>
+              <h2>Send a Message</h2>
               <p>
                 Have a question about our services or need a specific quote? Fill out the form
                 below and our team will respond within 24 hours.

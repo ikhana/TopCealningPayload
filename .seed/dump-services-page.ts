@@ -1,11 +1,11 @@
-// Read-only: prints the layout blocks of the /services page so edits can target them.
+﻿// Read-only: prints the layout blocks of the /services page so edits can target them.
 //   PAYLOAD_MIGRATING=true pnpm payload run .seed/dump-services-page.ts
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
 const run = async () => {
   const payload = await getPayload({ config })
-  const res = await payload.find({ collection: 'pages', where: { slug: { equals: 'services' } }, limit: 1, depth: 0 })
+  const res = await payload.find({ collection: 'pages', where: { slug: { equals: process.env.SLUG || 'services' } }, limit: 1, depth: 0 })
   const d: any = res.docs[0]
   if (!d) { console.log('no services page'); process.exit(0) }
   console.log(`id ${d.id}  status ${d._status}  hero.type ${d.hero?.type}`)

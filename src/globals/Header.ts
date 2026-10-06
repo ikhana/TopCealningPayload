@@ -107,7 +107,7 @@ export const Header: GlobalConfig = {
           name: 'phone2',
           type: 'text',
           label: 'Secondary Phone',
-          admin: { placeholder: '(701) 238-3301' },
+          admin: { placeholder: 'Optional second number' },
         },
         {
           name: 'email',

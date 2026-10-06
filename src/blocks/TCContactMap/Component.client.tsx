@@ -23,8 +23,8 @@ type Props = {
   mapsUrl?: string | null
 }
 
-const DEFAULT_EMBED_URL =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114503.95830814538!2d-80.28456787236319!3d25.77472839050453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88d9b0a20ec8c111%3A0xff96f271ddad4f65!2sMiami%2C%20FL!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus'
+// Centred on Broward County, the service area. No API key needed for this embed form.
+const DEFAULT_EMBED_URL = 'https://www.google.com/maps?q=Broward+County,+FL&z=10&output=embed'
 
 export function TCContactMapClient({ embedUrl }: Props) {
   const mapSrc = embedUrl || DEFAULT_EMBED_URL
@@ -119,7 +119,7 @@ export function TCContactMapClient({ embedUrl }: Props) {
         <div className="tc-map-iframe-wrap">
           <iframe
             src={mapSrc}
-            title="Top Cleaning — Service Area Map"
+            title="Top Cleaning Team service area map"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             allowFullScreen
@@ -130,15 +130,15 @@ export function TCContactMapClient({ embedUrl }: Props) {
         <div className="tc-map-overlay-card">
 
           <div className="tc-map-address">
-            FLORIDA REGIONAL HQ<br />
-            Fort Myers &amp; Miami Area Operations
+            BROWARD COUNTY, FLORIDA<br />
+            Serving Fort Lauderdale &amp; surrounding areas
           </div>
 
           <div className="tc-map-hours">
-            <span>Operations: Mon — Sun</span>
+            <span>Open: Mon to Sun</span>
             {/* 08:00 to 22:00, matching the schema, the emails and the SMS window.
                 This said 18:00 after the rest of the site moved to 10 PM. */}
-            <span>Active Window: 08:00 — 22:00</span>
+            <span>Hours: 08:00 to 22:00</span>
           </div>
 
         </div>
