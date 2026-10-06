@@ -784,7 +784,7 @@ export const SERVICES = {
       kicker: 'THE SMALL JOBS, FINALLY DONE',
       title: 'Handyman Services in Fort Lauderdale',
       body:
-        'The shelf that never went up. The door that sticks. The drywall patch behind the sofa. We handle the backlog of small repairs most contractors will not take on, with the same vetted, insured crews that clean thousands of South Florida homes.',
+        'The shelf that never went up. The door that sticks. The drywall patch behind the sofa. We handle the backlog of small repairs most contractors will not take on, with the same vetted, insured crews behind our cleaning service.',
       ctaText: 'Get Your Quote',
       ctaHref: '/booking',
       image: '/images/services/handyman.jpg',
