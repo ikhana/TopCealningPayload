@@ -130,20 +130,11 @@ export function TCProcessSimpleSteps(_props: Props) {
           </p>
         </motion.div>
 
-        {/* ── Header stepper — circles connected by a line, normalized sizes ──── */}
+        {/* ── Header stepper — numbered circles, normalized sizes ────────────────
+            There used to be a horizontal connector line behind the circles. The inactive
+            circles are translucent, so it showed straight through them. Removed at the
+            owner's request; the numbers already carry the sequence. */}
         <div className="relative flex items-start justify-center gap-14 sm:gap-20 lg:gap-28 mb-12 lg:mb-16">
-          {/* Horizontal connector line — sits behind the circles at their vertical center */}
-          <div
-            aria-hidden
-            className="hidden sm:block absolute h-[2px]"
-            style={{
-              top: '34px',
-              left: '16%',
-              right: '16%',
-              background: 'rgba(23,176,171,0.22)',
-            }}
-          />
-
           {STEPS.map((step) => {
             const isActive = step.id === activeStep
             return (
