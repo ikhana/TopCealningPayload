@@ -392,9 +392,11 @@ a, input, button {
   z-index: 1;
 }
 
-a:focus {
-  outline: none !important;
-}
+/* No `a:focus { outline: none !important }` here any more. It overrode the
+   `focus-visible:outline-hidden` on the `a, input, button` rule above, which exists so the
+   focus indicator still shows in Windows high-contrast mode. Keyboard focus is handled by
+   that rule; browsers only match :focus-visible for keyboard focus, so a mouse click on a
+   link still shows nothing. */
 
 .view-height {
   max-height: calc(100vh - 10px);
