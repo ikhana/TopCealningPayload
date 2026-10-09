@@ -25,6 +25,12 @@ type Props = {
 
 type FormState = 'idle' | 'sending' | 'sent' | 'error'
 
+// wa.me takes the number as digits only. The pre-filled text tells the team the chat started
+// from the website.
+const WHATSAPP_URL =
+  'https://wa.me/17012383301?text=' +
+  encodeURIComponent('Hello Top Cleaning Team, I found you on your website and would like to ask about a cleaning.')
+
 export function TCContactFormClient(_props: Props) {
   const [formState, setFormState] = useState<FormState>('idle')
 
@@ -322,6 +328,18 @@ export function TCContactFormClient(_props: Props) {
             <div className="tc-cf-info-block">
               <h2>Voice &amp; Mobile</h2>
               <a href="tel:9548334276" className="tc-cf-info-link">(954) 833-4276</a>
+              {/* The owner's WhatsApp line (the chat number on the Google profile). Shown as a
+                  button, not as a second phone number, so the one phone number everywhere stays
+                  (954) 833-4276. Owner approved a WhatsApp button on the site, 2026-10-09. */}
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tc-cf-info-link"
+                aria-label="Chat with Top Cleaning Team on WhatsApp (opens in a new tab)"
+              >
+                Chat on WhatsApp
+              </a>
             </div>
 
             {/* Email */}

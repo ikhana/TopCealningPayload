@@ -18,8 +18,9 @@
 //
 // Copy rules: external-facing, so no em dashes. It states only what the site already says
 // elsewhere: Fort Lauderdale / Broward County, the service list, "price confirmed before your
-// visit" (the /booking meta says the same). No city list: the service-area cities are not
-// confirmed yet, so none are named beyond Fort Lauderdale.
+// visit" (the /booking meta says the same). No city list: the service area is still being
+// discussed with the owner (see docs/stages/seo/05-owner-questions.md, question 2), so none
+// are named beyond Fort Lauderdale.
 
 import fs from 'node:fs'
 import os from 'node:os'
@@ -92,7 +93,8 @@ const prevHeadingText = prevHeading?.children?.map((c: any) => c.text).join('') 
 console.log(`  meta.title : ${page.meta?.title}\n          -> ${NEW.title}   [${NEW.title.length}]`)
 console.log(`  meta.desc  : ${page.meta?.description}\n          -> ${NEW.description}   [${NEW.description.length}]`)
 console.log(`  heading    : <${prevHeading?.tag}> "${prevHeadingText}"\n          -> <h1> "${NEW.h1}"`)
-console.log(`  intro      : replaced with ${NEW.paragraphs.length} paragraphs\n`)
+console.log(`  intro      : replaced with ${NEW.paragraphs.length} paragraphs`)
+console.log(`  last para  : ${NEW.paragraphs[NEW.paragraphs.length - 1]}\n`)
 
 if (DRY) { console.log('  would change: 1\n'); process.exit(0) }
 
