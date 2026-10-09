@@ -1,61 +1,37 @@
 // POST /api/ghl/form-submit
 //
-// The destination for the two non-wizard forms that collect a phone number:
-// the contact form and the Join Our Team application. Both previously ended at
-// `setState`, so everything typed into them — including the A2P consent boxes —
-// was discarded on submit. A consent record that never reaches the CRM cannot
-// be produced on audit, which is the whole reason for collecting it.
+// The destination for the two non-wizard forms that collect a phone number: the contact
+// form and the Join Our Team application. Accepts multipart/form-data for both (the
+// contact form has no file, but one content type keeps a single code path).
 //
-// Accepts multipart/form-data for both audiences. The contact form has no file,
-// but using one content type for both keeps a single code path.
+// STORE FIRST, THEN SYNC (ported from BrandBloomPayload's /api/leads)
+//
+// This route used to write straight to GoHighLevel and keep nothing. A submission the bot
+// screen flagged was answered "ok" and dropped, and a GoHighLevel outage lost the lead.
+// Now the enquiry is stored in the `enquiries` collection before anything else happens:
+//
+//   - flagged as automated  -> stored as QUARANTINED, never sent, visible in the admin
+//   - GoHighLevel failing   -> stored as FAILED with the reason, retryable from the admin
+//   - otherwise             -> stored, then synced
+//
+// The caller is told `ok` whenever the lead was stored, because it WAS. A bot that is
+// thanked learns nothing, and a real applicant is never shown an error (and told to retype
+// three steps) for a lead that is safe on our side.
+//
+// ONE LIMIT, stated plainly: an application's RESUME FILE is uploaded to GoHighLevel
+// during the live request and is not kept on the row. An application that is quarantined
+// and released later therefore has no resume attached; the row records the filename so the
+// applicant can be asked to send it again.
 
 import { NextRequest, NextResponse } from 'next/server'
-import { upsertContact } from '@/lib/ghl/contacts'
-import { uploadFilesToContactField } from '@/lib/ghl/files'
-import { getGhlFields } from '@/lib/ghl/custom-fields'
+import { getPayload } from 'payload'
+
+import config from '@payload-config'
 import { CONSENT_VERSION, clientIp } from '@/lib/consent'
-import { createOpportunity } from '@/lib/ghl/opportunities'
-import { resolvePipelines, type PipelineTarget } from '@/lib/ghl/pipelines'
-import { isBotRequest } from '@/lib/botid'
+import { HONEYPOT_NAME, screenSubmission } from '@/lib/leads/spam'
+import { syncEnquiry } from '@/lib/leads/sync'
 
 export const dynamic = 'force-dynamic'
-
-const MAX_RESUME_BYTES = 10 * 1024 * 1024
-
-/**
- * Which detail fields each form sends, and how to label them in the note.
- *
- * The answers go into the existing NOTES field as one readable block rather
- * than into a dozen new custom fields. Nobody filters a pipeline on "allergic
- * to any products", and a field per answer is a dozen more things to keep in
- * sync for no gain. The values that matter structurally — consent, name,
- * email, phone — are real fields.
- */
-const DETAILS: Record<string, Array<[string, string]>> = {
-  contact: [
-    ['service', 'Service type'],
-    ['message', 'Message'],
-  ],
-  careers: [
-    ['english_level', 'English level'],
-    ['apply_area', 'Area applying for'],
-    ['auth_work', 'Authorized to work in US'],
-    ['transport', 'Own reliable transportation'],
-    ['contact_method', 'Best way to contact'],
-    ['bio', 'About them'],
-    ['experience', 'Experience'],
-    ['allergies', 'Allergies'],
-  ],
-}
-
-const TAGS: Record<string, string[]> = {
-  // Deliberately NOT 'website-lead'. That tag triggers the abandoned-booking
-  // sequence, and someone asking a question through the contact form has not
-  // abandoned a booking — dropping them into it would send messages about a
-  // booking they never started.
-  contact: ['contact-form'],
-  careers: ['job-application'],
-}
 
 /** US-only normalisation. Neither form offers a country selector. */
 function toE164(raw: string): string {
@@ -72,6 +48,19 @@ function str(form: FormData, key: string): string {
   return typeof v === 'string' ? v.trim() : ''
 }
 
+/** Everything on the form that is not plumbing, kept as submitted. */
+const PLUMBING = new Set([
+  'audience',
+  'name',
+  'first_name',
+  'last_name',
+  'email',
+  'phone',
+  'resume',
+  'fillMs',
+  HONEYPOT_NAME,
+])
+
 export async function POST(request: NextRequest) {
   try {
     const form = await request.formData()
@@ -81,147 +70,72 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'unknown audience' }, { status: 400 })
     }
 
-    // Bot-detection challenge, solved in the browser and verified here. Both
-    // forms are anonymous and unauthenticated with a phone field and a CRM
-    // behind them, which is the exact shape spam looks for — and every junk
-    // contact it creates carries a fabricated SMS consent record with it.
-    //
-    // Returns isBot: false locally unless BOTID_DEV_VERDICT forces it, so this
-    // is inert in development and only does real work on a deployment.
-    // Answered as if it succeeded: telling a bot precisely which check it failed
-    // is free tuning feedback for whoever is running it. See src/lib/botid.ts —
-    // that silence is also why the reject is logged there.
-    if (await isBotRequest('form-submit', str(form, 'email') || str(form, 'phone'))) {
-      return NextResponse.json({ ok: true, resumeUploaded: false })
-    }
+    const email = str(form, 'email').toLowerCase()
+    if (!email) return NextResponse.json({ error: 'email required' }, { status: 400 })
 
-    const locationId = process.env.GHL_LOCATION_ID
-    if (!locationId) {
-      return NextResponse.json({ error: 'GHL not configured' }, { status: 500 })
+    const screenInput = {
+      label: 'form-submit',
+      who: email || str(form, 'phone'),
+      honeypot: form.get(HONEYPOT_NAME),
+      fillMs: form.get('fillMs') ?? undefined,
     }
+    const spam = await screenSubmission(screenInput)
 
     // The contact form has one "Full Name"; the application has two fields.
     const whole = str(form, 'name')
     const firstName = str(form, 'first_name') || whole.split(/\s+/)[0] || ''
     const lastName = str(form, 'last_name') || whole.split(/\s+/).slice(1).join(' ')
-
-    const email = str(form, 'email')
-    if (!email) return NextResponse.json({ error: 'email required' }, { status: 400 })
-
     const phone = toE164(str(form, 'phone'))
 
-    const GHL_FIELDS = await getGhlFields()
-
-    // ── Consent, exactly as the booking wizard records it ────────────────────
-    // Written as explicit yes/no rather than omitted when false, so a decline is
-    // a recorded decision rather than an absent value — evidence that the choice
-    // was offered. Timestamp and IP are taken server-side; a client-supplied
-    // time or address is not evidence of anything.
-    const serviceConsent = str(form, 'sms_service_consent') === 'yes'
-    const marketingConsent = str(form, 'sms_marketing_consent') === 'yes'
-    const consentAt = new Date().toISOString()
-    const consentIp = clientIp(request)
-
-    const details = (DETAILS[audience] ?? [])
-      .map(([key, label]) => [label, str(form, key)] as const)
-      .filter(([, value]) => value)
-      .map(([label, value]) => `${label}: ${value}`)
-      .join('\n')
-
-    const heading = audience === 'careers' ? 'Job application' : 'Contact form enquiry'
-    const note = [`${heading} — ${consentAt}`, details].filter(Boolean).join('\n\n')
-
-    const customFields = [
-      GHL_FIELDS.smsServiceConsent && {
-        id: GHL_FIELDS.smsServiceConsent,
-        field_value: serviceConsent ? 'yes' : 'no',
-      },
-      // The careers form offers no marketing box, so there is no marketing
-      // decision to record. Writing "no" would assert a choice nobody was
-      // offered, which is a different claim from declining one.
-      audience !== 'careers' &&
-        GHL_FIELDS.smsMarketingConsent && {
-          id: GHL_FIELDS.smsMarketingConsent,
-          field_value: marketingConsent ? 'yes' : 'no',
-        },
-      GHL_FIELDS.consentVersion && {
-        id: GHL_FIELDS.consentVersion,
-        field_value: CONSENT_VERSION,
-      },
-      GHL_FIELDS.consentTimestamp && {
-        id: GHL_FIELDS.consentTimestamp,
-        field_value: consentAt,
-      },
-      GHL_FIELDS.consentIp && consentIp && { id: GHL_FIELDS.consentIp, field_value: consentIp },
-      GHL_FIELDS.notes && note && { id: GHL_FIELDS.notes, field_value: note },
-    ].filter(Boolean) as Array<{ id: string; field_value: string }>
-
-    const contact = await upsertContact({
-      firstName,
-      lastName,
-      email,
-      // GHL accepts a contact keyed on email alone. The contact form makes the
-      // phone optional, so send the key only when there is a number.
-      ...(phone ? { phone } : {}),
-      locationId,
-      tags: TAGS[audience],
-      customFields,
-    } as Parameters<typeof upsertContact>[0])
-
-    const contactId = (contact as { id?: string })?.id
-
-    // ── Opportunity ──────────────────────────────────────────────────────────
-    // Non-fatal by design. The contact and its consent record are what must
-    // land; a missing pipeline is a CRM configuration gap, and losing the whole
-    // enquiry over one would be the wrong trade. Resolved by NAME, so a pipeline
-    // created in the GHL UI later starts working without a deploy.
-    if (contactId) {
-      try {
-        const target = await resolvePipelines()
-        const found = target.get(audience as PipelineTarget)
-        if (!found) {
-          console.warn('[form-submit] no pipeline/stage for audience, opportunity skipped', {
-            audience,
-          })
-        } else {
-          const who = [firstName, lastName].filter(Boolean).join(' ') || email
-          await createOpportunity({
-            locationId,
-            contactId,
-            pipelineId: found.pipelineId,
-            pipelineStageId: found.stageId,
-            name: audience === 'careers' ? `${who} (application)` : `${who} (contact form)`,
-            status: 'open',
-          })
-        }
-      } catch (err) {
-        console.error('[form-submit] opportunity creation failed', { contactId, audience }, err)
-      }
+    const details: Record<string, string> = {}
+    for (const [key, value] of form.entries()) {
+      if (PLUMBING.has(key) || key.startsWith('sms_')) continue
+      if (typeof value !== 'string') continue
+      const v = value.trim()
+      if (v) details[key] = v
     }
 
-    // ── Resume, careers only ─────────────────────────────────────────────────
-    // Deliberately after the upsert and deliberately non-fatal. The application
-    // answers and the consent record are what must land; an attachment that
-    // fails to upload should not discard them and make the applicant retype
-    // everything.
-    let resumeUploaded = false
     const resume = form.get('resume')
-    if (audience === 'careers' && contactId && resume instanceof File && resume.size > 0) {
-      if (resume.size > MAX_RESUME_BYTES) {
-        console.warn('[form-submit] resume too large, skipped', { contactId, bytes: resume.size })
-      } else if (!GHL_FIELDS.resume) {
-        console.warn('[form-submit] resume field not present in GHL, skipped', { contactId })
-      } else {
-        try {
-          await uploadFilesToContactField(contactId, GHL_FIELDS.resume, [
-            { blob: resume, filename: resume.name },
-          ])
-          resumeUploaded = true
-        } catch (err) {
-          console.error('[form-submit] resume upload failed', { contactId }, err)
-        }
-      }
+    const resumeFile = audience === 'careers' && resume instanceof File && resume.size > 0 ? resume : undefined
+
+    // Written as explicit yes/no rather than omitted when false, so a decline is a recorded
+    // decision. The careers form offers no marketing box, so there is no marketing decision
+    // to record: "not offered" says that, where "no" would assert a choice nobody was given.
+    // Timestamp, IP and wording version are taken here on the server.
+    const yn = (key: string) => (str(form, key) === 'yes' ? ('yes' as const) : ('no' as const))
+
+    const payload = await getPayload({ config })
+    const row = await payload.create({
+      collection: 'enquiries',
+      overrideAccess: true,
+      depth: 0,
+      data: {
+        source: audience,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        email,
+        phone: phone || null,
+        details,
+        resumeNote: resumeFile ? `Attached: ${resumeFile.name} (${resumeFile.size} bytes)` : null,
+        consent: {
+          service: yn('sms_service_consent'),
+          marketing: audience === 'careers' ? ('not-offered' as const) : yn('sms_marketing_consent'),
+          version: CONSENT_VERSION,
+          capturedAt: new Date().toISOString(),
+          ip: clientIp(request) ?? null,
+          userAgent: request.headers.get('user-agent')?.slice(0, 500) ?? null,
+        },
+        syncStatus: spam.length ? 'quarantined' : 'pending',
+        spamReasons: spam.length ? spam.join('; ') : null,
+      },
+    })
+
+    if (spam.length) {
+      payload.logger.info(`[form-submit] quarantined ${audience} from ${email}: ${spam.join('; ')}`)
+      return NextResponse.json({ ok: true, resumeUploaded: false })
     }
+
+    const { resumeUploaded } = await syncEnquiry(payload, row.id, { resume: resumeFile })
 
     return NextResponse.json({ ok: true, resumeUploaded })
   } catch (err) {

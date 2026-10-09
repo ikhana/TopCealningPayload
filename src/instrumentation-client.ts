@@ -22,9 +22,19 @@ import { initBotId } from 'botid/client/core'
  * it and nothing happens; check a route that is not listed here and every
  * request fails, real ones included.
  *
- * /api/bookings/submit is deliberately absent. It already requires a payment
- * nonce from Authorize.Net, which is a far harder gate than any challenge, and
- * a false positive there costs an actual booking rather than an enquiry.
+ * /api/bookings/submit is deliberately absent. The reasoning was that it requires a
+ * payment nonce from Authorize.Net, a far harder gate than any challenge, and that a
+ * false positive there costs an actual booking rather than an enquiry.
+ *
+ * ⚠️ THAT NO LONGER HOLDS while payments are switched off. The form then sends the
+ * literal string "PAYMENT_DISABLED" as the nonce, the route only checks that a nonce is
+ * present, and src/lib/booking/submit-flow.ts treats that string (and "TEST_MODE") as
+ * test mode. So the final booking submit currently has no bot protection at all, and the
+ * payment-bypass strings are accepted from any caller. Flagged 2026-10-09, not yet fixed.
+ *
+ * Every other lead route is stored in the `enquiries` collection before it is sent
+ * anywhere, and a flagged submission is quarantined there instead of dropped. See
+ * src/lib/leads/ and docs/ENQUIRIES.md.
  */
 initBotId({
   protect: [

@@ -14,8 +14,10 @@
 
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { Honeypot } from '@/components/Honeypot'
 import { SmsConsentFields, EMPTY_SMS_CONSENT } from '@/components/SmsConsent'
+import { FILL_MS_FIELD } from '@/lib/leads/constants'
 
 type Props = {
   id?: string
@@ -39,6 +41,14 @@ export function TCContactFormClient(_props: Props) {
   // the declared opt-in URL.
   const [smsConsent, setSmsConsent] = useState(EMPTY_SMS_CONSENT)
 
+  // When the form appeared, on the BROWSER's clock. Sent as a duration at submit so the
+  // server's spam screen never compares two different clocks (src/lib/leads/spam.ts). Set in
+  // an effect, not at render, so the server-rendered value is never the one used.
+  const shownAt = useRef(0)
+  useEffect(() => {
+    shownAt.current = Date.now()
+  }, [])
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
@@ -51,6 +61,7 @@ export function TCContactFormClient(_props: Props) {
     body.set('audience', 'contact')
     body.set('sms_service_consent', smsConsent.service ? 'yes' : 'no')
     body.set('sms_marketing_consent', smsConsent.marketing ? 'yes' : 'no')
+    if (shownAt.current) body.set(FILL_MS_FIELD, String(Date.now() - shownAt.current))
 
     try {
       const res = await fetch('/api/ghl/form-submit', { method: 'POST', body })
@@ -62,6 +73,7 @@ export function TCContactFormClient(_props: Props) {
       // a box left ticked after a successful send would pre-tick the next
       // visitor's form on the same device — which is Twilio 30931.
       setSmsConsent(EMPTY_SMS_CONSENT)
+      shownAt.current = Date.now() // a second enquiry from the same page is timed afresh
       setTimeout(() => setFormState('idle'), 3500)
     } catch (err) {
       console.error('[contact-form]', err)
@@ -399,6 +411,7 @@ export function TCContactFormClient(_props: Props) {
             </div>
 
             <form onSubmit={handleSubmit}>
+              <Honeypot />
 
               {/* Row 1: Name + Phone */}
               <div className="tc-cf-row">

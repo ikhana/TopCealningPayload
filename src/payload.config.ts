@@ -30,6 +30,7 @@ import { BookingSeries } from './collections/BookingSeries'
 import { BlogCategories } from './collections/BlogCategories'
 import { BlogPosts } from './collections/BlogPosts'
 import { BlogTags } from './collections/BlogTags'
+import { Enquiries } from './collections/Enquiries'
 import { PersonalizationOptions } from './collections/PersonalizationOptions'
 import { ProductComponents } from './collections/ProductComponents'
 import { calculateProductPrice } from './endpoints/calculate-product-price'
@@ -72,6 +73,7 @@ export default buildConfig({
     BlogPosts,
     BlogCategories,
     BlogTags,
+    Enquiries,
   ],
   
   db: postgresAdapter({

@@ -5,16 +5,20 @@ import { checkBotId } from 'botid/server'
  * One place for the bot screen, shared by every public form endpoint.
  *
  * WHY THIS EXISTS AS A MODULE
- * The screen used to be copy-pasted into each route. That is how the two copies
- * came to differ in the thing that matters most: neither logged anything when it
- * rejected. A rejected submission returns `{ ok: true }` — the caller is told it
- * worked — so a false positive is INVISIBLE. Nothing errors, nothing 4xxs, the
- * enquiry simply never arrives, and the first sign of trouble is Geraldine
- * noticing the contact form has gone quiet.
+ * The screen used to be copy-pasted into each route, and a flagged submission was
+ * DROPPED: answered `{ ok: true }` and kept nowhere. A false positive was invisible.
+ * Nothing errored, nothing 4xxed, the enquiry simply never arrived, and the first
+ * sign of trouble would have been Geraldine noticing the contact form had gone quiet.
  *
  * That is not hypothetical: the same setup on BrandBloomPayload was sending
- * effectively every submission to quarantine. Silent-and-wrong is the worst
- * possible combination for a lead form, so the screen now always leaves a trace.
+ * effectively every submission to quarantine.
+ *
+ * NOW: this module only gives the verdict. What happens to a flagged submission is
+ * decided in src/lib/leads/spam.ts and the two routes: it is stored in the
+ * `enquiries` collection as QUARANTINED (never sent to GoHighLevel, but readable and
+ * releasable in the admin). So a false positive costs one row someone can look at,
+ * not a lost customer. The log line below is still worth having: it is the earliest
+ * place the RATE shows up.
  */
 
 /** The library's own verdict vocabulary. */
@@ -48,7 +52,7 @@ function devVerdict(): Verdict | undefined {
 }
 
 /**
- * Screens one request. `true` means "do not process this".
+ * Screens one request. `true` means "this looks automated": the caller quarantines it.
  *
  * @param label  route name, so the log line says which form was hit
  * @param who    something identifying in the payload (email/phone). Logged so a
@@ -70,7 +74,7 @@ export async function isBotRequest(label: string, who: string): Promise<boolean>
       // is the RATE that is diagnostic. All-quarantined means the challenge is
       // not reaching the browser, not that everyone is suddenly a bot.
       console.warn(
-        `[botid] REJECTED ${label} — submission dropped, caller told it succeeded`,
+        `[botid] FLAGGED ${label}: stored as quarantined, not sent to the CRM`,
         { who, forced: bypass ?? null },
       )
       return true

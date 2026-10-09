@@ -1,25 +1,38 @@
+// POST /api/ghl/lead-capture
+//
+// Called when a visitor completes step 1 of the booking wizard (name, email, phone,
+// consent). It is what puts them in GoHighLevel with the `website-lead` tag that starts
+// the abandoned-booking sequence.
+//
+// STORE FIRST, THEN SYNC (ported from BrandBloomPayload's /api/leads)
+//
+// This route used to write straight to GoHighLevel and keep nothing. A submission the bot
+// screen flagged was answered "ok" and dropped, and a GoHighLevel outage lost the lead.
+// Now the enquiry is stored in the `enquiries` collection before anything else happens:
+//
+//   - flagged as automated  -> stored as QUARANTINED, never sent, visible in the admin
+//   - GoHighLevel failing   -> stored as FAILED with the reason, retryable from the admin
+//   - otherwise             -> stored, then synced
+//
+// The caller is told `ok` in every case where the lead was stored, because it WAS. A bot
+// that is thanked learns nothing; a real person is never shown an error for a lead that is
+// safe on our side.
+
 import { NextResponse } from 'next/server'
-import { upsertContact } from '@/lib/ghl/contacts'
-import { getGhlFields } from '@/lib/ghl/custom-fields'
+import { getPayload } from 'payload'
+
+import config from '@payload-config'
 import { CONSENT_VERSION, clientIp } from '@/lib/consent'
-import { isBotRequest } from '@/lib/botid'
+import { screenSubmission } from '@/lib/leads/spam'
+import { syncEnquiry } from '@/lib/leads/sync'
+
+export const dynamic = 'force-dynamic'
 
 const COUNTRY_PREFIX: Record<string, string> = {
   US: '+1',
   CA: '+1',
   MX: '+52',
   UK: '+44',
-}
-
-// Resolve the public-facing site URL for resume links.
-// Production should set NEXT_PUBLIC_SITE_URL=https://topcleaningteam.com
-// Falls back to NEXT_PUBLIC_SERVER_URL (used in dev), then to a sensible default.
-function siteUrl(): string {
-  return (
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.NEXT_PUBLIC_SERVER_URL ??
-    'https://topcleaningteam.com'
-  ).replace(/\/$/, '')
 }
 
 export async function POST(req: Request) {
@@ -34,91 +47,75 @@ export async function POST(req: Request) {
       smsConsent?: { service?: boolean; marketing?: boolean }
     }
 
-    // Bot-detection challenge, solved in the browser and verified here. This
-    // endpoint creates a CRM contact from anonymous input, and every junk one it
-    // accepts carries a fabricated SMS consent record along with it.
-    //
-    // Returns isBot: false locally unless BOTID_DEV_VERDICT forces it, so this
-    // is inert in development and only does real work on a deployment.
-    // Answered as if it succeeded: telling a bot precisely which check it failed
-    // is free tuning feedback for whoever is running it. See src/lib/botid.ts —
-    // that silence is also why the reject is logged there.
-    if (await isBotRequest('lead-capture', email || phone)) {
-      return NextResponse.json({ ok: true })
-    }
-
     if (!email || !phone) {
       return NextResponse.json({ error: 'email and phone required' }, { status: 400 })
     }
 
-    const locationId = process.env.GHL_LOCATION_ID
-    if (!locationId) {
-      return NextResponse.json({ error: 'GHL not configured' }, { status: 500 })
-    }
+    // This request comes from the wizard's own script, not from a <form>, so there is no
+    // honeypot or fill timer to read; the bot-detection challenge is the screen here.
+    const spam = await screenSubmission({ label: 'lead-capture', who: email || phone })
 
     const prefix = COUNTRY_PREFIX[countryCode] ?? '+1'
-    const digits = phone.replace(/\D/g, '')
-    const e164 = `${prefix}${digits}`
+    const e164 = `${prefix}${phone.replace(/\D/g, '')}`
+    const cleanEmail = email.trim().toLowerCase()
 
-    // Field ids are resolved from GHL by fieldKey, not read from env. See
-    // src/lib/ghl/fields.ts. Cached for the life of the process.
-    const GHL_FIELDS = await getGhlFields()
+    const payload = await getPayload({ config })
 
-    // Build the resume URL only if a draftToken was provided and the GHL field
-    // is configured. Missing either is non-fatal — the contact still gets upserted.
-    const customFields: Array<{ id: string; field_value: string | number }> = []
-    if (draftToken && GHL_FIELDS.cartResumeUrl) {
-      const resumeUrl = `${siteUrl()}/booking?resume=${encodeURIComponent(draftToken)}`
-      customFields.push({ id: GHL_FIELDS.cartResumeUrl, field_value: resumeUrl })
-    }
-
-    // A2P: the consent record has to land here, on the very first request, not on
-    // completion. This endpoint is what creates the contact and applies the
-    // `website-lead` tag that triggers the abandoned-booking sequence, so a lead
-    // that never finishes the wizard still needs its consent state on file.
-    // Written as explicit "yes"/"no" rather than omitting the field when false,
-    // so a declined consent is a recorded decision rather than an absent value.
-    if (GHL_FIELDS.smsServiceConsent) {
-      customFields.push({
-        id: GHL_FIELDS.smsServiceConsent,
-        field_value: smsConsent?.service ? 'yes' : 'no',
+    // The wizard can call this more than once for the same draft (going back and
+    // continuing). One row per draft, updated in place, rather than a row per click.
+    type ExistingRow = { id: number | string; syncStatus?: string | null }
+    let existing = null as ExistingRow | null
+    if (draftToken) {
+      const found = await payload.find({
+        collection: 'enquiries',
+        where: { and: [{ source: { equals: 'booking-start' } }, { draftToken: { equals: draftToken } }] },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
       })
-    }
-    if (GHL_FIELDS.smsMarketingConsent) {
-      customFields.push({
-        id: GHL_FIELDS.smsMarketingConsent,
-        field_value: smsConsent?.marketing ? 'yes' : 'no',
-      })
+      existing = (found.docs[0] as unknown as ExistingRow | undefined) ?? null
     }
 
-    // Consent evidence. A "yes" on its own is not proof of anything — proof is
-    // when it was given, from where, and against which wording. Written on
-    // every consent decision including a decline, because a recorded "no" is
-    // evidence the choice was genuinely offered.
-    //
-    // Timestamp and IP are taken server-side. A client-supplied time or address
-    // is not evidence; it is whatever the client chose to send.
-    const consentAt = new Date().toISOString()
-    const consentIp = clientIp(req)
-
-    if (GHL_FIELDS.consentVersion) {
-      customFields.push({ id: GHL_FIELDS.consentVersion, field_value: CONSENT_VERSION })
-    }
-    if (GHL_FIELDS.consentTimestamp) {
-      customFields.push({ id: GHL_FIELDS.consentTimestamp, field_value: consentAt })
-    }
-    if (GHL_FIELDS.consentIp && consentIp) {
-      customFields.push({ id: GHL_FIELDS.consentIp, field_value: consentIp })
+    // A lead already in GoHighLevel is never downgraded to quarantined by a later call.
+    if (existing?.syncStatus === 'synced' && spam.length) {
+      console.warn(`[lead-capture] ignoring a flagged repeat for an already-synced draft (${cleanEmail}): ${spam.join('; ')}`)
+      return NextResponse.json({ ok: true })
     }
 
-    await upsertContact({
-      firstName,
-      email,
+    const data = {
+      source: 'booking-start' as const,
+      draftToken: draftToken ?? null,
+      firstName: firstName?.trim() || null,
+      email: cleanEmail,
       phone: e164,
-      locationId,
-      tags: ['website-lead'],
-      ...(customFields.length > 0 && { customFields }),
-    })
+      details: { countryCode: countryCode ?? null },
+      // Explicit yes/no, never omitted: a declined consent is a recorded decision. The
+      // timestamp, IP and wording version are taken here, on the server. A client-supplied
+      // time or address is not evidence of anything.
+      consent: {
+        service: smsConsent?.service ? ('yes' as const) : ('no' as const),
+        marketing: smsConsent?.marketing ? ('yes' as const) : ('no' as const),
+        version: CONSENT_VERSION,
+        capturedAt: new Date().toISOString(),
+        ip: clientIp(req) ?? null,
+        userAgent: req.headers.get('user-agent')?.slice(0, 500) ?? null,
+      },
+      syncStatus: spam.length ? ('quarantined' as const) : ('pending' as const),
+      spamReasons: spam.length ? spam.join('; ') : null,
+    }
+
+    const row = existing
+      ? await payload.update({ collection: 'enquiries', id: existing.id, data, overrideAccess: true, depth: 0, context: { skipSync: true } })
+      : await payload.create({ collection: 'enquiries', data, overrideAccess: true, depth: 0 })
+
+    if (spam.length) {
+      payload.logger.info(`[lead-capture] quarantined ${cleanEmail}: ${spam.join('; ')}`)
+      return NextResponse.json({ ok: true })
+    }
+
+    // Awaited, as the route always did: the sync records its own failures on the row and
+    // never throws, so this cannot turn a stored lead into an error response.
+    await syncEnquiry(payload, row.id)
 
     return NextResponse.json({ ok: true })
   } catch (err) {

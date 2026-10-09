@@ -18,8 +18,10 @@
 
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 import { TCButton } from '@/components/ui/TCButton'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { Honeypot } from '@/components/Honeypot'
 import { SmsConsentFields, EMPTY_SMS_CONSENT } from '@/components/SmsConsent'
+import { FILL_MS_FIELD } from '@/lib/leads/constants'
 
 type Props = {
   id?: string
@@ -41,6 +43,13 @@ export function TCJoinTeamClient(_props: Props) {
   const [smsConsent, setSmsConsent] = useState(EMPTY_SMS_CONSENT)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
+
+  // When the application appeared, on the BROWSER's clock; sent as a duration so the server's
+  // spam screen never compares two different clocks (src/lib/leads/spam.ts).
+  const shownAt = useRef(0)
+  useEffect(() => {
+    shownAt.current = Date.now()
+  }, [])
 
   // Every step is conditionally rendered, so moving from step 1 to step 2
   // UNMOUNTS step 1's inputs — by the time the form is submitted from step 3,
@@ -85,6 +94,7 @@ export function TCJoinTeamClient(_props: Props) {
     for (const [key, value] of collected.current.entries()) body.append(key, value)
     body.set('audience', 'careers')
     body.set('sms_service_consent', smsConsent.service ? 'yes' : 'no')
+    if (shownAt.current) body.set(FILL_MS_FIELD, String(Date.now() - shownAt.current))
 
     try {
       const res = await fetch('/api/ghl/form-submit', { method: 'POST', body })
@@ -357,6 +367,8 @@ export function TCJoinTeamClient(_props: Props) {
               </div>
             ) : (
               <form onSubmit={handleSubmit} ref={formRef}>
+                {/* Always mounted, unlike the steps: its value is picked up by snapshot() like any field. */}
+                <Honeypot />
 
                 {/* ── STEP 1: Personal Details ── */}
                 {activeStep === 1 && (

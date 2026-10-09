@@ -102,6 +102,7 @@ export interface Config {
     'blog-posts': BlogPost;
     'blog-categories': BlogCategory;
     'blog-tags': BlogTag;
+    enquiries: Enquiry;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -134,6 +135,7 @@ export interface Config {
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
     'blog-categories': BlogCategoriesSelect<false> | BlogCategoriesSelect<true>;
     'blog-tags': BlogTagsSelect<false> | BlogTagsSelect<true>;
+    enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -5234,6 +5236,89 @@ export interface BookingDraft {
   createdAt: string;
 }
 /**
+ * Every enquiry from the website, stored before it is sent to GoHighLevel. Filter by "Quarantined" to review suspected spam; a real customer caught by mistake can be released by setting Sync status to Pending.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries".
+ */
+export interface Enquiry {
+  id: number;
+  /**
+   * Which form it came from. Decides what is sent to GoHighLevel.
+   */
+  source: 'booking-start' | 'contact' | 'careers';
+  /**
+   * Booking form only: the draft this lead belongs to. A second submission from the same draft updates this row instead of adding another.
+   */
+  draftToken?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  email: string;
+  /**
+   * Stored as sent to GoHighLevel (E.164).
+   */
+  phone?: string | null;
+  /**
+   * The form-specific answers (service and message for the contact form, the application answers for careers), kept as submitted.
+   */
+  details?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Applications only. The attached resume is uploaded to GoHighLevel during the live submission and is not stored here, so a released application has no resume. The filename is recorded so the applicant can be asked for it again.
+   */
+  resumeNote?: string | null;
+  /**
+   * What a carrier asks for when it audits a number. Do not edit any of it by hand: an edited consent record is worth less than none, because it still looks like evidence. Timestamp, IP and wording version are taken on the server, never from the browser.
+   */
+  consent?: {
+    service?: ('yes' | 'no' | 'not-offered') | null;
+    marketing?: ('yes' | 'no' | 'not-offered') | null;
+    /**
+     * Resolves against CONSENT_VERSION in src/lib/consent.ts.
+     */
+    version?: string | null;
+    capturedAt?: string | null;
+    ip?: string | null;
+    userAgent?: string | null;
+  };
+  /**
+   * Quarantined means a spam check caught it and it was deliberately never sent. Failed means GoHighLevel was tried and did not take it. Skipped means GoHighLevel was not configured at the time. To send any of them, choose Pending and save: the sync runs a few seconds after the save, so reload the row to see the result (Synced, or Failed with the reason in Sync attempts). Synced, Failed and Skipped are written by the sync, not chosen here, and picking one by hand is read as a request to send. Read "Why it was quarantined" first.
+   */
+  syncStatus?: ('pending' | 'synced' | 'failed' | 'skipped' | 'quarantined') | null;
+  /**
+   * Which checks fired. A lead caught only on fill time is a much weaker signal than one that also failed the bot challenge. Worth reading before releasing one.
+   */
+  spamReasons?: string | null;
+  ghl?: {
+    contactId?: string | null;
+    /**
+     * Set once, so a retry cannot create a second opportunity.
+     */
+    opportunityId?: string | null;
+  };
+  /**
+   * Every attempt with its outcome, so a missing lead can be traced rather than guessed at.
+   */
+  syncLog?:
+    | {
+        at?: string | null;
+        result?: ('ok' | 'error' | 'skipped') | null;
+        step?: string | null;
+        detail?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -5435,6 +5520,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'blog-tags';
         value: number | BlogTag;
+      } | null)
+    | ({
+        relationTo: 'enquiries';
+        value: number | Enquiry;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -7670,6 +7759,49 @@ export interface BlogTagsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries_select".
+ */
+export interface EnquiriesSelect<T extends boolean = true> {
+  source?: T;
+  draftToken?: T;
+  firstName?: T;
+  lastName?: T;
+  email?: T;
+  phone?: T;
+  details?: T;
+  resumeNote?: T;
+  consent?:
+    | T
+    | {
+        service?: T;
+        marketing?: T;
+        version?: T;
+        capturedAt?: T;
+        ip?: T;
+        userAgent?: T;
+      };
+  syncStatus?: T;
+  spamReasons?: T;
+  ghl?:
+    | T
+    | {
+        contactId?: T;
+        opportunityId?: T;
+      };
+  syncLog?:
+    | T
+    | {
+        at?: T;
+        result?: T;
+        step?: T;
+        detail?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
