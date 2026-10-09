@@ -112,3 +112,34 @@ was distorted by browser extensions and needs re-testing via PageSpeed Insights.
 Known culprits: ~380 KB of render-blocking OTF fonts (WOFF2 would cut ~260 KB),
 22 files still using raw `<img>` instead of `next/image`, and a 1.1 MB hero
 image.
+
+---
+
+## Google Business Profile baseline, 2026-10-08
+
+Read-only screenshots from the profile editor and the Performance panel (period May to Oct 2026).
+Use this to judge whether later changes moved anything. Re-capture on the same screens monthly.
+
+| Measure | Value |
+|---|---|
+| Profile views (5 months) | 311 |
+| Where they came from | Google Search desktop 89 (29%), Google Search mobile 83 (27%), Google Maps mobile 77 (25%), remainder Maps desktop |
+| Calls from the profile | 5 |
+| Website clicks from the profile | 7 |
+| Chat clicks | 0 |
+| Bookings | 0 |
+| Search terms report | Not available ("more searches are needed"; fewer than 50 searches) |
+| Reviews on the public listing | 5.0 stars, 8 reviews (9 were seen on 2026-10-05, so one may have been removed or filtered) |
+| Photos | Last added 76 days ago |
+| Profile strength | Incomplete (Google shows "Complete info") |
+| Primary category | Cleaners. No additional categories. |
+| Listed services | Deep clean, Office and workplace cleaning, Standard cleaning, Interior and exterior window cleaning |
+| Business location | "No location; deliveries and home services only" |
+| Service area | Florida, USA (the public map draws the outline of the whole state) |
+| Hours | Mon to Sat 08:00 to 19:00, Sun 08:00 to 17:00 |
+| Name on Google | Team Top Cleaning |
+| Phone | (954) 833-4276. WhatsApp chat (701) 238-3301 is marked primary. |
+| Website link | https://www.topcleaningteam.com/ |
+
+Reading it: about 56 percent of views come from Google Search and 44 percent from Maps, but the
+absolute numbers are tiny, and the profile has no address and a statewide service area.
