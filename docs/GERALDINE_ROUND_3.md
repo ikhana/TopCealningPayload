@@ -13,6 +13,20 @@ known to be outstanding, but ask Inaam if any slide is still to come.
 
 ---
 
+## Progress
+
+**Phase 1 built 2026-10-18** (sections 3 and 4, plus the removal in section 7):
+
+- Regular: Bedroom $20, Full Bathroom $30, new combined "Kitchen, Living & Dining Area" $70.
+- Deep: combined area $100, deep minimum now $200 (was $225, our reading of her "exactly $200").
+- The form seeds 1 bedroom + 1 full bathroom + 1 combined area when an area-priced service is chosen (Regular $120, Deep $200).
+- Legacy areas (kitchen, living room, dining room, office) are migrated when a saved draft is resumed, so old abandoned-booking links do not charge for rooms the picker no longer shows.
+- The "Want Something Custom?" prompt is removed from Step 4. The hourly panel stays in the code, unreachable, until Custom Hourly is rebuilt as its own category.
+
+**Still to build:** section 5 (size bands), section 6 (Severe and Estate quote path), section 7 (Custom Hourly category), section 8 (deposit). Blocked on her answers: hourly rate and deposit (and how size stacks with the condition surcharge).
+
+---
+
 ## 1. Summary
 
 | # | Ask | Against current code | Size |
