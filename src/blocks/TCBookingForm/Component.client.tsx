@@ -285,6 +285,8 @@ function BookingFormInner() {
   const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
   const [futureOccurrences, setFutureOccurrences] = useState<Array<{ occurrence: number; startTime: string }> | undefined>(undefined)
   const [stepError, setStepError] = useState<string | null>(null)
+  // Terms acceptance lives here so the mobile bar can gate submit too.
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   // Step list is service-driven (e.g. Handyman shows fewer steps). serviceType
   // only changes on Step 2, so currentStep stays valid; the clamp below is a guard.
@@ -323,6 +325,7 @@ function BookingFormInner() {
     const result = validateStep(realStepNum, bookingData, {
       paymentEnabled: PAYMENT_ENABLED,
       paymentNonceSet: !!paymentNonce,
+      termsAccepted: true, // Step 10 self-gates via its own button — never blocks goNext
       mediaCount: mediaFiles.length, // handyman requires ≥1 photo on Step 3
     })
     if (!result.valid) {
@@ -375,6 +378,10 @@ function BookingFormInner() {
   }, [currentStep, idempotencyKey, setIdempotencyKey])
 
   const handleSubmit = async () => {
+    if (!termsAccepted) {
+      setSubmissionError('Please accept the Terms & Conditions to submit your request.')
+      return
+    }
     if (PAYMENT_ENABLED && !paymentNonce) {
       setSubmissionError('Payment not confirmed. Please go back and verify your card.')
       return
@@ -705,6 +712,8 @@ function BookingFormInner() {
           {currentStep === TOTAL_STEPS && (
             <>
               <BookingAgreement
+                accepted={termsAccepted}
+                onChange={setTermsAccepted}
                 onSubmit={handleSubmit}
                 isSubmitting={isSubmitting}
               />
