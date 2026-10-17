@@ -20,10 +20,9 @@ const ok: StepValidationResult = { valid: true }
 export function validateStep(
   realStepNum: number,
   data: BookingFormData,
-  options: { paymentEnabled: boolean; paymentNonceSet: boolean; termsAccepted: boolean; mediaCount?: number } = {
+  options: { paymentEnabled: boolean; paymentNonceSet: boolean; mediaCount?: number } = {
     paymentEnabled: false,
     paymentNonceSet: false,
-    termsAccepted: false,
   },
 ): StepValidationResult {
   switch (realStepNum) {
@@ -136,10 +135,6 @@ export function validateStep(
       if (options.paymentEnabled && !options.paymentNonceSet) {
         return { valid: false, missingField: 'Payment Method' }
       }
-      return ok
-    }
-    case 10: {
-      if (!options.termsAccepted) return { valid: false, missingField: 'Terms agreement' }
       return ok
     }
     default:

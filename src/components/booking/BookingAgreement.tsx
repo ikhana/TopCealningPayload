@@ -1,48 +1,38 @@
 // src/components/booking/BookingAgreement.tsx
-// Compact "I agree" bar shown at the bottom of the LAST wizard step.
-// Replaces the old full-page Terms step — the policy text now lives at /terms
-// so the funnel doesn't carry a whole page of legal copy (Geraldine, 2026-07).
+// The submit bar shown at the bottom of the LAST wizard step.
+//
+// It used to carry an "I have read and agree to the Terms & Conditions and
+// Satisfaction Guarantee" checkbox that had to be ticked before Submit enabled.
+// Removed 2026-10-18. Things worth knowing about that removal:
+//
+//  - It was a TERMS acceptance, never an SMS consent. The A2P consent lives on
+//    Step 1 (src/components/SmsConsent) and is untouched, so the carrier
+//    registration is not affected.
+//  - The Terms and Privacy links the A2P checklist requires on the form page sit
+//    in that same Step 1 block, so they are still on the page.
+//  - Nothing was lost on the record side: the tick was only ever a client-side
+//    gate. `termsAccepted` was never sent in the submit body or stored, so there
+//    is no acceptance evidence that stopped being collected.
+//  - If card payment (a deposit) is ever switched on, revisit this. Refund and
+//    cancellation terms are exactly what an explicit acceptance is for.
+//
+// Kept under this file name so the import in TCBookingForm does not churn.
 
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
-import { CheckSquare, Square, ShieldCheck } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
 
 interface BookingAgreementProps {
-  accepted: boolean
-  onChange: (v: boolean) => void
   onSubmit: () => void
   isSubmitting?: boolean
 }
 
-export function BookingAgreement({ accepted, onChange, onSubmit, isSubmitting = false }: BookingAgreementProps) {
-  const canSubmit = accepted && !isSubmitting
+export function BookingAgreement({ onSubmit, isSubmitting = false }: BookingAgreementProps) {
+  const canSubmit = !isSubmitting
 
   return (
     <div style={{ marginTop: '36px', borderTop: '1px solid rgba(13,27,46,0.08)', paddingTop: '28px' }}>
-
-      {/* Acceptance checkbox */}
-      <div
-        onClick={() => onChange(!accepted)}
-        style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', cursor: 'pointer', marginBottom: '20px', userSelect: 'none' }}
-      >
-        {accepted
-          ? <CheckSquare size={20} style={{ color: '#17b0ab', flexShrink: 0, marginTop: '1px' }} />
-          : <Square size={20} style={{ color: 'rgba(13,27,46,0.25)', flexShrink: 0, marginTop: '1px' }} />
-        }
-        <p style={{ fontSize: '0.88rem', color: 'rgba(74,90,106,0.85)', margin: 0, lineHeight: 1.6 }}>
-          I have read and agree to the{' '}
-          <Link
-            href="/terms"
-            target="_blank"
-            onClick={(e) => e.stopPropagation()}
-            style={{ color: '#17b0ab', fontWeight: 600, textDecoration: 'underline' }}
-          >
-            Terms &amp; Conditions and Satisfaction Guarantee
-          </Link>.
-        </p>
-      </div>
 
       {/* Trust line */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '11px 15px', background: 'rgba(23,176,171,0.05)', border: '1px solid rgba(23,176,171,0.15)', marginBottom: '24px' }}>
