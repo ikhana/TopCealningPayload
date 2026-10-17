@@ -12,17 +12,21 @@
 // price, change one number here.
 //
 // THE MODEL
-// Every package total in her sheet is exactly the sum of its rooms, with one
-// kitchen and one living room assumed included. Verified against the sheet:
+// Every package total is exactly the sum of its areas, so the per-area unit prices
+// below are the atomic truth and any package figure is derived, not stored.
 //
-//   1 Bed / 1 Bath regular:  25 +  35 + 40 + 20 = $120  ✓
-//   2 Bed / 1 Bath regular:  50 +  35 + 40 + 20 = $145  ✓
-//   3 Bed / 2 Bath regular:  75 +  70 + 40 + 20 = $205  ✓
-//   3 Bed / 2 Bath deep:    120 + 120 + 80 + 45 = $365  ✓
-//   5 Bed / 4 Bath deep:    200 + 240 + 80 + 45 = $565  ✓
+// REPRICED 2026-10-18 (Geraldine, round 3). The 2026-08-06 sheet priced a kitchen,
+// a living room and a dining room separately; they are now one combined area.
+// Current totals, with one Kitchen/Living/Dining area included:
 //
-// So the per-room unit prices below are the atomic truth and the package table
-// is derived, not stored. That means the two can never drift apart.
+//   1 Bed / 1 Bath regular:  20 +  30 + 70 = $120   (the default selection)
+//   2 Bed / 2 Bath regular:  40 +  60 + 70 = $170   (her slide example)
+//   3 Bed / 2 Bath regular:  60 +  60 + 70 = $190   (was $205)
+//   1 Bed / 1 Bath deep:     40 +  60 + 100 = $200  (her stated deep minimum)
+//   3 Bed / 2 Bath deep:    120 + 120 + 100 = $340  (was $365)
+//
+// The old sheet figures ($120 / $145 / $205 regular, $365 / $565 deep) no longer
+// hold and should not be used to cross-check this table.
 
 export type CleaningTier = 'regular' | 'deep'
 
@@ -40,9 +44,21 @@ export type RoomPrice = {
  * costs a booking.
  */
 export const ROOM_PRICES = {
-  bedroom:      { regular: 25, deep: 40 },
-  fullBathroom: { regular: 35, deep: 60 },
+  // Repriced 2026-10-18 (Geraldine, round 3): Bedroom $20 (was $25), Full Bathroom
+  // $30 (was $35) for Regular; Deep Bedroom $40 and Full Bathroom $60 are unchanged.
+  bedroom:      { regular: 20, deep: 40 },
+  fullBathroom: { regular: 30, deep: 60 },
   halfBathroom: { regular: 20, deep: 35 },
+  // One combined selection replacing kitchen + living room + dining room.
+  // Regular $70, Deep $100 (Geraldine, 2026-10-18). Flat, whether or not the home
+  // has a dining room: for Regular that is $10 MORE than the old kitchen + living
+  // pair, for Deep it is $60 LESS than the old kitchen + living + dining ($160).
+  kitchenLivingDining: { regular: 70, deep: 100 },
+
+  // LEGACY keys, no longer offered in the picker (see ROOM_LABELS). They stay in
+  // this table so a booking or a saved draft that already holds them still prices
+  // and renders. Drafts are migrated on load by migrateLegacyAreas(); this is the
+  // safety net underneath that.
   kitchen:      { regular: 40, deep: 80 },
   livingRoom:   { regular: 20, deep: 45 },
   diningRoom:   { regular: 15, deep: 35 },
@@ -66,9 +82,8 @@ export const ROOM_LABELS: Array<{ key: RoomKey; label: string }> = [
   { key: 'bedroom',       label: 'Bedroom' },
   { key: 'fullBathroom',  label: 'Full Bathroom' },
   { key: 'halfBathroom',  label: 'Half Bathroom' },
-  { key: 'kitchen',       label: 'Kitchen' },
-  { key: 'livingRoom',    label: 'Living Room' },
-  { key: 'diningRoom',    label: 'Dining Room' },
+  // Replaces separate Kitchen, Living Room and Dining Room rows (2026-10-18).
+  { key: 'kitchenLivingDining', label: 'Kitchen, Living & Dining Area' },
   { key: 'familyRoom',    label: 'Family Room' },
   // 'office' removed 2026-09-21 (Geraldine: an office counts as a bedroom).
   // It stays in ROOM_PRICES on purpose: bookings already taken with an office
@@ -80,10 +95,64 @@ export const ROOM_LABELS: Array<{ key: RoomKey; label: string }> = [
   { key: 'patioBalcony',  label: 'Patio / Balcony' },
 ]
 
-const ROOM_LABEL_BY_KEY = new Map(ROOM_LABELS.map((r) => [r.key, r.label]))
+// Names for keys that are no longer offered but can still turn up in an old
+// booking record, an old crew note, or a draft that has not been migrated yet.
+const LEGACY_ROOM_LABELS: Partial<Record<RoomKey, string>> = {
+  kitchen: 'Kitchen',
+  livingRoom: 'Living Room',
+  diningRoom: 'Dining Room',
+  office: 'Office',
+}
+
+const ROOM_LABEL_BY_KEY = new Map<RoomKey, string>([
+  ...(Object.entries(LEGACY_ROOM_LABELS) as Array<[RoomKey, string]>),
+  ...ROOM_LABELS.map((r) => [r.key, r.label] as [RoomKey, string]),
+])
 
 export function roomLabel(key: RoomKey): string {
   return ROOM_LABEL_BY_KEY.get(key) ?? key
+}
+
+/**
+ * What the booking form opens with (Geraldine, 2026-10-18): one bedroom, one full
+ * bathroom and one Kitchen/Living/Dining area. At Regular prices that is
+ * $20 + $30 + $70 = $120, which is exactly the regular minimum, so the customer's
+ * first number is the floor and everything they add moves it up from there.
+ */
+export const DEFAULT_AREAS: RoomCounts = { bedroom: 1, fullBathroom: 1, kitchenLivingDining: 1 }
+
+/**
+ * Rewrites areas saved under the old room list into the current one.
+ *
+ * Needed because abandoned-booking recovery emails link back into a saved draft
+ * (?resume=...). A draft written before this change can hold `kitchen`,
+ * `livingRoom` and `diningRoom`, which the picker no longer shows: the customer
+ * would be charged for areas they cannot see and cannot remove, and the summary
+ * would not add up. Office was retired the same way on 2026-09-21 and had the same
+ * gap, so it is handled here too.
+ *
+ *   kitchen / livingRoom / diningRoom  ->  kitchenLivingDining
+ *       one combined area per home, so the LARGEST of the three counts, not the sum
+ *       (a home with one kitchen, one living room and one dining room is ONE area)
+ *   office                             ->  bedroom   (Geraldine: count it as a bedroom)
+ *
+ * Returns the same object untouched when there is nothing to migrate.
+ */
+export function migrateLegacyAreas(areas: RoomCounts | undefined): RoomCounts | undefined {
+  if (!areas) return areas
+  const { kitchen = 0, livingRoom = 0, diningRoom = 0, office = 0 } = areas
+  if (!kitchen && !livingRoom && !diningRoom && !office) return areas
+
+  const next: RoomCounts = { ...areas }
+  delete next.kitchen
+  delete next.livingRoom
+  delete next.diningRoom
+  delete next.office
+
+  const combined = Math.max(kitchen, livingRoom, diningRoom)
+  if (combined > 0) next.kitchenLivingDining = Math.max(next.kitchenLivingDining ?? 0, combined)
+  if (office > 0) next.bedroom = (next.bedroom ?? 0) + office
+  return next
 }
 
 /**
@@ -114,7 +183,8 @@ export function areaLineItems(
  * picks every area explicitly and we never silently add one they did not choose.
  * These constants exist only to reproduce and cross-check the package table.
  */
-export const IMPLIED_ROOMS: RoomKey[] = ['kitchen', 'livingRoom']
+// Was ['kitchen', 'livingRoom']. Both, and the dining room, are now one combined area.
+export const IMPLIED_ROOMS: RoomKey[] = ['kitchenLivingDining']
 
 export type RoomCounts = Partial<Record<RoomKey, number>>
 
@@ -128,14 +198,19 @@ export type RoomCounts = Partial<Record<RoomKey, number>>
  * Note $120 is exactly her 1 Bed / 1 Bath regular package, so the floor is
  * "one small home's worth of work" rather than an arbitrary number.
  *
- * ⚠️ `deep` is INFERRED, not given. She said "each service may have its own
- * minimum booking amount" without stating the deep figure. $225 is the 1 Bed /
- * 1 Bath deep package — the same logic that produced $120 for regular. Confirm
- * before this goes live; it is a one-number change.
+ * `deep` was INFERRED as $225 (the old 1 Bed / 1 Bath deep package) until
+ * 2026-10-18, when Geraldine gave the new deep prices and said: "The minimum
+ * standard Deep Cleaning configuration (1 bedroom, 1 bathroom, up to 1,000 sqft,
+ * Well Maintained) should calculate to exactly $200."
+ *
+ * 1 bedroom $40 + 1 full bathroom $60 + Kitchen/Living/Dining $100 = $200, so the
+ * deep floor is now $200, exactly as regular's $120 is its own default selection
+ * ($20 + $30 + $70). She described a configuration rather than naming a floor, so
+ * this is our reading of it: worth one confirming word from her.
  */
 export const MINIMUM_BOOKING: Record<CleaningTier, number> = {
   regular: 120,
-  deep: 225, // TODO: confirm with Geraldine
+  deep: 200,
 }
 
 /**
@@ -571,6 +646,8 @@ export const AREA_MINUTES: Record<RoomKey, number> = {
   bedroom: 25,
   fullBathroom: 35,
   halfBathroom: 15,
+  // 40 + 25 + 15: the three rooms it replaces, at the same minutes as before.
+  kitchenLivingDining: 80,
   kitchen: 40,
   livingRoom: 25,
   diningRoom: 15,

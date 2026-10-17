@@ -430,27 +430,20 @@ export function Step04AddOns() {
       )}
 
       {/*
-        The way in to hourly. Geraldine, 2026-09-21: it sits BELOW the estimated
-        total, once the customer has seen what Regular/Deep would cost. That
-        ordering is the whole point — it is an escape hatch for someone who looks
-        at the area price and thinks "I only want two hours of help", so it has
-        to come after the number that prompts the thought.
+        The "Want Something Custom? Prefer to book by time instead?" prompt that
+        used to sit here was REMOVED on 2026-10-18 (Geraldine: showing a second
+        pricing option under the estimate "could distract customers from
+        completing their booking"; Custom Hourly is to exist only "as its own
+        service category").
+
+        The hourly panel above is now unreachable from the UI. It is kept on
+        purpose, not forgotten: it holds the parts the standalone Custom Hourly
+        service will reuse (stepper, rate card, summary, disclaimer). It should
+        move into its own step flow when that service is built, see
+        docs/GERALDINE_ROUND_3.md section 7. An old saved draft with hourly
+        switched on still resumes into it, and its "Back to areas" button is the
+        way out.
       */}
-      {showQuote && !hourlyOn && (
-        <div style={{ marginTop: '14px', padding: '14px 18px', border: '1px dashed rgba(13,27,46,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
-          <div>
-            <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--color-navy-deep)' }}>Want Something Custom?</div>
-            <div style={{ fontSize: '0.82rem', color: 'rgba(74,90,106,0.8)', fontStyle: 'italic' }}>Prefer to book by time instead?</div>
-          </div>
-          <button
-            type="button"
-            onClick={() => updateCustomHourly({ enabled: true })}
-            style={{ padding: '11px 20px', background: 'white', border: '1px solid var(--color-teal)', color: 'var(--color-teal)', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 0 }}
-          >
-            Choose Custom Cleaning
-          </button>
-        </div>
-      )}
 
       {/* Non-area-priced services get no live number, so just the count. */}
       {!showQuote && selectedExtras.length > 0 && (

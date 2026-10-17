@@ -17,6 +17,8 @@ import {
   hasSelection,
   isAreaPriced,
   quoteHourly,
+  roomLabel,
+  type RoomKey,
   MINIMUM_HOURS,
   activeCondition,
   conditionUplift,
@@ -386,7 +388,7 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       noteParts.push(`Rate: $${h.rate}/hour per cleaner`)
       noteParts.push(`Estimated price: $${h.total}`)
       noteParts.push('Time-based: prioritise the customer\'s stated areas, completion not guaranteed.')
-    } else if (hasSelection(areaCounts)) {
+    } else if (isAreaPriced(formData.serviceType) && hasSelection(areaCounts)) {
       noteParts.push(`Estimated duration: ${fullEstimateHours}h (slot booked at ${bookedHours}h — extend if needed)`)
       noteParts.push(`Estimated price: $${quoteAreas(areaCounts, tier, 'one-time', 0, uplift).total}`)
       // The crew and whoever takes the confirmation call need to know what they
@@ -407,7 +409,7 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
         'Areas: ' +
           (Object.entries(areaCounts) as [string, number][])
             .filter(([, n]) => n > 0)
-            .map(([k, n]) => `${k} x${n}`)
+            .map(([k, n]) => `${roomLabel(k as RoomKey)} x${n}`)
             .join(', '),
       )
     }

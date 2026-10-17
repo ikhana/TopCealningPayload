@@ -29,6 +29,8 @@ import {
   quoteHourly,
   HOURLY_MIN_CLEANERS,
   HOURLY_MIN_HOURS_PER_CLEANER,
+  DEFAULT_AREAS,
+  migrateLegacyAreas,
 } from '@/data/pricing'
 
 const initialBookingData: BookingFormData = {
@@ -179,7 +181,27 @@ export const useBookingForm = () => {
   }
 
   const updateServiceType = (serviceType: ServiceCategory) => {
-    setBookingData((prev) => ({ ...prev, serviceType }))
+    setBookingData((prev) => {
+      // The form opens on a starting selection (Geraldine, 2026-10-18): 1 bedroom,
+      // 1 full bathroom, 1 Kitchen/Living/Dining area = $120.
+      //
+      // Seeded HERE, when an area-priced service is chosen, rather than in the
+      // initial state. In the initial state it would also ride along on a
+      // commercial or handyman booking, which has no area picker and would end up
+      // with areas nobody chose in its crew note.
+      //
+      // "Not seeded yet" is `areas === undefined`, not "empty". A customer who
+      // deliberately sets every area to zero has made a choice, and walking back
+      // to this step must not quietly put the defaults back.
+      const seed = isAreaPriced(serviceType) && prev.property.areas === undefined
+      return {
+        ...prev,
+        serviceType,
+        property: seed
+          ? { ...prev.property, areas: { ...DEFAULT_AREAS }, bedrooms: '1', bathrooms: 1 }
+          : prev.property,
+      }
+    })
   }
 
   const updateFrequency = (frequency: FrequencyOption) => {
@@ -282,7 +304,25 @@ export const useBookingForm = () => {
 
   // Bulk replace — used by resume URL hydration in Stage 9.7.3
   const setBookingDataAll = (data: BookingFormData) => {
-    setBookingData(data)
+    // A saved draft may predate the combined Kitchen/Living/Dining area. Without
+    // this the customer resumes with rooms the picker no longer shows and cannot
+    // remove. See migrateLegacyAreas().
+    const areas = migrateLegacyAreas(data.property?.areas)
+    if (areas === data.property?.areas) {
+      setBookingData(data)
+      return
+    }
+    // bedrooms and bathrooms are derived from the areas (see handleAreasChange in
+    // Step03Property) and still feed the GHL record, so recompute them too.
+    setBookingData({
+      ...data,
+      property: {
+        ...data.property,
+        areas,
+        bedrooms: String(areas?.bedroom ?? 0),
+        bathrooms: (areas?.fullBathroom ?? 0) + (areas?.halfBathroom ?? 0),
+      },
+    })
   }
 
   // Recalculate pricing whenever relevant fields change
