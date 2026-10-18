@@ -56,6 +56,7 @@ export const Enquiries: CollectionConfig = {
             { label: 'Booking form, step 1', value: 'booking-start' },
             { label: 'Contact form', value: 'contact' },
             { label: 'Job application', value: 'careers' },
+            { label: 'Custom quote request (booking form)', value: 'quote' },
           ],
           admin: {
             width: '50%',
@@ -70,7 +71,7 @@ export const Enquiries: CollectionConfig = {
             width: '50%',
             readOnly: true,
             description:
-              'Booking form only: the draft this lead belongs to. A second submission from the same draft updates this row instead of adding another.',
+              'Booking form only (step 1 lead, or a custom quote request): the draft this lead belongs to. A second submission from the same draft updates this row instead of adding another.',
           },
         },
       ],

@@ -12,6 +12,8 @@ import { BookingSummary } from '@/components/booking/BookingSummary'
 import { useBooking } from '@/components/booking/BookingContext'
 import { generateIdempotencyKeyClient } from '@/lib/booking/idempotency'
 import { validateStep } from '@/lib/booking/step-validation'
+import { buildQuoteFormData } from '@/lib/booking/quote-request'
+import { areaPricing, isAreaPriced, isHourlyService, HOURLY_DISCLAIMER } from '@/data/pricing'
 import { useDraftSync } from '@/hooks/useDraftSync'
 import type { ServiceCategory } from '@/types/booking'
 import { Step01Customer } from '@/components/booking/sections/Step01Customer'
@@ -159,11 +161,21 @@ const SERVICE_STEP_NUMS: Partial<Record<ServiceCategory, string[]>> = {
   // photos), Schedule (preferred date), Access (pets/children/access).
   // No add-ons or frequency.
   handyman: ['01', '02', '03', '07'],
+  // Custom Hourly (Geraldine, 2026-10-18). Her order is contact, property, date and time,
+  // cleaners and hours, priorities, estimate, submit. Contact is 01, and 03 now holds the
+  // property questions, the date, the hours and the priorities. No Add-ons (add-ons "should
+  // not be added to the Custom Cleaning total") and no Frequency (nothing here recurs).
+  custom: ['01', '02', '03', '07'],
 }
 
 // Builds the visible step list for a service, applying the payment-flag filter.
-function buildSteps(serviceType: ServiceCategory | '') {
-  const allowed = SERVICE_STEP_NUMS[serviceType as ServiceCategory]
+function buildSteps(serviceType: ServiceCategory | '', quoteOnly = false) {
+  // A custom quote request (Severe Condition, Estate) drops Add-ons and Frequency, because
+  // both exist to build a price and there is no price. It also never shows Payment. What is
+  // left is: who you are, what you want, the property, and how we get in.
+  const allowed = quoteOnly
+    ? ['01', '02', '03', '07']
+    : SERVICE_STEP_NUMS[serviceType as ServiceCategory]
   let steps = allowed ? ALL_STEPS.filter((s) => allowed.includes(s.num)) : ALL_STEPS
   if (!PAYMENT_ENABLED) steps = steps.filter((s) => s.num !== '09')
   return steps
@@ -174,7 +186,10 @@ function BookingSuccess({
   confirmationCode,
   appointmentTime,
   futureOccurrences,
+  quote = false,
 }: {
+  /** A custom quote request, not a booking: no reference, no time, a different promise. */
+  quote?: boolean
   confirmationCode?: string
   appointmentTime?: string
   futureOccurrences?: Array<{ occurrence: number; startTime: string }>
@@ -199,6 +214,33 @@ function BookingSuccess({
   }
 
   const hasFutureOccurrences = futureOccurrences && futureOccurrences.length > 0
+
+  if (quote) {
+    // Said plainly and early: nothing was booked and nothing was charged. A customer who
+    // was just told there is no automatic price should not have to infer what happens next.
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', textAlign: 'center', padding: '60px 8%' }}>
+        <div style={{ width: '72px', height: '72px', background: 'var(--color-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '28px', animation: 'bf-in 0.5s ease forwards' }}>
+          <svg width="32" height="24" viewBox="0 0 32 24" fill="none">
+            <path d="M2 12L12 22L30 2" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 900, letterSpacing: '-2px', color: 'var(--color-navy-deep)', marginBottom: '16px' }}>
+          Quote Request Received
+        </h2>
+        <p style={{ fontSize: '1rem', color: 'rgba(74,90,106,0.75)', maxWidth: '440px', lineHeight: 1.7, marginBottom: '16px' }}>
+          Thank you. Our team will review your property details and contact you within 24 hours
+          with a personalized quote.
+        </p>
+        <p style={{ fontSize: '0.9rem', color: 'rgba(74,90,106,0.65)', maxWidth: '440px', lineHeight: 1.7, marginBottom: '36px' }}>
+          Nothing has been booked or charged yet.
+        </p>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'rgba(74,90,106,0.5)', letterSpacing: '0.08em', border: '1px solid rgba(13,27,46,0.08)', padding: '12px 24px' }}>
+          TOPCLEANING · EST. 2019
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', textAlign: 'center', padding: '60px 8%' }}>
@@ -281,6 +323,8 @@ function BookingFormInner() {
 
   const [currentStep, setCurrentStep] = useState(1)
   const [submitted, setSubmitted] = useState(false)
+  // True when what was sent was a custom quote request rather than a booking.
+  const [quoteSubmitted, setQuoteSubmitted] = useState(false)
   const [confirmationCode, setConfirmationCode] = useState<string | undefined>()
   const [appointmentTime, setAppointmentTime] = useState<string | undefined>()
   const [futureOccurrences, setFutureOccurrences] = useState<Array<{ occurrence: number; startTime: string }> | undefined>(undefined)
@@ -290,7 +334,15 @@ function BookingFormInner() {
 
   // Step list is service-driven (e.g. Handyman shows fewer steps). serviceType
   // only changes on Step 2, so currentStep stays valid; the clamp below is a guard.
-  const STEPS = useMemo(() => buildSteps(bookingData.serviceType), [bookingData.serviceType])
+  // A custom quote request shortens it further. Unlike serviceType this CAN change on Step 3
+  // (picking Estate or Severe), so the clamp below is doing real work, not just guarding:
+  // the customer is on step 3 either way, and 3 is still Specs in both lists.
+  const quoteOnly =
+    isAreaPriced(bookingData.serviceType) && areaPricing(bookingData.serviceExtras ?? {}).quoteOnly
+  const STEPS = useMemo(
+    () => buildSteps(bookingData.serviceType, quoteOnly),
+    [bookingData.serviceType, quoteOnly],
+  )
   const TOTAL_STEPS = STEPS.length
   const STEP_NUM_AT = (wizardStep: number) => parseInt(STEPS[wizardStep - 1]?.num ?? '0', 10)
   useEffect(() => {
@@ -390,6 +442,32 @@ function BookingFormInner() {
     setIsSubmitting(true)
     setSubmissionError(null)
 
+    // No automatic price: this is a request for a quote, not a booking. It must NOT go to
+    // /api/bookings/submit, which would create a booking and reserve a time on the calendar
+    // for a job nobody has priced. See src/lib/booking/quote-request.ts.
+    if (quoteOnly) {
+      try {
+        const res = await fetch('/api/ghl/form-submit', {
+          method: 'POST',
+          body: buildQuoteFormData(bookingData, mediaFiles, getToken() || undefined),
+        })
+        const data = await res.json().catch(() => ({}))
+        if (!res.ok) {
+          setSubmissionError(data.error ?? 'Something went wrong. Please try again.')
+          return
+        }
+        clearMediaFiles()
+        setQuoteSubmitted(true)
+        setSubmitted(true)
+        clearDraft()
+      } catch {
+        setSubmissionError('Network error. Please check your connection and try again.')
+      } finally {
+        setIsSubmitting(false)
+      }
+      return
+    }
+
     try {
       const res = await fetch('/api/bookings/submit', {
         method: 'POST',
@@ -437,7 +515,14 @@ function BookingFormInner() {
   }
 
   if (submitted) {
-    return <BookingSuccess confirmationCode={confirmationCode} appointmentTime={appointmentTime} futureOccurrences={futureOccurrences} />
+    return (
+      <BookingSuccess
+        quote={quoteSubmitted}
+        confirmationCode={confirmationCode}
+        appointmentTime={appointmentTime}
+        futureOccurrences={futureOccurrences}
+      />
+    )
   }
 
   return (
@@ -711,6 +796,20 @@ function BookingFormInner() {
               disabled state flipped. */}
           {currentStep === TOTAL_STEPS && (
             <>
+              {/* Her slide, "4. IMPORTANT SERVICE DISCLAIMER": "Please make this message clearly
+                  visible before the customer completes the booking... we don't want customers
+                  expecting an entire house to be deep cleaned within a limited number of
+                  hours." Shown here, directly above the button that completes it. */}
+              {isHourlyService(bookingData.serviceType) && (
+                <div role="note" style={{ marginBottom: '20px', padding: '16px 18px', background: '#fff8e6', border: '1px solid #f0d58a' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#8a6100', marginBottom: '6px' }}>
+                    Important
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--color-navy-deep)', fontWeight: 600 }}>
+                    {HOURLY_DISCLAIMER}
+                  </p>
+                </div>
+              )}
               <BookingAgreement
                 accepted={termsAccepted}
                 onChange={setTermsAccepted}

@@ -51,6 +51,7 @@ function str(form: FormData, key: string): string {
 /** Everything on the form that is not plumbing, kept as submitted. */
 const PLUMBING = new Set([
   'audience',
+  'draftToken',
   'name',
   'first_name',
   'last_name',
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
     const form = await request.formData()
 
     const audience = str(form, 'audience')
-    if (audience !== 'contact' && audience !== 'careers') {
+    if (audience !== 'contact' && audience !== 'careers' && audience !== 'quote') {
       return NextResponse.json({ error: 'unknown audience' }, { status: 400 })
     }
 
@@ -86,6 +87,8 @@ export async function POST(request: NextRequest) {
     const firstName = str(form, 'first_name') || whole.split(/\s+/)[0] || ''
     const lastName = str(form, 'last_name') || whole.split(/\s+/).slice(1).join(' ')
     const phone = toE164(str(form, 'phone'))
+    // Quote requests only: which wizard draft this came from, so the draft can be marked done.
+    const draftToken = audience === 'quote' ? str(form, 'draftToken') : ''
 
     const details: Record<string, string> = {}
     for (const [key, value] of form.entries()) {
@@ -115,6 +118,7 @@ export async function POST(request: NextRequest) {
         lastName: lastName || null,
         email,
         phone: phone || null,
+        ...(draftToken ? { draftToken } : {}),
         details,
         resumeNote: resumeFile ? `Attached: ${resumeFile.name} (${resumeFile.size} bytes)` : null,
         consent: {
@@ -135,7 +139,46 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true, resumeUploaded: false })
     }
 
-    const { resumeUploaded } = await syncEnquiry(payload, row.id, { resume: resumeFile })
+    // Photos a customer attached to a quote request. Checked here, not trusted from the
+    // client: images only, at most 6, at most 10 MB each. The same limits as the photos on a
+    // booking. Anything outside them is dropped quietly rather than failing a request that is
+    // otherwise fine.
+    const media =
+      audience === 'quote'
+        ? form
+            .getAll('files')
+            .filter((v): v is File => v instanceof File && v.size > 0 && v.size <= 10 * 1024 * 1024 && v.type.startsWith('image/'))
+            .slice(0, 6)
+        : []
+
+    const { resumeUploaded } = await syncEnquiry(payload, row.id, { resume: resumeFile, media })
+
+    // A finished quote request ends the wizard draft, so the abandoned-booking recovery
+    // emails (which link back into the draft) stop treating it as abandoned. Not fatal: the
+    // request is already stored, and a failure here only means the recovery link still works.
+    if (draftToken) {
+      try {
+        const found = await payload.find({
+          collection: 'booking-drafts',
+          where: { token: { equals: draftToken } },
+          limit: 1,
+          depth: 0,
+          overrideAccess: true,
+        })
+        if (found.docs[0]) {
+          await payload.update({
+            collection: 'booking-drafts',
+            id: found.docs[0].id,
+            data: { convertedToBookingId: `quote-${row.id}` },
+            overrideAccess: true,
+          })
+        }
+      } catch (err) {
+        payload.logger.error(
+          `[form-submit] could not mark draft converted for quote ${row.id}: ${err instanceof Error ? err.message : String(err)}`,
+        )
+      }
+    }
 
     return NextResponse.json({ ok: true, resumeUploaded })
   } catch (err) {

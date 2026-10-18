@@ -10,22 +10,22 @@ import { getGhlFields } from '@/lib/ghl/custom-fields'
 import { CONSENT_VERSION } from '@/lib/consent'
 import { rollbackAppointment } from './rollback'
 import { getAddOn, addOnTotal, addOnQty, addOnVariant } from '@/data/addons'
+import { HOURLY_PRIORITY_OTHER } from '@/data/hourly'
 import {
   appointmentHours,
   estimateHours,
   quoteAreas,
   hasSelection,
   isAreaPriced,
-  quoteHourly,
+  isHourlyService,
+  quoteHourlyFromState,
   roomLabel,
   type RoomKey,
   MINIMUM_HOURS,
-  activeCondition,
-  conditionUplift,
+  areaPricing,
+  propertySize,
   conditionLabel,
   lastCleanedLabel,
-  effectiveTier,
-  type CleaningTier,
 } from '@/data/pricing'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
@@ -101,7 +101,7 @@ const SERVICE_LABELS: Record<string, string> = {
   renovation: 'Post-Renovation Cleaning',
   hoarding: 'Hoarding Cleanup',
   handyman: 'Handyman Services',
-  custom: 'Custom Cleaning',
+  custom: 'Custom Hourly Cleaning',
 }
 
 function buildServiceTitle(data: BookingFormData): string {
@@ -130,7 +130,16 @@ function formatServiceTime(serviceTime: string): string {
 }
 
 export async function submitBooking(params: SubmitBookingParams): Promise<SubmitBookingResult> {
-  const { formData, paymentNonce, idempotencyKey, userId, draftToken, consentIp } = params
+  const { paymentNonce, idempotencyKey, userId, draftToken, consentIp } = params
+
+  // A Custom Hourly booking is always one-off: nothing in its flow recurs, and a customer who
+  // started on Residential, picked "weekly", then switched service would otherwise carry that
+  // frequency along and create a recurring series (and the 'recurring-customer' tag) for a
+  // one-time block of hours. The client resets it too; this is the guard that does not
+  // depend on the client being right.
+  const formData: BookingFormData = isHourlyService(params.formData.serviceType)
+    ? { ...params.formData, frequency: 'one-time' }
+    : params.formData
 
   // Step 1: Validate
   validateBookingData(formData)
@@ -207,7 +216,26 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
   // Custom Hourly replaces the area quote entirely, so the add-ons are not part
   // of the price and must not be persisted as if they were. They stay in
   // formData (the customer may switch back), they just do not reach the booking.
-  const hourlyMode = isAreaPriced(formData.serviceType) && formData.customHourly?.enabled === true
+  // Custom Hourly is a service of its own (Geraldine, 2026-10-18), identified by the service
+  // type. It was a toggle on Residential before, hence the old customHourly.enabled test.
+  const hourlyMode = isHourlyService(formData.serviceType)
+  const hourly = hourlyMode ? quoteHourlyFromState(formData.customHourly) : undefined
+  const priorityList = (formData.customHourly?.priorities ?? []).filter(Boolean)
+
+  // The contact's Notes field. For Custom Hourly it also carries what was typed for "Other
+  // (please specify)". The contact notes field is the one place a free-text answer is KNOWN to
+  // reach the CRM: the appointment's own notes are accepted by GoHighLevel but not returned by
+  // any read endpoint, so whether they are stored cannot be checked from here. A crew-critical
+  // answer must not depend on that.
+  const otherArea = priorityList.includes(HOURLY_PRIORITY_OTHER)
+    ? formData.customHourly?.priorityOther?.trim()
+    : ''
+  const contactNotes = [
+    formData.specialInstructions?.trim(),
+    hourlyMode && otherArea ? `Other focus area: ${otherArea}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n\n')
 
   const selectedExtras = hourlyMode ? [] : formData.selectedExtras.map((id) => ({
     extraId: id,
@@ -275,9 +303,8 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     // carry the tier we actually PRICED at. A contact reading "Regular" against
     // a deep-clean total is the version of this that ends in an argument on the
     // doorstep.
-    const condition = activeCondition(extras.lastCleaned, extras.homeCondition)
-    const tier: CleaningTier = effectiveTier(extras.cleaningType, condition)
-    const uplift = conditionUplift(condition)
+    const { condition, tier, uplift, sizeUplift: sizeU, conditionUplift: condU } = areaPricing(extras)
+    const sizeBand = propertySize(extras.propertySize)
     const cleaningTypeValue = tier === 'deep' ? 'Deep' : extras.cleaningType
 
     // Field ids are resolved from GHL by fieldKey, not read from env. See
@@ -290,17 +317,26 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       GHL_FIELDS.serviceDate && { id: GHL_FIELDS.serviceDate, field_value: serviceDateFmt },
       GHL_FIELDS.serviceTime && { id: GHL_FIELDS.serviceTime, field_value: serviceTimeFmt },
       GHL_FIELDS.serviceTotal && { id: GHL_FIELDS.serviceTotal, field_value: serviceTotalFmt },
-      GHL_FIELDS.cleaningType && cleaningTypeValue && { id: GHL_FIELDS.cleaningType, field_value: cleaningTypeValue },
+      // The four below describe an AREA-priced booking. A customer who started on Residential
+      // and switched to Custom Hourly still has them in state; they must not reach the CRM.
+      // What staff need to schedule an hourly booking, as filterable fields rather than only
+      // text in a note. Priorities go as the option labels (a value the field does not list is
+      // dropped); what was typed for "Other" is in the notes.
+      hourly && GHL_FIELDS.hourlyCleaners && { id: GHL_FIELDS.hourlyCleaners, field_value: String(hourly.cleaners) },
+      hourly && GHL_FIELDS.hourlyLaborHours && { id: GHL_FIELDS.hourlyLaborHours, field_value: String(hourly.totalLaborHours) },
+      hourly && GHL_FIELDS.cleaningPriorities && priorityList.length > 0 && { id: GHL_FIELDS.cleaningPriorities, field_value: priorityList },
+      !hourlyMode && GHL_FIELDS.cleaningType && cleaningTypeValue && { id: GHL_FIELDS.cleaningType, field_value: cleaningTypeValue },
       // Sent as the display LABELS, because these are SINGLE_OPTIONS fields in
       // GHL and a value outside the option list is silently dropped. The app
       // stores stable keys; the mapping happens here, at the edge.
-      GHL_FIELDS.lastCleaned && lastCleanedLabel(extras.lastCleaned) && { id: GHL_FIELDS.lastCleaned, field_value: lastCleanedLabel(extras.lastCleaned)! },
-      GHL_FIELDS.homeCondition && conditionLabel(condition) && { id: GHL_FIELDS.homeCondition, field_value: conditionLabel(condition)! },
+      !hourlyMode && GHL_FIELDS.lastCleaned && lastCleanedLabel(extras.lastCleaned) && { id: GHL_FIELDS.lastCleaned, field_value: lastCleanedLabel(extras.lastCleaned)! },
+      !hourlyMode && GHL_FIELDS.propertySize && sizeBand && { id: GHL_FIELDS.propertySize, field_value: sizeBand.label },
+      !hourlyMode && GHL_FIELDS.homeCondition && conditionLabel(condition) && { id: GHL_FIELDS.homeCondition, field_value: conditionLabel(condition)! },
       GHL_FIELDS.typeOfSpace && extras.typeOfSpace && { id: GHL_FIELDS.typeOfSpace, field_value: extras.typeOfSpace },
       GHL_FIELDS.propertiesManaged && extras.propertiesManaged && { id: GHL_FIELDS.propertiesManaged, field_value: extras.propertiesManaged },
       GHL_FIELDS.propertyType && extras.propertyType && { id: GHL_FIELDS.propertyType, field_value: extras.propertyType },
       GHL_FIELDS.completionStatus && extras.completionStatus && { id: GHL_FIELDS.completionStatus, field_value: extras.completionStatus },
-      GHL_FIELDS.notes && formData.specialInstructions?.trim() && { id: GHL_FIELDS.notes, field_value: formData.specialInstructions.trim() },
+      GHL_FIELDS.notes && contactNotes && { id: GHL_FIELDS.notes, field_value: contactNotes },
       // Handyman-specific (serviceTypes + jobConditions are multi-select → arrays)
       GHL_FIELDS.handymanServiceType && hman.serviceTypes?.length && { id: GHL_FIELDS.handymanServiceType, field_value: hman.serviceTypes },
       GHL_FIELDS.handymanOtherDetail && hman.otherDetail?.trim() && { id: GHL_FIELDS.handymanOtherDetail, field_value: hman.otherDetail.trim() },
@@ -363,12 +399,19 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     // zero-duration appointment makes GHL reject with "Invalid slot range".
     const areaCounts = formData.property?.areas ?? {}
 
-    const bookedHours = appointmentHours(areaCounts, tier) || MINIMUM_HOURS
+    // Area-priced jobs deliberately block only the minimum (see appointmentHours()): their
+    // duration is settled on the confirmation call. An hourly booking is different, because
+    // the length IS the product: 1 cleaner for 6 hours is a 6 hour slot, and 2 cleaners for
+    // 8 combined hours is a 4 hour slot (each works 4), not 8. Blocking only 3 hours for a
+    // customer who bought 6 would leave the afternoon bookable under them.
+    const bookedHours = hourly
+      ? Math.max(1, Math.ceil(hourly.hoursPerCleaner))
+      : appointmentHours(areaCounts, tier) || MINIMUM_HOURS
     const endTime = addHours(startTime, bookedHours)
 
     // The full estimate still travels to GHL so whoever schedules can see that a
     // 3h slot is holding an 8h job and extend it.
-    const fullEstimateHours = estimateHours(areaCounts, tier, formData.property?.squareFootage, uplift)
+    const fullEstimateHours = estimateHours(areaCounts, tier, formData.property?.squareFootage, condU)
 
     const appointmentTitle = buildServiceTitle(formData)
     const appointmentAddress = formatAddress(formData.address)
@@ -380,12 +423,27 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       // The crew needs the staffing shape, not an area list. Total labour hours
       // is spelled out because "2 cleaners x 4 hours" and "8 hours" schedule
       // very differently.
-      const h = quoteHourly(formData.customHourly!.cleaners, formData.customHourly!.hoursPerCleaner)
+      const h = hourly!
       noteParts.push('CUSTOM HOURLY BOOKING (not priced by area)')
       noteParts.push(`Cleaners: ${h.cleaners}`)
       noteParts.push(`Hours per cleaner: ${h.hoursPerCleaner}`)
       noteParts.push(`Total labor hours: ${h.totalLaborHours}`)
-      noteParts.push(`Rate: $${h.rate}/hour per cleaner`)
+      noteParts.push(`Rate: $${h.rate} per labor hour`)
+      if (priorityList.length > 0) {
+        noteParts.push(
+          'Focus areas: ' +
+            priorityList
+              .map((v) =>
+                v === HOURLY_PRIORITY_OTHER
+                  ? `Other (${formData.customHourly?.priorityOther?.trim() || 'not specified'})`
+                  : v,
+              )
+              .join(', '),
+        )
+      }
+      if (formData.specialInstructions?.trim()) {
+        noteParts.push(`Customer's focus note: ${formData.specialInstructions.trim()}`)
+      }
       noteParts.push(`Estimated price: $${h.total}`)
       noteParts.push('Time-based: prioritise the customer\'s stated areas, completion not guaranteed.')
     } else if (isAreaPriced(formData.serviceType) && hasSelection(areaCounts)) {
@@ -398,12 +456,23 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       if (extras.lastCleaned) {
         noteParts.push(`Last thoroughly cleaned: ${lastCleanedLabel(extras.lastCleaned)}`)
       }
+      // The crew sees the band and its percentage even though the customer does not:
+      // it is what tells them the job is bigger than the area list alone suggests.
+      if (sizeBand) {
+        noteParts.push(
+          `Property size: ${sizeBand.label} (${sizeBand.range})` +
+            (sizeU > 0 ? `, +${Math.round(sizeU * 100)}% on areas` : ''),
+        )
+      }
       if (condition) {
         noteParts.push(
           `Home condition: ${conditionLabel(condition)}` +
-            (uplift > 0 ? ` (+${Math.round(uplift * 100)}% on areas)` : '') +
+            (condU > 0 ? ` (+${Math.round(condU * 100)}% on areas)` : '') +
             (condition === 'heavy' ? ', repriced as Deep Cleaning' : ''),
         )
+      }
+      if (sizeU > 0 && condU > 0) {
+        noteParts.push(`Total adjustment on areas: +${Math.round(uplift * 100)}% (size and condition are added)`)
       }
       noteParts.push(
         'Areas: ' +

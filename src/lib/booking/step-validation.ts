@@ -8,7 +8,8 @@
 
 import type { BookingFormData } from '@/types/booking'
 import { isServiceAreaZip } from './broward-zips'
-import { isAreaPriced, hasSelection, asksCondition } from '@/data/pricing'
+import { isAreaPriced, isHourlyService, hasSelection, asksCondition, areaPricing } from '@/data/pricing'
+import { HOURLY_PRIORITY_OTHER } from '@/data/hourly'
 
 export interface StepValidationResult {
   valid: boolean
@@ -60,10 +61,29 @@ export function validateStep(
       // The date moved here from the old Step 6 (Geraldine, 2026-09-21: it is
       // the first question in SPECS). Checked FIRST so the error names the field
       // at the top of the step rather than sending the customer hunting.
-      if (!data.serviceDate) return { valid: false, missingField: 'Service Date' }
-      if (!data.serviceTime) return { valid: false, missingField: 'Service Time' }
+      // A custom quote request (Severe Condition, Estate) books nothing, so it does not need a
+      // date: the customer has not been quoted, and making them pick a day for a job with no
+      // price is a hurdle for no reason. They still MAY choose one, as a preference.
+      const isQuoteRequest = isAreaPriced(data.serviceType) && areaPricing(data.serviceExtras ?? {}).quoteOnly
+      if (!isQuoteRequest) {
+        if (!data.serviceDate) return { valid: false, missingField: 'Service Date' }
+        if (!data.serviceTime) return { valid: false, missingField: 'Service Time' }
+      }
       const needsBedrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding'].includes(serviceType)
       const needsBathrooms = ['residential', 'movein-out', 'airbnb', 'custom', 'hoarding'].includes(serviceType)
+
+      // Custom Hourly (Geraldine, 2026-10-18, "Customers must select the areas they want our
+      // cleaners to focus on"): at least one priority, and if "Other" is ticked, say what.
+      // Hours and cleaners need no check: they are clamped into a valid pair on every write.
+      if (isHourlyService(serviceType)) {
+        const picked = data.customHourly?.priorities ?? []
+        if (picked.length === 0) {
+          return { valid: false, missingField: 'at least one cleaning priority' }
+        }
+        if (picked.includes(HOURLY_PRIORITY_OTHER) && !data.customHourly?.priorityOther?.trim()) {
+          return { valid: false, missingField: 'which other area to focus on' }
+        }
+      }
 
       // Handyman has its own question set + mandatory photos.
       if (serviceType === 'handyman') {
@@ -104,6 +124,10 @@ export function validateStep(
         }
         if (asksCondition(serviceExtras.lastCleaned) && !serviceExtras.homeCondition) {
           return { valid: false, missingField: 'the current condition of your home' }
+        }
+        // Property size (Geraldine, 2026-10-18): a pricing input, so required.
+        if (!serviceExtras.propertySize) {
+          return { valid: false, missingField: 'the approximate size of your home' }
         }
         return ok
       }

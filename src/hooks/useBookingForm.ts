@@ -17,20 +17,24 @@ import type {
 } from '@/types/booking'
 import { calculateTotalPrice } from '@/utilities/booking-helpers'
 import { JOB_CONDITION_NONE } from '@/data/handyman'
+import { HOURLY_PRIORITY_OTHER } from '@/data/hourly'
 import { addOnsTotal, getAddOn, MAX_ADDON_QTY } from '@/data/addons'
 import {
   isAreaPriced,
   priceRooms,
   quoteAreas,
   estimateHours,
-  effectiveTier,
-  conditionUplift,
-  activeCondition,
-  quoteHourly,
+  areaPricing,
+  quoteHourlyFromState,
+  normalizeHourly,
   HOURLY_MIN_CLEANERS,
-  HOURLY_MIN_HOURS_PER_CLEANER,
+  HOURLY_MIN_TOTAL_HOURS,
   DEFAULT_AREAS,
+  isHourlyService,
   migrateLegacyAreas,
+  DEFAULT_PROPERTY_SIZE,
+  propertySize,
+  sizeFromSqft,
 } from '@/data/pricing'
 
 const initialBookingData: BookingFormData = {
@@ -197,9 +201,28 @@ export const useBookingForm = () => {
       return {
         ...prev,
         serviceType,
+        // Nothing about Custom Hourly recurs (it has no Frequency step), so a frequency left over
+        // from an earlier choice must not follow the customer into it.
+        frequency: isHourlyService(serviceType) ? 'one-time' : prev.frequency,
         property: seed
-          ? { ...prev.property, areas: { ...DEFAULT_AREAS }, bedrooms: '1', bathrooms: 1 }
+          ? { ...prev.property, areas: { ...DEFAULT_AREAS }, bedrooms: '1', bathrooms: 1, squareFootage: propertySize(DEFAULT_PROPERTY_SIZE)!.sqft }
           : prev.property,
+        serviceExtras:
+          seed && !prev.serviceExtras.propertySize
+            ? { ...prev.serviceExtras, propertySize: DEFAULT_PROPERTY_SIZE }
+            : prev.serviceExtras,
+        // Custom Hourly opens on its smallest booking: 1 cleaner, 3 hours, $135, which is
+        // the "starting price" on her spec. Seeded only once, so going back a step and
+        // forward again keeps whatever the customer chose.
+        customHourly:
+          isHourlyService(serviceType) && !prev.customHourly
+            ? {
+                enabled: true,
+                cleaners: HOURLY_MIN_CLEANERS,
+                totalHours: HOURLY_MIN_TOTAL_HOURS,
+                priorities: [],
+              }
+            : prev.customHourly,
       }
     })
   }
@@ -235,16 +258,55 @@ export const useBookingForm = () => {
   }
 
   const updateCustomHourly = (data: Partial<NonNullable<BookingFormData['customHourly']>>) => {
-    setBookingData((prev) => ({
-      ...prev,
-      customHourly: {
+    setBookingData((prev) => {
+      const merged = {
         enabled: false,
-        cleaners: HOURLY_MIN_CLEANERS + 1, // her example starts at 2
-        hoursPerCleaner: HOURLY_MIN_HOURS_PER_CLEANER,
+        cleaners: HOURLY_MIN_CLEANERS,
+        totalHours: HOURLY_MIN_TOTAL_HOURS,
         ...(prev.customHourly ?? {}),
         ...data,
-      },
-    }))
+      }
+      // Normalised on every write so the form cannot hold an impossible booking, e.g.
+      // two cleaners on a 4-hour job. Dropping the total below 6 hours quietly puts the
+      // booking back to one cleaner rather than leaving a state her rules forbid.
+      const n = normalizeHourly(
+        merged.totalHours ?? (merged.hoursPerCleaner ?? 0) * merged.cleaners,
+        merged.cleaners,
+      )
+      return {
+        ...prev,
+        customHourly: {
+          enabled: merged.enabled,
+          cleaners: n.cleaners,
+          totalHours: n.totalHours,
+          priorities: merged.priorities ?? [],
+          priorityOther: merged.priorityOther,
+        },
+      }
+    })
+  }
+
+  // Add or remove one cleaning priority. Picking "Other" opens a text box; un-picking it
+  // clears what was typed, so a stale note cannot ride along on a booking that no longer
+  // lists "Other".
+  const togglePriority = (value: string) => {
+    setBookingData((prev) => {
+      const ch = prev.customHourly ?? {
+        enabled: true,
+        cleaners: HOURLY_MIN_CLEANERS,
+        totalHours: HOURLY_MIN_TOTAL_HOURS,
+      }
+      const cur = ch.priorities ?? []
+      const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value]
+      return {
+        ...prev,
+        customHourly: {
+          ...ch,
+          priorities: next,
+          priorityOther: next.includes(HOURLY_PRIORITY_OTHER) ? ch.priorityOther : '',
+        },
+      }
+    })
   }
 
   const setExtraVariant = (extraId: ExtraServiceId, variant: string) => {
@@ -303,19 +365,40 @@ export const useBookingForm = () => {
   }
 
   // Bulk replace — used by resume URL hydration in Stage 9.7.3
-  const setBookingDataAll = (data: BookingFormData) => {
+  const setBookingDataAll = (incoming: BookingFormData) => {
+    // A draft saved while Custom Hourly was a toggle on Residential (customHourly.enabled on
+    // an area-priced service) becomes a Custom Hourly booking, which is what that customer
+    // was in the middle of. Left alone it would resume as a Residential booking priced from
+    // an area list they never filled in.
+    const data: BookingFormData =
+      incoming.customHourly?.enabled && isAreaPriced(incoming.serviceType)
+        ? { ...incoming, serviceType: 'custom' }
+        : incoming
+
     // A saved draft may predate the combined Kitchen/Living/Dining area. Without
     // this the customer resumes with rooms the picker no longer shows and cannot
     // remove. See migrateLegacyAreas().
     const areas = migrateLegacyAreas(data.property?.areas)
+
+    // A draft saved before the size bands has a typed square footage and no band. Derive
+    // the band from it so the customer does not resume with the size question blank (it is
+    // required) or silently priced as Small.
+    const needsSize = isAreaPriced(data.serviceType) && !data.serviceExtras?.propertySize
+    const withSize: BookingFormData = needsSize
+      ? {
+          ...data,
+          serviceExtras: { ...data.serviceExtras, propertySize: sizeFromSqft(data.property?.squareFootage) },
+        }
+      : data
+
     if (areas === data.property?.areas) {
-      setBookingData(data)
+      setBookingData(withSize)
       return
     }
     // bedrooms and bathrooms are derived from the areas (see handleAreasChange in
     // Step03Property) and still feed the GHL record, so recompute them too.
     setBookingData({
-      ...data,
+      ...withSize,
       property: {
         ...data.property,
         areas,
@@ -339,11 +422,8 @@ export const useBookingForm = () => {
     // "stop using the Regular/Deep Cleaning pricing completely"). No areas, no
     // add-ons, no minimum and no recurring discount — the customer is buying a
     // block of time. Checked BEFORE the area branch so it wins.
-    if (isAreaPriced(serviceType) && bookingData.customHourly?.enabled) {
-      const h = quoteHourly(
-        bookingData.customHourly.cleaners,
-        bookingData.customHourly.hoursPerCleaner,
-      )
+    if (isHourlyService(serviceType)) {
+      const h = quoteHourlyFromState(bookingData.customHourly)
       setBookingData((prev) => ({
         ...prev,
         pricing: {
@@ -365,9 +445,7 @@ export const useBookingForm = () => {
     if (isAreaPriced(serviceType)) {
       const areas = property.areas ?? {}
       const extras = bookingData.serviceExtras ?? {}
-      const condition = activeCondition(extras.lastCleaned, extras.homeCondition)
-      const tier = effectiveTier(extras.cleaningType, condition)
-      const uplift = conditionUplift(condition)
+      const { tier, uplift, conditionUplift: condUplift } = areaPricing(extras)
 
       const areaSubtotal = priceRooms(areas, tier)
       const extrasTotal = addOnsTotal(selectedExtras, bookingData.extraQuantities, bookingData.extraVariants)
@@ -387,7 +465,9 @@ export const useBookingForm = () => {
           subtotal: quote.subtotal,
           discount: quote.discountAmount,
           total: quote.total,
-          estimatedTime: estimateHours(areas, tier, property.squareFootage, uplift),
+          // Condition only: the property size is already in the time estimate through
+          // property.squareFootage, so adding its uplift here would count size twice.
+          estimatedTime: estimateHours(areas, tier, property.squareFootage, condUplift),
         },
       }))
       return
@@ -446,6 +526,7 @@ export const useBookingForm = () => {
     setExtraQuantity,
     setExtraVariant,
     updateCustomHourly,
+    togglePriority,
     updateAddress,
     updateServiceDateTime,
     toggleFirstTimeClient,

@@ -205,8 +205,8 @@ export type RoomCounts = Partial<Record<RoomKey, number>>
  *
  * 1 bedroom $40 + 1 full bathroom $60 + Kitchen/Living/Dining $100 = $200, so the
  * deep floor is now $200, exactly as regular's $120 is its own default selection
- * ($20 + $30 + $70). She described a configuration rather than naming a floor, so
- * this is our reading of it: worth one confirming word from her.
+ * ($20 + $30 + $70). She described a configuration rather than naming a floor; we asked,
+ * and on 2026-10-18 she confirmed: "that is our minimum for deep clean".
  */
 export const MINIMUM_BOOKING: Record<CleaningTier, number> = {
   regular: 120,
@@ -332,6 +332,17 @@ export const HOME_CONDITION_OPTIONS = [
     desc: 'The home has significant buildup or has not been thoroughly cleaned for an extended period.',
     uplift: 0,
   },
+  // Deep Cleaning only (Geraldine, 2026-10-18). Selecting it removes the automatic price and
+  // the automatic booking: the customer submits their details for a personalised quote
+  // instead. The wording of the description is ours, not hers: she specified the behaviour
+  // and the customer message (QUOTE_MESSAGES.severe) but not this line.
+  {
+    value: 'severe',
+    label: 'Severe Condition',
+    desc: 'The property needs far more than a standard deep clean. We will review it and send you a personalised quote.',
+    uplift: 0,
+    quoteOnly: true,
+  },
 ] as const
 
 export type HomeConditionValue = (typeof HOME_CONDITION_OPTIONS)[number]['value']
@@ -348,6 +359,15 @@ export type HomeConditionValue = (typeof HOME_CONDITION_OPTIONS)[number]['value'
  */
 export function activeCondition(lastCleaned?: string, homeCondition?: string): string | undefined {
   return asksCondition(lastCleaned) ? homeCondition : undefined
+}
+
+/**
+ * The condition cards to offer. Severe is Deep-only (her slide: "under the Property
+ * Condition section for Deep Cleaning"), so it appears once the clean is Deep, whether the
+ * customer picked Deep or a Regular customer picked Heavy Buildup and was moved there.
+ */
+export function conditionOptionsFor(tier: CleaningTier) {
+  return HOME_CONDITION_OPTIONS.filter((o) => !('quoteOnly' in o && o.quoteOnly) || tier === 'deep')
 }
 
 export function conditionUplift(condition?: string): number {
@@ -376,8 +396,130 @@ export function lastCleanedLabel(value?: string): string | undefined {
  * using our Deep Cleaning pricing."
  */
 export function effectiveTier(cleaningType?: string, homeCondition?: string): CleaningTier {
-  if (homeCondition === 'heavy') return 'deep'
+  // Severe is a Deep-only option, so it implies the deep tier for the same reason heavy does:
+  // it describes the property, not a preference.
+  if (homeCondition === 'heavy' || homeCondition === 'severe') return 'deep'
   return cleaningType === 'Deep' ? 'deep' : 'regular'
+}
+
+// ─── PROPERTY SIZE ───────────────────────────────────────────────────────────
+//
+// Geraldine, 2026-10-18: the free "Approx. Size (sq ft)" box becomes a choice of bands,
+// and the band is a PRICE MULTIPLIER on the selected areas:
+//
+//   Subtotal of Selected Cleaning Areas x Property Size Multiplier = Adjusted Price
+//
+// This deliberately reverses her 2026-08-20 decision that square footage should only
+// sharpen the time estimate and never touch price. It stays true that no exact figure
+// is asked for: a band is coarse on purpose, and "I don't know my exact square footage"
+// stops being a reason to skip the question.
+//
+// Applies to Regular and Deep. The size selector is only shown for the area-priced
+// service; commercial, post-construction and the rest keep the plain number box.
+
+export type PropertySizeBand = {
+  value: string
+  /** "S, Small" etc. */
+  label: string
+  range: string
+  /** Fraction added to the area subtotal: 0.10 means +10%. */
+  uplift: number
+  /**
+   * A representative square footage for this band: its UPPER bound, so the time
+   * estimate (sqft / 500) is never lower than the home really needs. It is also what
+   * is stored in the numeric squareFootage field the booking record and the GHL
+   * booking object still expect.
+   */
+  sqft: number
+  /** No automatic price: the customer is routed to a custom quote instead. */
+  quoteOnly?: boolean
+}
+
+export const PROPERTY_SIZES: readonly PropertySizeBand[] = [
+  { value: 'small',     label: 'S, Small',        range: 'Up to 1,000 sq ft',     uplift: 0,    sqft: 1000 },
+  { value: 'medium',    label: 'M, Medium',       range: '1,001 to 1,500 sq ft',  uplift: 0.1,  sqft: 1500 },
+  { value: 'large',     label: 'L, Large',        range: '1,501 to 2,000 sq ft',  uplift: 0.2,  sqft: 2000 },
+  { value: 'xl',        label: 'XL, Extra Large', range: '2,001 to 2,500 sq ft',  uplift: 0.3,  sqft: 2500 },
+  { value: 'oversized', label: 'Oversized',       range: '2,501 to 2,999 sq ft',  uplift: 0.4,  sqft: 2999 },
+  // No uplift: there is no price to adjust. 3,000+ is "Custom Quote Required".
+  { value: 'estate',    label: 'Estate',          range: '3,000+ sq ft',          uplift: 0,    sqft: 3000, quoteOnly: true },
+]
+
+/** What the form opens on. Her Deep "standard configuration" is "up to 1,000 sqft". */
+export const DEFAULT_PROPERTY_SIZE = 'small'
+
+export function propertySize(value?: string): PropertySizeBand | undefined {
+  return PROPERTY_SIZES.find((s) => s.value === value)
+}
+
+export function sizeUplift(value?: string): number {
+  return propertySize(value)?.uplift ?? 0
+}
+
+/** Which band a typed square footage falls in. For drafts saved before the bands existed. */
+export function sizeFromSqft(sqft?: number): string {
+  if (!sqft || sqft <= 0) return DEFAULT_PROPERTY_SIZE
+  return (PROPERTY_SIZES.find((s) => sqft <= s.sqft && !s.quoteOnly) ?? PROPERTY_SIZES[PROPERTY_SIZES.length - 1]!).value
+}
+
+export type QuoteReason = 'severe' | 'estate'
+
+/**
+ * What the customer is told when there is no automatic price.
+ *
+ * `severe` is Geraldine's wording, verbatim (2026-10-18). `estate` is ours, modelled on it:
+ * her slides say Estate is "Custom Quote Required" but do not give a message for it.
+ */
+export const QUOTE_MESSAGES: Record<QuoteReason, string> = {
+  severe:
+    'Your property requires additional cleaning time and special attention. Please submit your information, and our team will contact you with a personalized quote.',
+  estate:
+    'Homes of 3,000 sq ft or more are quoted individually. Please submit your information, and our team will contact you with a personalized quote.',
+}
+
+/**
+ * EVERYTHING that adjusts the area price, resolved in one place.
+ *
+ * Five call sites used to each work out the tier and the uplift for themselves (the form,
+ * the summary panel, the estimate, the pricing hook and the submit flow). That is how the
+ * condition rule could drift between them, so they all call this now and cannot disagree.
+ *
+ * Size and condition are ADDED, not multiplied. Her answer, 2026-10-18, to a Large (+20%)
+ * home that also Needs Extra Attention (+25%): "add them together (+45%) = $246.50" on a
+ * $170 base. Multiplying would have given +50% = $255.
+ */
+export function areaPricing(extras: {
+  cleaningType?: string
+  lastCleaned?: string
+  homeCondition?: string
+  propertySize?: string
+}) {
+  const condition = activeCondition(extras.lastCleaned, extras.homeCondition)
+  const tier = effectiveTier(extras.cleaningType, condition)
+  const size = sizeUplift(extras.propertySize)
+  const cond = conditionUplift(condition)
+
+  // No automatic price at all, for either of two reasons. A Severe condition can only be
+  // reached on the deep tier, but check it anyway: a stale 'severe' left in state after the
+  // customer switched away must not keep them out of the instant quote.
+  const quoteReason: QuoteReason | undefined =
+    condition === 'severe' && tier === 'deep'
+      ? 'severe'
+      : propertySize(extras.propertySize)?.quoteOnly
+        ? 'estate'
+        : undefined
+
+  return {
+    condition,
+    tier,
+    sizeUplift: size,
+    conditionUplift: cond,
+    /** The combined fraction applied to the area subtotal. */
+    uplift: size + cond,
+    /** True when the customer must be routed to a custom quote instead of a price. */
+    quoteOnly: quoteReason !== undefined,
+    quoteReason,
+  }
 }
 
 export type Quote = {
@@ -434,7 +576,9 @@ export function quoteAreas(
   // while keeping the two rules she gave separately intact: the uplift never
   // touches `extrasTotal`, and the minimum still floors rooms-only.
   const roomsList = priceRooms(counts, tier)
-  const roomsSubtotal = roomsList * (1 + uplift)
+  // Rounded to the cent: 170 * 1.45 is 246.49999999999997 in floating point, which would
+  // round to $246 instead of the $246.50 (so $247) the arithmetic says.
+  const roomsSubtotal = Math.round(roomsList * (1 + uplift) * 100) / 100
   const conditionAmount = Math.round(roomsSubtotal - roomsList)
 
   const subtotal = Math.max(minimum, roomsSubtotal) + extrasTotal
@@ -501,6 +645,19 @@ export function isAreaPriced(serviceType: string): boolean {
   return (AREA_PRICED_SERVICES as readonly string[]).includes(serviceType)
 }
 
+/**
+ * Custom Hourly Cleaning is its own service category (Geraldine, 2026-10-18: "It should
+ * only be available as its own service category"). It reuses the stored value `custom`,
+ * which has been in ServiceCategory, the Bookings collection and the GHL service map all
+ * along, so no booking record or CRM option had to change.
+ *
+ * It is NOT area-priced: no area picker, no add-ons, no size band, no condition question,
+ * no minimum booking and no recurring discount. The price is total labour hours x a rate.
+ */
+export function isHourlyService(serviceType: string): boolean {
+  return serviceType === 'custom'
+}
+
 /** Has the customer selected anything at all? Used to gate the estimate display. */
 export function hasSelection(counts: RoomCounts): boolean {
   return Object.values(counts).some((n) => (n ?? 0) > 0)
@@ -517,41 +674,69 @@ export function hasSelection(counts: RoomCounts): boolean {
 // for the hours booked. That disclaimer has to appear on the form; it is the
 // thing that keeps an hourly booking from turning into a dispute.
 
-// Repriced to Geraldine's tiered model, 2026-09-21. The flat $45/hr that used to
-// be here was never wired to any UI, so nothing was ever quoted from it.
+// History of the rate, because it has changed three times and the earlier comments
+// below still quote old figures:
+//   - 2026-08-20: a flat $45/hr, never wired to any UI.
+//   - 2026-09-21: tiered $35 / $32 / $30, banded on TOTAL combined labour hours.
+//   - 2026-10-18: tiered $45 / $42 / $40 (her "1) Custom Hourly rate" slide, which says
+//     "replace the previous $35/$32/$30 hourly pricing structure"). Same rule: banded on
+//     total combined labour hours, the lower rate applies to ALL booked hours, and the
+//     minimum is 3 hours per cleaner. Her pricing-examples slide is the test table in
+//     the comment on quoteHourly() below.
 
 export const HOURLY_MIN_HOURS_PER_CLEANER = 3
 export const HOURLY_MAX_HOURS_PER_CLEANER = 12
 export const HOURLY_MIN_CLEANERS = 1
-export const HOURLY_MAX_CLEANERS = 6
+/**
+ * One or two. Her 2026-10-18 slide: "3 to 5 hours: 1 cleaner only. 6+ hours: option to
+ * select 1 or 2 cleaners." It was 6 before, which her slide does not allow.
+ *
+ * The 6-hour threshold for a second cleaner needs no separate check: with a 3-hour
+ * minimum per cleaner, two cleaners are always at least 6 combined hours.
+ */
+export const HOURLY_MAX_CLEANERS = 2
 
 /**
- * Rate per cleaner-hour, banded by HOURS PER CLEANER. Highest band first so the
- * first match wins.
+ * Rate per labour hour, banded by TOTAL COMBINED LABOUR HOURS (see hourlyRate()).
+ * Highest band first so the first match wins.
+ *
+ *   3 to 4 hours  $45
+ *   5 to 6 hours  $42
+ *   7 or more     $40
  */
 export const HOURLY_RATE_TIERS = [
-  { minHours: 8, rate: 30 },
-  { minHours: 5, rate: 32 },
-  { minHours: 3, rate: 35 },
+  { minHours: 7, rate: 40 },
+  { minHours: 5, rate: 42 },
+  { minHours: 3, rate: 45 },
 ] as const
+
+/** The undiscounted rate: the top of the card. What "savings" are measured against. */
+export const HOURLY_BASE_RATE = HOURLY_RATE_TIERS[HOURLY_RATE_TIERS.length - 1].rate
 
 /**
  * The rate for a booking.
  *
  * Banded on TOTAL COMBINED LABOUR HOURS (cleaners x hours each).
  *
- * Her written spec first said the opposite: "the rate is determined by the hours
- * selected per cleaner, not total combined labor hours." We raised it because
- * the two readings differ by real money, and she changed the rule on
- * 2026-09-21: "if they are booking 5 or more total labor hours, they should
- * receive the lower hourly rate regardless of how those hours are divided
- * between the cleaners. For example, if they select 2 cleaners x 3 hours = 6
- * total labor hours, the $32/hour rate should apply."
+ * Her first written spec said the opposite: "the rate is determined by the hours
+ * selected per cleaner, not total combined labor hours." We raised it because the two
+ * readings differ by real money, and she changed the rule on 2026-09-21, and restated it
+ * on 2026-10-18: "Discounts are based on total combined labor hours, regardless of the
+ * number of cleaners. The discounted hourly rate applies to ALL booked hours, not just
+ * the additional hours."
  *
- * So her worked example now resolves to 6 hours in the 5-7 band at $32, giving
- * $192 rather than the $210 the per-cleaner reading produced. The comment is
- * long on purpose: the printed spec still says per-cleaner, so anyone checking
- * this code against that document will think it is wrong.
+ * Her 2026-10-18 worked examples (the test table for this function):
+ *
+ *   1 cleaner  x 3h = 3 combined   $45   $135
+ *   1 cleaner  x 4h = 4            $45   $180
+ *   1 cleaner  x 5h = 5            $42   $210
+ *   1 cleaner  x 6h = 6            $42   $252
+ *   2 cleaners x 3h = 6            $42   $252    (same price as 1 x 6: hours are divided,
+ *   1 cleaner  x 7h = 7            $40   $280     never doubled, when a second cleaner is added)
+ *   2 cleaners x 4h = 8            $40   $320
+ *
+ * The comment is long on purpose: an older printed spec still says per-cleaner, so anyone
+ * checking this code against that document will think it is wrong.
  */
 export function hourlyRate(totalLaborHours: number): number {
   const hours = Math.max(HOURLY_MIN_HOURS_PER_CLEANER, totalLaborHours)
@@ -565,26 +750,113 @@ export type HourlyQuote = {
   totalLaborHours: number
   rate: number
   total: number
+  /**
+   * What booking this many hours saves against the undiscounted rate: total labour hours x
+   * (base rate - rate). Her slide: "the website should automatically calculate the total
+   * price and display the customer's savings." Zero in the top band.
+   */
+  savings: number
+}
+
+/** The smallest booking. Her slide: "Each cleaner must work at least 3 hours." */
+export const HOURLY_MIN_TOTAL_HOURS = HOURLY_MIN_HOURS_PER_CLEANER
+
+/**
+ * Combined hours needed before a second cleaner can be requested. Her slide: "Customers
+ * should only be able to request a second cleaner when booking at least 6 combined labor
+ * hours." It is exactly two cleaners at the 3-hour minimum each.
+ */
+export const HOURLY_SECOND_CLEANER_MIN_TOTAL = HOURLY_MIN_HOURS_PER_CLEANER * 2
+
+/** The most combined hours one booking can hold with this many cleaners. */
+export function hourlyMaxTotal(cleaners: number): number {
+  return HOURLY_MAX_HOURS_PER_CLEANER * Math.max(HOURLY_MIN_CLEANERS, cleaners)
+}
+
+/** Is a second cleaner allowed at this many combined hours? */
+export function canAddSecondCleaner(totalHours: number): boolean {
+  return totalHours >= HOURLY_SECOND_CLEANER_MIN_TOTAL
 }
 
 /**
- * Cleaners x Hours Per Cleaner x Rate.
+ * Forces a requested (total hours, cleaners) pair into one the rules allow, instead of
+ * rejecting it, so the form can never sit in an invalid state:
  *
- * This REPLACES the area price entirely. Geraldine, 2026-09-21: "Custom Cleaning
- * is an alternative to Regular/Deep Cleaning. The previous room/area prices and
- * add-ons should not be added to the Custom Cleaning total." So no area total, no
- * add-ons, no minimum booking and no recurring discount are applied on top: the
- * customer is buying a block of time, not a scope of work.
+ *   - total hours is at least 3 and a whole number
+ *   - cleaners is 1, or 2 only once the booking reaches 6 combined hours
+ *   - a total that is too small for the cleaners asked for drops to ONE cleaner (rather
+ *     than raising the hours: the customer asked for a time, not a bigger booking)
+ *   - total never exceeds 12 hours per cleaner
+ */
+export function normalizeHourly(totalHours: number, cleaners: number): { totalHours: number; cleaners: number } {
+  let c = Math.min(HOURLY_MAX_CLEANERS, Math.max(HOURLY_MIN_CLEANERS, Math.floor(cleaners) || HOURLY_MIN_CLEANERS))
+  let t = Math.max(HOURLY_MIN_TOTAL_HOURS, Math.floor(totalHours) || HOURLY_MIN_TOTAL_HOURS)
+  if (c > 1 && !canAddSecondCleaner(t)) c = 1
+  t = Math.min(hourlyMaxTotal(c), t)
+  return { totalHours: t, cleaners: c }
+}
+
+/**
+ * THE PRIMITIVE: total combined labour hours, divided between the cleaners.
+ *
+ * Total hours is the input and the cleaners split it, which is how she describes it:
+ * "When customers select 2 cleaners, please explain that the total labor hours are
+ * divided between both cleaners... 6 combined hours can be 1 cleaner working 6 hours or
+ * 2 cleaners working 3 hours each. Both options cost the same: $252. Please ensure the
+ * website calculates the hours correctly and does not accidentally double the total when
+ * a second cleaner is selected."
+ *
+ * That last sentence is the reason this exists. The form used to ask for HOURS PER CLEANER
+ * and a cleaner count, and the total was their product, so adding a second cleaner to a
+ * 6-hour booking silently made it 12 hours: $252 became $480. With total hours as the
+ * input, the cleaner count cannot change the price at all.
+ *
+ * This REPLACES the area price entirely (Geraldine, 2026-09-21): no area total, no
+ * add-ons, no minimum booking and no recurring discount are applied on top. The customer
+ * is buying a block of time, not a scope of work.
+ *
+ * `hoursPerCleaner` can be a half hour (7 hours between 2 cleaners is 3.5 each), which her
+ * rules allow because each cleaner still works at least 3.
+ */
+export function quoteHourlyTotal(totalHours: number, cleaners: number): HourlyQuote {
+  const n = normalizeHourly(totalHours, cleaners)
+  const rate = hourlyRate(n.totalHours)
+  return {
+    cleaners: n.cleaners,
+    hoursPerCleaner: n.totalHours / n.cleaners,
+    totalLaborHours: n.totalHours,
+    rate,
+    total: n.totalHours * rate,
+    savings: n.totalHours * (HOURLY_BASE_RATE - rate),
+  }
+}
+
+/**
+ * Cleaners x hours each, for callers that think in that shape (the After Party page's
+ * worked example). Same price as quoteHourlyTotal(c * h, c): the price only ever depends
+ * on the product.
  */
 export function quoteHourly(cleaners: number, hoursPerCleaner: number): HourlyQuote {
-  const c = Math.min(HOURLY_MAX_CLEANERS, Math.max(HOURLY_MIN_CLEANERS, Math.floor(cleaners) || HOURLY_MIN_CLEANERS))
-  const h = Math.min(
-    HOURLY_MAX_HOURS_PER_CLEANER,
-    Math.max(HOURLY_MIN_HOURS_PER_CLEANER, Math.floor(hoursPerCleaner) || HOURLY_MIN_HOURS_PER_CLEANER),
-  )
-  const totalLaborHours = c * h
-  const rate = hourlyRate(totalLaborHours)
-  return { cleaners: c, hoursPerCleaner: h, totalLaborHours, rate, total: totalLaborHours * rate }
+  const c = Math.max(HOURLY_MIN_CLEANERS, Math.floor(cleaners) || HOURLY_MIN_CLEANERS)
+  const h = Math.max(HOURLY_MIN_HOURS_PER_CLEANER, Math.floor(hoursPerCleaner) || HOURLY_MIN_HOURS_PER_CLEANER)
+  return quoteHourlyTotal(c * h, c)
+}
+
+/**
+ * The quote for what is stored in the booking form. Reads `totalHours`, and falls back to
+ * cleaners x hoursPerCleaner for a draft saved before the form switched to total hours, so
+ * an abandoned-booking resume link does not come back as a different price.
+ */
+export function quoteHourlyFromState(state?: {
+  cleaners?: number
+  totalHours?: number
+  hoursPerCleaner?: number
+} | null): HourlyQuote {
+  const cleaners = state?.cleaners ?? HOURLY_MIN_CLEANERS
+  const total =
+    state?.totalHours ??
+    (state?.hoursPerCleaner ? cleaners * state.hoursPerCleaner : HOURLY_MIN_TOTAL_HOURS)
+  return quoteHourlyTotal(total, cleaners)
 }
 
 /**
@@ -592,8 +864,9 @@ export function quoteHourly(cleaners: number, hoursPerCleaner: number): HourlyQu
  * from Geraldine, 2026-09-21 — it has to appear wherever hourly is quoted.
  */
 export const HOURLY_DISCLAIMER =
-  'Hourly cleaning is based on time rather than completion of a specific checklist. ' +
-  'Our team will prioritize your requested areas and complete as much as possible within the booked time.'
+  'Custom Hourly Cleaning is a time-based service focused on your selected priorities. ' +
+  "Our cleaning professionals will work on the areas you've requested within the booked time. " +
+  "Completion of all selected areas is not guaranteed and will depend on the property's condition and the time reserved."
 
 // ─── TEAM SIZE ───────────────────────────────────────────────────────────────
 //

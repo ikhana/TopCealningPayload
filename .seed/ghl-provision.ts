@@ -19,6 +19,8 @@
 import { ghlFetch } from '../src/lib/ghl/client'
 import { PIPELINE_TARGETS } from '../src/lib/ghl/pipelines'
 import { JOB_CONDITIONS, HANDYMAN_SERVICES } from '../src/data/handyman'
+import { PROPERTY_SIZES, HOME_CONDITION_OPTIONS } from '../src/data/pricing'
+import { HOURLY_PRIORITIES } from '../src/data/hourly'
 
 const DRY = Boolean(process.env.DRY)
 
@@ -99,6 +101,27 @@ const FIELDS: FieldSpec[] = [
       'More than 6 months ago',
       "I'm not sure",
     ],
+  },
+  // Property size band (Geraldine, 2026-10-18). Option labels are generated from the SAME
+  // table the form renders (PROPERTY_SIZES), so the two cannot drift: a label that exists
+  // in the form but not here is silently dropped when it is written to GHL.
+  // Custom Hourly Cleaning (Geraldine, 2026-10-18). What staff need to schedule an hourly
+  // job, as filterable fields: how many cleaners, how many combined hours, and which areas
+  // the customer wants focused on. Priorities are generated from the same list the form
+  // renders (HOURLY_PRIORITIES) so the two cannot drift.
+  { name: 'Hourly Cleaners', dataType: 'TEXT', placeholder: '' },
+  { name: 'Hourly Labor Hours', dataType: 'TEXT', placeholder: '' },
+  {
+    name: 'Cleaning Priorities',
+    dataType: 'MULTIPLE_OPTIONS',
+    placeholder: '',
+    picklistOptions: [...HOURLY_PRIORITIES],
+  },
+  {
+    name: 'Property Size',
+    dataType: 'SINGLE_OPTIONS',
+    placeholder: '',
+    picklistOptions: PROPERTY_SIZES.map((b) => b.label),
   },
   {
     name: 'Home Condition',
@@ -187,12 +210,17 @@ console.log('')
 const OPTION_SETS: Array<{ fieldKey: string; options: readonly string[] }> = [
   { fieldKey: 'contact.job_conditions', options: JOB_CONDITIONS },
   { fieldKey: 'contact.handyman_service_type', options: HANDYMAN_SERVICES },
+  // Severe Condition was added to the form (2026-10-18). A value the field does not list is
+  // silently dropped on write, so the option has to exist here before anyone can pick it.
+  { fieldKey: 'contact.home_condition', options: HOME_CONDITION_OPTIONS.map((o) => o.label) },
+  { fieldKey: 'contact.property_size', options: PROPERTY_SIZES.map((b) => b.label) },
+  { fieldKey: 'contact.cleaning_priorities', options: HOURLY_PRIORITIES },
 ]
 
 const byKeyAll = new Map(
   ((await (await ghlFetch(`/locations/${locationId}/customFields`)).json())?.customFields ?? []).map(
-    (f: { id: string; fieldKey: string; picklistOptions?: string[] }) => [f.fieldKey, f],
-  ) as Array<[string, { id: string; fieldKey: string; picklistOptions?: string[] }]>,
+    (f: { id: string; name: string; fieldKey: string; picklistOptions?: string[] }) => [f.fieldKey, f],
+  ) as Array<[string, { id: string; name: string; fieldKey: string; picklistOptions?: string[] }]>,
 )
 
 for (const set of OPTION_SETS) {
@@ -219,7 +247,9 @@ for (const set of OPTION_SETS) {
   const merged = [...current, ...missing]
   await ghlFetch(`/locations/${locationId}/customFields/${field.id}`, {
     method: 'PUT',
-    body: JSON.stringify({ name: field.fieldKey.replace('contact.', ''), options: merged }),
+    // The field's CURRENT name, never one derived from its key: the key-derived name
+    // ("job_conditions") renamed "Job Conditions" in the CRM the first time this ran.
+    body: JSON.stringify({ name: field.name, options: merged }),
   })
   console.log(`  options added  ${set.fieldKey.padEnd(34)} ${JSON.stringify(missing)}`)
 }

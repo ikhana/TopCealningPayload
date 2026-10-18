@@ -24,6 +24,12 @@ export const PIPELINE_TARGETS = {
   // asserts the agreement rather than trusting it.
   contact: { pipeline: 'Website Enquiries', stage: 'New Enquiry' },
 
+  // Custom quote requests from the booking form (Severe Condition, Estate size). Same board
+  // as the contact form on purpose: they are people asking for a price, not bookings, and
+  // the same person watches that board. Told apart there by the opportunity name and the
+  // `custom-quote` tag.
+  quote: { pipeline: 'Website Enquiries', stage: 'New Enquiry' },
+
   // Job applications. This pipeline ALREADY EXISTS and is not a new one — the
   // location has "Subcontractors" with a stage literally called
   // "Application/Form Submitted", which is exactly this form's outcome.

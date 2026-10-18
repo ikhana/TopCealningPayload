@@ -21,15 +21,7 @@ import {
 import {
   quoteAreas,
   isAreaPriced,
-  effectiveTier,
-  activeCondition,
-  conditionUplift,
-  quoteHourly,
-  HOURLY_MIN_CLEANERS,
-  HOURLY_MAX_CLEANERS,
-  HOURLY_MIN_HOURS_PER_CLEANER,
-  HOURLY_MAX_HOURS_PER_CLEANER,
-  HOURLY_DISCLAIMER,
+  areaPricing,
   type RoomCounts,
 } from '@/data/pricing'
 
@@ -156,49 +148,10 @@ function VariantPicker({
   )
 }
 
-/** Labelled −/+ row for the two Custom Hourly inputs. */
-function HourlyStepper({
-  label, hint, value, min, max, onChange,
-}: {
-  label: string
-  hint?: string
-  value: number
-  min: number
-  max: number
-  onChange: (n: number) => void
-}) {
-  const btn = (enabled: boolean): React.CSSProperties => ({
-    width: '34px', height: '34px', flexShrink: 0,
-    border: '1px solid rgba(13,27,46,0.15)', background: 'white',
-    color: enabled ? 'var(--color-navy-deep)' : 'rgba(74,90,106,0.3)',
-    fontSize: '1.05rem', lineHeight: 1, fontWeight: 700,
-    cursor: enabled ? 'pointer' : 'not-allowed', borderRadius: 0,
-  })
-  return (
-    <div>
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700, color: 'rgba(74,90,106,0.9)', marginBottom: '8px' }}>
-        {label}
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <button type="button" aria-label={`Fewer ${label}`} disabled={value <= min}
-          onClick={() => onChange(value - 1)} style={btn(value > min)}>−</button>
-        <span aria-live="polite" style={{ minWidth: '38px', textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '1.05rem', fontWeight: 800, color: 'var(--color-navy-deep)' }}>
-          {value}
-        </span>
-        <button type="button" aria-label={`More ${label}`} disabled={value >= max}
-          onClick={() => onChange(value + 1)} style={btn(value < max)}>+</button>
-      </div>
-      {hint && <p style={{ margin: '6px 0 0', fontSize: '0.7rem', color: 'rgba(74,90,106,0.7)' }}>{hint}</p>}
-    </div>
-  )
-}
-
 export function Step04AddOns() {
-  const { bookingData, toggleExtra, setExtraQuantity, setExtraVariant, updateCustomHourly } = useBooking()
-  const { selectedExtras, extraQuantities, extraVariants, serviceType, property, serviceExtras, frequency, customHourly } = bookingData
+  const { bookingData, toggleExtra, setExtraQuantity, setExtraVariant } = useBooking()
+  const { selectedExtras, extraQuantities, extraVariants, serviceType, property, serviceExtras, frequency } = bookingData
   const [infoOpen, setInfoOpen] = useState(false)
-  const hourlyOn = customHourly?.enabled === true
-  const hourly = quoteHourly(customHourly?.cleaners ?? 2, customHourly?.hoursPerCleaner ?? 3)
 
   // The full quote, shown at the END of this step (Geraldine, 2026-09-21:
   // "Price has to be shown at the last / after client see the additional
@@ -206,10 +159,9 @@ export function Step04AddOns() {
   // place the customer sees one — which is the point: a number that appears
   // before the add-ons are on screen is a number that changes under them.
   const areas: RoomCounts = property.areas ?? {}
-  const condition = activeCondition(serviceExtras.lastCleaned, serviceExtras.homeCondition)
-  const tier = effectiveTier(serviceExtras.cleaningType, condition)
+  const { tier, uplift } = areaPricing(serviceExtras)
   const extrasTotal = addOnsTotal(selectedExtras, extraQuantities, extraVariants)
-  const quote = quoteAreas(areas, tier, frequency, extrasTotal, conditionUplift(condition))
+  const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift)
   const showQuote = isAreaPriced(serviceType)
 
   return (
@@ -239,17 +191,7 @@ export function Step04AddOns() {
         )}
       </div>
 
-      {/*
-        Hidden in hourly mode. Geraldine, 2026-09-21: for Custom Cleaning the
-        customer "should only select Number of Cleaners and Hours Per Cleaner",
-        and add-ons "should not be added to the Custom Cleaning total". Leaving
-        the grid on screen but uncharged would be the worst of both — the
-        customer ticks things and the total does not move.
-
-        The selections themselves are kept in state, so switching back to areas
-        restores whatever was already chosen.
-      */}
-      <div style={{ display: hourlyOn ? 'none' : 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(175px, 1fr))', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(175px, 1fr))', gap: '10px' }}>
         {ADD_ONS.map((addon) => {
           const { id, label } = addon
           const Icon = ICONS[id] ?? Archive
@@ -297,92 +239,8 @@ export function Step04AddOns() {
         })}
       </div>
 
-      {/* ── Custom Hourly, when switched on ──────────────────────────────── */}
-      {showQuote && hourlyOn && (
-        <div style={{ marginTop: '24px', border: '1px solid var(--color-teal)', background: '#f2fbfa', padding: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '16px' }}>
-            <div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--color-navy-deep)' }}>Custom Hourly Cleaning</div>
-              <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: 'rgba(74,90,106,0.85)' }}>
-                Book by the hour and choose the number of cleaners and hours that works best for you.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => updateCustomHourly({ enabled: false })}
-              style={{ flexShrink: 0, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-teal)', padding: 0 }}
-            >
-              Back to areas
-            </button>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-            <HourlyStepper
-              label="Number of Cleaners"
-              value={hourly.cleaners}
-              min={HOURLY_MIN_CLEANERS}
-              max={HOURLY_MAX_CLEANERS}
-              onChange={(n) => updateCustomHourly({ cleaners: n })}
-            />
-            <HourlyStepper
-              label="Hours Per Cleaner"
-              hint={`Minimum ${HOURLY_MIN_HOURS_PER_CLEANER} hours per cleaner`}
-              value={hourly.hoursPerCleaner}
-              min={HOURLY_MIN_HOURS_PER_CLEANER}
-              max={HOURLY_MAX_HOURS_PER_CLEANER}
-              onChange={(n) => updateCustomHourly({ hoursPerCleaner: n })}
-            />
-          </div>
-
-          {/* Rate card. Shown in full so the customer can see that booking
-              longer drops the rate, rather than wondering why it moved. */}
-          <div style={{ marginTop: '18px', border: '1px solid rgba(13,27,46,0.08)', background: 'white' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(74,90,106,0.6)', padding: '10px 14px 6px' }}>
-              Hourly rates (by total labor hours)
-            </div>
-            {/*
-              Banded on TOTAL labour hours, matching hourlyRate(). Geraldine
-              changed this on 2026-09-21: book 5+ combined hours and you get the
-              lower rate however the hours are split between cleaners. If this
-              row highlighting used hoursPerCleaner it would disagree with the
-              price printed directly beneath it.
-            */}
-            {[
-              { band: '3 – 4 hours', rate: 35, lo: 3, hi: 4 },
-              { band: '5 – 7 hours', rate: 32, lo: 5, hi: 7 },
-              { band: '8+ hours',    rate: 30, lo: 8, hi: 999 },
-            ].map(({ band, rate, lo, hi }) => {
-              const active = hourly.totalLaborHours >= lo && hourly.totalLaborHours <= hi
-              return (
-                <div key={band} style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 14px', fontSize: '0.82rem', background: active ? '#e0f5f4' : 'transparent', fontWeight: active ? 700 : 400, color: 'var(--color-navy-deep)' }}>
-                  <span>{band}</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>${rate} / hour</span>
-                </div>
-              )
-            })}
-          </div>
-
-          <div style={{ marginTop: '16px', padding: '16px 18px', background: 'var(--color-navy-deep)', color: 'white' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.75 }}>
-                Estimated Total
-              </span>
-              <span style={{ fontSize: '1.7rem', fontWeight: 900, letterSpacing: '-1px' }}>${hourly.total}</span>
-            </div>
-            <p style={{ margin: '8px 0 0', fontSize: '0.78rem', opacity: 0.8 }}>
-              Total labor hours: {hourly.totalLaborHours} ({hourly.cleaners} cleaner
-              {hourly.cleaners > 1 ? 's' : ''} × {hourly.hoursPerCleaner} hours each) at ${hourly.rate} / hour
-            </p>
-          </div>
-
-          <p style={{ margin: '12px 0 0', fontSize: '0.75rem', lineHeight: 1.55, color: 'rgba(74,90,106,0.8)' }}>
-            {HOURLY_DISCLAIMER}
-          </p>
-        </div>
-      )}
-
       {/* ── The estimate, at the end, once the add-ons have been seen ────── */}
-      {showQuote && !hourlyOn && (
+      {showQuote && (
         <div style={{ marginTop: '24px', padding: '18px 20px', background: 'var(--color-navy-deep)', color: 'white' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '16px' }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.75 }}>
@@ -430,19 +288,11 @@ export function Step04AddOns() {
       )}
 
       {/*
-        The "Want Something Custom? Prefer to book by time instead?" prompt that
-        used to sit here was REMOVED on 2026-10-18 (Geraldine: showing a second
-        pricing option under the estimate "could distract customers from
-        completing their booking"; Custom Hourly is to exist only "as its own
-        service category").
-
-        The hourly panel above is now unreachable from the UI. It is kept on
-        purpose, not forgotten: it holds the parts the standalone Custom Hourly
-        service will reuse (stepper, rate card, summary, disclaimer). It should
-        move into its own step flow when that service is built, see
-        docs/GERALDINE_ROUND_3.md section 7. An old saved draft with hourly
-        switched on still resumes into it, and its "Back to areas" button is the
-        way out.
+        Custom Hourly is not part of this step any more. The "Want Something Custom? Prefer to
+        book by time instead?" prompt that used to sit under the estimate was removed on
+        2026-10-18 (Geraldine: a second pricing option here "could distract customers from
+        completing their booking"), and the service now has its own place in the picker, with
+        its own steps. See HourlyPanel.tsx. This step is never shown for it.
       */}
 
       {/* Non-area-priced services get no live number, so just the count. */}

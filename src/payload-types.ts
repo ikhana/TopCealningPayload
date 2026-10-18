@@ -5246,9 +5246,9 @@ export interface Enquiry {
   /**
    * Which form it came from. Decides what is sent to GoHighLevel.
    */
-  source: 'booking-start' | 'contact' | 'careers';
+  source: 'booking-start' | 'contact' | 'careers' | 'quote';
   /**
-   * Booking form only: the draft this lead belongs to. A second submission from the same draft updates this row instead of adding another.
+   * Booking form only (step 1 lead, or a custom quote request): the draft this lead belongs to. A second submission from the same draft updates this row instead of adding another.
    */
   draftToken?: string | null;
   firstName?: string | null;

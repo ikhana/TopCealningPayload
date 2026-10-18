@@ -18,17 +18,21 @@ import {
   ROOM_LABELS,
   quoteAreas,
   isAreaPriced,
+  isHourlyService,
   LAST_CLEANED_OPTIONS,
-  HOME_CONDITION_OPTIONS,
   asksCondition,
-  activeCondition,
-  conditionUplift,
-  effectiveTier,
+  areaPricing,
+  conditionOptionsFor,
+  QUOTE_MESSAGES,
+  PROPERTY_SIZES,
+  propertySize,
   type RoomCounts,
   type CleaningTier,
 } from '@/data/pricing'
 import { HANDYMAN_SERVICES, JOB_CONDITIONS } from '@/data/handyman'
 import { Step06Schedule } from '@/components/booking/sections/Step06Schedule'
+import { HourlyPanel, HourlyPriorities } from '@/components/booking/HourlyPanel'
+import { HOURLY_FOCUS_QUESTION } from '@/data/hourly'
 
 const BEDROOM_OPTIONS = [
   { value: 'studio', label: 'Studio' },
@@ -253,6 +257,17 @@ function AreaSelector({
       <p style={{ margin: '10px 0 0', fontSize: '0.75rem', lineHeight: 1.5, color: 'rgba(74,90,106,0.75)' }}>
         Have a home office, den or study? Count it as a bedroom.
       </p>
+      {/*
+        Geraldine, 2026-10-18: the $70 "covers the Kitchen, Living Room, and Dining Area,
+        regardless of whether the dining space is a separate room or part of the kitchen."
+        Not every home has a separate dining room, so the label says "Area" and this line
+        says what that includes. Without it a customer with no dining room wonders whether
+        they are being charged for a room they do not have.
+      */}
+      <p style={{ margin: '4px 0 0', fontSize: '0.75rem', lineHeight: 1.5, color: 'rgba(74,90,106,0.75)' }}>
+        Kitchen, Living &amp; Dining Area covers your kitchen, living room and dining area, whether the
+        dining space is its own room, a breakfast nook or part of the kitchen.
+      </p>
 
       {/*
         NO TOTAL HERE. Geraldine, 2026-09-21: "Price has to be shown at the last
@@ -360,10 +375,12 @@ function MultiChips({ label, options, selected, onToggle, required }: {
  * '+25%.'" The Estimated Total above simply moves.
  */
 function ConditionCards({
-  value, onChange,
+  value, onChange, options,
 }: {
   value: string
   onChange: (v: string) => void
+  /** Already filtered for the tier: Severe is only offered on a Deep clean. */
+  options: ReturnType<typeof conditionOptionsFor>
 }) {
   const name = useId()
   return (
@@ -373,7 +390,7 @@ function ConditionCards({
         <span style={{ color: 'var(--color-teal)' }}>*</span>
       </label>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {HOME_CONDITION_OPTIONS.map((opt) => {
+        {options.map((opt) => {
           const sel = value === opt.value
           return (
             <label
@@ -427,6 +444,8 @@ export function Step03Property() {
   const setExtra = (key: keyof ServiceExtras) => (v: string) => updateServiceExtras({ [key]: v })
 
   const showAreas = isAreaPriced(serviceType)
+  // Custom Hourly Cleaning has its own questions in place of the area picker (see HourlyPanel).
+  const isHourly = isHourlyService(serviceType)
 
   // When the area picker is shown it already collects bedrooms and bathrooms, so
   // the standalone selects would be asking the same question twice.
@@ -436,16 +455,17 @@ export function Step03Property() {
   // Tier comes from the existing "Type of Cleaning" question rather than a new
   // toggle — it already exists and already maps to a GHL field. Heavy buildup
   // overrides it, so both inputs go through the one shared resolver.
-  const condition = activeCondition(serviceExtras.lastCleaned, serviceExtras.homeCondition)
+  const { condition, tier, uplift, quoteOnly, quoteReason } = areaPricing(serviceExtras)
   const heavyBuildup = condition === 'heavy'
-  const tier: CleaningTier = effectiveTier(serviceExtras.cleaningType, condition)
-  const uplift = conditionUplift(condition)
+  // Heavy and Severe both describe the property rather than a preference, so both lock the
+  // "Type of Cleaning" select to Deep.
+  const forcedDeep = condition === 'heavy' || condition === 'severe'
 
   // What the "Type of Cleaning" select shows. Heavy buildup forces Deep, but we
   // do NOT write that back into state: if the customer changes their condition
   // answer the select has to return to whatever they originally picked, and it
   // cannot do that if the original answer has been overwritten.
-  const shownCleaningType = heavyBuildup ? 'Deep' : (serviceExtras.cleaningType ?? '')
+  const shownCleaningType = forcedDeep ? 'Deep' : (serviceExtras.cleaningType ?? '')
 
   const areas: RoomCounts = property.areas ?? {}
 
@@ -545,7 +565,7 @@ export function Step03Property() {
           <>
             <SpecSelect label="Type of Cleaning" icon={Sparkles} required
               value={shownCleaningType} onChange={setExtra('cleaningType')}
-              disabled={heavyBuildup}
+              disabled={forcedDeep}
               options={['Regular', 'Deep', 'Move-in/Move-out']} />
             {/*
               One line, not the full banner. The banner belongs next to the
@@ -553,7 +573,7 @@ export function Step03Property() {
               showing a value the customer did not choose, so leaving it with no
               explanation at all just moves the confusion up here instead.
             */}
-            {heavyBuildup && (
+            {forcedDeep && (
               <p style={{ gridColumn: 'span 2', margin: '-14px 0 0', fontSize: '0.78rem', color: 'rgba(74,90,106,0.75)' }}>
                 Set automatically from the home condition you selected below.
               </p>
@@ -629,8 +649,48 @@ export function Step03Property() {
             options={['1', '2-5', '6-10', '10+']} />
         )}
 
-        {/* ── Approx. size (optional; not shown for Handyman) ─── */}
-        {serviceType !== 'handyman' && (
+        {/*
+          Custom Hourly Cleaning (Geraldine, 2026-10-18). Her flow: contact and property
+          (step 1 and the bedrooms/bathrooms above), date and time (the block at the top of
+          this step), THEN number of cleaners and hours, THEN cleaning priorities, then the
+          estimate. Bedrooms and bathrooms come from the standard selects, which already
+          include this service: there is no area picker here to derive them from.
+        */}
+        {isHourly && (
+          <>
+            <HourlyPanel />
+            <HourlyPriorities />
+          </>
+        )}
+
+        {/*
+          Property size (Geraldine, 2026-10-18). For the area-priced service the free
+          square-footage box is replaced by size bands, and the band multiplies the area
+          price. Required, with Small pre-selected, because a skipped pricing input would
+          silently mean "Small" and under-quote every large home.
+
+          Only the area-priced service gets this. Her slides cover Regular and Deep, and
+          the other services have no area price for a band to multiply, so they keep the
+          plain optional number box below.
+        */}
+        {showAreas && (
+          <SpecSelect
+            label="Approx. Size"
+            icon={Ruler}
+            required
+            value={serviceExtras.propertySize ?? ''}
+            onChange={(v) => {
+              setExtra('propertySize')(v)
+              // Keep the numeric field in step with the band: it still feeds the time
+              // estimate, the booking record and the GHL booking object.
+              updatePropertySize({ squareFootage: propertySize(v)?.sqft ?? 0 })
+            }}
+            options={PROPERTY_SIZES.map((b) => ({ value: b.value, label: `${b.label}: ${b.range}` }))}
+          />
+        )}
+
+        {/* ── Approx. size, plain number (every other service; not Handyman) ─── */}
+        {serviceType !== 'handyman' && !showAreas && !isHourly && (
         <div style={{ gridColumn: 'span 2' }}>
           <label style={labelStyle}>
             Approx. Size <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(sq ft — optional)</span>
@@ -674,6 +734,7 @@ export function Step03Property() {
               <ConditionCards
                 value={serviceExtras.homeCondition ?? ''}
                 onChange={setExtra('homeCondition')}
+                options={conditionOptionsFor(tier)}
               />
             )}
 
@@ -697,6 +758,27 @@ export function Step03Property() {
                 </span>
               </div>
             )}
+
+            {/*
+              No automatic price (Geraldine, 2026-10-18), for Severe Condition and for Estate
+              (3,000+ sq ft). One notice for both: the customer is told why, in her wording,
+              and that nothing is charged. The rest of the wizard drops the pricing steps and
+              the final submit becomes a quote request, so this box is also the promise of
+              what happens next.
+            */}
+            {quoteOnly && quoteReason && (
+              <div role="status" style={{ gridColumn: 'span 2', padding: '16px 18px', background: '#e0f5f4', border: '1px solid var(--color-teal)' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-teal)', marginBottom: '6px' }}>
+                  Custom quote required
+                </div>
+                <p style={{ margin: 0, fontSize: '0.88rem', lineHeight: 1.55, color: 'var(--color-navy-deep)' }}>
+                  {QUOTE_MESSAGES[quoteReason]}
+                </p>
+                <p style={{ margin: '8px 0 0', fontSize: '0.78rem', lineHeight: 1.5, color: 'rgba(74,90,106,0.85)' }}>
+                  Nothing is charged and no time is booked. Continue to send us your details.
+                </p>
+              </div>
+            )}
           </>
         )}
 
@@ -704,15 +786,23 @@ export function Step03Property() {
 
       {/* ── Special instructions (all services) ───────────────── */}
       <div style={{ marginTop: '32px' }}>
+        {/* For Custom Hourly this is her question verbatim ("Is there anything specific you'd
+            like our cleaners to focus on?"). It is the same stored field as everywhere else,
+            so it already reaches the CRM note and the crew note with no new plumbing. */}
         <label style={labelStyle}>
-          Special Instructions <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+          {isHourly ? HOURLY_FOCUS_QUESTION : 'Special Instructions'}{' '}
+          <span style={{ color: 'rgba(74,90,106,0.6)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
         </label>
         <textarea
           value={specialInstructions}
           onChange={(e) => updateSpecialInstructions(e.target.value)}
           onFocus={onFieldFocus}
           onBlur={onFieldBlur}
-          placeholder="Anything we should know? Questions, priority areas, parking, pets…"
+          placeholder={
+            isHourly
+              ? 'e.g. the oven, the guest bathroom, pet hair on the sofa'
+              : 'Anything we should know? Questions, priority areas, parking, pets…'
+          }
           rows={4}
           style={{ ...inputStyle, paddingLeft: '16px', resize: 'vertical', fontFamily: 'inherit' }}
         />

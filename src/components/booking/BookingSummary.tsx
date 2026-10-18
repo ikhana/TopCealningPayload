@@ -19,22 +19,24 @@ import { Gem, Sparkles, BadgeCheck, ClipboardCheck } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import {
   quoteAreas,
-  quoteHourly,
+  quoteHourlyFromState,
   areaLineItems,
   isAreaPriced,
-  effectiveTier,
-  activeCondition,
-  conditionUplift,
+  isHourlyService,
+  areaPricing,
+  propertySize,
+  QUOTE_MESSAGES,
   HOURLY_DISCLAIMER,
   type RoomCounts,
 } from '@/data/pricing'
 import { addOnQty, addOnTotal, addOnsTotal, addOnVariant, getAddOn } from '@/data/addons'
+import { HOURLY_PRIORITY_OTHER } from '@/data/hourly'
 
 const SERVICE_LABELS: Record<string, string> = {
   residential:  'Residential Cleaning',
   'movein-out': 'Move In / Out',
   airbnb:       'AirBnB Special',
-  custom:       'Custom Cleaning',
+  custom:       'Custom Hourly Cleaning',
   commercial:   'Commercial Office',
   renovation:   'Post Renovation',
   hoarding:     'Hoarding Cleanup',
@@ -83,16 +85,20 @@ export function BookingSummary() {
   const { bookingData } = useBooking()
   const { serviceType, selectedExtras, extraQuantities, extraVariants, property, serviceExtras, frequency, customHourly } = bookingData
 
-  const priced = isAreaPriced(serviceType)
-  const hourly = priced && customHourly?.enabled === true
+  // Custom Hourly is a priced service of its own, just not by area.
+  const hourly = isHourlyService(serviceType)
+  const priced = isAreaPriced(serviceType) || hourly
 
   const areas: RoomCounts = property.areas ?? {}
-  const condition = activeCondition(serviceExtras.lastCleaned, serviceExtras.homeCondition)
-  const tier = effectiveTier(serviceExtras.cleaningType, condition)
+  const { tier, uplift, quoteOnly, quoteReason } = areaPricing(serviceExtras)
+  // No automatic price: Severe Condition, or an Estate-size home. Not in hourly mode, which
+  // has its own price and ignores the property entirely.
+  const quoteActive = priced && !hourly && quoteOnly && !!quoteReason
+  const sizeBand = propertySize(serviceExtras.propertySize)
   const lines = areaLineItems(areas, tier)
   const extrasTotal = addOnsTotal(selectedExtras, extraQuantities, extraVariants)
-  const quote = quoteAreas(areas, tier, frequency, extrasTotal, conditionUplift(condition))
-  const hourlyQuote = quoteHourly(customHourly?.cleaners ?? 2, customHourly?.hoursPerCleaner ?? 3)
+  const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift)
+  const hourlyQuote = quoteHourlyFromState(customHourly)
 
   const hasSomething = hourly || lines.length > 0 || selectedExtras.length > 0
   const total = hourly ? hourlyQuote.total : quote.total
@@ -106,7 +112,17 @@ export function BookingSummary() {
       </div>
 
       {/* ── Priced path: the live itemised quote ─────────────────────── */}
-      {priced && hasSomething && (
+      {/* ── No automatic price: say so, in her words, instead of showing a number ── */}
+      {quoteActive && quoteReason && (
+        <div style={{ border: '1px solid var(--color-teal)', background: '#e0f5f4', padding: '16px 18px', marginBottom: '20px' }}>
+          <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--color-navy-deep)' }}>Custom Quote Required</div>
+          <p style={{ margin: '8px 0 0', fontSize: '0.8rem', lineHeight: 1.55, color: 'var(--color-navy-deep)' }}>
+            {QUOTE_MESSAGES[quoteReason]}
+          </p>
+        </div>
+      )}
+
+      {priced && !quoteActive && hasSomething && (
         <div style={{ border: '1px solid rgba(13,27,46,0.08)', background: 'white', padding: '16px 18px', marginBottom: '20px' }}>
 
           <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--color-navy-deep)' }}>
@@ -116,10 +132,18 @@ export function BookingSummary() {
           {hourly ? (
             <>
               <SectionHeading>Time Booked</SectionHeading>
+              {(customHourly?.priorities?.length ?? 0) > 0 && (
+                <Line label="Focus areas" value={customHourly!.priorities!.map((v) => (v === HOURLY_PRIORITY_OTHER ? customHourly?.priorityOther || 'Other' : v)).join(', ')} muted />
+              )}
+              <Line label="Total Labor Hours" value={`${hourlyQuote.totalLaborHours} hours`} />
               <Line label="Number of Cleaners" value={String(hourlyQuote.cleaners)} />
-              <Line label="Hours Per Cleaner" value={`${hourlyQuote.hoursPerCleaner} hours`} />
-              <Line label="Total Labor Hours" value={`${hourlyQuote.totalLaborHours} hours`} muted />
-              <Line label="Hourly rate" value={`$${hourlyQuote.rate} / hour`} muted />
+              {hourlyQuote.cleaners > 1 && (
+                <Line label="Hours Per Cleaner" value={`${hourlyQuote.hoursPerCleaner} hours`} muted />
+              )}
+              <Line label="Hourly rate" value={`${hourlyQuote.rate} / hour`} muted />
+              {hourlyQuote.savings > 0 && (
+                <Line label="You save" value={`${hourlyQuote.savings}`} accent />
+              )}
             </>
           ) : (
             <>
@@ -134,6 +158,16 @@ export function BookingSummary() {
                     />
                   ))}
                 </>
+              )}
+
+              {/*
+                Size is named, not priced. The adjustment itself is not itemised (the same
+                rule as the condition adjustment: the customer sees an updated cleaning price,
+                not a fee line), but with the bands in play the area lines no longer add up to
+                the total unless the customer can see WHY. This line is that explanation.
+              */}
+              {sizeBand && sizeBand.uplift > 0 && (
+                <Line label="Property size" value={sizeBand.label} muted />
               )}
 
               {selectedExtras.length > 0 && (
@@ -198,7 +232,7 @@ export function BookingSummary() {
       )}
 
       {/* ── Priced but nothing chosen yet ────────────────────────────── */}
-      {priced && !hasSomething && (
+      {priced && !quoteActive && !hasSomething && (
         <p style={{ fontSize: '0.85rem', color: 'rgba(74,90,106,0.75)', lineHeight: 1.6, marginBottom: '20px' }}>
           Choose the areas you&apos;d like cleaned and your estimate will appear here.
         </p>

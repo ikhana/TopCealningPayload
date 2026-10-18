@@ -53,6 +53,12 @@ export interface ServiceExtras {
    */
   lastCleaned?: string        // within-1-month | 1-3-months | 3-6-months | over-6-months | not-sure
   homeCondition?: string      // maintained | attention | heavy   (only asked when asksCondition())
+  /**
+   * Property size band (Geraldine, 2026-10-18), a stable key from PROPERTY_SIZES in
+   * src/data/pricing.ts: small | medium | large | xl | oversized | estate. Replaces the
+   * free square-footage box for the area-priced service.
+   */
+  propertySize?: string
   typeOfSpace?: string        // Commercial:        Office | Store | Other
   propertiesManaged?: string  // Airbnb:            1 | 2-5 | 6-10 | 10+
   propertyType?: string       // Post-Construction: House | Apartment | Commercial
@@ -155,7 +161,10 @@ export interface BookingFormData {
    */
   extraVariants?: Record<string, string>
   /**
-   * Custom Hourly Cleaning (Geraldine, 2026-09-21). An ALTERNATIVE to the
+   * Custom Hourly Cleaning (Geraldine, 2026-09-21; made its own SERVICE on 2026-10-18, so
+   * serviceType === 'custom' is what makes a booking hourly and `enabled` is now legacy:
+   * it only identifies a draft saved when this was a toggle on Residential, see
+   * setBookingDataAll). Originally an ALTERNATIVE to the
    * area-priced Regular/Deep quote, not an addition to it: when `enabled`, the
    * area prices, the add-ons, the minimum booking and the recurring discount are
    * all set aside and the total is cleaners x hours x rate.
@@ -166,7 +175,22 @@ export interface BookingFormData {
   customHourly?: {
     enabled: boolean
     cleaners: number
-    hoursPerCleaner: number
+    /**
+     * TOTAL combined labour hours, divided between the cleaners. This is the input,
+     * not hours per cleaner: with the product as the input, adding a second cleaner
+     * to a 6-hour booking made it 12 hours and doubled the price.
+     */
+    totalHours?: number
+    /** LEGACY: drafts saved before the form switched to totalHours. Read, never written. */
+    hoursPerCleaner?: number
+    /**
+     * Areas the customer wants the cleaners to focus on (values from HOURLY_PRIORITIES in
+     * src/data/hourly.ts). Required: Geraldine, 2026-10-18, "customers must select the areas
+     * they want our cleaners to focus on".
+     */
+    priorities?: string[]
+    /** Free text for the "Other (please specify)" priority. */
+    priorityOther?: string
   }
   address: AddressInfo
   serviceDate: string

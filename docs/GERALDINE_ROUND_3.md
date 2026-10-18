@@ -23,7 +23,71 @@ known to be outstanding, but ask Inaam if any slide is still to come.
 - Legacy areas (kitchen, living room, dining room, office) are migrated when a saved draft is resumed, so old abandoned-booking links do not charge for rooms the picker no longer shows.
 - The "Want Something Custom?" prompt is removed from Step 4. The hourly panel stays in the code, unreachable, until Custom Hourly is rebuilt as its own category.
 
-**Still to build:** section 5 (size bands), section 6 (Severe and Estate quote path), section 7 (Custom Hourly category), section 8 (deposit). Blocked on her answers: hourly rate and deposit (and how size stacks with the condition surcharge).
+**Phase 2 built 2026-10-18** (sections 5 and 6, plus the hourly fix):
+
+- **Size bands** replace the sq ft box for the area-priced service: S / M / L / XL / Oversized / Estate, +0/10/20/30/40%. Size and condition are **added** (+20% and +25% = +45%), per her answer. `areaPricing()` in `pricing.ts` is the single place the tier and uplift are worked out; the form, estimate, summary, hook and submit flow all call it. Other services keep the plain number box.
+- **Custom quote path** for **Severe Condition** (Deep only) and **Estate**: no price shown, Add-ons / Frequency / Payment steps dropped, date not required, and the final submit goes to `/api/ghl/form-submit` as audience `quote` (not `/api/bookings/submit`, which would book a time). Stored in `enquiries` first, then synced to GHL as a contact tagged `custom-quote`, with an opportunity named "(custom quote)" in Website Enquiries. Photos are attached. Tested end to end for both reasons (20 checks each).
+- **Hourly input fixed**: total labor hours first, then cleaners, so adding a cleaner can no longer double the price.
+- GHL fields created/updated by script: **Property Size** (new), **Severe Condition** option on Home Condition.
+- Summary shows the property size as a line (no percentage, no fee line), same rule as the condition adjustment.
+
+**Phase 3 built 2026-10-18** (section 7, everything except the deposit):
+
+- **Custom Hourly Cleaning is its own service** in the Step 2 picker (stored value `custom`, which already existed in ServiceCategory, the Bookings collection and the GHL service map). It is no longer a toggle under the Regular/Deep estimate.
+- **Its own flow**: Contact, Service, Specs, Access. No Add-ons, no Frequency, no payment step. Specs holds: date and time, bedrooms and bathrooms, total labor hours, cleaners (1, or 2 from 6 hours), the estimated total with the rate card and savings, **cleaning priorities** (her 8 options, "Other" opens a text box, at least one required) and her focus question (stored in the existing Special Instructions field).
+- Her **disclaimer** (the new "IMPORTANT SERVICE DISCLAIMER" wording) is shown on the Specs panel and again in a highlighted box directly above the submit button. It replaced the older disclaimer text everywhere, including the After Party page.
+- The calendar slot is the time bought: 1 cleaner x 6h blocks 6 hours, 2 cleaners sharing 8 hours blocks 4. (Area-priced jobs still block only the 3-hour minimum.)
+- Always one-off: a leftover "weekly" from an earlier service is reset on the client and forced to one-time on the server, so no recurring series or tag is created.
+- Leftover Residential answers (size, Deep, condition, add-ons) are kept out of the CRM record and the price.
+- New GHL fields (created by script): **Hourly Cleaners**, **Hourly Labor Hours**, **Cleaning Priorities** (multi-select). Tested end to end for 1x6h ($252) and 2x4h ($320): 32 checks.
+- Old drafts saved with the Residential toggle resume as Custom Hourly.
+
+**Cannot be verified from here:** the appointment's own notes (the crew note). GHL accepts the field but none of its read endpoints return it, so it is unknown whether it is stored. This is true of EVERY booking, not just hourly. Check by opening a recent appointment in the GHL calendar and looking for a notes box. Nothing critical depends on it: cleaners, hours and priorities are separate fields, and the "Other" text and the focus note go to the contact's Notes field, which was verified.
+
+**Still to build:** section 8, the $30 deposit. It is the only unanswered question. Move-out (Deep prices plus a fee) is parked on her instruction.
+
+**Also check when the deposit is decided:** the After Party FAQ says "nothing is charged at booking". True today, false once a deposit exists.
+
+**Do by hand in GHL, added by Custom Hourly:** put the new fields (Hourly Cleaners, Hourly Labor Hours, Cleaning Priorities) into the Staff Alert workflow so the team sees the staffing shape in the alert.
+
+**Do by hand in GHL (the API token cannot write workflows):**
+
+1. **Abandoned Booking Recovery**: add an exit on the tag **`custom-quote`**. A quote requester was tagged `website-lead` at Step 1, so without this they get "finish your booking" emails after they have already finished.
+2. **New workflow on tag `custom-quote`**: acknowledgement email and SMS ("our team will contact you within 24 hours with a personalized quote") and a staff alert. Respect consent and the 8 AM to 8 PM window.
+3. **Booking Confirmation Email & SMS** and email 01: still says "you're all set"; should say request received.
+
+**Known gaps in the quote path:** the photos on a quote request are limited to images, 6 files, 10 MB each (same as a booking). Nothing yet tells staff how to price an Estate: the note carries the areas, size, condition and photos, but no pricing guidance.
+
+---
+
+## Answers received 2026-10-18 (WhatsApp, and her answers slides)
+
+These SUPERSEDE the matching questions in section 11 and several "open" notes above.
+
+| Question | Her answer | Status |
+|----------|-----------|--------|
+| Size + condition: add or multiply? | **Add them**: Large +20% and Needs Extra Attention +25% = **+45%** = $246.50 on a $170 base | Decided. Build size bands as `1 + size% + condition%`, not compounding. |
+| Custom Hourly rate | **Replaced.** New slide: "replace the previous $35/$32/$30": 3-4 labor hours **$45**, 5-6 hours **$42**, 7+ hours **$40** | **Built** (see below). The "$45 flat" spec in section 7 is superseded. |
+| Number of cleaners | Second cleaner only from **6 combined hours**; 3-5 hours = 1 cleaner only; each cleaner at least 3 hours; hours are divided, never doubled | **Built** (see below). |
+| Garage Sweep, Bed Linens, Air Vents, Window Tracks | All four offered. **Air Vents is exterior only.** | **Built** (label now "Air Vents (exterior only)"). |
+| Deep minimum $200 | Confirmed: "that is our minimum for deep clean" | **Built**, comment updated. |
+| Kitchen/Living/Dining flat $70 even with no dining room | Keep $70, rename to "Dining **Area**". It covers a breakfast nook, island or dining table, not only a separate room. | **Built** (label plus a line under the picker). |
+| Move-out pricing | Use the **Deep prices PLUS A FEE**. She also said: **do not work on that service yet**, finish Regular and Deep first. | **Parked. Do not build.** Fee amount not given. |
+| Baseboards | She is thinking of a **custom price depending on house size**. Still checking. | Open. Leave as is. |
+| $30 deposit | **Not answered** in what we have. | **Still open.** |
+
+### Hourly rework built 2026-10-18
+
+Her rate slide, number-of-cleaners slide and seven worked examples are all implemented and
+tested (43 checks). One real bug was found and fixed on the way: the form asked for
+HOURS PER CLEANER and a cleaner count, so adding a second cleaner to a 6-hour booking made
+it 12 hours and changed the price from $252 to $480, which is exactly what her slide says
+must not happen. The form now asks for TOTAL labor hours first, then cleaners, and the
+cleaner count can no longer change the price.
+
+The hourly panel is still unreachable from the UI (the entry point was removed at her
+request). It is waiting for the standalone Custom Hourly service category, which is
+waiting on the deposit answer.
 
 ---
 
@@ -474,3 +538,33 @@ Plain wording, no em dashes, ready to send.
    separate services?
 10. **Basement**: keep at $45? And are Garage Sweep, Change Bed Linens, Air Vents and
     Window Tracks all services you offer?
+
+---
+
+## 12. Gaps found when checking every slide against this doc (2026-10-18)
+
+Nothing she wrote was missed. These are things she did NOT say that the build will run into.
+
+1. **Move-In / Move-Out is not mentioned for pricing.** Her size bands and area prices say
+   "Regular and Deep". Today a Move-in/Move-out customer is priced on the **Regular**
+   column (only "Deep" selects the deep prices), so they now get the new Regular prices.
+   Her hourly spec does mention "Regular, Deep, or Move-Out Cleaning", so she knows it
+   exists. Ask whether Move-Out should price as Regular, as Deep, or stay a quote. A
+   move-out usually takes more work than a regular clean, so Regular may under-price it.
+2. **Her Deep "standard configuration" has defaults we have not set.** She defines it as
+   1 bedroom, 1 bathroom, up to 1,000 sqft, **Well Maintained** = $200. That implies size
+   defaults to Small and condition defaults to Well Maintained, so her default totals
+   hold. Today the condition question has no default and is required. When the size band
+   is built, decide whether Small and Generally Maintained are pre-selected.
+3. **Half Bathroom, Family Room, Laundry, Stairs/Hallway, Patio/Balcony prices were not
+   mentioned** in either column. We assume they are unchanged.
+4. **Where the Severe option shows.** She says "Property Condition section for Deep
+   Cleaning". Our condition question is shared by Regular and Deep, and a Regular customer
+   who picks Heavy Buildup is switched to Deep automatically.
+
+Slides only partly covered because they are visual:
+
+- The size-band slide with house illustrations (optional graphic, not required).
+- The hourly UI screenshot is **our own current screen**, not a new design from her.
+- The "Type of Cleaning" dropdown screenshot sits beside the hourly slide, but her spec
+  section 6 settles it: Custom Hourly is its own service category, not a dropdown option.

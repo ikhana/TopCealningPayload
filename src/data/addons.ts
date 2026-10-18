@@ -122,13 +122,14 @@ export const ADD_ONS: AddOn[] = [
   { id: 'chandeliers',     label: 'Chandeliers / Lights', price: 15, unit: 'each',   quantity: true,  unitSuffix: 'each', hint: 'How many chandeliers or light fixtures?' },
   { id: 'same-day',        label: 'Same Day Booking',     price: 40, unit: 'flat',   quantity: false },
 
-  // ── Added 2026-09-21 ────────────────────────────────────────────────────────
-  // On Geraldine's price table but never offered in the booking form. Added on
-  // my judgement rather than her explicit instruction, so worth one confirming
-  // word from her that these are genuinely available before they go live.
+  // ── Added 2026-09-21, confirmed by Geraldine 2026-10-18 ─────────────────────
+  // On her price table but never offered in the booking form, so added on our own
+  // judgement. She has now confirmed all four are real services, with one limit: Air
+  // Vents is EXTERIOR only ("we can do those services, the Air Vent is just exterior"),
+  // which is why that label says so. Customers should not book interior vent cleaning.
   { id: 'garage-sweep',    label: 'Garage Sweep',         price: 30, unit: 'flat',   quantity: false, startingAt: true },
   { id: 'bed-linens',      label: 'Change Bed Linens',    price: 10, unit: 'bed',    quantity: true,  unitSuffix: 'per bed', hint: 'How many beds?' },
-  { id: 'air-vents',       label: 'Air Vents',            price: 8,  unit: 'each',   quantity: true,  unitSuffix: 'each', hint: 'How many vents?' },
+  { id: 'air-vents',       label: 'Air Vents (exterior only)', price: 8, unit: 'each', quantity: true, unitSuffix: 'each', hint: 'How many exterior vents?' },
   { id: 'window-tracks',   label: 'Window Tracks',        price: 30, unit: 'flat',   quantity: false, startingAt: true },
 ]
 

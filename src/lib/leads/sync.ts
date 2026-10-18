@@ -30,7 +30,7 @@ type Tri = 'yes' | 'no' | 'not-offered' | null | undefined
 
 type EnquiryRow = {
   id: number | string
-  source: 'booking-start' | 'contact' | 'careers'
+  source: 'booking-start' | 'contact' | 'careers' | 'quote'
   firstName?: string | null
   lastName?: string | null
   email: string
@@ -57,7 +57,7 @@ export type SyncResult = { resumeUploaded: boolean }
  * go into the existing NOTES field as one readable block rather than a dozen new custom
  * fields: nobody filters a pipeline on "allergic to any products".
  */
-const DETAILS: Record<'contact' | 'careers', Array<[string, string]>> = {
+const DETAILS: Record<'contact' | 'careers' | 'quote', Array<[string, string]>> = {
   contact: [
     ['service', 'Service type'],
     ['message', 'Message'],
@@ -72,9 +72,37 @@ const DETAILS: Record<'contact' | 'careers', Array<[string, string]>> = {
     ['experience', 'Experience'],
     ['allergies', 'Allergies'],
   ],
+  // A custom quote request from the booking form: everything the customer entered on the way
+  // to learning there is no automatic price, so the person writing the quote does not have to
+  // ask again.
+  quote: [
+    ['quote_reason', 'Why a custom quote'],
+    ['service', 'Service'],
+    ['cleaning_type', 'Type of cleaning'],
+    ['property_size', 'Property size'],
+    ['last_cleaned', 'Last thoroughly cleaned'],
+    ['home_condition', 'Home condition'],
+    ['areas', 'Areas to clean'],
+    ['add_ons', 'Add-ons mentioned'],
+    ['preferred_date', 'Preferred date'],
+    ['preferred_time', 'Preferred time'],
+    ['flexible_times', 'Flexible times'],
+    ['access_method', 'Property access'],
+    ['pets', 'Pets'],
+    ['children', 'Children'],
+    ['address', 'Address'],
+    ['referral', 'Heard about us'],
+    ['instructions', 'Special instructions'],
+  ],
 }
 
-const TAGS: Record<'booking-start' | 'contact' | 'careers', string[]> = {
+const HEADINGS = {
+  contact: 'Contact form enquiry',
+  careers: 'Job application',
+  quote: 'Custom quote request',
+} as const
+
+const TAGS: Record<'booking-start' | 'contact' | 'careers' | 'quote', string[]> = {
   // 'website-lead' is what triggers the abandoned-booking sequence, so it belongs to the
   // booking form ONLY. Someone asking a question through the contact form has not
   // abandoned a booking, and dropping them into that sequence would message them about a
@@ -82,6 +110,10 @@ const TAGS: Record<'booking-start' | 'contact' | 'careers', string[]> = {
   'booking-start': ['website-lead'],
   contact: ['contact-form'],
   careers: ['job-application'],
+  // Not 'website-lead': this person has finished the form, they have not abandoned it. The
+  // tag is what a GoHighLevel workflow should key on to stop the abandoned-booking sequence
+  // and send the quote acknowledgement. (Done by hand in GHL, see docs/GERALDINE_ROUND_3.md.)
+  quote: ['custom-quote'],
 }
 
 function siteUrl(): string {
@@ -99,7 +131,7 @@ const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
 export async function syncEnquiry(
   payload: Payload,
   id: number | string,
-  opts: { resume?: File } = {},
+  opts: { resume?: File; media?: File[] } = {},
 ): Promise<SyncResult> {
   const log: LogEntry[] = []
   const now = () => new Date().toISOString()
@@ -198,8 +230,19 @@ export async function syncEnquiry(
       .filter(([, value]) => value)
       .map(([label, value]) => `${label}: ${value}`)
       .join('\n')
-    const heading = audience === 'careers' ? 'Job application' : 'Contact form enquiry'
+    const heading = HEADINGS[audience]
     addField(FIELDS.notes, [`${heading} - ${consentAt}`, detailLines].filter(Boolean).join('\n\n'))
+
+    // A quote request also fills the structured fields the booking path fills, so the contact
+    // looks the same in GoHighLevel whichever way it arrived and can be filtered the same way.
+    // The values are the display labels, which is what these SINGLE_OPTIONS fields hold.
+    if (audience === 'quote') {
+      addField(FIELDS.service, str(details.service))
+      addField(FIELDS.cleaningType, str(details.cleaning_type))
+      addField(FIELDS.propertySize, str(details.property_size))
+      addField(FIELDS.lastCleaned, str(details.last_cleaned))
+      addField(FIELDS.homeCondition, str(details.home_condition))
+    }
 
     const contact = await upsertContact({
       firstName: doc.firstName ?? '',
@@ -208,6 +251,18 @@ export async function syncEnquiry(
       // GHL accepts a contact keyed on email alone. The contact form makes the phone
       // optional, so the key is sent only when there is a number.
       ...(doc.phone ? { phone: doc.phone } : {}),
+      // The service address, quote requests only. The team needs it to price the job, and
+      // the contact form and job application do not collect one.
+      ...(audience === 'quote'
+        ? {
+            address1: [str(details.address_street), str(details.address_apt) ? `Apt ${str(details.address_apt)}` : '']
+              .filter(Boolean)
+              .join(', '),
+            city: str(details.address_city),
+            state: str(details.address_state),
+            postalCode: str(details.address_zip),
+          }
+        : {}),
       locationId,
       tags: TAGS[audience],
       customFields,
@@ -232,7 +287,12 @@ export async function syncEnquiry(
             contactId,
             pipelineId: found.pipelineId,
             pipelineStageId: found.stageId,
-            name: audience === 'careers' ? `${who} (application)` : `${who} (contact form)`,
+            name:
+              audience === 'careers'
+                ? `${who} (application)`
+                : audience === 'quote'
+                  ? `${who} (custom quote)`
+                  : `${who} (contact form)`,
             status: 'open',
           })
           opportunityId = (opp as { id?: string })?.id ?? opportunityId
@@ -240,6 +300,26 @@ export async function syncEnquiry(
         }
       } catch (err) {
         log.push({ at: now(), result: 'error', step: 'opportunity', detail: err instanceof Error ? err.message : String(err) })
+      }
+    }
+
+    // Photos, quote requests only. They are what lets the person quoting see the job, and a
+    // customer sending details for a personalised quote will expect them to arrive. Same
+    // service-media field and limits as a booking's photos. Non-fatal, like the resume.
+    if (audience === 'quote' && contactId && opts.media && opts.media.length > 0) {
+      try {
+        if (!FIELDS.serviceMedia) {
+          log.push({ at: now(), result: 'skipped', step: 'photos', detail: 'service media field not present in GHL' })
+        } else {
+          await uploadFilesToContactField(
+            contactId,
+            FIELDS.serviceMedia,
+            opts.media.map((f) => ({ blob: f, filename: f.name })),
+          )
+          log.push({ at: now(), result: 'ok', step: 'photos', detail: `${opts.media.length} file(s)` })
+        }
+      } catch (err) {
+        log.push({ at: now(), result: 'error', step: 'photos', detail: err instanceof Error ? err.message : String(err) })
       }
     }
 
