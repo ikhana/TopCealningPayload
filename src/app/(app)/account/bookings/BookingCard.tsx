@@ -20,7 +20,7 @@ const SERVICE_LABELS: Record<string, string> = {
   commercial:   'Commercial Cleaning',
   renovation:   'Post-Renovation Cleaning',
   hoarding:     'Hoarding Cleanup',
-  custom:       'Custom Cleaning',
+  custom:       'Custom Hourly Cleaning',
 }
 
 function StatusBadge({ status }: { status: string }) {

@@ -67,7 +67,7 @@ export const Bookings: CollectionConfig = {
             { label: 'Renovation', value: 'renovation' },
             { label: 'Hoarding', value: 'hoarding' },
             { label: 'Handyman', value: 'handyman' },
-            { label: 'Custom', value: 'custom' },
+            { label: 'Custom Hourly', value: 'custom' },
           ],
         },
         {

@@ -947,7 +947,7 @@ export const SERVICES = {
       mainLine: 'After Party Cleaning',
       secondaryLine: 'prices.',
       intro:
-        'After party cleaning is booked by the hour, because no two parties leave the same mess. You choose the number of cleaners and the hours each one works, with a minimum of 3 hours per cleaner. The more labor hours you book in total, the lower the hourly rate.',
+        'After party cleaning is booked by the hour, because no two parties leave the same mess. You choose the total labor hours, with a minimum of 3, and whether one or two cleaners share them (a second cleaner is available from 6 labor hours). The more labor hours you book in total, the lower the hourly rate.',
       rows: AFTER_PARTY.rows,
       example: AFTER_PARTY.exampleText,
       note: HOURLY_DISCLAIMER,
@@ -998,7 +998,7 @@ export const SERVICES = {
         {
           question: 'How do I book after party cleaning?',
           answer:
-            'Book online with the hourly Custom Cleaning option, or call (954) 833-4276 and we will set it up with you. You see the estimated total before you submit, and nothing is charged at booking.',
+            'Book online by choosing Custom Hourly Cleaning, or call (954) 833-4276 and we will set it up with you. You see the estimated total before you submit, and nothing is charged at booking.',
         },
       ],
     },
