@@ -23,6 +23,7 @@ import { AboutSplitClient } from '@/blocks/AboutSplit/Component.client'
 import { FaqClient } from '@/blocks/Faq/Component.client'
 import { TCWhatsIncludedClient } from '@/blocks/TCWhatsIncluded/Component.client'
 import { TCWhyTopSectionClient } from '@/blocks/TCWhyTop/Component.client'
+import { RequestQuoteForm } from '@/components/RequestQuoteForm'
 import { TCButton } from '@/components/ui/TCButton'
 import { TCHeadingStack } from '@/components/ui/TCHeading'
 import { buildHeroLexical, buildPlainLexical } from '@/utilities/serviceLexical'
@@ -319,6 +320,29 @@ export default async function ServicePage({ params }: Args) {
           </section>
         )}
 
+        {/* Request-only services (Airbnb, Commercial): a short form instead of the booking
+            wizard. No price, no deposit, no address. See src/data/requestForms.ts. */}
+        {(service.slug === 'airbnb' || service.slug === 'commercial') && (
+          <section id="request-a-quote" className="bg-white py-[80px] lg:py-[100px] px-[5%] scroll-mt-24">
+            <div className="max-w-[640px] mx-auto">
+              <TCHeadingStack
+                ghostKicker="Custom Quote"
+                mainLine="Request A"
+                secondaryLine="Custom Quote."
+                level="h2"
+                theme="light"
+                size="md"
+                className="mb-6"
+              />
+              <p className="text-[1rem] leading-[1.7] text-navy-deep/70 mb-8">
+                Tell us a little about what you need and we will send you a custom quote. There is no
+                payment and no commitment at this stage.
+              </p>
+              <RequestQuoteForm kind={service.slug} />
+            </div>
+          </section>
+        )}
+
         {/* 3. Why Top Cleaning — universal value props */}
         <TCWhyTopSectionClient />
 
@@ -369,7 +393,11 @@ function ServiceCloser({ service }: { service: ServiceContent }) {
             Request your date in under two minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <TCButton variant="primary" href="/booking">Book Your Cleaning</TCButton>
+            {service.slug === 'airbnb' || service.slug === 'commercial' ? (
+              <TCButton variant="primary" href="#request-a-quote">Request a Custom Quote</TCButton>
+            ) : (
+              <TCButton variant="primary" href="/booking">Book Your Cleaning</TCButton>
+            )}
             <TCButton variant="ghost" href="tel:+19548334276">Or call (954) 833 4276</TCButton>
           </div>
         </div>

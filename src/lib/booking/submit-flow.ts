@@ -23,6 +23,7 @@ import {
   type RoomKey,
   MINIMUM_HOURS,
   areaPricing,
+  MOVE_OUT_TYPE,
   propertySize,
   conditionLabel,
   lastCleanedLabel,
@@ -303,9 +304,13 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
     // carry the tier we actually PRICED at. A contact reading "Regular" against
     // a deep-clean total is the version of this that ends in an argument on the
     // doorstep.
-    const { condition, tier, uplift, sizeUplift: sizeU, conditionUplift: condU } = areaPricing(extras)
+    const { condition, tier, uplift, sizeUplift: sizeU, conditionUplift: condU, flatFee } = areaPricing(extras)
     const sizeBand = propertySize(extras.propertySize)
-    const cleaningTypeValue = tier === 'deep' ? 'Deep' : extras.cleaningType
+    // A move-in/move-out clean is priced on the deep tier but is NOT a Deep clean: the CRM must
+    // keep saying "Move-in/Move-out", or whoever schedules it sees a plain Deep clean at a
+    // price $60 higher than Deep and has no way to tell why.
+    const cleaningTypeValue =
+      extras.cleaningType === MOVE_OUT_TYPE ? MOVE_OUT_TYPE : tier === 'deep' ? 'Deep' : extras.cleaningType
 
     // Field ids are resolved from GHL by fieldKey, not read from env. See
     // src/lib/ghl/fields.ts. Cached for the life of the process.
@@ -448,7 +453,10 @@ export async function submitBooking(params: SubmitBookingParams): Promise<Submit
       noteParts.push('Time-based: prioritise the customer\'s stated areas, completion not guaranteed.')
     } else if (isAreaPriced(formData.serviceType) && hasSelection(areaCounts)) {
       noteParts.push(`Estimated duration: ${fullEstimateHours}h (slot booked at ${bookedHours}h — extend if needed)`)
-      noteParts.push(`Estimated price: $${quoteAreas(areaCounts, tier, 'one-time', 0, uplift).total}`)
+      noteParts.push(`Estimated price: $${quoteAreas(areaCounts, tier, 'one-time', 0, uplift, flatFee).total}`)
+      if (flatFee > 0) {
+        noteParts.push(`MOVE-IN / MOVE-OUT: priced at Deep rates plus a $${flatFee} fee (the fee is not affected by size or condition).`)
+      }
       // The crew and whoever takes the confirmation call need to know what they
       // are walking into. This is the one place the condition IS spelled out:
       // Geraldine's "do not show a +25% line" is about the customer-facing

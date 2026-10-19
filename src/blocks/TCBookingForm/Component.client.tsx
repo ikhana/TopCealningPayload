@@ -13,6 +13,7 @@ import { useBooking } from '@/components/booking/BookingContext'
 import { generateIdempotencyKeyClient } from '@/lib/booking/idempotency'
 import { validateStep } from '@/lib/booking/step-validation'
 import { buildQuoteFormData } from '@/lib/booking/quote-request'
+import { DEPOSIT_MESSAGE, requiresDeposit } from '@/data/deposit'
 import { areaPricing, isAreaPriced, isHourlyService, HOURLY_DISCLAIMER } from '@/data/pricing'
 import { useDraftSync } from '@/hooks/useDraftSync'
 import type { ServiceCategory } from '@/types/booking'
@@ -156,6 +157,8 @@ const ALL_STEPS = [
 // Per-service step flows — which real step numbers each service includes.
 // Services not listed here use the full default flow. Step 02 (Service) is the
 // selector, so the flow resolves the moment a service is chosen.
+const isRequestOnlyService = (t: ServiceCategory | '') => t === 'airbnb' || t === 'commercial'
+
 const SERVICE_STEP_NUMS: Partial<Record<ServiceCategory, string[]>> = {
   // Handyman: Contact, Service, Details (handyman questions + mandatory
   // photos), Schedule (preferred date), Access (pets/children/access).
@@ -170,6 +173,10 @@ const SERVICE_STEP_NUMS: Partial<Record<ServiceCategory, string[]>> = {
 
 // Builds the visible step list for a service, applying the payment-flag filter.
 function buildSteps(serviceType: ServiceCategory | '', quoteOnly = false) {
+  // Airbnb and Commercial are request-only: the service step holds their short form, and there
+  // is nothing after it. Contact stays in the list so that choosing another service afterwards
+  // does not move the customer back a step.
+  if (isRequestOnlyService(serviceType)) return ALL_STEPS.filter((s) => s.num === '01' || s.num === '02')
   // A custom quote request (Severe Condition, Estate) drops Add-ons and Frequency, because
   // both exist to build a price and there is no price. It also never shows Payment. What is
   // left is: who you are, what you want, the property, and how we get in.
@@ -344,6 +351,9 @@ function BookingFormInner() {
     [bookingData.serviceType, quoteOnly],
   )
   const TOTAL_STEPS = STEPS.length
+  // The short form owns the submit, so the wizard's own agreement, deposit, buttons, summary
+  // and mobile bar are all hidden for these two services.
+  const requestOnly = isRequestOnlyService(bookingData.serviceType)
   const STEP_NUM_AT = (wizardStep: number) => parseInt(STEPS[wizardStep - 1]?.num ?? '0', 10)
   useEffect(() => {
     setCurrentStep((s) => Math.min(s, TOTAL_STEPS))
@@ -794,7 +804,7 @@ function BookingFormInner() {
               persisted transform from its `forwards` animation, which created a
               stacking context that stopped the button repainting when its
               disabled state flipped. */}
-          {currentStep === TOTAL_STEPS && (
+          {currentStep === TOTAL_STEPS && !requestOnly && (
             <>
               {/* Her slide, "4. IMPORTANT SERVICE DISCLAIMER": "Please make this message clearly
                   visible before the customer completes the booking... we don't want customers
@@ -807,6 +817,20 @@ function BookingFormInner() {
                   </div>
                   <p style={{ margin: 0, fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--color-navy-deep)', fontWeight: 600 }}>
                     {HOURLY_DISCLAIMER}
+                  </p>
+                </div>
+              )}
+              {/* The deposit message, in her wording, directly above the button that completes the
+                  booking ("Please display this message clearly at checkout"). DISPLAY ONLY: no card
+                  is taken yet, see src/data/deposit.ts. Shown for every service with an automatic
+                  price (Regular, Deep, Move-In/Move-Out, Custom Hourly) and for nothing else. */}
+              {requiresDeposit(bookingData) && (
+                <div role="note" style={{ marginBottom: '20px', padding: '16px 18px', background: '#e0f5f4', border: '1px solid var(--color-teal)' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-teal)', marginBottom: '6px' }}>
+                    Booking deposit
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--color-navy-deep)', fontWeight: 600 }}>
+                    {DEPOSIT_MESSAGE}
                   </p>
                 </div>
               )}
@@ -826,7 +850,7 @@ function BookingFormInner() {
           )}
 
           {/* ── Desktop nav buttons ── */}
-          {currentStep < TOTAL_STEPS && (
+          {currentStep < TOTAL_STEPS && !requestOnly && (
             <div className="bf-desktop-nav" style={{ marginTop: '60px', justifyContent: 'space-between', alignItems: 'center' }}>
               <TCButton
                 variant="ghost"
@@ -844,7 +868,7 @@ function BookingFormInner() {
               </TCButton>
             </div>
           )}
-          {currentStep === TOTAL_STEPS && (
+          {currentStep === TOTAL_STEPS && !requestOnly && (
             <div className="bf-desktop-nav" style={{ marginTop: '28px' }}>
               <TCButton variant="ghost" onClick={goBack}>← Back</TCButton>
             </div>
@@ -866,13 +890,19 @@ function BookingFormInner() {
             overflowY: 'auto',
           }}
         >
-          <BookingSummary />
+          {requestOnly ? (
+            <p style={{ fontSize: '0.85rem', lineHeight: 1.6, color: 'rgba(74,90,106,0.85)' }}>
+              Request forms have no price and no deposit. We will send you a custom quote.
+            </p>
+          ) : (
+            <BookingSummary />
+          )}
         </aside>
 
       </div>
 
       {/* ── Mobile sticky bottom bar (hidden on desktop via CSS) ── */}
-      <MobileBottomBar
+      {!requestOnly && <MobileBottomBar
         currentStep={currentStep}
         totalSteps={TOTAL_STEPS}
         stepLabel={STEPS[currentStep - 1]?.label ?? ''}
@@ -880,7 +910,7 @@ function BookingFormInner() {
         onBack={goBack}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
-      />
+      />}
 
     </>
   )

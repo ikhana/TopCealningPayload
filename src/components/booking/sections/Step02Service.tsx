@@ -5,6 +5,8 @@ import React from 'react'
 import { Home, PackageOpen, Bed, Building2, Wrench, Hammer, Clock } from 'lucide-react'
 import { useBooking } from '@/components/booking/BookingContext'
 import type { ServiceCategory } from '@/types/booking'
+import { RequestQuoteForm } from '@/components/RequestQuoteForm'
+import { REQUEST_FORM_TITLE } from '@/data/requestForms'
 
 // All services share the same 3-hour minimum per Geraldine's PDF slide 16.
 // (Was per-service before: 3h/4h/5h/6h variants.) Booking-summary still
@@ -28,8 +30,11 @@ const SERVICES = [
 ]
 
 export function Step02Service() {
+  // Airbnb and Commercial are request-only (Geraldine, 2026-10-18): picking one swaps the
+  // wizard for the short request form. See src/data/requestForms.ts.
   const { bookingData, updateServiceType } = useBooking()
-  const { serviceType } = bookingData
+  const { serviceType, customer } = bookingData
+  const requestKind = serviceType === 'airbnb' || serviceType === 'commercial' ? serviceType : null
 
   return (
     <div>
@@ -93,6 +98,26 @@ export function Step02Service() {
           )
         })}
       </div>
+
+      {requestKind && (
+        <div style={{ marginTop: '36px', paddingTop: '28px', borderTop: '1px solid rgba(13,27,46,0.1)' }}>
+          <h3 style={{ fontSize: '1.3rem', fontWeight: 900, letterSpacing: '-0.5px', color: 'var(--color-navy-deep)', margin: '0 0 8px' }}>
+            {REQUEST_FORM_TITLE[requestKind]}
+          </h3>
+          <p style={{ margin: '0 0 24px', fontSize: '0.9rem', lineHeight: 1.6, color: 'rgba(74,90,106,0.85)' }}>
+            This service is quoted individually, so there is no price or payment here. Tell us a little and we will send you a custom quote.
+          </p>
+          <RequestQuoteForm
+            key={requestKind}
+            kind={requestKind}
+            defaults={{
+              name: [customer.firstName, customer.lastName].filter(Boolean).join(' '),
+              email: customer.email,
+              phone: customer.phone,
+            }}
+          />
+        </div>
+      )}
     </div>
   )
 }

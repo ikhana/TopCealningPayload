@@ -445,7 +445,7 @@ export const useBookingForm = () => {
     if (isAreaPriced(serviceType)) {
       const areas = property.areas ?? {}
       const extras = bookingData.serviceExtras ?? {}
-      const { tier, uplift, conditionUplift: condUplift } = areaPricing(extras)
+      const { tier, uplift, conditionUplift: condUplift, flatFee } = areaPricing(extras)
 
       const areaSubtotal = priceRooms(areas, tier)
       const extrasTotal = addOnsTotal(selectedExtras, bookingData.extraQuantities, bookingData.extraVariants)
@@ -454,7 +454,7 @@ export const useBookingForm = () => {
       // from the site on Geraldine's instruction (2026-08-20). quoteAreas also
       // enforces her rule that a discount is dropped entirely if the minimum
       // would swallow it.
-      const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift)
+      const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift, flatFee)
 
       setBookingData((prev) => ({
         ...prev,

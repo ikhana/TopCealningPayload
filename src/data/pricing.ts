@@ -399,7 +399,30 @@ export function effectiveTier(cleaningType?: string, homeCondition?: string): Cl
   // Severe is a Deep-only option, so it implies the deep tier for the same reason heavy does:
   // it describes the property, not a preference.
   if (homeCondition === 'heavy' || homeCondition === 'severe') return 'deep'
-  return cleaningType === 'Deep' ? 'deep' : 'regular'
+  // Move-In / Move-Out is priced from the DEEP column (Geraldine, 2026-10-18: "Final Deep
+  // Cleaning Price + $60"). See MOVE_OUT_FEE for the fee itself.
+  if (cleaningType === 'Deep' || cleaningType === MOVE_OUT_TYPE) return 'deep'
+  return 'regular'
+}
+
+/** The "Type of Cleaning" value for a move-in or move-out clean. Also the GHL option label. */
+export const MOVE_OUT_TYPE = 'Move-in/Move-out'
+
+/**
+ * The flat extra charge on a Move-In / Move-Out clean.
+ *
+ *   Move-In / Move-Out Price = Final Deep Cleaning Price + $60
+ *
+ * "Please make sure the $60 fee is added AFTER all size and condition adjustments, so it
+ * is not affected by any percentages." Her example: a $465 Deep clean (after adjustments)
+ * becomes $525. So the fee is added to the total, never to the area subtotal: it is not
+ * multiplied by the size band or the condition uplift, and it is not part of what the
+ * recurring discount or the minimum booking floor act on.
+ */
+export const MOVE_OUT_FEE = 60
+
+export function isMoveOut(cleaningType?: string): boolean {
+  return cleaningType === MOVE_OUT_TYPE
 }
 
 // ─── PROPERTY SIZE ───────────────────────────────────────────────────────────
@@ -519,6 +542,8 @@ export function areaPricing(extras: {
     /** True when the customer must be routed to a custom quote instead of a price. */
     quoteOnly: quoteReason !== undefined,
     quoteReason,
+    /** The Move-In / Move-Out fee, added after all percentages. Zero for every other clean. */
+    flatFee: isMoveOut(extras.cleaningType) ? MOVE_OUT_FEE : 0,
   }
 }
 
@@ -531,7 +556,12 @@ export type Quote = {
   subtotal: number
   /** The floor for this tier. */
   minimum: number
-  /** What the customer actually pays: MAX(minimum, subtotal). */
+  /**
+   * A flat fee added AFTER every percentage, the Move-In / Move-Out $60. Zero otherwise.
+   * Included in `subtotal` and `total`; shown to the customer as its own line.
+   */
+  flatFee: number
+  /** What the customer actually pays: MAX(minimum, subtotal), plus any flat fee. */
   total: number
   /** True when the minimum is doing the work — drives the upsell message. */
   minimumApplied: boolean
@@ -559,6 +589,7 @@ export function quoteAreas(
   frequency: string = 'one-time',
   extrasTotal = 0,
   uplift = 0,
+  flatFee = 0,
 ): Quote {
   const minimum = MINIMUM_BOOKING[tier]
 
@@ -581,7 +612,7 @@ export function quoteAreas(
   const roomsSubtotal = Math.round(roomsList * (1 + uplift) * 100) / 100
   const conditionAmount = Math.round(roomsSubtotal - roomsList)
 
-  const subtotal = Math.max(minimum, roomsSubtotal) + extrasTotal
+  const subtotal = Math.max(minimum, roomsSubtotal) + extrasTotal + flatFee
 
   // Discount rule (Geraldine, 2026-08-20): "The discount should only be applied
   // when the discounted price remains above the minimum booking amount. I don't
@@ -605,7 +636,9 @@ export function quoteAreas(
   const discountSurvives = candidateRate > 0 && roomsDiscounted > minimum
 
   const discountRate = discountSurvives ? candidateRate : 0
-  const total = Math.round(roomsFinal) + extrasTotal
+  // The flat fee goes on LAST, after the rounding, the discount and the minimum, so no
+  // percentage and no floor can touch it.
+  const total = Math.round(roomsFinal) + extrasTotal + flatFee
 
   // The upsell message is about ROOMS only, for the same reason: telling someone
   // they can "add $20 more" when an add-on would satisfy it would be telling them
@@ -615,6 +648,7 @@ export function quoteAreas(
   return {
     roomsList,
     conditionAmount,
+    flatFee,
     subtotal: Math.round(subtotal),
     minimum,
     total,

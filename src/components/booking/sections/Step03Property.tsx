@@ -23,6 +23,7 @@ import {
   asksCondition,
   areaPricing,
   conditionOptionsFor,
+  isMoveOut,
   QUOTE_MESSAGES,
   PROPERTY_SIZES,
   propertySize,
@@ -456,10 +457,14 @@ export function Step03Property() {
   // toggle — it already exists and already maps to a GHL field. Heavy buildup
   // overrides it, so both inputs go through the one shared resolver.
   const { condition, tier, uplift, quoteOnly, quoteReason } = areaPricing(serviceExtras)
-  const heavyBuildup = condition === 'heavy'
+  // A move-in/move-out clean is already on the deep tier, so a heavy condition has nothing
+  // to "recommend": showing the Deep banner, or relabelling the select to Deep, would quietly
+  // change the service the customer chose.
+  const moveOut = isMoveOut(serviceExtras.cleaningType)
+  const heavyBuildup = condition === 'heavy' && !moveOut
   // Heavy and Severe both describe the property rather than a preference, so both lock the
-  // "Type of Cleaning" select to Deep.
-  const forcedDeep = condition === 'heavy' || condition === 'severe'
+  // "Type of Cleaning" select to Deep (except for a move-out, see above).
+  const forcedDeep = (condition === 'heavy' || condition === 'severe') && !moveOut
 
   // What the "Type of Cleaning" select shows. Heavy buildup forces Deep, but we
   // do NOT write that back into state: if the customer changes their condition

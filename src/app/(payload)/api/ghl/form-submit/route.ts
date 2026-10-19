@@ -1,5 +1,7 @@
 // POST /api/ghl/form-submit
 //
+// (Also the destination of the short Airbnb and Commercial request forms, audience 'quote'.)
+//
 // The destination for the two non-wizard forms that collect a phone number: the contact
 // form and the Join Our Team application. Accepts multipart/form-data for both (the
 // contact form has no file, but one content type keeps a single code path).

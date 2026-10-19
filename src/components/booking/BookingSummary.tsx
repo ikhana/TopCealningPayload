@@ -90,14 +90,14 @@ export function BookingSummary() {
   const priced = isAreaPriced(serviceType) || hourly
 
   const areas: RoomCounts = property.areas ?? {}
-  const { tier, uplift, quoteOnly, quoteReason } = areaPricing(serviceExtras)
+  const { tier, uplift, quoteOnly, quoteReason, flatFee } = areaPricing(serviceExtras)
   // No automatic price: Severe Condition, or an Estate-size home. Not in hourly mode, which
   // has its own price and ignores the property entirely.
   const quoteActive = priced && !hourly && quoteOnly && !!quoteReason
   const sizeBand = propertySize(serviceExtras.propertySize)
   const lines = areaLineItems(areas, tier)
   const extrasTotal = addOnsTotal(selectedExtras, extraQuantities, extraVariants)
-  const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift)
+  const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift, flatFee)
   const hourlyQuote = quoteHourlyFromState(customHourly)
 
   const hasSomething = hourly || lines.length > 0 || selectedExtras.length > 0
@@ -157,6 +157,17 @@ export function BookingSummary() {
                       value={`$${l.total}`}
                     />
                   ))}
+                </>
+              )}
+
+              {/* Her example lists the fee as its own line ("Move-In / Move-Out additional fee:
+                  $60") between the Deep total and the final price. Unlike the size and condition
+                  adjustments it is a fixed dollar amount, not a percentage, so showing it does
+                  not break her rule against fee percentages, and it keeps the total checkable. */}
+              {flatFee > 0 && (
+                <>
+                  <SectionHeading>Move-In / Move-Out</SectionHeading>
+                  <Line label="Move-In / Move-Out fee" value={`$${flatFee}`} />
                 </>
               )}
 

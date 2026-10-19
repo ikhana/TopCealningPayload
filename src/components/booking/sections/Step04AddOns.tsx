@@ -159,9 +159,9 @@ export function Step04AddOns() {
   // place the customer sees one — which is the point: a number that appears
   // before the add-ons are on screen is a number that changes under them.
   const areas: RoomCounts = property.areas ?? {}
-  const { tier, uplift } = areaPricing(serviceExtras)
+  const { tier, uplift, flatFee } = areaPricing(serviceExtras)
   const extrasTotal = addOnsTotal(selectedExtras, extraQuantities, extraVariants)
-  const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift)
+  const quote = quoteAreas(areas, tier, frequency, extrasTotal, uplift, flatFee)
   const showQuote = isAreaPriced(serviceType)
 
   return (
@@ -257,8 +257,14 @@ export function Step04AddOns() {
           <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.12)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', opacity: 0.85 }}>
               <span>Cleaning</span>
-              <span style={{ fontFamily: 'var(--font-mono)' }}>${quote.total - extrasTotal}</span>
+              <span style={{ fontFamily: 'var(--font-mono)' }}>${quote.total - extrasTotal - flatFee}</span>
             </div>
+            {flatFee > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', opacity: 0.85 }}>
+                <span>Move-In / Move-Out fee</span>
+                <span style={{ fontFamily: 'var(--font-mono)' }}>${flatFee}</span>
+              </div>
+            )}
             {extrasTotal > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', opacity: 0.85 }}>
                 <span>Add-ons ({selectedExtras.length})</span>

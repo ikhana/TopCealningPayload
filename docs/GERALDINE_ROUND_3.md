@@ -568,3 +568,63 @@ Slides only partly covered because they are visual:
 - The hourly UI screenshot is **our own current screen**, not a new design from her.
 - The "Type of Cleaning" dropdown screenshot sits beside the hourly slide, but her spec
   section 6 settles it: Custom Hourly is its own service category, not a dropdown option.
+
+---
+
+## 13. Deposit, Move-Out, Airbnb and Commercial (2026-10-18, later the same day)
+
+Her answers to the questions above, and what was built from them.
+
+### 13.1 Move-In / Move-Out: BUILT
+
+Priced from the **Deep** column plus a flat **$60** (`MOVE_OUT_FEE` in `src/data/pricing.ts`),
+added after every percentage, discount and minimum. Her example: Deep $465 becomes $525. It
+stays "Move-in/Move-out" in GoHighLevel. Same Severe Condition / Estate quote rules as Deep.
+Tested 22/22.
+
+### 13.2 Deposit: message BUILT, payment NOT built
+
+- **$29.99** (not $30). Applies to Regular, Deep, **Move-In / Move-Out** (she said yes: "if Deep
+  is taking it, then yes") and Custom Hourly. Not to Airbnb, Commercial, or a custom quote.
+- Her message is shown above the agreement checkbox on the last step
+  (`src/data/deposit.ts`, `requiresDeposit()`, tested 11/11).
+- **Not built, by decision:** card collection (Authorize.Net is in the repo but unconnected),
+  refund up to 24 hours before the appointment, deducting it from the final total.
+- **Inconsistency to fix when payment is built:** the message says the deposit "is required to
+  secure your booking" but nothing is collected, the confirmation screen says "Request
+  Received", and the After Party FAQ in `serviceContent.ts` says "nothing is charged at booking".
+
+### 13.3 Airbnb and Commercial request forms: BUILT
+
+Short, request-only, every field required, button "Request a Custom Quote", no price, no
+deposit, **no property address** (`src/components/RequestQuoteForm`, `src/data/requestForms.ts`).
+
+- Airbnb: Full Name, Phone, Email, properties managed, cleanings needed per month.
+- Commercial: Full Name, Business Name, Phone, Email, type of space (Office / Corporate,
+  Car Dealership / Showroom, Fitness / Pilates / Yoga Studio, Retail Store, Other), how often
+  (Daily, Several times per week, Weekly, Bi-weekly, One-time, Not sure yet). **No medical or
+  restaurant** yet.
+- Where: a `#request-a-quote` section on `/services/airbnb` and `/services/commercial` (their
+  hero buttons point at it), and in the booking wizard Step 2 when either card is picked (the
+  wizard's own buttons, summary and agreement are hidden for these two).
+- Backend: the existing `/api/ghl/form-submit` with audience `quote` (stored first, spam
+  screened, then synced). Contact tags `custom-quote` plus `airbnb-quote` or `commercial-quote`;
+  business name goes to the contact's company; address is only sent when the form collected one.
+  Verified live with both forms, test data removed.
+- **Placement is our assumption.** She did not say where these forms live.
+
+### 13.4 Approved cities (her 8 Oct message): city guard NOT built
+
+All of Broward (19 cities listed); Palm Beach only Boca Raton, Delray Beach, Boynton Beach;
+Miami-Dade only Aventura, Miami Gardens, North Miami Beach, Golden Beach, Miami Lakes. The
+current gate (`src/lib/booking/broward-zips.ts`) accepts all of Broward, Miami-Dade and Palm
+Beach by ZIP, so it is wider than her list. Deferred by the user.
+
+### 13.5 Still open
+
+- Commercial FAQ in `serviceContent.ts` says "Yes" to medical, dental and restaurant spaces,
+  which contradicts "not offering those yet". Needs her wording.
+- Does "short form" mean only those fields (as built) or the usual flow with fewer steps?
+- All of Broward, or only her 19 cities? What should customers outside the area see?
+- GHL by hand: exit `custom-quote` from Abandoned Booking Recovery; acknowledgement and staff
+  alert workflow for `custom-quote`, `airbnb-quote`, `commercial-quote`.

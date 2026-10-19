@@ -570,8 +570,8 @@ export const SERVICES = {
       title: 'Commercial & Office Cleaning in Fort Lauderdale',
       body:
         'Reliable commercial cleaning that fits around your operations: early mornings, evenings, weekends. We handle restrooms, breakrooms, high-touch sanitization, and the daily details that keep your team comfortable and your clients impressed.',
-      ctaText: 'Request a Quote',
-      ctaHref: '/booking',
+      ctaText: 'Request a Custom Quote',
+      ctaHref: '#request-a-quote',
       image: '/images/services/commercial.jpg',
       imageAlt: 'Top Cleaning team disinfecting a South Florida commercial office space',
     },
@@ -675,8 +675,8 @@ export const SERVICES = {
       title: 'AirBnB Turnover Cleaning in Fort Lauderdale',
       body:
         'Reliable, fast turnovers between guests so your listing stays spotless and your ratings stay high. Fresh linens, restocked essentials, damage inspection, and a photo report after every clean, so you always know what we left behind.',
-      ctaText: 'Get Your Quote',
-      ctaHref: '/booking',
+      ctaText: 'Request a Custom Quote',
+      ctaHref: '#request-a-quote',
       image: '/images/services/airbnb-cleaning1.jpg',
       imageAlt: 'Guest-ready bedroom prepared for an AirBnB turnover in South Florida',
     },

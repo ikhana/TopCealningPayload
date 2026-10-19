@@ -78,6 +78,11 @@ const DETAILS: Record<'contact' | 'careers' | 'quote', Array<[string, string]>> 
   quote: [
     ['quote_reason', 'Why a custom quote'],
     ['service', 'Service'],
+    ['business_name', 'Business name'],
+    ['space_type', 'Type of space'],
+    ['frequency', 'How often'],
+    ['properties_managed', 'Properties managed'],
+    ['cleanings_per_month', 'Cleanings needed per month'],
     ['cleaning_type', 'Type of cleaning'],
     ['property_size', 'Property size'],
     ['last_cleaned', 'Last thoroughly cleaned'],
@@ -253,7 +258,7 @@ export async function syncEnquiry(
       ...(doc.phone ? { phone: doc.phone } : {}),
       // The service address, quote requests only. The team needs it to price the job, and
       // the contact form and job application do not collect one.
-      ...(audience === 'quote'
+      ...(audience === 'quote' && (details.address_street || details.address_zip)
         ? {
             address1: [str(details.address_street), str(details.address_apt) ? `Apt ${str(details.address_apt)}` : '']
               .filter(Boolean)
@@ -263,8 +268,12 @@ export async function syncEnquiry(
             postalCode: str(details.address_zip),
           }
         : {}),
+      ...(audience === 'quote' && str(details.business_name) ? { companyName: str(details.business_name) } : {}),
       locationId,
-      tags: TAGS[audience],
+      tags:
+        audience === 'quote' && (details.request_form === 'airbnb' || details.request_form === 'commercial')
+          ? [...TAGS.quote, `${details.request_form}-quote`]
+          : TAGS[audience],
       customFields,
     } as Parameters<typeof upsertContact>[0])
     contactId = (contact as { id?: string })?.id ?? contactId
@@ -291,7 +300,7 @@ export async function syncEnquiry(
               audience === 'careers'
                 ? `${who} (application)`
                 : audience === 'quote'
-                  ? `${who} (custom quote)`
+                  ? `${who} (${details.request_form === 'airbnb' ? 'Airbnb' : details.request_form === 'commercial' ? 'Commercial' : 'custom'} quote)`
                   : `${who} (contact form)`,
             status: 'open',
           })
