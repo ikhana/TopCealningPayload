@@ -628,3 +628,17 @@ Beach by ZIP, so it is wider than her list. Deferred by the user.
 - All of Broward, or only her 19 cities? What should customers outside the area see?
 - GHL by hand: exit `custom-quote` from Abandoned Booking Recovery; acknowledgement and staff
   alert workflow for `custom-quote`, `airbnb-quote`, `commercial-quote`.
+
+### 13.6 Google reviews slider (2026-10-19)
+
+She asked for a slider like the Elfsight/Trustindex style widget for the Google reviews. Built in
+`src/blocks/TCTestimonials/Component.client.tsx` (homepage "Voices of The Pristine"): 3 cards per
+view on desktop, 2 on tablet, 1 plus a peek of the next on mobile, arrows (desktop), dots,
+"Read more" only where the text is actually cut off. Reviews still come from
+`src/data/testimonials.ts` and keep its rules (real, verbatim, monogram not photo, no Review
+schema, no invented star total or review count).
+
+- The old relative ages ("2 weeks ago") were captured 2026-08-22 and are now stale, so the cards no
+  longer show them. Re-add them only with a fresh capture.
+- She may have more reviews than the five captured. New ones go in `testimonials.ts` and appear
+  automatically.
